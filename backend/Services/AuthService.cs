@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.Request;
 using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Services
@@ -18,13 +19,8 @@ namespace backend.Services
             _userRepository = userRepository;
         }
 
-        public async Task<string>  GenerateTokenAsync(string email)
+         private string GenerateToken(User user)
         {
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            if (user == null )
-            {
-                return null;
-            }
             var securityKey = _configuration["Jwt:Key"];
             var formatKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
             var credentials = new SigningCredentials(formatKey, SecurityAlgorithms.HmacSha256);
@@ -43,6 +39,17 @@ namespace backend.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        
+        public async Task<string> Login(LoginRequest loginRequest)
+        {
+            // Validate the user credentials
+            var user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password))
+            {
+                return null;
+            }
+            return GenerateToken(user);
+        }
+
+       
     }
 }

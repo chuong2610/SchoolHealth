@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250524023759_DatabaseV1")]
-    partial class DatabaseV1
+    [Migration("20250526073245_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,6 +77,10 @@ namespace backend.Migrations
                     b.Property<decimal>("Bmi")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Conclusion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -91,6 +95,10 @@ namespace backend.Migrations
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("NurseId")
                         .HasColumnType("int");
 
@@ -103,6 +111,12 @@ namespace backend.Migrations
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("VisionLeft")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("VisionRight")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Weight")
                         .HasColumnType("decimal(18,2)");
@@ -246,6 +260,23 @@ namespace backend.Migrations
                     b.ToTable("Medications");
                 });
 
+            modelBuilder.Entity("backend.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("backend.Models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -321,9 +352,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -346,7 +376,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
 
@@ -529,6 +564,17 @@ namespace backend.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("backend.Models.User", b =>
+                {
+                    b.HasOne("backend.Models.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("backend.Models.Vaccination", b =>
                 {
                     b.HasOne("backend.Models.Nurse", "Nurse")
@@ -560,6 +606,11 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.MedicalSupply", b =>
                 {
                     b.Navigation("MedicalEventSupplys");
+                });
+
+            modelBuilder.Entity("backend.Models.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("backend.Models.Student", b =>

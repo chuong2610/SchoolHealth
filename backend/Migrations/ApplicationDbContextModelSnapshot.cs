@@ -74,6 +74,10 @@ namespace backend.Migrations
                     b.Property<decimal>("Bmi")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Conclusion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -88,6 +92,10 @@ namespace backend.Migrations
                     b.Property<decimal>("Height")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("NurseId")
                         .HasColumnType("int");
 
@@ -100,6 +108,12 @@ namespace backend.Migrations
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("VisionLeft")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("VisionRight")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Weight")
                         .HasColumnType("decimal(18,2)");
@@ -352,6 +366,10 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
