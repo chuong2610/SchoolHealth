@@ -1,0 +1,169 @@
+/* DASHBOARD ĐẸP, HIỆN ĐẠI, CÂN ĐỐI */
+.dashboard-bg {
+  background: #f8fafd;
+  padding: 32px 0;
+}
+
+.stat-card {
+  border-radius: 18px;
+  box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-height: 140px;
+  cursor: pointer;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-right: 16px;
+}
+
+.stat-blue {
+  background: linear-gradient(45deg, #e3f0ff, #c9e7ff);
+  color: #0d6efd;
+}
+
+.stat-green {
+  background: linear-gradient(45deg, #e6fff5, #c9ffe7);
+  color: #20c997;
+}
+
+.stat-orange {
+  background: linear-gradient(45deg, #fff6e3, #ffe7c9);
+  color: #fd7e14;
+}
+
+.stat-value {
+  font-size: 2.1rem;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.dashboard-caption {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 991px) {
+  .dashboard-side-col {
+    margin-top: 32px;
+  }
+}
+
+/* CSS cho bảng thống kê */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 0;
+  background-color: #fff;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table .badge {
+  font-size: 0.875rem;
+  padding: 0.5em 0.75em;
+}
+
+.table-responsive {
+  min-width: 100%;
+}
+
+.table {
+  min-width: 100%;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.table th,
+.table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table td:hover {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  position: relative;
+}
+
+.card.chart-card {
+  min-height: 420px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 20px;
+}
+
+#eventChart {
+  min-height: 320px !important;
+  height: 320px !important;
+  max-width: 100% !important;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 991px) {
+  .card.chart-card {
+    min-height: 300px;
+    padding: 1.5rem 0.5rem;
+  }
+  #eventChart {
+    min-height: 200px !important;
+    height: 200px !important;
+  }
+}
+
+@keyframes growBar {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--bar-height);
+  }
+}
