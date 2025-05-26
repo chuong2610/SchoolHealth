@@ -169,3 +169,5 @@ F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 F:\dev\.net\swp\backend\obj\Debug\net8.0\ref\backend.dll
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.sourcelink.json
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\BCrypt.Net-Next.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

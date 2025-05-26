@@ -1,43 +1,54 @@
+using System.Text;
 using backend.Data;
+using backend.Filter;
+using backend.Interfaces;
+using backend.Repositories;
+using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Cấu hình Cookie Policy để tránh lỗi SameSite
-builder.Services.Configure<CookiePolicyOptions>(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    options.MinimumSameSitePolicy = SameSiteMode.None;
-    options.OnAppendCookie = context =>
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "e-comerce", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        context.CookieOptions.SameSite = SameSiteMode.None;
-        context.CookieOptions.Secure = true;
-    };
-});
-
-// Cấu hình CORS
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5500")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer"
     });
+    c.OperationFilter<AuthorizeCheckOperationFilter>();
 });
 
-// Cấu hình Authentication Google + Cookie
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;      // Cho API
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;            // Khi người dùng login
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Cho Google OAuth
+}).AddJwtBearer(options => {
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = "http://localhost:5182"
+    };
 })
 .AddCookie(options =>
 {
@@ -55,10 +66,58 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("AdminOnly", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("role", "admin");
+    });
+
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder
+                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+});
+
+// Cấu hình Authentication Google + Cookie
+// builder.Services.AddAuthentication(options =>
+// {
+//     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+//     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+// })
+// .AddCookie(options =>
+// {
+//     options.Cookie.Name = "SchooHealth.Cookie";
+//     options.Cookie.HttpOnly = true;
+//     options.Cookie.SameSite = SameSiteMode.None;
+//     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+//     options.SlidingExpiration = true;
+// })
+// .AddGoogle(options =>
+// {
+//     options.ClientId = builder.Configuration["Google:ClientId"];
+//     options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+//     options.CallbackPath = "/signin-google";
+// });
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

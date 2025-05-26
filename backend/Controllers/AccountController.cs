@@ -1,7 +1,9 @@
+using backend.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace backend.Controllers;
@@ -10,6 +12,11 @@ namespace backend.Controllers;
 [Route("auth")]
 public class AccountController : ControllerBase
 {
+    private readonly IAuthService _authService;
+    public AccountController(IAuthService authService)
+    {
+        _authService = authService;
+    }
     [HttpGet("login")]
     public IActionResult Login()
     {
@@ -25,7 +32,7 @@ public class AccountController : ControllerBase
     {
         try
         {
-            var result = await HttpContext.AuthenticateAsync();
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
 
             if (!result.Succeeded || result.Principal == null)
             {
@@ -33,37 +40,28 @@ public class AccountController : ControllerBase
             }
 
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
-            var name = result.Principal.FindFirstValue(ClaimTypes.Name);
             if (email == null)
             {
                 return Unauthorized("Email not found");
             }
+            Console.WriteLine($"Email: {email}");
 
-            if (!email.EndsWith("@school.edu") && email != "tranngocchuongtnc@gmail.com")
+            if (!email.EndsWith("@school.edu") && !email.Equals("tranngocchuongtnc@gmail.com"))
+                {
+                    return Unauthorized("Email không được phép truy cập");
+                }
+
+            string token = await _authService.GenerateTokenAsync(email);
+            
+            if (string.IsNullOrEmpty(token))
             {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return Unauthorized("Email không được phép truy cập");
+                return Unauthorized("Token generation failed");
             }
-
-            var claims = new List<Claim> 
+            if(token== "null")
             {
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Name, name)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-
-            return Redirect($"http://localhost:5500?email={Uri.EscapeDataString(email)}");
+                return Unauthorized("Token is null");
+            }
+            return Ok(token);
         }
         catch (Exception ex)
         {
@@ -74,7 +72,6 @@ public class AccountController : ControllerBase
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return Ok();
     }
 }
