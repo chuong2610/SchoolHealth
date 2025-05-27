@@ -1,0 +1,10 @@
+using backend.Models;
+using backend.Models.DTO;
+
+namespace backend.Interfaces
+{
+    public interface IHealthCheckRepository
+    {
+        Task<List<HealthCheck>> GetAllHealthChecksAsync();
+    }
+}

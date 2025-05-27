@@ -5,14 +5,21 @@
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Database2 : Migration
+    public partial class DatabaseV2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Password",
-                table: "Users",
+                name: "Description",
+                table: "Vaccinations",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Location",
+                table: "Vaccinations",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -22,8 +29,12 @@ namespace backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Password",
-                table: "Users");
+                name: "Description",
+                table: "Vaccinations");
+
+            migrationBuilder.DropColumn(
+                name: "Location",
+                table: "Vaccinations");
         }
     }
 }

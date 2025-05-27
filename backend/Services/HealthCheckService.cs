@@ -1,0 +1,36 @@
+using backend.Interfaces;
+using backend.Models;
+using backend.Models.DTO;
+
+namespace backend.Services
+{
+    public class HealthCheckService : IHealthCheckService
+    {
+        private readonly IHealthCheckRepository _healthCheckRepository;
+
+        public HealthCheckService(IHealthCheckRepository healthCheckRepository)
+        {
+            _healthCheckRepository = healthCheckRepository;
+        }
+
+        public async Task<List<HealthCheckDTO>> GetAllHealthChecksAsync()
+        {
+            var healthChecks = await _healthCheckRepository.GetAllHealthChecksAsync();
+            return healthChecks.Select(p => MapToDTO(p)).ToList();
+        }
+        
+        private HealthCheckDTO MapToDTO(HealthCheck healthCheck)
+        {
+           return new HealthCheckDTO
+            {
+
+                Id = healthCheck.Id,
+                Height = healthCheck.Height,
+                Weight = healthCheck.Weight,
+                Bmi = healthCheck.Bmi,
+                Conclusion = healthCheck.Conclusion ?? string.Empty ,
+                NurseName = healthCheck.Nurse.Name ?? string.Empty
+            };
+        }
+    }
+}

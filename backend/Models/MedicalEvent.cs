@@ -14,9 +14,9 @@ namespace backend.Models
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
         public Student Student { get; set; } = new Student();
-        public int NurseId { get; set; }
-        [ForeignKey("NurseId")]
-        public Nurse Nurse { get; set; } = new Nurse();
+        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User Nurse { get; set; } = new User();
         public List<MedicalEventSupply> MedicalEventSupplys { get; set; } 
 
     }    

@@ -12,8 +12,8 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250526093737_Database2")]
-    partial class Database2
+    [Migration("20250527023714_DatabaseV2")]
+    partial class DatabaseV2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,9 +32,6 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AdminId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Author")
                         .IsRequired()
@@ -55,9 +52,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AdminId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("BlogPosts");
                 });
@@ -99,17 +99,14 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NurseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NurseId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("VisionLeft")
@@ -123,11 +120,9 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NurseId");
-
-                    b.HasIndex("NurseId1");
-
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("HealthChecks");
                 });
@@ -151,12 +146,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NurseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NurseId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -164,13 +153,14 @@ namespace backend.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("NurseId");
-
-                    b.HasIndex("NurseId1");
-
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("MedicalEvents");
                 });
@@ -236,12 +226,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NurseId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NurseId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -249,13 +233,14 @@ namespace backend.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("NurseId");
-
-                    b.HasIndex("NurseId1");
-
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Medications");
                 });
@@ -301,12 +286,12 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Students");
                 });
@@ -314,10 +299,7 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.StudentProfile", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Allergys")
                         .IsRequired()
@@ -355,11 +337,6 @@ namespace backend.Migrations
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -388,10 +365,6 @@ namespace backend.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-
-                    b.HasDiscriminator().HasValue("User");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("backend.Models.Vaccination", b =>
@@ -405,11 +378,13 @@ namespace backend.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NurseId")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NurseId1")
-                        .HasColumnType("int");
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Result")
                         .IsRequired()
@@ -422,47 +397,27 @@ namespace backend.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VaccineName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NurseId");
-
-                    b.HasIndex("NurseId1");
-
                     b.HasIndex("StudentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Vaccinations");
                 });
 
-            modelBuilder.Entity("backend.Models.Admin", b =>
-                {
-                    b.HasBaseType("backend.Models.User");
-
-                    b.HasDiscriminator().HasValue("Admin");
-                });
-
-            modelBuilder.Entity("backend.Models.Nurse", b =>
-                {
-                    b.HasBaseType("backend.Models.User");
-
-                    b.HasDiscriminator().HasValue("Nurse");
-                });
-
-            modelBuilder.Entity("backend.Models.Parent", b =>
-                {
-                    b.HasBaseType("backend.Models.User");
-
-                    b.HasDiscriminator().HasValue("Parent");
-                });
-
             modelBuilder.Entity("backend.Models.BlogPost", b =>
                 {
-                    b.HasOne("backend.Models.Admin", "Admin")
-                        .WithMany()
-                        .HasForeignKey("AdminId")
+                    b.HasOne("backend.Models.User", "Admin")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -471,20 +426,16 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.HealthCheck", b =>
                 {
-                    b.HasOne("backend.Models.Nurse", "Nurse")
-                        .WithMany()
-                        .HasForeignKey("NurseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Nurse", null)
-                        .WithMany("HealthChecks")
-                        .HasForeignKey("NurseId1");
-
                     b.HasOne("backend.Models.Student", "Student")
                         .WithMany("HealthChecks")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("HealthChecks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Nurse");
@@ -494,20 +445,16 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>
                 {
-                    b.HasOne("backend.Models.Nurse", "Nurse")
-                        .WithMany()
-                        .HasForeignKey("NurseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Nurse", null)
-                        .WithMany("MedicalEvents")
-                        .HasForeignKey("NurseId1");
-
                     b.HasOne("backend.Models.Student", "Student")
                         .WithMany("MedicalEvents")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("MedicalEvents")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Nurse");
@@ -536,20 +483,16 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Medication", b =>
                 {
-                    b.HasOne("backend.Models.Nurse", "Nurse")
-                        .WithMany()
-                        .HasForeignKey("NurseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Nurse", null)
-                        .WithMany("Medications")
-                        .HasForeignKey("NurseId1");
-
                     b.HasOne("backend.Models.Student", "Student")
                         .WithMany("Medications")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("Medications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Nurse");
@@ -559,13 +502,24 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Student", b =>
                 {
-                    b.HasOne("backend.Models.Parent", "Parent")
+                    b.HasOne("backend.Models.User", "Parent")
                         .WithMany("Students")
-                        .HasForeignKey("ParentId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("backend.Models.StudentProfile", b =>
+                {
+                    b.HasOne("backend.Models.Student", "Student")
+                        .WithOne("Profile")
+                        .HasForeignKey("backend.Models.StudentProfile", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -581,20 +535,16 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Vaccination", b =>
                 {
-                    b.HasOne("backend.Models.Nurse", "Nurse")
-                        .WithMany()
-                        .HasForeignKey("NurseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.Nurse", null)
-                        .WithMany("Vaccinations")
-                        .HasForeignKey("NurseId1");
-
                     b.HasOne("backend.Models.Student", "Student")
                         .WithMany("Vaccinations")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("Vaccinations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Nurse");
@@ -625,23 +575,25 @@ namespace backend.Migrations
 
                     b.Navigation("Medications");
 
+                    b.Navigation("Profile")
+                        .IsRequired();
+
                     b.Navigation("Vaccinations");
                 });
 
-            modelBuilder.Entity("backend.Models.Nurse", b =>
+            modelBuilder.Entity("backend.Models.User", b =>
                 {
+                    b.Navigation("BlogPosts");
+
                     b.Navigation("HealthChecks");
 
                     b.Navigation("MedicalEvents");
 
                     b.Navigation("Medications");
 
-                    b.Navigation("Vaccinations");
-                });
-
-            modelBuilder.Entity("backend.Models.Parent", b =>
-                {
                     b.Navigation("Students");
+
+                    b.Navigation("Vaccinations");
                 });
 #pragma warning restore 612, 618
         }

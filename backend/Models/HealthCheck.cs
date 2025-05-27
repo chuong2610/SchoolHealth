@@ -21,9 +21,9 @@ namespace backend.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public Student Student { get; set; } = new Student();
-        public int NurseId { get; set; }
-        [ForeignKey("NurseId")] 
-        public Nurse Nurse { get; set; } = new Nurse();
+        public Student Student { get; set; } = null!;
+        public int UserId { get; set; }
+        [ForeignKey("UserId")] 
+        public User Nurse { get; set; } = null!;
     }    
 }

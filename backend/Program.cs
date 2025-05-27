@@ -66,6 +66,8 @@ builder.Services.AddAuthentication(options =>
     options.CallbackPath = "/signin-google";
 });
 
+
+
 builder.Services.AddAuthorization(option =>
 {
     option.AddPolicy("AdminOnly", policy =>
@@ -117,6 +119,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
+builder.Services.AddScoped<IHealthCheckRepository, HealthCheckRepository>();
+
 
 var app = builder.Build();
 

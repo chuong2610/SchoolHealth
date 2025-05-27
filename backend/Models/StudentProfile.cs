@@ -10,6 +10,7 @@ namespace backend.Models
         public string ChronicIllnesss { get; set; } = string.Empty; // bệnh
         public string LongTermMedications { get; set; } = string.Empty; // thuốc dài hạn
         public string OtherMedicalConditions { get; set; } = string.Empty; // điều kiện y tế khác
+        public Student Student { get; set; }= null!;
         
     }    
 }
