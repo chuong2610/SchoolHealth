@@ -26,5 +26,22 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetHealthCheckById(int id)
+        {
+            try
+            {
+                var healthCheck = await _healthCheckService.GetHealthCheckByIdAsync(id);
+                if (healthCheck == null)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Không tìm thấy kết quả kiểm tra sức khỏe", false));
+                }
+                return Ok(new BaseResponse<HealthCheckDetailDTO>(healthCheck, "Lấy chi tiết thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

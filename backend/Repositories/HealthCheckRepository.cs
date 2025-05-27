@@ -19,5 +19,14 @@ namespace backend.Repositories
         {
            return await _context.HealthChecks.Include(h => h.Nurse).ToListAsync();
         }
+
+
+
+        public async Task<HealthCheck?> GetHealthCheckByIdAsync(int id)
+        {
+            return await _context.HealthChecks
+                .Include(h => h.Nurse)
+                .FirstOrDefaultAsync(h => h.Id == id);
+        }
     }
 }
