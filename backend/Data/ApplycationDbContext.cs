@@ -18,6 +18,8 @@ namespace backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<StudentProfile> StudentProfiles { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationStudent> NotificationStudents { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -30,7 +30,7 @@ namespace backend.Repositories
             return await _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
-                .Where(v => v.StudentId == parentId)
+                .Where(v => v.Student.ParentId == parentId)
                 .ToListAsync();
         }
     }

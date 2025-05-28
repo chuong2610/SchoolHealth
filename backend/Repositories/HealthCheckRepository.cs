@@ -35,7 +35,7 @@ namespace backend.Repositories
             return await _context.HealthChecks
                 .Include(h => h.Nurse)
                 .Include(h => h.Student)
-                .Where(h => h.StudentId == parentId)
+                .Where(h => h.Student.ParentId == parentId)
                 .ToListAsync();
         }        
     }

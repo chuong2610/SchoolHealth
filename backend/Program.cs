@@ -133,8 +133,8 @@ builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
 builder.Services.AddScoped<IHealthCheckRepository, HealthCheckRepository>();
 builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
-// builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-// builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 
 var app = builder.Build();
