@@ -6,6 +6,7 @@ namespace backend.Repositories
     {
         Task<List<Vaccination>> GetAllVaccinationsAsync();
         Task<Vaccination?> GetVaccinationByIdAsync(int id);
+        Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId);
         
     }
 }

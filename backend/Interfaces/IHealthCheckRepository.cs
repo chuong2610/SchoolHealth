@@ -7,5 +7,6 @@ namespace backend.Interfaces
     {
         Task<List<HealthCheck>> GetAllHealthChecksAsync();
         Task<HealthCheck> GetHealthCheckByIdAsync(int id);
+        Task<List<HealthCheck>> GetAllHealthChecksByParentIdAsync(int parentId);
     }   
 }

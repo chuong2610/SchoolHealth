@@ -7,5 +7,6 @@ namespace backend.Models.DTO
         public string Location { get; set; } = null!;
         public DateOnly date { get; set; }
         public string NurseName { get; set; } = null!;
+        public string StudentName { get; set; } = null!;
     }
 }

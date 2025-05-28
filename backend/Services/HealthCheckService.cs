@@ -19,7 +19,7 @@ namespace backend.Services
             return healthChecks.Select(p => MapToDTO(p)).ToList();
         }
 
-        public async Task<HealthCheckDetailDTO?> GetHealthCheckByIdAsync(int id)
+        public async Task<HealthCheckDetailDTO> GetHealthCheckByIdAsync(int id)
         {
             var healthCheck = await _healthCheckRepository.GetHealthCheckByIdAsync(id);
             if (healthCheck == null)
@@ -29,6 +29,7 @@ namespace backend.Services
 
             return new HealthCheckDetailDTO
             {
+                StudentName = healthCheck.Student.Name ?? string.Empty,
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
                 VisionLeft = healthCheck.VisionLeft,
@@ -44,18 +45,23 @@ namespace backend.Services
                 nurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }
+        public async Task<List<HealthCheckDTO>> GetAllHealthChecksByParentIdAsync(int parentId)
+        {
+            var healthChecks = await _healthCheckRepository.GetAllHealthChecksByParentIdAsync(parentId);
+            return healthChecks.Select(p => MapToDTO(p)).ToList();
+        }
 
         private HealthCheckDTO MapToDTO(HealthCheck healthCheck)
         {
-           return new HealthCheckDTO
+            return new HealthCheckDTO
             {
-
+                StudentName = healthCheck.Student.Name ?? string.Empty,
                 Id = healthCheck.Id,
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
                 Bmi = healthCheck.Bmi,
                 Date = DateOnly.FromDateTime(healthCheck.Date),
-                Conclusion = healthCheck.Conclusion ?? string.Empty ,
+                Conclusion = healthCheck.Conclusion ?? string.Empty,
                 NurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }

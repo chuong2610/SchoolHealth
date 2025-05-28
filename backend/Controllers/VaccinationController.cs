@@ -17,7 +17,7 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetAllVaccinations()
         {
             try
@@ -42,6 +42,20 @@ namespace backend.Controllers
                     return NotFound(new BaseResponse<string>(null, "Tiêm chủng không tồn tại", false));
                 }
                 return Ok(new BaseResponse<VaccinationDetailDTO>(vaccination, "Lấy thông tin tiêm chủng thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+        [HttpGet("parent/{parentId}")]
+        [Authorize]
+        public async Task<IActionResult> GetVaccinationsByParentId(int parentId)
+        {
+            try
+            {
+                var vaccinations = await _vaccinationService.GetVaccinationsByParentIdAsync(parentId);
+                return Ok(new BaseResponse<List<VaccinationDTO>>(vaccinations, "Lấy danh sách tiêm chủng theo phụ huynh thành công", true));
             }
             catch (Exception ex)
             {
