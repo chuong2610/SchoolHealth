@@ -47,6 +47,7 @@ namespace backend.Services
             {
                 return null;
             }
+            
             return GenerateToken(user);
         }
 

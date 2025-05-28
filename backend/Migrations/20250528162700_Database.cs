@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class DatabaseV1 : Migration
+    public partial class Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -91,6 +91,38 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notification",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<int>(type: "int", nullable: false),
+                    AssignedToId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notification_Users_AssignedToId",
+                        column: x => x.AssignedToId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Notification_Users_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
@@ -129,7 +161,6 @@ namespace backend.Migrations
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Conclusion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
@@ -211,6 +242,31 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NotificationStudent",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "int", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationStudent", x => new { x.NotificationId, x.StudentId });
+                    table.ForeignKey(
+                        name: "FK_NotificationStudent_Notification_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notification",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NotificationStudent_Students_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "Students",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StudentProfiles",
                 columns: table => new
                 {
@@ -240,7 +296,8 @@ namespace backend.Migrations
                     VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Result = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -327,6 +384,21 @@ namespace backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notification_AssignedToId",
+                table: "Notification",
+                column: "AssignedToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notification_CreatedById",
+                table: "Notification",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationStudent_StudentId",
+                table: "NotificationStudent",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_UserId",
                 table: "Students",
                 column: "UserId");
@@ -363,6 +435,9 @@ namespace backend.Migrations
                 name: "Medications");
 
             migrationBuilder.DropTable(
+                name: "NotificationStudent");
+
+            migrationBuilder.DropTable(
                 name: "StudentProfiles");
 
             migrationBuilder.DropTable(
@@ -373,6 +448,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "MedicalSupplys");
+
+            migrationBuilder.DropTable(
+                name: "Notification");
 
             migrationBuilder.DropTable(
                 name: "Students");

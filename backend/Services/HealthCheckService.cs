@@ -39,7 +39,7 @@ namespace backend.Services
                 Location = healthCheck.Location ?? string.Empty,
                 Description = healthCheck.Description ?? string.Empty,
                 Conclusion = healthCheck.Conclusion ?? string.Empty,
-                Status = healthCheck.Status ?? string.Empty,
+                // Status = healthCheck.Status ?? string.Empty,
                 Date = healthCheck.Date,
                 nurseName = healthCheck.Nurse.Name ?? string.Empty
             };
@@ -54,6 +54,7 @@ namespace backend.Services
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
                 Bmi = healthCheck.Bmi,
+                Date = DateOnly.FromDateTime(healthCheck.Date),
                 Conclusion = healthCheck.Conclusion ?? string.Empty ,
                 NurseName = healthCheck.Nurse.Name ?? string.Empty
             };

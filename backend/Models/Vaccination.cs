@@ -12,7 +12,6 @@ namespace backend.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string Location { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
         public Student Student { get; set; }   = null!;

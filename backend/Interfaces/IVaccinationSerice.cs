@@ -1,0 +1,11 @@
+using backend.Models.DTO;
+
+namespace backend.Interfaces
+{
+    public interface IVaccinationService
+    {
+        Task<List<VaccinationDTO>> GetAllVaccinationsAsync();
+        Task<VaccinationDetailDTO?> GetVaccinationByIdAsync(int id);
+        
+    }
+}

@@ -70,10 +70,20 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(option =>
 {
-    option.AddPolicy("AdminOnly", policy =>
+    option.AddPolicy("Admin", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("role", "admin");
+        policy.RequireRole("Admin");
+    });
+    option.AddPolicy("Nurse", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Nurse");
+    });
+    option.AddPolicy("Parent", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireRole("Parent");
     });
 
 });
@@ -121,6 +131,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
 builder.Services.AddScoped<IHealthCheckRepository, HealthCheckRepository>();
+builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
+builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 
 
 var app = builder.Build();
