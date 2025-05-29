@@ -14,22 +14,48 @@ namespace backend.Services
         public async Task<List<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetNotificationsByParentIdAsync(parentId);
-                return notifications.Select(n => MapToDTO(n)).ToList();
+            var result = new List<NotificationDTO>();
+            foreach (var notification in notifications)
+            {
+                foreach (var student in notification.NotificationStudents)
+                {
+                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                }
             }
-        
+            return result;
+            // return notifications.Select(n => MapToDTO(n)).ToList();
+
+        }
+
         public async Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);
-            return notifications.Select(n => MapToDTO(n)).ToList();
+             var result = new List<NotificationDTO>();
+            foreach (var notification in notifications)
+            {
+                foreach (var student in notification.NotificationStudents)
+                {
+                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                }
+            }
+            return result;
         }
         public async Task<List<NotificationDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId);
-            return notifications.Select(n => MapToDTO(n)).ToList();
+            var result = new List<NotificationDTO>();
+            foreach (var notification in notifications)
+            {
+                foreach (var student in notification.NotificationStudents)
+                {
+                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                }
+            }
+            return result;
         }
-        public async Task<NotificationDetailDTO> GetNotificationByIdAsync(int id)
+        public async Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId)
         {
-            var notification = await _notificationRepository.GetNotificationByIdAsync(id);
+            var notification = await _notificationRepository.GetNotificationByIdAsync(notificationId);
             if (notification == null)
             {
                 return null;
@@ -37,17 +63,21 @@ namespace backend.Services
 
             return new NotificationDetailDTO
             {
+                Id = notification.Id,
                 Title = notification.Title,
                 Message = notification.Message,
                 Note = notification.Note ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
                 Type = notification.Type,
+                Status = notification.NotificationStudents.FirstOrDefault(ns => ns.StudentId == studentId)?.Status ?? string.Empty, // confirmed, rejected
                 Location = notification.Location ?? string.Empty,
                 Date = notification.Date,
-                StudentName = notification.NotificationStudents.FirstOrDefault()?.Student.Name ?? string.Empty
+                StudentName = notification.NotificationStudents.FirstOrDefault(ns => ns.StudentId == studentId)?.Student.Name ?? string.Empty,
+                StudentId = studentId
+
             };
         }
-        private NotificationDTO MapToDTO(Notification notification)
+        private NotificationDTO MapToListDTO(Notification notification, int stusentId, string studentName)
         {
             return new NotificationDTO
             {
@@ -56,7 +86,8 @@ namespace backend.Services
                 Message = notification.Message,
                 Type = notification.Type,
                 CreatedAt = notification.CreatedAt,
-                StudentName = notification.NotificationStudents.FirstOrDefault()?.Student.Name ?? string.Empty
+                StudentId = stusentId,
+                StudentName = studentName
             };
         }
 
