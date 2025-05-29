@@ -135,6 +135,8 @@ builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
+builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
 
 
 var app = builder.Build();
