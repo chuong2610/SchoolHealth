@@ -51,7 +51,8 @@ namespace backend.Repositories
                 .Include(n => n.NotificationStudents)
                 .ThenInclude(ns => ns.Student)
                 .FirstOrDefaultAsync(n => n.Id == id);
-        }        
+        }
+        
 
     }
 }
