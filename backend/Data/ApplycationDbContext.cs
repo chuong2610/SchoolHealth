@@ -18,10 +18,26 @@ namespace backend.Data
         public DbSet<User> Users { get; set; }
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<StudentProfile> StudentProfiles { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationStudent> NotificationStudents { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<NotificationStudent>()
+                .HasKey(nr => new { nr.NotificationId, nr.StudentId });
+
+            modelBuilder.Entity<NotificationStudent>()
+                .HasOne(nr => nr.Notification)
+                .WithMany(n => n.NotificationStudents)
+                .HasForeignKey(nr => nr.NotificationId);
+
+            modelBuilder.Entity<NotificationStudent>()
+                .HasOne(nr => nr.Student)
+                .WithMany(s => s.NotificationStudents)
+                .HasForeignKey(nr => nr.StudentId);
+
             modelBuilder.Entity<MedicalEventSupply>()
                 .HasKey(sc => new { sc.MedicalEventId, sc.MedicalSupplyId });
 
@@ -35,10 +51,10 @@ namespace backend.Data
                 .WithMany(c => c.MedicalEventSupplys)
                 .HasForeignKey(sc => sc.MedicalSupplyId);
 
-             modelBuilder.Entity<Student>()
-                .HasOne(s => s.Profile)
-                .WithOne(p => p.Student)
-                .HasForeignKey<StudentProfile>(p => p.Id);    
+            modelBuilder.Entity<Student>()
+               .HasOne(s => s.Profile)
+               .WithOne(p => p.Student)
+               .HasForeignKey<StudentProfile>(p => p.Id);
 
             modelBuilder.Entity<HealthCheck>()
                 .HasOne(h => h.Nurse)
@@ -56,13 +72,25 @@ namespace backend.Data
                 .HasOne(h => h.Nurse)
                 .WithMany(u => u.Medications)
                 .HasForeignKey(h => h.UserId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
-             modelBuilder.Entity<Vaccination>()
-                .HasOne(h => h.Nurse)
-                .WithMany(u => u.Vaccinations)
-                .HasForeignKey(h => h.UserId)
-                .OnDelete(DeleteBehavior.Restrict);       
+            modelBuilder.Entity<Vaccination>()
+               .HasOne(h => h.Nurse)
+               .WithMany(u => u.Vaccinations)
+               .HasForeignKey(h => h.UserId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.CreatedBy)
+                .WithMany(u => u.CreatedNotifications)
+                .HasForeignKey(n => n.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.AssignedTo)
+                .WithMany(u => u.AssignedNotifications)
+                .HasForeignKey(n => n.AssignedToId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Giữ Cascade cho Student (xóa học sinh thì xóa luôn health check)
             // modelBuilder.Entity<HealthCheck>()

@@ -1,12 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace backend.Models
+namespace backend.Models.DTO
 {
-    public class HealthCheck
+    public class HealthCheckDetailDTO
     {
-        [Key]
-        public int Id { get; set; }
+        public string StudentName { get; set; } = string.Empty;
         public decimal Height { get; set; }
         public decimal Weight { get; set; }
         public decimal VisionLeft { get; set; }
@@ -18,11 +14,6 @@ namespace backend.Models
         public string Description { get; set; } = string.Empty;
         public string Conclusion { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
-        public int StudentId { get; set; }
-        [ForeignKey("StudentId")]
-        public Student Student { get; set; } = null!;
-        public int UserId { get; set; }
-        [ForeignKey("UserId")] 
-        public User Nurse { get; set; } = null!;
-    }    
+        public string nurseName { get; set; } = string.Empty;
+    }
 }

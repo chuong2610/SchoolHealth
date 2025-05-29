@@ -26,15 +26,15 @@ namespace backend.Controllers
                     return BadRequest(new BaseResponse<string>(null, "Request body is null", false));
                 }
 
-                var token = await _authService.Login(loginRequest);
+                var authDTO = await _authService.Login(loginRequest);
 
-                if (string.IsNullOrEmpty(token))
+                if (authDTO == null)
                 {
                     return Unauthorized(new BaseResponse<string>(null, "Invalid email or password", false));
                 }
 
                 return Ok(new BaseResponse<object>(
-                    new { token = token },
+                    new { token = authDTO },
                     "Đăng nhập thành công",
                     true
                 ));

@@ -17,7 +17,26 @@ namespace backend.Repositories
 
         public async Task<List<HealthCheck>> GetAllHealthChecksAsync()
         {
-           return await _context.HealthChecks.Include(h => h.Nurse).ToListAsync();
+            return await _context.HealthChecks.Include(h => h.Nurse) .Include(h => h.Student).ToListAsync();
         }
+
+
+
+        public async Task<HealthCheck?> GetHealthCheckByIdAsync(int id)
+        {
+            return await _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .FirstOrDefaultAsync(h => h.Id == id);
+        }
+
+        public async Task<List<HealthCheck>> GetAllHealthChecksByParentIdAsync(int parentId)
+        {
+            return await _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .Where(h => h.Student.ParentId == parentId)
+                .ToListAsync();
+        }        
     }
 }

@@ -18,17 +18,50 @@ namespace backend.Services
             var healthChecks = await _healthCheckRepository.GetAllHealthChecksAsync();
             return healthChecks.Select(p => MapToDTO(p)).ToList();
         }
-        
+
+        public async Task<HealthCheckDetailDTO> GetHealthCheckByIdAsync(int id)
+        {
+            var healthCheck = await _healthCheckRepository.GetHealthCheckByIdAsync(id);
+            if (healthCheck == null)
+            {
+                return null;
+            }
+
+            return new HealthCheckDetailDTO
+            {
+                StudentName = healthCheck.Student.Name ?? string.Empty,
+                Height = healthCheck.Height,
+                Weight = healthCheck.Weight,
+                VisionLeft = healthCheck.VisionLeft,
+                VisionRight = healthCheck.VisionRight,
+                Bmi = healthCheck.Bmi,
+                BloodPressure = healthCheck.BloodPressure ?? string.Empty,
+                HeartRate = healthCheck.HeartRate ?? string.Empty,
+                Location = healthCheck.Location ?? string.Empty,
+                Description = healthCheck.Description ?? string.Empty,
+                Conclusion = healthCheck.Conclusion ?? string.Empty,
+                // Status = healthCheck.Status ?? string.Empty,
+                Date = healthCheck.Date,
+                nurseName = healthCheck.Nurse.Name ?? string.Empty
+            };
+        }
+        public async Task<List<HealthCheckDTO>> GetAllHealthChecksByParentIdAsync(int parentId)
+        {
+            var healthChecks = await _healthCheckRepository.GetAllHealthChecksByParentIdAsync(parentId);
+            return healthChecks.Select(p => MapToDTO(p)).ToList();
+        }
+
         private HealthCheckDTO MapToDTO(HealthCheck healthCheck)
         {
-           return new HealthCheckDTO
+            return new HealthCheckDTO
             {
-
+                StudentName = healthCheck.Student.Name ?? string.Empty,
                 Id = healthCheck.Id,
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
                 Bmi = healthCheck.Bmi,
-                Conclusion = healthCheck.Conclusion ?? string.Empty ,
+                Date = DateOnly.FromDateTime(healthCheck.Date),
+                Conclusion = healthCheck.Conclusion ?? string.Empty,
                 NurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }

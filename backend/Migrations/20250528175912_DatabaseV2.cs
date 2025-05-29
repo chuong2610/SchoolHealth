@@ -11,15 +11,8 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Description",
-                table: "Vaccinations",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "Location",
-                table: "Vaccinations",
+                name: "Note",
+                table: "Notification",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -29,12 +22,8 @@ namespace backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Description",
-                table: "Vaccinations");
-
-            migrationBuilder.DropColumn(
-                name: "Location",
-                table: "Vaccinations");
+                name: "Note",
+                table: "Notification");
         }
     }
 }

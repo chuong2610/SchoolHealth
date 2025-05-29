@@ -1,0 +1,28 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace backend.Models
+{
+    public class Notification
+{
+    public int Id { get; set; }
+
+    public string Title { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty; // e.g., "MedicalEvent", "Vaccination"
+    public string Message { get; set; } = string.Empty;
+    public string Note { get; set; } = string.Empty;
+    public string Location { get; set; } = string.Empty;
+    public DateTime Date { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();
+
+    // Người tạo (Admin)
+        public int CreatedById { get; set; }
+    [ForeignKey("CreatedById")]
+    public User CreatedBy { get; set; } = null!;
+
+    // Người thực hiện (Nurse)
+    public int AssignedToId { get; set; } 
+    [ForeignKey("AssignedToId")]
+    public User AssignedTo { get; set; } = null!;
+}
+}
