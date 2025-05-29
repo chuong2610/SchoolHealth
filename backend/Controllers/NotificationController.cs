@@ -1,12 +1,13 @@
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/parent/[controller]")]
+    [Route("api/[controller]")]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;
@@ -15,6 +16,7 @@ namespace backend.Controllers
             _notificationService = notificationService;
         }
         [HttpGet("parent/{parentId}")]
+        [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetNotificationsByParentId(int parentId)
         {
             try
@@ -28,6 +30,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("parent/{parentId}/HealthCheck")]
+        [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetHealthChecksNotificationsByParentId(int parentId)
         {
             try
@@ -41,6 +44,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("parent/{parentId}/Vaccination")]
+        [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetVaccinationsNotificationsByParentId(int parentId)
         {
             try

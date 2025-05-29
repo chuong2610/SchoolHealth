@@ -1,11 +1,12 @@
 using backend.Interfaces;
 using backend.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [ApiController]
-    [Route("api/parent/[controller]")]
+    [Route("api/[controller]")]
     public class HealthCheckController : ControllerBase
     {
         private readonly IHealthCheckService _healthCheckService;
@@ -27,6 +28,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("{id}")]
+        
         public async Task<IActionResult> GetHealthCheckById(int id)
         {
             try
@@ -45,6 +47,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
+        [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetAllHealthChecksByParentId(int parentId)
         {
             try

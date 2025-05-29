@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using backend.Models.Request;
 using Microsoft.IdentityModel.Tokens;
 
@@ -39,7 +40,7 @@ namespace backend.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<string> Login(LoginRequest loginRequest)
+        public async Task<AuthDTO> Login(LoginRequest loginRequest)
         {
             // Validate the user credentials
             var user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
@@ -48,7 +49,12 @@ namespace backend.Services
                 return null;
             }
             
-            return GenerateToken(user);
+            return new AuthDTO
+            {
+                Token = GenerateToken(user),
+                UserId = user.Id,
+                RoleName = user.Role.Name
+            };
         }
 
        
