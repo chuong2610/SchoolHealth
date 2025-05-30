@@ -35,13 +35,15 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
 builder.Services.AddAuthentication(options =>
 {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;      // Cho API
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;      // Cho API
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;            // Khi người dùng login
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Cho Google OAuth
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
@@ -135,8 +137,17 @@ builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
-builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
+builder.Services.AddScoped<IBlogPostService, BlogPostService>();
+builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IBlogPostDetailService, BlogPostDetailService>();
+builder.Services.AddScoped<IBlogPostDetailRepository, BlogPostDetailRepository>();
+builder.Services.AddScoped<IHealthDeclarationRepository, HealthDeclarationRepository>();
+builder.Services.AddScoped<IHealthDeclarationService, HealthDeclarationService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+
+
+
 
 
 var app = builder.Build();
