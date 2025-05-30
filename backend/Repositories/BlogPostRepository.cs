@@ -1,5 +1,4 @@
 using backend.Data;
-using backend.Models;
 using backend.Models.DTO;
 using backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +14,7 @@ namespace backend.Repositories
             _context = context;
         }
 
+        // Lấy danh sách tất cả bài viết
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
         {
             return await _context.BlogPosts
@@ -22,12 +22,28 @@ namespace backend.Repositories
                 {
                     Id = post.Id,
                     Title = post.Title,
-                    // Nếu BlogPost không có ContentSummary, bạn có thể tính từ Content
                     ContentSummary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content,
                     CreatedAt = post.CreatedAt,
                     ImageUrl = post.ImageUrl
                 })
                 .ToListAsync();
+        }
+
+        // Lấy chi tiết 1 bài viết
+        public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
+        {
+            return await _context.BlogPosts
+                .Where(b => b.Id == id)
+                .Select(b => new BlogPostDetailDTO
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    Author = b.Author,
+                    Content = b.Content,
+                    CreatedAt = b.CreatedAt,
+                    ImageUrl = b.ImageUrl
+                })
+                .FirstOrDefaultAsync();
         }
     }
 }

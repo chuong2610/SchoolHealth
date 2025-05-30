@@ -1,16 +1,16 @@
 namespace backend.Models.DTO
 {
-
-    public class HealthDeclarationDTO
+    public class StudentProfileDTO
     {
         // Thông tin học sinh
+        public int Id { get; set; }
         public string StudentName { get; set; } = string.Empty;
         public DateOnly DateOfBirth { get; set; }
         public string Class { get; set; } = string.Empty;
 
         // Thông tin sức khỏe
-        public string Allergies { get; set; } = string.Empty;
-        public string ExistingDiseases { get; set; } = string.Empty;
+        public string Allergys { get; set; } = string.Empty;
+        public string ChronicIllnesss { get; set; } = string.Empty;
         public string TreatmentHistory { get; set; } = string.Empty;
         public string Vision { get; set; } = string.Empty;
         public string Hearing { get; set; } = string.Empty;

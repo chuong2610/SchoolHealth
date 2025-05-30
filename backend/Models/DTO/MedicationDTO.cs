@@ -1,9 +1,10 @@
 namespace backend.Models.DTO
 {
-    public class SendMedicationDTO
+    public class MedicationDTO
     {
         // Thông tin học sinh
-        public string StudentName { get; set; } = string.Empty; // Họ và tên học sinh
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty; // Họ và tên học sinh
         public string ClassName { get; set; } = string.Empty; // Lớp
 
         // Thông tin thuốc

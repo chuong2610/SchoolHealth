@@ -139,10 +139,8 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
-builder.Services.AddScoped<IBlogPostDetailService, BlogPostDetailService>();
-builder.Services.AddScoped<IBlogPostDetailRepository, BlogPostDetailRepository>();
-builder.Services.AddScoped<IHealthDeclarationRepository, HealthDeclarationRepository>();
-builder.Services.AddScoped<IHealthDeclarationService, HealthDeclarationService>();
+builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 
