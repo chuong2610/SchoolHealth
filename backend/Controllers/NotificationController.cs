@@ -1,6 +1,7 @@
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +58,24 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+        [HttpPost("notificationDeatil")]
+        [Authorize]
+        public async Task<IActionResult> GetNotificationById([FromBody] NotificationDetailRequest request)
+        {
+            try
+            {
+                var notification = await _notificationService.GetNotificationByIdAsync(request.NotificationId, request.StudentId);
+                if (notification == null)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
+                }
+                return Ok(new BaseResponse<NotificationDetailDTO>(notification, "Lấy thông tin thông báo theo studentId và notificationId thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }    
 
     }
 }
