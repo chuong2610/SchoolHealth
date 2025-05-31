@@ -2,6 +2,7 @@ using backend.Data;
 using backend.Models.DTO;
 using backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using backend.Models;
 
 namespace backend.Repositories
 {
@@ -15,35 +16,19 @@ namespace backend.Repositories
         }
 
         // Lấy danh sách tất cả bài viết
-        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
+        public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-            return await _context.BlogPosts
-                .Select(post => new BlogPostDTO
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    ContentSummary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content,
-                    CreatedAt = post.CreatedAt,
-                    ImageUrl = post.ImageUrl
-                })
-                .ToListAsync();
+            return await _context.BlogPosts.ToListAsync();
         }
 
-        // Lấy chi tiết 1 bài viết
-        public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
+        public async Task<BlogPost> GetByIdAsync(int id)
         {
-            return await _context.BlogPosts
-                .Where(b => b.Id == id)
-                .Select(b => new BlogPostDetailDTO
-                {
-                    Id = b.Id,
-                    Title = b.Title,
-                    Author = b.Author,
-                    Content = b.Content,
-                    CreatedAt = b.CreatedAt,
-                    ImageUrl = b.ImageUrl
-                })
-                .FirstOrDefaultAsync();
+            var post = await _context.BlogPosts.FindAsync(id);
+            if (post == null)
+            {
+                throw new Exception($"BlogPost with ID {id} not found.");
+            }
+            return post;
         }
     }
 }

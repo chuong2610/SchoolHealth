@@ -1,3 +1,4 @@
+using backend.Models;
 using backend.Models.DTO;
 
 namespace backend.Interfaces
@@ -5,9 +6,9 @@ namespace backend.Interfaces
     public interface IBlogPostRepository
     {
         // Danh sách bài đăng
-        Task<IEnumerable<BlogPostDTO>> GetAllAsync();
+        Task<IEnumerable<BlogPost>> GetAllAsync();
 
         // Chi tiết bài đăng
-        Task<BlogPostDetailDTO> GetByIdAsync(int id);
+        Task<BlogPost> GetByIdAsync(int id);
     }
 }

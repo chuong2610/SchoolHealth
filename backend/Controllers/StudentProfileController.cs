@@ -1,9 +1,10 @@
-using backend.Models;
+using backend.Interfaces;
 using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace backend.Controllers
@@ -19,18 +20,18 @@ namespace backend.Controllers
             _studentProfileService = studentProfileService;
         }
 
+        // POST: api/StudentProfile/declare
         [HttpPost("declare")]
-
-        public async Task<ActionResult<StudentProfileRequest>> DeclareStudentProfile([FromBody] StudentProfileRequest request)
+        public async Task<ActionResult<BaseResponse<StudentProfileDTO>>> DeclareStudentProfile([FromBody] StudentProfileRequest request)
         {
             try
             {
-                var createdStudentProfile = await _studentProfileService.CreateStudentProfileAsync(request);
-                return CreatedAtAction(nameof(GetStudentProfileById), new { id = createdStudentProfile.Id }, new BaseResponse<object>
+                var createdProfile = await _studentProfileService.CreateStudentProfileAsync(request);
+                return CreatedAtAction(nameof(GetStudentProfileById), new { id = createdProfile.Id }, new BaseResponse<StudentProfileDTO>
                 {
                     Success = true,
-                    Message = "Tạo phiếu khai báo y tế thành công!",
-                    Data = createdStudentProfile
+                    Message = "Tạo hồ sơ y tế thành công!",
+                    Data = createdProfile
                 });
             }
             catch (Exception ex)
@@ -45,34 +46,64 @@ namespace backend.Controllers
             }
         }
 
+        // GET: api/StudentProfile/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetStudentProfileById(int id)
+        public async Task<ActionResult<BaseResponse<StudentProfileDTO>>> GetStudentProfileById(int id)
         {
             try
             {
-                var studentProfile = await _studentProfileService.GetStudentProfileByIdAsync(id);
-                if (studentProfile == null) return NotFound(new { message = "Student profile not found" });
-                return Ok(studentProfile);
+                var profile = await _studentProfileService.GetStudentProfileByIdAsync(id);
+                if (profile == null)
+                {
+                    return NotFound(new BaseResponse<StudentProfileDTO>
+                    {
+                        Success = false,
+                        Message = "Không tìm thấy hồ sơ.",
+                        Data = null
+                    });
+                }
+
+                return Ok(new BaseResponse<StudentProfileDTO>
+                {
+                    Success = true,
+                    Message = "Lấy hồ sơ thành công.",
+                    Data = profile
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { status = "error", message = "An error occurred while retrieving the student profile.", details = ex.Message });
+                return BadRequest(new BaseResponse<object>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = null
+                });
             }
         }
 
+        // GET: api/StudentProfile/student/{studentId}
         [HttpGet("student/{studentId}")]
-        public async Task<IActionResult> GetStudentProfilesByStudentId(int studentId)
+        public async Task<ActionResult<BaseResponse<IEnumerable<StudentProfileDTO>>>> GetStudentProfilesByStudentId(int studentId)
         {
             try
             {
-                var studentProfiles = await _studentProfileService.GetStudentProfilesByStudentIdAsync(studentId);
-                return Ok(studentProfiles);
+                var profiles = await _studentProfileService.GetStudentProfilesByStudentIdAsync(studentId);
+                return Ok(new BaseResponse<IEnumerable<StudentProfileDTO>>
+                {
+                    Success = true,
+                    Message = "Lấy danh sách hồ sơ thành công.",
+                    Data = profiles
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { status = "error", message = "An error occurred while retrieving student profiles.", details = ex.Message });
+                return BadRequest(new BaseResponse<object>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Data = null
+                });
             }
-
         }
     }
 }

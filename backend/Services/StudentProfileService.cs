@@ -1,38 +1,70 @@
+using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
 
 namespace backend.Services
 {
     public class StudentProfileService : IStudentProfileService
     {
-        private readonly IStudentProfileRepository _repository;
+        private readonly IStudentProfileRepository _profileRepo;
+        private readonly ILogger<StudentProfileService> _logger;
 
-        public StudentProfileService(IStudentProfileRepository repository)
+        public StudentProfileService(IStudentProfileRepository profileRepo, ILogger<StudentProfileService> logger)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _profileRepo = profileRepo;
+            _logger = logger;
         }
 
-        public async Task<StudentProfile> CreateStudentProfileAsync(StudentProfileRequest request)
+        public async Task<StudentProfileDTO?> CreateStudentProfileAsync(StudentProfileRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
-            return await _repository.CreateAsync(request);
+            // Tạo profile chỉ với StudentId (không cần Student object)
+            var profile = new StudentProfile
+            {
+                Id = request.Id,
+                Allergys = request.Allergys,
+                ChronicIllnesss = request.ChronicIllnesss,
+                LongTermMedications = request.LongTermMedications,
+                OtherMedicalConditions = request.OtherMedicalConditions
+            };
+
+            await _profileRepo.CreateAsync(profile);
+
+            // Truy vấn lại để lấy Student info sau khi thêm
+            var newProfile = await _profileRepo.GetByIdAsync(profile.Id);
+            if (newProfile == null) return null;
+
+            return ConvertToDTO(newProfile);
         }
 
-        public async Task<StudentProfile?> GetStudentProfileByIdAsync(int id)
+        public async Task<StudentProfileDTO?> GetStudentProfileByIdAsync(int id)
         {
-            if (id <= 0) throw new ArgumentException("Invalid student profile ID.", nameof(id));
-            return await _repository.GetByIdAsync(id);
+            var profile = await _profileRepo.GetByIdAsync(id);
+            if (profile == null) return null;
+            return ConvertToDTO(profile);
         }
 
-        public async Task<IEnumerable<StudentProfile>> GetStudentProfilesByStudentIdAsync(int studentId)
+        public async Task<IEnumerable<StudentProfileDTO>> GetStudentProfilesByStudentIdAsync(int studentId)
         {
-            if (studentId <= 0) throw new ArgumentException("Invalid student ID.", nameof(studentId));
-            return await _repository.GetAllByStudentIdAsync(studentId);
+            var profiles = await _profileRepo.GetAllByStudentIdAsync(studentId);
+            return profiles.Select(ConvertToDTO);
+        }
+
+        public StudentProfileDTO ConvertToDTO(StudentProfile profile)
+        {
+            return new StudentProfileDTO
+            {
+                Id = profile.Id,
+                StudentId = profile.Student?.Id ?? 0,
+                Allergys = profile.Allergys,
+                ChronicIllnesss = profile.ChronicIllnesss,
+                LongTermMedications = profile.LongTermMedications,
+                OtherMedicalConditions = profile.OtherMedicalConditions
+            };
         }
     }
+
 }

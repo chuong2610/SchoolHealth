@@ -23,34 +23,35 @@ namespace backend.Services
 
         public async Task<MedicationRequest> CreateMedicationAsync(MedicationRequest request)
         {
+            // Tìm học sinh theo ID
             var student = await _context.Students
-        .FirstOrDefaultAsync(s => s.Name == request.Name && s.ClassName == request.ClassName);
+                .FirstOrDefaultAsync(s => s.Id == request.StudentId);
 
             if (student == null)
             {
-                throw new Exception("Không tìm thấy học sinh với tên và lớp đã cung cấp.");
-            }
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == request.SenderFullName);
-            if (user == null)
-            {
-                throw new Exception("Không tìm thấy User với UserName đã cung cấp.");
+                throw new Exception("Không tìm thấy học sinh với ID đã cung cấp.");
             }
 
             var entity = new Medication
             {
-                Name = request.Name,
+                Name = request.MedicineName,    // Lưu ý trùng với request field
                 Dosage = request.Dosage,
+                Status = request.Status,
                 StudentId = student.Id,
-                UserId = user.Id
+                UserId = 2   // Gán cố định UserId (nurse) là 2
             };
 
             await _medicationRepository.AddAsync(entity);
 
+            // Trả về dữ liệu tương tự request (hoặc tạo DTO riêng nếu cần)
             return new MedicationRequest
             {
                 Id = entity.Id,
-                Name = entity.Name,
+                MedicineName = entity.Name,
                 Dosage = entity.Dosage,
+                Status = entity.Status,
+                StudentId = entity.StudentId,
+                UserId = entity.UserId
             };
         }
 
