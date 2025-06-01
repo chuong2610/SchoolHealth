@@ -37,7 +37,7 @@ namespace backend.Services
                 Name = request.MedicineName,
                 Dosage = request.Dosage,
                 Quantity = request.Quantity,
-                Time = request.Time,
+                Notes = request.Notes,
                 StudentId = student.Id,
                 UserId = 2   // Gán cố định UserId (nurse) là 2
             };
@@ -52,7 +52,8 @@ namespace backend.Services
                 MedicationName = entity.Name,
                 Dosage = entity.Dosage,
                 Quantity = entity.Quantity,
-                Time = entity.Time,
+                Notes = entity.Notes,
+                CreatedAt = entity.CreatedAt,
                 StudentId = entity.StudentId,
                 Status = entity.Status,
                 UserId = entity.UserId

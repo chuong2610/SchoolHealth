@@ -21,18 +21,24 @@ namespace backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BlogPostDTO>>> GetAll()
         {
-            var posts = await _blogPostService.GetAllAsync();
+            var posts = (await _blogPostService.GetAllAsync()).ToList();
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+
+            posts.ForEach(p => p.BaseUrl = baseUrl);
+
             return Ok(posts);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BlogPostDetailDTO>> GetDetails(int id)
         {
-            var postDetail = await _blogPostDetailService.GetByIdAsync(id);
+            var postDetail = await _blogPostService.GetByIdAsync(id);
             if (postDetail == null)
             {
                 return NotFound();
             }
+
+            postDetail.BaseUrl = $"{Request.Scheme}://{Request.Host}";
             return Ok(postDetail);
         }
     }

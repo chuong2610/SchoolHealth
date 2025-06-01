@@ -55,7 +55,7 @@ namespace backend.Services
         {
             return new StudentProfileDTO
             {
-                Id = profile.Id,
+                StudentId = profile.Id,
                 Allergys = profile.Allergys,
                 ChronicIllnesss = profile.ChronicIllnesss,
                 LongTermMedications = profile.LongTermMedications,

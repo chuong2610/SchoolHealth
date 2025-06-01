@@ -22,7 +22,7 @@ namespace backend.Services
                 Title = post.Title,
                 ContentSummary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content,
                 CreatedAt = post.CreatedAt,
-                ImageUrl = post.ImageUrl
+                ImageName = post.ImageName
             });
         }
 
@@ -38,7 +38,7 @@ namespace backend.Services
                 Author = post.Author,
                 Content = post.Content,
                 CreatedAt = post.CreatedAt,
-                ImageUrl = post.ImageUrl
+                ImageName = post.ImageName
             };
         }
     }

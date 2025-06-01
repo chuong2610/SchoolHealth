@@ -10,7 +10,8 @@ namespace backend.Models
         public string Name { get; set; } = string.Empty;
         public string Dosage { get; set; } = string.Empty;
         public int Quantity { get; set; }
-        public string Time { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string Status { get; set; } = "Pending";
         public int UserId { get; set; }
         [ForeignKey("UserId")]

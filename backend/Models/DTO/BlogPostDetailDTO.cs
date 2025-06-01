@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace backend.Models.DTO
 {
     public class BlogPostDetailDTO
@@ -7,7 +9,11 @@ namespace backend.Models.DTO
         public string Author { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public string ImageUrl { get; set; } = string.Empty;
+        public string ImageName { get; set; } = string.Empty;
+        [JsonIgnore]
+        public string BaseUrl { get; set; }
+
+        public string ImageUrl => string.IsNullOrEmpty(ImageName) ? null : $"{BaseUrl}/uploads/{ImageName}";
 
     }
 }

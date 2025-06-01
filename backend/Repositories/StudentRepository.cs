@@ -21,7 +21,7 @@ namespace backend.Repositories
                 .Select(s => new StudentDTO
                 {
                     Id = s.Id,
-                    Name = s.Name,
+                    StudentName = s.Name,
                     ClassName = s.ClassName,
                     DateOfBirth = s.DateOfBirth
                 })
