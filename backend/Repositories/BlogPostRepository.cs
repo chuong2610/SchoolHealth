@@ -23,12 +23,7 @@ namespace backend.Repositories
 
         public async Task<BlogPost> GetByIdAsync(int id)
         {
-            var post = await _context.BlogPosts.FindAsync(id);
-            if (post == null)
-            {
-                throw new Exception($"BlogPost with ID {id} not found.");
-            }
-            return post;
+            return await _context.BlogPosts.FindAsync(id);
         }
     }
 }

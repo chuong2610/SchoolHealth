@@ -15,7 +15,7 @@ namespace backend.Services
 
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
         {
-            var posts = await _blogPostRepository.GetAllAsync(); // trả về IEnumerable<BlogPost>
+            var posts = await _blogPostRepository.GetAllAsync();
             return posts.Select(post => new BlogPostDTO
             {
                 Id = post.Id,
@@ -28,10 +28,9 @@ namespace backend.Services
 
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
         {
-            var post = await _blogPostRepository.GetByIdAsync(id); // trả về BlogPost hoặc BlogPostDetailDTO tùy repo
+            var post = await _blogPostRepository.GetByIdAsync(id);
             if (post == null) return null;
 
-            // Nếu repo trả về BlogPost entity, map sang DTO:
             return new BlogPostDetailDTO
             {
                 Id = post.Id,

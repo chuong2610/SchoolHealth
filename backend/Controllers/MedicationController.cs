@@ -19,15 +19,16 @@ namespace backend.Controllers
 
         // POST: api/Medication
         [HttpPost]
-        public async Task<ActionResult<MedicationDTO>> CreateMedication(MedicationRequest medicationRequest)
+        public async Task<ActionResult<BaseResponse<MedicationDTO>>> CreateMedication([FromBody] MedicationRequest medicationRequest)
         {
             try
             {
                 var createdMedication = await _medicationService.CreateMedicationAsync(medicationRequest);
-                return CreatedAtAction(nameof(GetMedication), new { id = createdMedication.Id }, new BaseResponse<object>
+
+                return Ok(new BaseResponse<MedicationDTO>
                 {
                     Success = true,
-                    Message = "Tạo thuốc thành công!",
+                    Message = "Gửi thuốc thành công!",
                     Data = createdMedication
                 });
             }
@@ -43,39 +44,6 @@ namespace backend.Controllers
             }
         }
 
-        // GET: api/Medication/{id}
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MedicationDTO>> GetMedication(int id)
-        {
-            try
-            {
-                var medication = await _medicationService.GetMedicationByIdAsync(id);
-                if (medication == null)
-                {
-                    return NotFound();
-                }
-                return Ok(medication);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // GET: api/Medication
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MedicationDTO>>> GetAllMedications()
-        {
-            try
-            {
-                var medications = await _medicationService.GetAllMedicationsAsync();
-                return Ok(medications);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 
 }

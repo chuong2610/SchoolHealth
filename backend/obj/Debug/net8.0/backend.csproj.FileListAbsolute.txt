@@ -347,3 +347,4 @@ D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\staticwebassets.pack.json
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.csproj.Up2Date
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\ref\backend.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json

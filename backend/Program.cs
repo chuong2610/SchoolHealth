@@ -2,12 +2,14 @@ using System.Text;
 using backend.Data;
 using backend.Filter;
 using backend.Interfaces;
+using backend.Models;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -127,6 +129,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<FileUploadSettings>(
+builder.Configuration.GetSection("FileUploadSettings"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<FileUploadSettings>>().Value);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -143,6 +149,8 @@ builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>(
 builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 
 

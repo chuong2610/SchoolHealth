@@ -25,8 +25,7 @@ namespace backend.Controllers
             return Ok(posts);
         }
 
-        // GET: api/BlogPosts/{id}/details
-        [HttpGet("{id}/details")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<BlogPostDetailDTO>> GetDetails(int id)
         {
             var postDetail = await _blogPostDetailService.GetByIdAsync(id);

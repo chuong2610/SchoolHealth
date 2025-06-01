@@ -21,36 +21,34 @@ namespace backend.Services
 
         public async Task<StudentProfileDTO?> CreateStudentProfileAsync(StudentProfileRequest request)
         {
-            // Tạo profile chỉ với StudentId (không cần Student object)
-            var profile = new StudentProfile
+            var existingProfile = await _profileRepo.GetByIdAsync(request.Id);
+            if (existingProfile != null)
             {
-                Id = request.Id,
-                Allergys = request.Allergys,
-                ChronicIllnesss = request.ChronicIllnesss,
-                LongTermMedications = request.LongTermMedications,
-                OtherMedicalConditions = request.OtherMedicalConditions
-            };
+                // Cập nhật profile đã có
+                existingProfile.Allergys = request.Allergys ?? string.Empty;
+                existingProfile.ChronicIllnesss = request.ChronicIllnesss ?? string.Empty;
+                existingProfile.LongTermMedications = request.LongTermMedications ?? string.Empty;
+                existingProfile.OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty;
 
-            await _profileRepo.CreateAsync(profile);
+                await _profileRepo.CreateOrUpdateAsync(existingProfile);
+            }
+            else
+            {
+                // Tạo profile mới
+                var newProfile = new StudentProfile
+                {
+                    Id = request.Id,
+                    Allergys = request.Allergys ?? string.Empty,
+                    ChronicIllnesss = request.ChronicIllnesss ?? string.Empty,
+                    LongTermMedications = request.LongTermMedications ?? string.Empty,
+                    OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
+                };
 
-            // Truy vấn lại để lấy Student info sau khi thêm
-            var newProfile = await _profileRepo.GetByIdAsync(profile.Id);
-            if (newProfile == null) return null;
+                await _profileRepo.CreateOrUpdateAsync(newProfile);
+            }
 
-            return ConvertToDTO(newProfile);
-        }
-
-        public async Task<StudentProfileDTO?> GetStudentProfileByIdAsync(int id)
-        {
-            var profile = await _profileRepo.GetByIdAsync(id);
-            if (profile == null) return null;
-            return ConvertToDTO(profile);
-        }
-
-        public async Task<IEnumerable<StudentProfileDTO>> GetStudentProfilesByStudentIdAsync(int studentId)
-        {
-            var profiles = await _profileRepo.GetAllByStudentIdAsync(studentId);
-            return profiles.Select(ConvertToDTO);
+            var savedProfile = await _profileRepo.GetByIdAsync(request.Id);
+            return savedProfile == null ? null : ConvertToDTO(savedProfile);
         }
 
         public StudentProfileDTO ConvertToDTO(StudentProfile profile)
@@ -58,7 +56,6 @@ namespace backend.Services
             return new StudentProfileDTO
             {
                 Id = profile.Id,
-                StudentId = profile.Student?.Id ?? 0,
                 Allergys = profile.Allergys,
                 ChronicIllnesss = profile.ChronicIllnesss,
                 LongTermMedications = profile.LongTermMedications,

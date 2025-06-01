@@ -14,26 +14,33 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<StudentProfile> CreateAsync(StudentProfile profile)
+        public async Task<StudentProfile> CreateOrUpdateAsync(StudentProfile profile)
         {
-            _context.StudentProfiles.Add(profile);
+            var existingProfile = await _context.StudentProfiles.FindAsync(profile.Id);
+
+            if (existingProfile == null)
+            {
+                _context.StudentProfiles.Add(profile);
+            }
+            else
+            {
+                existingProfile.Allergys = profile.Allergys;
+                existingProfile.ChronicIllnesss = profile.ChronicIllnesss;
+                existingProfile.LongTermMedications = profile.LongTermMedications;
+                existingProfile.OtherMedicalConditions = profile.OtherMedicalConditions;
+            }
+
             await _context.SaveChangesAsync();
+
             return profile;
         }
+
 
         public async Task<StudentProfile?> GetByIdAsync(int id)
         {
             return await _context.StudentProfiles
                 .Include(p => p.Student)
                 .FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-        public async Task<IEnumerable<StudentProfile>> GetAllByStudentIdAsync(int Id)
-        {
-            return await _context.StudentProfiles
-                .Include(p => p.Student)
-                .Where(p => p.Id == Id)
-                .ToListAsync();
         }
     }
 }

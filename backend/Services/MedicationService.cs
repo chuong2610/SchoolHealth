@@ -21,7 +21,7 @@ namespace backend.Services
 
         }
 
-        public async Task<MedicationRequest> CreateMedicationAsync(MedicationRequest request)
+        public async Task<MedicationDTO> CreateMedicationAsync(MedicationRequest request)
         {
             // Tìm học sinh theo ID
             var student = await _context.Students
@@ -34,49 +34,29 @@ namespace backend.Services
 
             var entity = new Medication
             {
-                Name = request.MedicineName,    // Lưu ý trùng với request field
+                Name = request.MedicineName,
                 Dosage = request.Dosage,
-                Status = request.Status,
+                Quantity = request.Quantity,
+                Time = request.Time,
                 StudentId = student.Id,
                 UserId = 2   // Gán cố định UserId (nurse) là 2
             };
 
             await _medicationRepository.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             // Trả về dữ liệu tương tự request (hoặc tạo DTO riêng nếu cần)
-            return new MedicationRequest
-            {
-                Id = entity.Id,
-                MedicineName = entity.Name,
-                Dosage = entity.Dosage,
-                Status = entity.Status,
-                StudentId = entity.StudentId,
-                UserId = entity.UserId
-            };
-        }
-
-        public async Task<MedicationDTO> GetMedicationByIdAsync(int id)
-        {
-            var entity = await _medicationRepository.GetByIdAsync(id);
-            if (entity == null) return null;
-
             return new MedicationDTO
             {
                 Id = entity.Id,
-                Name = entity.Name,
+                MedicationName = entity.Name,
                 Dosage = entity.Dosage,
+                Quantity = entity.Quantity,
+                Time = entity.Time,
+                StudentId = entity.StudentId,
+                Status = entity.Status,
+                UserId = entity.UserId
             };
-        }
-
-        public async Task<IEnumerable<MedicationDTO>> GetAllMedicationsAsync()
-        {
-            var entities = await _medicationRepository.GetAllAsync();
-            return entities.Select(entity => new MedicationDTO
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Dosage = entity.Dosage,
-            });
         }
     }
 }

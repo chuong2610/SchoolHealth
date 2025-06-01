@@ -20,6 +20,7 @@ namespace backend.Data
         public DbSet<StudentProfile> StudentProfiles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<NotificationStudent> NotificationStudents { get; set; }
+        public DbSet<Role> Role { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

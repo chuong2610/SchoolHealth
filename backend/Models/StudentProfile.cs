@@ -6,7 +6,7 @@ namespace backend.Models
 {
     public class StudentProfile
     {
-        [Key]
+        [Key, ForeignKey("Student")]
         public int Id { get; set; }
         public string Allergys { get; set; } = string.Empty;  // dị ứng
         public string ChronicIllnesss { get; set; } = string.Empty; // bệnh
