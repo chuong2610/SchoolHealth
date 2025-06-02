@@ -12,8 +12,8 @@ namespace backend.Models
         public int Quantity { get; set; }
         public string Notes { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public string Status { get; set; } = "Pending";
-        public int UserId { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int? UserId { get; set; }
         [ForeignKey("UserId")]
         public User Nurse { get; set; } = null!;
         public int StudentId { get; set; }

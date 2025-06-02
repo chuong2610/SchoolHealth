@@ -26,21 +26,21 @@ namespace backend.Controllers
         {
             try
             {
-                var createdProfile = await _studentProfileService.CreateStudentProfileAsync(request);
+                var result = await _studentProfileService.CreateStudentProfileAsync(request);
+
                 return Ok(new BaseResponse<StudentProfileDTO>
                 {
                     Success = true,
-                    Message = "Khai báo y tế thành công!",
-                    Data = createdProfile
+                    Message = "Tạo hoặc cập nhật hồ sơ y tế thành công!",
+                    Data = result
                 });
             }
             catch (Exception ex)
             {
-                var innerMessage = ex.InnerException?.Message ?? ex.Message;
                 return BadRequest(new BaseResponse<object>
                 {
                     Success = false,
-                    Message = innerMessage,
+                    Message = ex.InnerException?.Message ?? ex.Message ?? "Tạo hồ sơ y tế thất bại.",
                     Data = null
                 });
             }

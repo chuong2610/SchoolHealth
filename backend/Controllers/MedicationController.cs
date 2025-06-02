@@ -32,18 +32,26 @@ namespace backend.Controllers
                     Data = createdMedication
                 });
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                var innerMessage = ex.InnerException?.Message ?? ex.Message;
                 return BadRequest(new BaseResponse<object>
                 {
                     Success = false,
-                    Message = innerMessage,
+                    Message = ex.Message,
                     Data = null
                 });
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseResponse<object>
+                {
+                    Success = false,
+                    Message = ex.InnerException?.Message ?? ex.Message ?? "Gửi thuốc thất bại.",
+                    Data = null
+                });
+            }
+
         }
 
     }
-
 }

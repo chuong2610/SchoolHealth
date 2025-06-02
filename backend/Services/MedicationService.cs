@@ -31,6 +31,15 @@ namespace backend.Services
             {
                 throw new Exception("Không tìm thấy học sinh với ID đã cung cấp.");
             }
+            if (string.IsNullOrWhiteSpace(request.MedicineName))
+            {
+                throw new ArgumentException("Tên thuốc không được để trống.");
+            }
+
+            if (request.Quantity <= 0)
+            {
+                throw new ArgumentException("Số lượng thuốc phải lớn hơn 0.");
+            }
 
             var entity = new Medication
             {
@@ -39,11 +48,23 @@ namespace backend.Services
                 Quantity = request.Quantity,
                 Notes = request.Notes,
                 StudentId = student.Id,
-                UserId = 2   // Gán cố định UserId (nurse) là 2
+                Status = "Pending",
+                UserId = null
             };
 
-            await _medicationRepository.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _medicationRepository.AddAsync(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception("Gửi thuốc thất bại do lỗi cơ sở dữ liệu.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Đã xảy ra lỗi khi gửi thuốc.", ex);
+            }
 
             // Trả về dữ liệu tương tự request (hoặc tạo DTO riêng nếu cần)
             return new MedicationDTO

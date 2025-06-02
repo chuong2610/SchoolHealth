@@ -9,7 +9,7 @@ namespace backend.Models.DTO
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string Notes { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public int StudentId { get; set; }
 
     }

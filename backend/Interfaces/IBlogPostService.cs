@@ -9,5 +9,6 @@ namespace backend.Interfaces
 
         // Lấy chi tiết của 1 bài đăng
         Task<BlogPostDetailDTO> GetByIdAsync(int id);
+
     }
 }
