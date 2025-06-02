@@ -34,7 +34,7 @@ namespace backend.Controllers
                 }
 
                 return Ok(new BaseResponse<object>(
-                    new { token = authDTO },
+                    authDTO,
                     "Đăng nhập thành công",
                     true
                 ));
