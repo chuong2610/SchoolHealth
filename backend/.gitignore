@@ -4,3 +4,6 @@ obj/
 *.dll
 *.pdb
 *.cache
+# Ignore build output folders
+backend/bin/
+backend/obj/
