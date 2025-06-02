@@ -42,5 +42,23 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMedicationDetail(int id)
+        {
+            try
+            {
+                var medicationDetail = await _medicationService.GetMedicationDetailDTOAsync(id);
+                return Ok(new BaseResponse<MedicationDetailDTO>(medicationDetail, "Lấy chi tiết gửi thuốc thành công", true));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new BaseResponse<string>(null, "Gửi thuốc không tồn tại", false));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

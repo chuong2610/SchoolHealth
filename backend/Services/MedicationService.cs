@@ -24,6 +24,29 @@ namespace backend.Services
             var medications = await _medicationRepository.GetMedicationsByNurseIdAsync(id);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
+
+        public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
+        {
+            var medication = await _medicationRepository.GetMedicationByIdAsync(id);
+            if (medication == null)
+            {
+                throw new KeyNotFoundException("Medication not found");
+            }
+
+            return new MedicationDetailDTO
+            {
+                MedicationName = medication.Name,
+                Dosage = medication.Dosage,
+                CreatedDate = medication.Date,
+                Description = medication.Note,
+                Status = medication.Status,
+                StudentClass = medication.Student?.ClassName ?? "",
+                NurseName = medication.Nurse?.Name ?? "",
+                StudentName = medication.Student?.Name ?? "",
+                ParentName = medication.Student?.Parent?.Name ?? ""
+            };
+        }
+
         private MedicationDTO MapToDTO(Medication medication)
         {
             return new MedicationDTO

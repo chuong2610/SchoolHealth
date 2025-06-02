@@ -14,11 +14,21 @@ namespace backend.Repositories
             _context = context;
         }
 
+        public Task<Medication?> GetMedicationByIdAsync(int id)
+        {
+            return _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
         public async Task<List<Medication>> GetMedicationsByNurseIdAsync(int id)
         {
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
                 .Where(m => m.Nurse.Id == id)
                 .ToListAsync();
         }
@@ -28,6 +38,7 @@ namespace backend.Repositories
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
                 .Where(m => m.Status == "Pending")
                 .ToListAsync();
         }
