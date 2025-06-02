@@ -60,5 +60,30 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNurseId([FromBody] MedicationStatusRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new BaseResponse<bool>(false, "Request body is null", false));
+                }
+
+                var isSuccess = await _medicationService.UpdateNurseIdAsync(request.MedicationId, request.NurseId);
+                if (!isSuccess)
+                {
+                    return NotFound(new BaseResponse<bool>(false, "Gửi thuốc không tồn tại", false));
+                }
+
+                return Ok(new BaseResponse<bool>(true, "Cập nhật thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
     }
 }

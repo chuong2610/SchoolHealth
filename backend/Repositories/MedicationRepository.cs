@@ -42,5 +42,15 @@ namespace backend.Repositories
                 .Where(m => m.Status == "Pending")
                 .ToListAsync();
         }
+
+        public async Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId)
+        {
+            var medication = await _context.Medications.FindAsync(medicationId);
+            if (medication == null) return false;
+
+            medication.UserId = nurseId;
+            _context.Medications.Update(medication);
+            return await _context.SaveChangesAsync() > 0;
+        }    
     }
 }

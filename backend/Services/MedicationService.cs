@@ -47,6 +47,11 @@ namespace backend.Services
             };
         }
 
+        public async Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId)
+        {
+            return await _medicationRepository.UpdateNurseIdAsync(medicationId, nurseId);
+        }
+
         private MedicationDTO MapToDTO(Medication medication)
         {
             return new MedicationDTO
