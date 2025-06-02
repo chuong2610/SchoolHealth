@@ -24,7 +24,7 @@ namespace backend.Services
         {
             try
             {
-                var existingProfile = await _profileRepo.GetByIdAsync(request.Id);
+                var existingProfile = await _profileRepo.GetByIdAsync(request.StudentId);
 
                 if (existingProfile != null)
                 {
@@ -41,7 +41,7 @@ namespace backend.Services
                     // Tạo profile mới
                     var newProfile = new StudentProfile
                     {
-                        Id = request.Id,
+                        Id = request.StudentId,
                         Allergys = request.Allergys ?? string.Empty,
                         ChronicIllnesss = request.ChronicIllnesss ?? string.Empty,
                         LongTermMedications = request.LongTermMedications ?? string.Empty,
@@ -51,7 +51,7 @@ namespace backend.Services
                     await _profileRepo.CreateOrUpdateAsync(newProfile);
                 }
 
-                var savedProfile = await _profileRepo.GetByIdAsync(request.Id);
+                var savedProfile = await _profileRepo.GetByIdAsync(request.StudentId);
                 if (savedProfile == null)
                 {
                     throw new Exception("Không thể truy xuất hồ sơ y tế sau khi lưu.");

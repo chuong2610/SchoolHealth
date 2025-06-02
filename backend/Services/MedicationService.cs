@@ -48,6 +48,7 @@ namespace backend.Services
                 Quantity = request.Quantity,
                 Notes = request.Notes,
                 StudentId = student.Id,
+                CreatedAt = DateTime.Now,
                 Status = "Pending",
                 UserId = null
             };
@@ -66,7 +67,6 @@ namespace backend.Services
                 throw new Exception("Đã xảy ra lỗi khi gửi thuốc.", ex);
             }
 
-            // Trả về dữ liệu tương tự request (hoặc tạo DTO riêng nếu cần)
             return new MedicationDTO
             {
                 Id = entity.Id,
