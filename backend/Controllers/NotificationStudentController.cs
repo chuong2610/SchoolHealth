@@ -33,6 +33,26 @@ namespace backend.Controllers
             {
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
             }
-        }    
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> updateNotificationStudent([FromBody] NotificationStudentRequest request)
+        {
+            try
+            {
+                if (request == null)
+                {
+                    return BadRequest(new BaseResponse<bool>(false, "Request body is null", false));
+                }
+
+                var isSuccess = await _notificationStudentService.createNotificationStudentAsync(request);
+                return Ok(new BaseResponse<bool>(isSuccess, "Xác nhận thành công báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }        
     }
 }

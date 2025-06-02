@@ -137,6 +137,8 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
 builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
+builder.Services.AddScoped<IMedicationRepsitory, MedicationRepository>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
 
 
 var app = builder.Build();

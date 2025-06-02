@@ -25,5 +25,19 @@ namespace backend.Services
 
             return await _notificationStudentRepository.createNotificationStudentAsync(notificationStudent);
         }
+
+        public async Task<bool> UpdateNotificationStudentAsync(NotificationStudentRequest request)
+        {
+            var notificationStudent = new NotificationStudent
+            {
+                NotificationId = request.NotificationId,
+                StudentId = request.StudentId,
+                Status = request.Status,
+                Reason = request.Reason
+            };
+
+            return await _notificationStudentRepository.UpdateNotificationStudentAsync(notificationStudent);
+        }
+
     }
 }
