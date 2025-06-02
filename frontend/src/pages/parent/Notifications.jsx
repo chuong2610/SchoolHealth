@@ -138,7 +138,7 @@ const icons = [
   },
   {
     type: "hospital",
-    icon: "fas fa-user-md",
+    icon: "fas fa-syringe",
     badgeClass: "bg-primary",
   },
 ];
@@ -205,9 +205,7 @@ export default function Notifications() {
   const filteredNotifications =
     activeTab === "all"
       ? notifications
-      : notifications.filter(
-          (notification) => notification.type === activeTab
-        );
+      : notifications.filter((notification) => notification.type === activeTab);
 
   const handleSubmitConsent = async (consent, status, reason) => {
     const data = {
@@ -432,6 +430,18 @@ export default function Notifications() {
                     </Col>
                     <Col>Location: {modal.notification?.location}</Col>
                   </Row>
+                  {modal.notification?.type !== "HealthCheck" && (
+                    <Row>
+                      <Col md={1}>
+                        <i
+                          className={
+                            icons.find((icon) => icon.type === "hospital")?.icon
+                          }
+                        ></i>
+                      </Col>
+                      <Col>Vaccine: {modal.notification?.name}</Col>
+                    </Row>
+                  )}
 
                   <h6 className="mt-4">
                     {/* {modal.notification?.type === "Vaccination"
