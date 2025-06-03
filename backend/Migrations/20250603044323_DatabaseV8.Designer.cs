@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Data;
 
@@ -11,9 +12,11 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603044323_DatabaseV8")]
+    partial class DatabaseV8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,6 +221,18 @@ namespace backend.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Dosage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -235,36 +250,6 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Medications");
-                });
-
-            modelBuilder.Entity("backend.Models.MedicationDeclare", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Dosage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MedicationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MedicationId");
-
-                    b.ToTable("MedicationDeclare");
                 });
 
             modelBuilder.Entity("backend.Models.Notification", b =>
@@ -383,7 +368,7 @@ namespace backend.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("StudentNumber")
+                    b.Property<string>("StudentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -391,7 +376,7 @@ namespace backend.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.HasIndex("StudentNumber")
+                    b.HasIndex("StudentId")
                         .IsUnique();
 
                     b.ToTable("Students");
@@ -596,17 +581,6 @@ namespace backend.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("backend.Models.MedicationDeclare", b =>
-                {
-                    b.HasOne("backend.Models.Medication", "Medication")
-                        .WithMany("MedicationDeclares")
-                        .HasForeignKey("MedicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Medication");
-                });
-
             modelBuilder.Entity("backend.Models.Notification", b =>
                 {
                     b.HasOne("backend.Models.User", "AssignedTo")
@@ -705,11 +679,6 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.MedicalSupply", b =>
                 {
                     b.Navigation("MedicalEventSupplys");
-                });
-
-            modelBuilder.Entity("backend.Models.Medication", b =>
-                {
-                    b.Navigation("MedicationDeclares");
                 });
 
             modelBuilder.Entity("backend.Models.Notification", b =>
