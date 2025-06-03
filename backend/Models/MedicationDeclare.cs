@@ -9,6 +9,7 @@ namespace backend.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Dosage { get; set; } = string.Empty;
+        public string Note { get; set; } = string.Empty;
         public int MedicationId { get; set; }
         [ForeignKey("MedicationId")]
         public Medication Medication { get; set; } = null!;

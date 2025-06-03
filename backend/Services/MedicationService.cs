@@ -38,10 +38,10 @@ namespace backend.Services
                 Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
                 {
                     MedicationName = m.Name,
-                    Dosage = m.Dosage
+                    Dosage = m.Dosage,
+                    Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
-                Description = medication.Note,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
@@ -63,7 +63,8 @@ namespace backend.Services
                 Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
                 {
                     MedicationName = m.Name,
-                    Dosage = m.Dosage
+                    Dosage = m.Dosage,
+                    Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
                 Status = medication.Status,
