@@ -3,5 +3,3 @@
 *.dll
 *.exe
 *.pdb
-bin/
-obj/
