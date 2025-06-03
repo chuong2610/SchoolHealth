@@ -49,6 +49,7 @@ namespace backend.Repositories
             if (medication == null) return false;
 
             medication.UserId = nurseId;
+            medication.Status = "Active";
             _context.Medications.Update(medication);
             return await _context.SaveChangesAsync() > 0;
         }    

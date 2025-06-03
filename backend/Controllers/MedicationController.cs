@@ -61,7 +61,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch()]
         public async Task<IActionResult> UpdateNurseId([FromBody] MedicationStatusRequest request)
         {
             try

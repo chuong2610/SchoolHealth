@@ -35,7 +35,7 @@ namespace backend.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         [Authorize]
         public async Task<IActionResult> updateNotificationStudent([FromBody] NotificationStudentRequest request)
         {
