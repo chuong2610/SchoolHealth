@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const ParentDashboard = () => {
   return (
     <div>
-      {/* Banner Section */}
+      {/* Mở đầu Banner Section */}
       <section className="banner position-relative">
         <div className="container h-100">
           <div className="row h-100 align-items-center">
@@ -25,8 +25,9 @@ const ParentDashboard = () => {
           </div>
         </div>
       </section>
+      {/* Kết thúc Banner Section */}
 
-      {/* School Information Section */}
+      {/* Mở đầu School Information Section */}
       <section className="py-5 bg-light">
         <div className="container">
           <h2 className="text-center mb-5">Giới thiệu về trường học</h2>
@@ -55,13 +56,14 @@ const ParentDashboard = () => {
           </div>
         </div>
       </section>
+      {/* Kết thúc School Information Section */}
 
-      {/* Health Blog Section */}
+      {/* Mở đầu Health Blog Section */}
       <section className="py-5">
         <div className="container">
           <h2 className="text-center mb-5">Blog sức khỏe học đường</h2>
           <div className="row g-4">
-            {/* Blog Post 1 */}
+            {/* Mở đầu Blog Post 1 */}
             <div className="col-md-4">
               <div className="card h-100 shadow-sm">
                 <img
@@ -99,7 +101,9 @@ const ParentDashboard = () => {
                 </div>
               </div>
             </div>
-            {/* Blog Post 2 */}
+            {/* Kết thúc Blog Post 1 */}
+
+            {/* Mở đầu Blog Post 2 */}
             <div className="col-md-4">
               <div className="card h-100 shadow-sm">
                 <img
@@ -137,7 +141,9 @@ const ParentDashboard = () => {
                 </div>
               </div>
             </div>
-            {/* Blog Post 3 */}
+            {/* Kết thúc Blog Post 2 */}
+
+            {/* Mở đầu Blog Post 3 */}
             <div className="col-md-4">
               <div className="card h-100 shadow-sm">
                 <img
@@ -175,9 +181,11 @@ const ParentDashboard = () => {
                 </div>
               </div>
             </div>
+            {/* Kết thúc Blog Post 3 */}
           </div>
         </div>
       </section>
+      {/* Kết thúc Health Blog Section */}
     </div>
   );
 };

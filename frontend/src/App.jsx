@@ -42,6 +42,10 @@ import AdminSettings from "./pages/admin/Settings";
 import Login from "./pages/login/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MoreKnow from "./pages/parent/MoreKnow";
+import About from "./pages/parent/About";
+import Contact from "./pages/parent/Contact";
+import FAQ from "./pages/parent/FAQ";
+import Privacy from "./pages/parent/Privacy";
 
 function App() {
   return (
@@ -56,7 +60,7 @@ function App() {
             <MainLayout>
               <Routes>
                 <Route index element={<Navigate to="/parent/" replace />} />
-                {/* Admin Routes */}
+                {/* Bắt đầu Admin Routes */}
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/accounts" element={<Accounts />} />
                 <Route path="/admin/categories" element={<Categories />} />
@@ -75,8 +79,9 @@ function App() {
                 <Route path="/admin/reports" element={<Reports />} />
                 <Route path="/admin/profile" element={<AdminProfile />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
+                {/* Kết thúc Admin Routes */}
 
-                {/* Nurse Routes */}
+                {/* Bắt đầu Nurse Routes */}
                 <Route path="/nurse/*" element={<NurseDashboard />} />
                 <Route
                   path="/nurse/health-declaration"
@@ -92,8 +97,9 @@ function App() {
                 />
                 <Route path="/nurse/profile" element={<NurseProfile />} />
                 <Route path="/nurse/settings" element={<NurseSettings />} />
+                {/* Kết thúc Nurse Routes */}
 
-                {/* Parent Routes */}
+                {/* Bắt đầu Parent Routes */}
                 <Route path="/parent/*" element={<ParentDashboard />} />
                 <Route
                   path="/parent/health-declaration"
@@ -115,8 +121,9 @@ function App() {
                 <Route path="/parent/settings" element={<Settings />} />
                 <Route path="/parent/blog/:id" element={<BlogDetail />} />
                 <Route path="/parent/more-know" element={<MoreKnow />} />
+                {/* Kết thúc Parent Routes */}
 
-                {/* Student Routes */}
+                {/* Bắt đầu Student Routes */}
                 <Route path="/student/*" element={<StudentDashboard />} />
                 <Route path="/student" element={<StudentHome />} />
                 <Route path="/student/health-info" element={<HealthInfo />} />
@@ -138,9 +145,18 @@ function App() {
                   path="/student/blog/:id"
                   element={<StudentBlogDetail />}
                 />
+                {/* Kết thúc Student Routes */}
 
                 {/* Common Routes */}
                 <Route path="/logout" element={<Logout />} />
+
+                {/* Bắt đầu Routes cho footer */}
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/privacy" element={<Privacy />} />
+
+                {/* Kết thúc Routes cho footer */}
               </Routes>
             </MainLayout>
           }
