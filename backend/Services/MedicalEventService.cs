@@ -1,5 +1,6 @@
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using backend.Models.Request;
 
 namespace backend.Services
@@ -61,5 +62,42 @@ namespace backend.Services
                 return true;
             }
         }
+        public async Task<MedicalEventDetailDTO?> GetMedicalEventByIdAsync(int id)
+        {
+            var medicalEvent = await _medicalEventRepository.GetMedicalEventByIdAsync(id);
+            if (medicalEvent == null)
+            {
+                return null; // Medical event not found
+            }
+
+            return new MedicalEventDetailDTO
+            {
+                EventType = medicalEvent.EventType,
+                Location = medicalEvent.Location,
+                Description = medicalEvent.Description,
+                Date = medicalEvent.Date,
+                StudentName = medicalEvent.Student.Name, // Assuming Student has a Name property
+                NurseName = medicalEvent.Nurse.Name, // Assuming Nurse has a Name property
+                Supplies = medicalEvent.MedicalEventSupplys.Select(s => new MedicationEventSupplyDetailDTO
+                {
+                    MedicalSupplyName = s.MedicalSupply.Name, // Assuming MedicalSupply has a Name property
+                    Quantity = s.Quantity
+                }).ToList()
+            };
+        }
+        public async Task<List<MedicalEventDTO>> GetAllMedicalEventsAsync()
+        {
+            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync();
+            return medicalEvents.Select(me => new MedicalEventDTO
+            {
+                Id = me.Id,
+                EventType = me.EventType,
+                Location = me.Location,
+                Date = me.Date,
+                StudentName = me.Student.Name, // Assuming Student has a Name property
+                NurseName = me.Nurse.Name // Assuming Nurse has a Name property
+            }).ToList();
+        }
+
     }
 }
