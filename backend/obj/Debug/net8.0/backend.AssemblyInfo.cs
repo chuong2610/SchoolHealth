@@ -13,19 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+251abfd99bdd2a75b38c3252b63a8cf292fcd19a")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+174a611f34c37d23b58a2d245c0a7dd49de00ee7")]
->>>>>>> 11867b6eef5e06c6eb74ca73d5bb2d3ec725d2aa
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b513931eb56c45e64d0070d359867c1e6dad51d1")]
->>>>>>> b39232b47a917dd17547a58a0471841d6403fbaa
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+212bd647881f21fe6b28750fb25e9e3ba0abc07c")]
->>>>>>> 4f05e3661fc48aaa720487f8bc7747ad0d08cd17
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+847daa7bad9400145f83bd74724ece09e7dc5adf")]
 [assembly: System.Reflection.AssemblyProductAttribute("backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { sendMedicineApi } from "../../api/parent/medicineApi";
+import {
+  getStudentListByParentId,
+  sendMedicineApi,
+} from "../../api/parent/medicineApi";
 
 const defaultMedicine = {
   name: "",
@@ -12,6 +15,7 @@ const defaultMedicine = {
 };
 
 const SendMedicine = () => {
+  const [students, setStudents] = useState([]);
   const [studentName, setStudentName] = useState("");
   const [studentClass, setStudentClass] = useState("");
   const [medicines, setMedicines] = useState([{ ...defaultMedicine }]);
@@ -19,6 +23,7 @@ const SendMedicine = () => {
   const [senderPhone, setSenderPhone] = useState("");
   const [senderNote, setSenderNote] = useState("");
   const [validated, setValidated] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
 
   const handleMedicineChange = (idx, field, value) => {
     setMedicines((prev) =>
@@ -45,40 +50,36 @@ const SendMedicine = () => {
 
     if (form.checkValidity() === true) {
       console.log("submit success");
+      // const data = {
+      //   studentName,
+      //   studentClass,
+      //   medicines,
+      //   senderName,
+      //   senderPhone,
+      //   senderNote,
+      // };
       const data = {
-        studentName,
-        studentClass,
+        selectedStudentId,
         medicines,
-        senderName,
-        senderPhone,
-        senderNote,
       };
-
-      const data2 = {
-        name: "Vitamin C",
-        description: "Tăng sức đề kháng",
-        image: "https://via.placeholder.com/150",
-        price: 15000,
-        quantity: 10,
-      };
-
       console.log("Form submitted:", data);
 
       //xu ly du lieu voi api
       try {
-        const res = await sendMedicineApi(data2);
+        const res = await sendMedicineApi(data);
         console.log("Server respone: ", res);
 
         // dung toast de hien thi thong bao
         toast.success("Gửi thành công!");
 
         // reset form
-        setStudentName("");
-        setStudentClass("");
+        // setStudentName("");
+        // setStudentClass("");
+        setSelectedStudentId("");
         setMedicines([]);
-        setSenderName("");
-        setSenderPhone("");
-        setSenderNote("");
+        // setSenderName("");
+        // setSenderPhone("");
+        // setSenderNote("");
         setValidated(false);
 
         // Cuộn lên đầu
@@ -90,6 +91,22 @@ const SendMedicine = () => {
     }
   };
 
+  // khi load trang thi goi api de lay danh sach student
+  useEffect(() => {
+    const fetchStudentList = async () => {
+      try {
+        const res = await getStudentListByParentId();
+        setStudents(res);
+      } catch (error) {
+        console.log("Loi fetchStudentList");
+      }
+    };
+    fetchStudentList();
+  }, []);
+
+  useEffect(() => {
+    console.log(students);
+  }, [students]);
   return (
     <div
       style={{
@@ -120,7 +137,7 @@ const SendMedicine = () => {
 
                 <Row>
                   <Col>
-                    <Form.Group className="mb-3" controlId="FormStudentName">
+                    {/* <Form.Group className="mb-3" controlId="FormStudentName">
                       <Form.Label>Họ và tên học sinh</Form.Label>
                       <Form.Control
                         required
@@ -131,10 +148,24 @@ const SendMedicine = () => {
                       <Form.Control.Feedback type="invalid">
                         Không được để trống
                       </Form.Control.Feedback>
+                    </Form.Group> */}
+
+                    <Form.Group>
+                      <Form.Label>Họ và tên học sinh</Form.Label>
+                      <Form.Select
+                        className="mb-3"
+                        value={selectedStudentId}
+                        onChange={(e) => setSelectedStudentId(e.target.value)}
+                      >
+                        <option value="">-- Chọn học sinh --</option>
+                        {students?.map((student) => (
+                          <option value={student.id}>{student.studentName}</option>
+                        ))}
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                   <Col>
-                    <Form.Group className="mb-3" controlId="FormStudentClass">
+                    {/* <Form.Group className="mb-3" controlId="FormStudentClass">
                       <Form.Label>Lớp</Form.Label>
                       <Form.Control
                         required
@@ -145,6 +176,22 @@ const SendMedicine = () => {
                       <Form.Control.Feedback type="invalid">
                         Không được để trống
                       </Form.Control.Feedback>
+                    </Form.Group> */}
+
+                    {/* Lay lop tu student duoc chon */}
+                    {/* <label>Lớp</label>
+                    <input readOnly value={selectedStudentId} /> */}
+                    <Form.Group>
+                      <Form.Label>Lớp</Form.Label>
+                      <Form.Control
+                        readOnly
+                        value={
+                          students?.find(
+                            (student) =>
+                              student.id.toString() === selectedStudentId
+                          )?.className || ""
+                        }
+                      />
                     </Form.Group>
                   </Col>
                 </Row>
@@ -284,7 +331,8 @@ const SendMedicine = () => {
                   </Col>
                 </Row>
 
-                <Row>
+                {/* Thong tin nguoi gui */}
+                {/* <Row>
                   <Col>
                     <h2 className="d-flex align-item-center mb-4">
                       <i className="fas fa-user me-2"></i> Thông tin người gửi
@@ -334,7 +382,7 @@ const SendMedicine = () => {
                       placeholder="Nhập thông tin bổ sung nếu cần"
                     ></Form.Control>
                   </Form.Group>
-                </Row>
+                </Row> */}
 
                 <Row>
                   <Col className="text-center mt-5">
