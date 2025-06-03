@@ -2,7 +2,7 @@ import axiosInstance from "../axiosInstance";
 
 export const sendMedicineApi = async (data) => {
   try {
-    const res = await axiosInstance.post("/adsa", data);
+    const res = await axiosInstance.post("/Medication", data);
     return res.data;
   } catch (error) {
     console.error("Send medicine failed:", error);
@@ -14,7 +14,7 @@ export const getStudentListByParentId = async (parentId) => {
   try{
     // fake parentId
     const parentId = "3";
-    const res = await axiosInstance.get(`/dsada/${parentId}`);
+    const res = await axiosInstance.get(`/Students/by-parent/${parentId}`);
     if(res.data.success === true) {
       console.log(res.data.message);
       return res.data.data;

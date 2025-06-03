@@ -159,7 +159,7 @@ const SendMedicine = () => {
                       >
                         <option value="">-- Chọn học sinh --</option>
                         {students?.map((student) => (
-                          <option value={student.id}>{student.name}</option>
+                          <option value={student.id}>{student.studentName}</option>
                         ))}
                       </Form.Select>
                     </Form.Group>
