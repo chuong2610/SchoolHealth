@@ -1,6 +1,10 @@
 using backend.Data;
 using backend.Interfaces;
+
 using backend.Models.DTO;
+
+using backend.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -13,6 +17,7 @@ namespace backend.Repositories
         {
             _context = context;
         }
+
 
         public async Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId)
         {
@@ -27,6 +32,13 @@ namespace backend.Repositories
                 })
                 .ToListAsync();
         }
-    }
 
+
+
+        public async Task<Student?> GetStudentByStudentNumberAsync(string studentNumber)
+        {
+            return await _context.Students
+            .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
+        }
+    }
 }

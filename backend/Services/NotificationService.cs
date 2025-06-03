@@ -82,6 +82,7 @@ namespace backend.Services
             return new NotificationDTO
             {
                 Id = notification.Id,
+                Name = notification.Name,
                 Title = notification.Title,
                 Message = notification.Message,
                 Type = notification.Type,
