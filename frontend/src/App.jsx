@@ -36,10 +36,13 @@ import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
 import Login from "./pages/login/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         {/* Route login KHÔNG bọc MainLayout */}
         <Route path="/login" element={<Login />} />

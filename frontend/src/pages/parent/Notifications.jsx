@@ -112,31 +112,37 @@ import {
 
 const icons = [
   {
+    id: 1,
     type: "Vaccination",
     icon: "fas fa-syringe",
     badgeClass: "bg-primary",
   },
   {
+    id: 2,
     type: "HealthCheck",
     icon: "fas fa-stethoscope",
     badgeClass: "bg-success",
   },
   {
+    id: 3,
     type: "date",
     icon: "fas fa-calendar",
     badgeClass: "bg-primary",
   },
   {
+    id: 4,
     type: "time",
     icon: "fas fa-clock",
     badgeClass: "bg-primary",
   },
   {
+    id: 5,
     type: "address",
     icon: "fas fa-map-marker-alt",
     badgeClass: "bg-primary",
   },
   {
+    id: 6,
     type: "hospital",
     icon: "fas fa-syringe",
     badgeClass: "bg-primary",
@@ -204,15 +210,15 @@ export default function Notifications() {
 
   const filteredNotifications =
     activeTab === "all"
-      ? notifications
-      : notifications.filter((notification) => notification.type === activeTab);
+      ? [...notifications]
+      : [...notifications].filter((notification) => notification.type === activeTab);
 
   const handleSubmitConsent = async (consent, status, reason) => {
     const data = {
       notificationId: modal.notification.id,
       studentId: modal.notification.studentId,
       status: status,
-      reason: "",
+      reason,
     };
 
     console.log(data);
@@ -276,8 +282,8 @@ export default function Notifications() {
 
             {/* List Notifications */}
             <Row>
-              {filteredNotifications?.map((notification) => (
-                <Card key={notification.id} className="mb-4">
+              {filteredNotifications?.map((notification, idx) => (
+                <Card key={idx} className="mb-4">
                   <Row>
                     <Card.Body>
                       <Row className="mb-3">
@@ -496,16 +502,16 @@ export default function Notifications() {
                   </Row>
 
                   {/* Neu xac nhan or tu choi truoc do thi hien thi thong bao nay */}
-                  {modal.notification?.status !== "" && (
+                  {modal.notification?.status !== "Pending" && (
                     <Row>
                       <label
                         className={
-                          modal.notification?.status === "Confirm"
+                          modal.notification?.status === "Confirmed"
                             ? "text-success"
                             : "text-danger"
                         }
                       >
-                        {modal.notification?.status === "Confirm"
+                        {modal.notification?.status === "Confirmed"
                           ? "Previous announcement has been confirmed"
                           : "Previous notice has been denied"}
                       </label>
@@ -520,7 +526,7 @@ export default function Notifications() {
                 </Button>
                 <Button
                   variant="danger"
-                  disabled={modal.notification?.status !== "" ? true : false}
+                  disabled={modal.notification?.status === "Pending" ? false : true}
                   onClick={() => {
                     closeModal();
                     handleSubmitConsent(false, "Reject", reason);
@@ -531,7 +537,7 @@ export default function Notifications() {
                 <Button
                   // disabled={!modal.consent}
                   className={modal.notification?.badgeClass}
-                  disabled={modal.notification?.status !== "" ? true : false}
+                  disabled={modal.notification?.status === "Pending" ? false : true}
                   onClick={() => {
                     closeModal();
                     handleSubmitConsent(true, "Confirm");
