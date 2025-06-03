@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
 {
@@ -20,7 +21,7 @@ namespace backend.Repositories
             {
                 return Task.FromResult(false);
             }
-            if ( supply.Quantity + quantity < 0)
+            if (supply.Quantity + quantity < 0)
             {
                 return Task.FromResult(false); // Prevent negative quantity
             }
@@ -28,6 +29,11 @@ namespace backend.Repositories
             supply.Quantity += quantity;
             _context.MedicalSupplies.Update(supply);
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
+        }
+
+        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync()
+        {
+            return _context.MedicalSupplies.ToListAsync();
         }
     }
 }

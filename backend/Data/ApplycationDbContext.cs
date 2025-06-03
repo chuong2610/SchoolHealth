@@ -25,7 +25,7 @@ namespace backend.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
              modelBuilder.Entity<Student>()
-            .HasIndex(s => s.StudentId)
+            .HasIndex(s => s.StudentNumber)
             .IsUnique();
 
             modelBuilder.Entity<NotificationStudent>()

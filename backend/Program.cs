@@ -145,6 +145,8 @@ builder.Services.AddScoped<IMedicalEventSupplyService, MedicalEventSupplyService
 builder.Services.AddScoped<IMedicalEventSupplyRepository, MedicalEventSupplyRepository>();
 builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
 builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 
 var app = builder.Build();

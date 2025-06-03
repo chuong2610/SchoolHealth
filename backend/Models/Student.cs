@@ -10,7 +10,7 @@ namespace backend.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string StudentId { get; set; } = string.Empty;
+        public string StudentNumber { get; set; } = string.Empty;
         public string ClassName { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
         public string DateOfBirth { get; set; } = string.Empty;

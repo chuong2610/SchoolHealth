@@ -17,7 +17,7 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMedicalEvent([FromBody] MedicalEventRequest request)
         {
-            if(request == null)
+            if (request == null)
             {
                 return BadRequest(new BaseResponse<bool>(false, "Request body is null", false));
             }

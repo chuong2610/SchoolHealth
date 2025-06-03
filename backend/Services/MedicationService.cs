@@ -35,8 +35,11 @@ namespace backend.Services
 
             return new MedicationDetailDTO
             {
-                MedicationName = medication.Name,
-                Dosage = medication.Dosage,
+                Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
+                {
+                    MedicationName = m.Name,
+                    Dosage = m.Dosage
+                }).ToList(),
                 CreatedDate = medication.Date,
                 Description = medication.Note,
                 Status = medication.Status,
@@ -57,13 +60,17 @@ namespace backend.Services
             return new MedicationDTO
             {
                 Id = medication.Id,
-                MedicationName = medication.Name,
-                Dosage = medication.Dosage,
+                Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
+                {
+                    MedicationName = m.Name,
+                    Dosage = m.Dosage
+                }).ToList(),
                 CreatedDate = medication.Date,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
+                StudentClassName = medication.Student?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
         }

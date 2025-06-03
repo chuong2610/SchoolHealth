@@ -17,6 +17,7 @@ namespace backend.Repositories
         {
             _context.MedicalEvents.Add(medicalEvent);
             await _context.SaveChangesAsync();
+             Console.WriteLine("Created MedicalEvent Id: " + medicalEvent.Id);
             return medicalEvent;
         }
 

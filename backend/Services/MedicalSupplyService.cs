@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models.DTO;
 
 namespace backend.Services
 {
@@ -14,6 +15,17 @@ namespace backend.Services
         public Task<bool> UpdateMedicalSupplyQuantityAsync(int supplyId, int quantity)
         {
             return _medicalSupplyRepository.UpdateMedicalSupplyQuantityAsync(supplyId, quantity);
+        }
+
+        public Task<List<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync()
+        {
+            return _medicalSupplyRepository.GetAllMedicalSuppliesAsync()
+            .ContinueWith(task => task.Result.Select(supply => new MedicalSupplyDTO
+            {
+                Id = supply.Id,
+                Name = supply.Name,
+                Quantity = supply.Quantity
+            }).ToList());
         }
     }
 }

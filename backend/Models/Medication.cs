@@ -7,11 +7,12 @@ namespace backend.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Dosage { get; set; } = string.Empty;
+        // public string Name { get; set; } = string.Empty;
+        // public string Dosage { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;   // Chờ xác nhận, Đang sử dụng
         public string Note { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
+        public List<MedicationDeclare> MedicationDeclares { get; set; } = new List<MedicationDeclare>();
         public int? UserId { get; set; }
         [ForeignKey("UserId")]
         public User Nurse { get; set; } = null!;

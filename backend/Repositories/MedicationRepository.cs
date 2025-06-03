@@ -18,6 +18,7 @@ namespace backend.Repositories
         {
             return _context.Medications
                 .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -27,6 +28,7 @@ namespace backend.Repositories
         {
             return await _context.Medications
                 .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
                 .Where(m => m.Nurse.Id == id)
@@ -37,6 +39,7 @@ namespace backend.Repositories
         {
             return await _context.Medications
                 .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
                 .Where(m => m.Status == "Pending")

@@ -2,8 +2,7 @@ namespace backend.Models.DTO
 {
     public class MedicationDetailDTO
     {
-        public string MedicationName { get; set; } = string.Empty;
-        public string Dosage { get; set; } = string.Empty;
+        public List<MedicationDeclareDTO> Medications { get; set; } = new List<MedicationDeclareDTO>();
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public string Description { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;

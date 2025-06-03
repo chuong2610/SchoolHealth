@@ -19,7 +19,7 @@ namespace backend.Services
             return healthChecks.Select(p => MapToDTO(p)).ToList();
         }
 
-        public async Task<HealthCheckDetailDTO> GetHealthCheckByIdAsync(int id)
+        public async Task<HealthCheckDetailDTO?> GetHealthCheckByIdAsync(int id)
         {
             var healthCheck = await _healthCheckRepository.GetHealthCheckByIdAsync(id);
             if (healthCheck == null)

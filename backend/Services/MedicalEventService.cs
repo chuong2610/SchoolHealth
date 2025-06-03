@@ -9,16 +9,23 @@ namespace backend.Services
         private readonly IMedicalEventRepository _medicalEventRepository;
         private readonly IMedicalEventSupplyService _medicalEventSupplyService;
         private readonly IMedicalSupplyService _medicalSupplyService;
+        private readonly IStudentService _studentService;
 
-        public MedicalEventService(IMedicalEventRepository medicalEventRepository, IMedicalEventSupplyService medicalEventSupplyService, IMedicalSupplyService medicalSupplyService)
+        public MedicalEventService(IMedicalEventRepository medicalEventRepository, IMedicalEventSupplyService medicalEventSupplyService, IMedicalSupplyService medicalSupplyService, IStudentService studentService)
         {
             _medicalEventRepository = medicalEventRepository;
             _medicalEventSupplyService = medicalEventSupplyService;
             _medicalSupplyService = medicalSupplyService;
+            _studentService = studentService;
         }
 
         public async Task<bool> CreateMedicalEventAsync(MedicalEventRequest medicalEvent)
         {
+            var student = await _studentService.GetStudentByStudentNumberAsync(medicalEvent.StudentNumber);
+            if (student == null)
+            {
+                return false; // Student not found
+            }
             var newMedicalEvent = new MedicalEvent
             {
                 EventType = medicalEvent.EventType,
@@ -26,7 +33,7 @@ namespace backend.Services
                 Description = medicalEvent.Description,
                 Date = medicalEvent.Date,
                 Status = "Pending", // Default status
-                StudentId = medicalEvent.StudentId,
+                StudentId = student.Id,
                 UserId = medicalEvent.NurseId, // Assuming NurseId corresponds to UserId
 
             };
@@ -41,7 +48,7 @@ namespace backend.Services
                 {
                     if (await _medicalEventSupplyService.CreateMedicalEventSupplyAsync(createdMedicalEvent.Id, supply.MedicalSupplyId, supply.Quantity))
                     {
-                        if(! await _medicalSupplyService.UpdateMedicalSupplyQuantityAsync(supply.MedicalSupplyId, -supply.Quantity))
+                        if (!await _medicalSupplyService.UpdateMedicalSupplyQuantityAsync(supply.MedicalSupplyId, -supply.Quantity))
                         {
                             return false; // If supply update fails, return false
                         }
