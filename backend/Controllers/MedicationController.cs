@@ -20,7 +20,7 @@ namespace backend.Controllers
 
         // POST: api/Medication
         [HttpPost]
-        public async Task<ActionResult<List<BaseResponse<MedicationDTO>>>> CreateMedication([FromBody] List<MedicationRequest> medicationRequest)
+        public async Task<ActionResult<List<BaseResponse<MedicationDTO>>>> CreateMedication([FromBody] List<BulkMedicationRequest> medicationRequest)
         {
             try
             {
