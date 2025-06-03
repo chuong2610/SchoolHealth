@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import NurseDashboard from "./pages/nurse/Dashboard";
@@ -36,6 +41,7 @@ import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
 import Login from "./pages/login/Login";
 import "bootstrap/dist/css/bootstrap.min.css";
+import MoreKnow from "./pages/parent/MoreKnow";
 
 function App() {
   return (
@@ -108,6 +114,7 @@ function App() {
                 <Route path="/parent/profile" element={<Profile />} />
                 <Route path="/parent/settings" element={<Settings />} />
                 <Route path="/parent/blog/:id" element={<BlogDetail />} />
+                <Route path="/parent/more-know" element={<MoreKnow />} />
 
                 {/* Student Routes */}
                 <Route path="/student/*" element={<StudentDashboard />} />

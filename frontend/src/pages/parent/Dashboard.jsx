@@ -17,9 +17,9 @@ const ParentDashboard = () => {
                   Đồng hành cùng phụ huynh trong việc chăm sóc sức khỏe cho học
                   sinh
                 </p>
-                <a href="#" className="btn btn-primary btn-lg">
+                <Link to="/parent/more-know" className="btn btn-primary btn-lg">
                   Tìm hiểu thêm
-                </a>
+                </Link>
               </div>
             </div>
           </div>
