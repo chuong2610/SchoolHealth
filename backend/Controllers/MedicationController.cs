@@ -3,6 +3,7 @@ using backend.Services;
 using backend.Models.DTO;
 using System.Threading.Tasks;
 using backend.Models.Request;
+using System.Collections.Generic;
 
 namespace backend.Controllers
 {
@@ -19,13 +20,13 @@ namespace backend.Controllers
 
         // POST: api/Medication
         [HttpPost]
-        public async Task<ActionResult<BaseResponse<MedicationDTO>>> CreateMedication([FromBody] MedicationRequest medicationRequest)
+        public async Task<ActionResult<List<BaseResponse<MedicationDTO>>>> CreateMedication([FromBody] List<MedicationRequest> medicationRequest)
         {
             try
             {
                 var createdMedication = await _medicationService.CreateMedicationAsync(medicationRequest);
 
-                return Ok(new BaseResponse<MedicationDTO>
+                return Ok(new BaseResponse<List<MedicationDTO>>
                 {
                     Success = true,
                     Message = "Gửi thuốc thành công!",

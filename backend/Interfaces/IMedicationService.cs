@@ -5,6 +5,6 @@ namespace backend.Services
 {
     public interface IMedicationService
     {
-        Task<MedicationDTO> CreateMedicationAsync(MedicationRequest request);
+        Task<List<MedicationDTO>> CreateMedicationAsync(List<MedicationRequest> requests);
     }
 }

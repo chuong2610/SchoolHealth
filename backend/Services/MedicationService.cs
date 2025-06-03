@@ -21,64 +21,67 @@ namespace backend.Services
 
         }
 
-        public async Task<MedicationDTO> CreateMedicationAsync(MedicationRequest request)
+        public async Task<List<MedicationDTO>> CreateMedicationAsync(List<MedicationRequest> requests)
         {
-            // Tìm học sinh theo ID
-            var student = await _context.Students
-                .FirstOrDefaultAsync(s => s.Id == request.StudentId);
+            var medicationList = new List<Medication>();
 
-            if (student == null)
+            foreach (var request in requests)
             {
-                throw new Exception("Không tìm thấy học sinh với ID đã cung cấp.");
-            }
-            if (string.IsNullOrWhiteSpace(request.MedicineName))
-            {
-                throw new ArgumentException("Tên thuốc không được để trống.");
-            }
+                // Kiểm tra hợp lệ từng thuốc
+                var student = await _context.Students
+                    .FirstOrDefaultAsync(s => s.Id == request.StudentId);
 
-            if (request.Quantity <= 0)
-            {
-                throw new ArgumentException("Số lượng thuốc phải lớn hơn 0.");
-            }
+                if (student == null)
+                    throw new ArgumentException($"Không tìm thấy học sinh với ID {request.StudentId}.");
 
-            var entity = new Medication
-            {
-                Name = request.MedicineName,
-                Dosage = request.Dosage,
-                Quantity = request.Quantity,
-                Notes = request.Notes,
-                StudentId = student.Id,
-                CreatedAt = DateTime.Now,
-                Status = "Pending",
-                UserId = null
-            };
+                if (string.IsNullOrWhiteSpace(request.MedicineName))
+                    throw new ArgumentException("Tên thuốc không được để trống.");
+
+                if (request.Quantity <= 0)
+                    throw new ArgumentException("Số lượng thuốc phải lớn hơn 0.");
+
+                var medication = new Medication
+                {
+                    Name = request.MedicineName,
+                    Dosage = request.Dosage,
+                    Quantity = request.Quantity,
+                    Notes = request.Notes,
+                    StudentId = student.Id,
+                    CreatedAt = DateTime.Now,
+                    Status = "Pending",
+                    UserId = null
+                };
+
+                medicationList.Add(medication);
+            }
 
             try
             {
-                await _medicationRepository.AddAsync(entity);
+                foreach (var med in medicationList)
+                {
+                    await _medicationRepository.AddAsync(med);
+                }
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                throw new Exception("Gửi thuốc thất bại do lỗi cơ sở dữ liệu.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Đã xảy ra lỗi khi gửi thuốc.", ex);
+                throw new Exception("Lỗi khi lưu thuốc vào cơ sở dữ liệu.", ex);
             }
 
-            return new MedicationDTO
+            return medicationList.Select(med => new MedicationDTO
             {
-                Id = entity.Id,
-                MedicationName = entity.Name,
-                Dosage = entity.Dosage,
-                Quantity = entity.Quantity,
-                Notes = entity.Notes,
-                CreatedAt = entity.CreatedAt,
-                StudentId = entity.StudentId,
-                Status = entity.Status,
-                UserId = entity.UserId
-            };
+                Id = med.Id,
+                MedicationName = med.Name,
+                Dosage = med.Dosage,
+                Quantity = med.Quantity,
+                Notes = med.Notes,
+                CreatedAt = med.CreatedAt,
+                StudentId = med.StudentId,
+                Status = med.Status,
+                UserId = med.UserId
+            }).ToList();
         }
     }
 }
+
