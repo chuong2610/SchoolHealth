@@ -20,13 +20,13 @@ namespace backend.Controllers
 
         // POST: api/Medication
         [HttpPost]
-        public async Task<ActionResult<List<BaseResponse<MedicationDTO>>>> CreateMedication([FromBody] List<BulkMedicationRequest> medicationRequest)
+        public async Task<ActionResult<BaseResponse<MedicationDTO>>> CreateMedication([FromBody] BulkMedicationRequest medicationRequest)
         {
             try
             {
                 var createdMedication = await _medicationService.CreateMedicationAsync(medicationRequest);
 
-                return Ok(new BaseResponse<List<MedicationDTO>>
+                return Ok(new BaseResponse<MedicationDTO>
                 {
                     Success = true,
                     Message = "Gửi thuốc thành công!",

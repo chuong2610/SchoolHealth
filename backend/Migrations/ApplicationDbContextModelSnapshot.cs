@@ -215,42 +215,9 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-<<<<<<< HEAD
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-=======
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Medications");
-                });
-
-            modelBuilder.Entity("backend.Models.MedicationDeclare", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
->>>>>>> fe01fa59c6d23ae52afe6cfc1e31204cecf9bd94
                     b.Property<string>("Dosage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -262,7 +229,6 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -280,12 +246,6 @@ namespace backend.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-=======
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
->>>>>>> fe01fa59c6d23ae52afe6cfc1e31204cecf9bd94
                     b.HasKey("Id");
 
                     b.HasIndex("MedicationId");
