@@ -26,7 +26,6 @@ namespace backend.Services
             // return notifications.Select(n => MapToDTO(n)).ToList();
 
         }
-
         public async Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);

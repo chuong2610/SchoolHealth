@@ -6,9 +6,9 @@ namespace backend.Services
 {
     public class MedicationService : IMedicationService
     {
-        private readonly IMedicationRepsitory _medicationRepository;
+        private readonly IMedicationRepository _medicationRepository;
 
-        public MedicationService(IMedicationRepsitory medicationRepository)
+        public MedicationService(IMedicationRepository medicationRepository)
         {
             _medicationRepository = medicationRepository;
         }
@@ -19,9 +19,15 @@ namespace backend.Services
             return medications.Select(m => MapToDTO(m)).ToList();
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsByNurseIdAsync(int id)
+        public async Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id)
         {
-            var medications = await _medicationRepository.GetMedicationsByNurseIdAsync(id);
+            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id);
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id)
+        {
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
 

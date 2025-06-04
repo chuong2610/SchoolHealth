@@ -98,6 +98,22 @@ namespace backend.Services
                 NurseName = me.Nurse.Name // Assuming Nurse has a Name property
             }).ToList();
         }
-
+        public async Task<List<MedicalEventDTO>> GetMedicalEventsTodayAsync()
+        {
+            var medicalEvents = await _medicalEventRepository.GetMedicalEventsTodayAsync();
+            return medicalEvents.Select(me => new MedicalEventDTO
+            {
+                Id = me.Id,
+                EventType = me.EventType,
+                Location = me.Location,
+                Date = me.Date,
+                StudentName = me.Student.Name, // Assuming Student has a Name property
+                NurseName = me.Nurse.Name // Assuming Nurse has a Name property
+            }).ToList();
+        }
+        public async Task<Dictionary<string, int>> GetWeeklyMedicalEventCountsAsync()
+        {
+            return await _medicalEventRepository.GetWeeklyMedicalEventCountsAsync();
+        }
     }
-}
+}    
