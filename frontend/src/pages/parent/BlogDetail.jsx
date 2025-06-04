@@ -44,9 +44,7 @@ const BlogDetail = () => {
           `http://localhost:5182/api/BlogPosts/${id}`,
           {
             headers: {
-              Authorization: `Bearer ${
-                eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ4OTk5MTc2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.SEqjM3ZGsP0Z_3kzVvq2yLKoqIE276hnd3M0nfZR0WA
-              }`,
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDAyMzk2LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.KahGa4EdAJcdvLyv-LKPOr-tXSyO8hB4caNVgiJVLWY`,
             },
           }
         );
@@ -108,8 +106,7 @@ const BlogDetail = () => {
             //sử lí lỗi
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src =
-                "https://via.placeholder.com/800x320?text=No+Image";
+              e.target.src = "https://placehold.jp/800x180.png?text=No+Image";
             }}
             //kết thúc sử lí lỗi
           />
