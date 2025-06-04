@@ -65,6 +65,7 @@ namespace backend.Services
             {
                 Id = notification.Id,
                 Title = notification.Title,
+                Name = notification.Name ?? string.Empty,
                 Message = notification.Message,
                 Note = notification.Note ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
@@ -82,10 +83,10 @@ namespace backend.Services
             return new NotificationDTO
             {
                 Id = notification.Id,
-                Name = notification.Name,
-                Title = notification.Title,
-                Message = notification.Message,
-                Type = notification.Type,
+                Name = notification.Name ?? string.Empty,
+                Title = notification.Title ?? string.Empty,
+                Message = notification.Message ?? string.Empty,
+                Type = notification.Type ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
                 StudentId = stusentId,
                 StudentName = studentName
