@@ -65,6 +65,7 @@ namespace backend.Services
             {
                 Id = notification.Id,
                 Title = notification.Title,
+                Name = notification.Name ?? string.Empty,
                 Message = notification.Message,
                 Note = notification.Note ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
