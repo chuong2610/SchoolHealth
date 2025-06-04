@@ -85,5 +85,18 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("parent/{parentId}")]
+        public async Task<IActionResult> GetMedicationsByParentId(int parentId)
+        {
+            try
+            {
+                var medications = await _medicationService.GetMedicationsByParentIdAsync(parentId);
+                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc theo phụ huynh thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

@@ -53,8 +53,20 @@ namespace backend.Repositories
 
             medication.UserId = nurseId;
             medication.Status = "Active";
+            medication.ReviceDate = DateTime.Now;
             _context.Medications.Update(medication);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId)
+        {
+            return await _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .Where(m => m.Student.ParentId == parentId)
+                .ToListAsync();
         }    
     }
 }

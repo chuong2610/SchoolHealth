@@ -42,6 +42,7 @@ namespace backend.Services
                     Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
+                ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
@@ -67,6 +68,7 @@ namespace backend.Services
                     Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
+                ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
@@ -74,6 +76,12 @@ namespace backend.Services
                 StudentClassName = medication.Student?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId)
+        {
+            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
+            return medications.Select(m => MapToDTO(m)).ToList();
         }
     }
 }
