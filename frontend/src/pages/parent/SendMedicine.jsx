@@ -8,20 +8,20 @@ import {
 
 const defaultMedicine = {
   name: "",
-  quantity: 1,
+  // quantity: 1,
   dosage: "",
-  time: "",
+  // time: "",
   note: "",
 };
 
 const SendMedicine = () => {
   const [students, setStudents] = useState([]);
-  const [studentName, setStudentName] = useState("");
-  const [studentClass, setStudentClass] = useState("");
+  // const [studentName, setStudentName] = useState("");
+  // const [studentClass, setStudentClass] = useState("");
   const [medicines, setMedicines] = useState([{ ...defaultMedicine }]);
-  const [senderName, setSenderName] = useState("");
-  const [senderPhone, setSenderPhone] = useState("");
-  const [senderNote, setSenderNote] = useState("");
+  // const [senderName, setSenderName] = useState("");
+  // const [senderPhone, setSenderPhone] = useState("");
+  // const [senderNote, setSenderNote] = useState("");
   const [validated, setValidated] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState("");
 
@@ -59,7 +59,7 @@ const SendMedicine = () => {
       //   senderNote,
       // };
       const data = {
-        selectedStudentId,
+        studentId: selectedStudentId,
         medicines,
       };
       console.log("Form submitted:", data);
@@ -85,8 +85,8 @@ const SendMedicine = () => {
         // Cuộn lên đầu
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (error) {
-        console.error("Gửi thuốc thất bại:", error);
         toast.error("Đã xảy ra lỗi khi gửi thuốc.");
+        console.error("Gửi thuốc thất bại:", error);
       }
     }
   };
@@ -159,7 +159,7 @@ const SendMedicine = () => {
                       >
                         <option value="">-- Chọn học sinh --</option>
                         {students?.map((student) => (
-                          <option value={student.id}>{student.studentName}</option>
+                          <option key={student.id} value={student.id}>{student.studentName}</option>
                         ))}
                       </Form.Select>
                     </Form.Group>
@@ -207,7 +207,7 @@ const SendMedicine = () => {
                 {medicines.map((med, idx) => (
                   <div key={idx} className="mb-4 border rounded p-3">
                     <Row className="mb-3">
-                      <Col md={4}>
+                      <Col md={6}>
                         <Form.Group controlId={`formMedName-${idx}`}>
                           <Form.Label>Tên thuốc</Form.Label>
                           <Form.Control
@@ -223,7 +223,7 @@ const SendMedicine = () => {
                           </Form.Control.Feedback>
                         </Form.Group>
                       </Col>
-                      <Col md={2}>
+                      {/* <Col md={2}>
                         <Form.Group controlId={`formMedQuantity-${idx}`}>
                           <Form.Label>Số lượng</Form.Label>
                           <Form.Control
@@ -243,8 +243,8 @@ const SendMedicine = () => {
                             Không được để trống
                           </Form.Control.Feedback>
                         </Form.Group>
-                      </Col>
-                      <Col md={3}>
+                      </Col> */}
+                      <Col md={6}>
                         <Form.Group controlId={`formMedDosage-${idx}`}>
                           <Form.Label>Liều dùng</Form.Label>
                           <Form.Control
@@ -265,7 +265,7 @@ const SendMedicine = () => {
                           </Form.Control.Feedback>
                         </Form.Group>
                       </Col>
-                      <Col md={3}>
+                      {/* <Col md={3}>
                         <Form.Group controlId={`formMedTime-${idx}`}>
                           <Form.Label>Thời gian</Form.Label>
                           <Form.Control
@@ -281,7 +281,7 @@ const SendMedicine = () => {
                             Không được để trống
                           </Form.Control.Feedback>
                         </Form.Group>
-                      </Col>
+                      </Col> */}
                     </Row>
 
                     <Row>
