@@ -37,12 +37,13 @@ namespace backend.Repositories
 
         public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id)
         {
+             var today = DateTime.Today;
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
-                .Where(m => m.Nurse.Id == id && m.Status == "Completed")
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed" && m.Date.Date==today)
                 .ToListAsync();
         }
         
