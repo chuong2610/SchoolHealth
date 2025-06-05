@@ -7,11 +7,11 @@ import {
 } from "../../api/parent/medicineApi";
 
 const defaultMedicine = {
-  name: "",
+  medicineName: "",
   // quantity: 1,
   dosage: "",
   // time: "",
-  note: "",
+  notes: "",
 };
 
 const SendMedicine = () => {
@@ -45,8 +45,9 @@ const SendMedicine = () => {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();
+      setValidated(true);
+      return;
     }
-    setValidated(true);
 
     if (form.checkValidity() === true) {
       console.log("submit success");
@@ -213,9 +214,9 @@ const SendMedicine = () => {
                           <Form.Control
                             required
                             type="text"
-                            value={med.name}
+                            value={med.medicineName}
                             onChange={(e) =>
-                              handleMedicineChange(idx, "name", e.target.value)
+                              handleMedicineChange(idx, "medicineName", e.target.value)
                             }
                           />
                           <Form.Control.Feedback type="invalid">
@@ -292,9 +293,9 @@ const SendMedicine = () => {
                             as="textarea"
                             rows={2}
                             placeholder="Nhập hướng dẫn sử dụng hoặc lưu ý..."
-                            value={med.note}
+                            value={med.notes}
                             onChange={(e) =>
-                              handleMedicineChange(idx, "note", e.target.value)
+                              handleMedicineChange(idx, "notes", e.target.value)
                             }
                             onInput={(e) => {
                               e.target.style.height = "auto"; // reset lại chiều cao

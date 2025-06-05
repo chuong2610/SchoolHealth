@@ -10,6 +10,7 @@ export const getNotifications = async () => {
             return res.data.data;
         } else {
             console.log("Lay du lieu Notifications that bai");
+            console.log(res.data.message);
             return [];
         }
     } catch(error) {
@@ -20,12 +21,13 @@ export const getNotifications = async () => {
 
 export const getNotificationDetailById = async (data) => {
     try {
-        const res = await axiosInstance.post("/Notification/notificationDeatil", data);
+        const res = await axiosInstance.patch("/Notification/notificationDeatil", data);
         if(res.data.success === true) {
             console.log(res.data.message);
             return res.data.data;
         } else {
             console.log("Gui du lieu that bai");
+            console.log(res.data.message);
             return {};
         }
     } catch(error) {

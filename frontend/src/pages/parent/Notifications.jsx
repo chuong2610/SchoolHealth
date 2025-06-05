@@ -17,6 +17,7 @@ import {
   getNotificationDetailById,
   getNotifications,
 } from "../../api/parent/notificationApi";
+import { formatDateTime } from "../utils/dateFormatter";
 
 // const notificationsData = [
 //   {
@@ -199,9 +200,13 @@ export default function Notifications() {
     const data = { notificationId, studentId };
     const detail = await fetchModal(data);
 
+    
+    const vaccinationName = notifications.find((n) => n.id === notificationId)?.name || null;
+    
+    console.log({...detail, vaccinationName});
     setModal({
       show: true,
-      notification: detail,
+      notification: {...detail, vaccinationName},
       consent: false,
     });
   };
@@ -240,6 +245,7 @@ export default function Notifications() {
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
         setNotifications(sortedNotifications);
+        // console.log(sortedNotifications)
       } catch (error) {
         console.log("Loi fetchNotifications");
       }
@@ -259,7 +265,7 @@ export default function Notifications() {
           <Col md={8}>
             <Row className="mb-3">
               <Col>
-                <h1 className="text-center">Notifications</h1>
+                <h1 className="text-center">Thông báo</h1>
               </Col>
             </Row>
 
@@ -316,7 +322,7 @@ export default function Notifications() {
                         </Col>
                         <Col>
                           <Card.Title>{notification.title}</Card.Title>
-                          <Card.Text>{notification.createdAt}</Card.Text>
+                          <Card.Text>{formatDateTime(notification.createdAt)}</Card.Text>
                         </Col>
                       </Row>
                       {/* <>
@@ -337,7 +343,7 @@ export default function Notifications() {
                               )?.badgeClass
                             }
                           >
-                            {notification.type}
+                            {notification.type === "Vaccination" ? "Tiêm chủng" : "Khám sức khỏe"}
                           </Badge>
                         </Col>
                         <Col className="d-flex justify-content-end">
@@ -348,7 +354,7 @@ export default function Notifications() {
                               openModal(notification.id, notification.studentId)
                             }
                           >
-                            Detail
+                            Chi tiết
                           </Button>
                         </Col>
                       </Row>
@@ -379,7 +385,7 @@ export default function Notifications() {
                 </Modal.Body>
               ) : (
                 <Modal.Body>
-                  <h6>Infomation:</h6>
+                  <h6>Thông tin:</h6>
                   {/* {modal.notification?.info.map((info, i) => (
                         <Row key={i}>
                           <Col md={1}>
@@ -407,7 +413,7 @@ export default function Notifications() {
                       ></i>
                     </Col>
                     <Col>
-                      Date:{" "}
+                      Ngày:{" "}
                       {new Date(modal.notification?.date).toLocaleDateString(
                         "en-US"
                       )}
@@ -422,7 +428,7 @@ export default function Notifications() {
                       ></i>
                     </Col>
                     <Col>
-                      Time:{" "}
+                      Thời gian:{" "}
                       {new Date(modal.notification?.date).toLocaleTimeString()}
                     </Col>
                   </Row>
@@ -434,9 +440,9 @@ export default function Notifications() {
                         }
                       ></i>
                     </Col>
-                    <Col>Location: {modal.notification?.location}</Col>
+                    <Col>Địa điểm: {modal.notification?.location}</Col>
                   </Row>
-                  {modal.notification?.type !== "HealthCheck" && (
+                  {modal.notification?.type === "Vaccination" && (
                     <Row>
                       <Col md={1}>
                         <i
@@ -445,7 +451,7 @@ export default function Notifications() {
                           }
                         ></i>
                       </Col>
-                      <Col>Vaccine: {modal.notification?.name}</Col>
+                      <Col>Vắc-xin:  {modal.notification?.vaccinationName} </Col>
                     </Row>
                   )}
 
@@ -453,7 +459,7 @@ export default function Notifications() {
                     {/* {modal.notification?.type === "Vaccination"
                       ? "Luu y quan trong:"
                       : "Noi dung kham:"} */}
-                    Notes:
+                    Ghi chú:
                   </h6>
 
                   <ul>
@@ -486,7 +492,7 @@ export default function Notifications() {
 
                   {/* Them o input lí do từ chối */}
                   <Row>
-                    <h6>Reason for refusal:</h6>
+                    <h6>Lý do từ chối:</h6>
                     <Row>
                       <InputGroup>
                         <Form.Control
@@ -495,7 +501,7 @@ export default function Notifications() {
                           name="reason"
                           value={reason}
                           onChange={(e) => setReason(e.target.value)}
-                          placeholder="Input reason for refusal"
+                          placeholder="Điền lý do nếu từ chối"
                         />
                       </InputGroup>
                     </Row>
@@ -512,8 +518,8 @@ export default function Notifications() {
                         }
                       >
                         {modal.notification?.status === "Confirmed"
-                          ? "Previous announcement has been confirmed"
-                          : "Previous notice has been denied"}
+                          ? "Thông báo trước đã được xác nhận"
+                          : "Thông báo trước đã bị từ chối"}
                       </label>
                     </Row>
                   )}
@@ -522,7 +528,7 @@ export default function Notifications() {
 
               <Modal.Footer>
                 <Button variant="secondary" onClick={closeModal}>
-                  Close
+                  Đóng
                 </Button>
                 <Button
                   variant="danger"
@@ -532,7 +538,7 @@ export default function Notifications() {
                     handleSubmitConsent(false, "Reject", reason);
                   }}
                 >
-                  Refuse
+                  Từ chối
                 </Button>
                 <Button
                   // disabled={!modal.consent}
@@ -543,7 +549,7 @@ export default function Notifications() {
                     handleSubmitConsent(true, "Confirm");
                   }}
                 >
-                  Confirm
+                  Đồng ý
                 </Button>
               </Modal.Footer>
             </Modal>
