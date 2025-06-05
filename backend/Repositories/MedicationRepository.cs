@@ -43,7 +43,7 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
-                .Where(m => m.Nurse.Id == id && m.Status == "Completed" && m.Date.Date==today)
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed" &&  m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
                 .ToListAsync();
         }
         
