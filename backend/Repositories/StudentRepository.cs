@@ -40,5 +40,10 @@ namespace backend.Repositories
             return await _context.Students
             .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
         }
+
+        public async Task<Student> GetByIdAsync(int id)
+        {
+            return await _context.Students.FindAsync(id);
+        }
     }
 }

@@ -15,12 +15,13 @@ namespace backend.Repositories
 
         public async Task AddAsync(Medication medication)
         {
-            _context.Medications.Add(medication);
+            await _context.Medications.AddAsync(medication);
             await _context.SaveChangesAsync();
         }
 
         public async Task<Medication> GetByIdAsync(int id)
         {
+
             return await _context.Medications.FindAsync(id);
         }
 

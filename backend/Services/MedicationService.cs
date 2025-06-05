@@ -5,8 +5,6 @@ using backend.Models.Request;
 using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
 using backend.Interfaces;
-using backend.Models;
-using backend.Models.DTO;
 
 
 namespace backend.Services
@@ -15,62 +13,41 @@ namespace backend.Services
     {
         private readonly IMedicationRepository _medicationRepository;
         private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
 
         public MedicationService(
-            IMedicationRepository medicationRepository, ApplicationDbContext context)
+            IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
 
         {
             _medicationRepository = medicationRepository;
             _context = context;
-            _medicationRepository = medicationRepository;
+            _studentService = studentService;
 
         }
 
-        public async Task<MedicationDTO> CreateMedicationAsync(BulkMedicationRequest request)
+        public async Task<bool> CreateMedicationAsync(MedicationRequest request)
         {
-            var student = await _context.Students.FindAsync(request.StudentId);
-            if (student == null)
-                throw new Exception("Không tìm thấy học sinh");
+            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
 
-            // Tạo đơn Medication
+            // Tạo mới Medication
             var medication = new Medication
             {
                 StudentId = request.StudentId,
                 Status = "Pending",
-                Date = DateTime.UtcNow
-            };
-
-            // Gắn các thuốc cụ thể
-            medication.MedicationDeclares = request.Medicines.Select(m => new MedicationDeclare
-            {
-                Name = m.MedicineName,
-                Dosage = m.Dosage,
-                Note = m.Notes
-            }).ToList();
-
-            _context.Medications.Add(medication);
-            await _context.SaveChangesAsync();
-
-            // Trả về DTO
-            return new MedicationDTO
-            {
-                Id = medication.StudentId,
-                Status = medication.Status,
-                CreatedDate = medication.Date,
-                StudentClass = medication.Student?.ClassName ?? "",
-                NurseName = medication.Nurse?.Name ?? "",
-                StudentName = medication.Student?.Name ?? "",
-                StudentClassName = medication.Student?.ClassName ?? "",
-                ParentName = medication.Student?.Parent?.Name ?? "",
-                Medications = medication.MedicationDeclares.Select(d => new MedicationDeclareDTO
+                Date = DateTime.UtcNow,
+                MedicationDeclares = request.Medicines.Select(m => new MedicationDeclare
                 {
-                    MedicationName = d.Name,
-                    Dosage = d.Dosage,
-                    Note = d.Note
-                }).ToList(),
+                    Name = m.MedicineName,
+                    Dosage = m.Dosage,
+                    Note = m.Notes
+                }).ToList()
             };
-        }
 
+            // Lưu vào DB
+            await _medicationRepository.AddAsync(medication);
+
+            return true;
+        }
 
 
         public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()

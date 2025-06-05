@@ -20,53 +20,41 @@ namespace backend.Services
             _logger = logger;
         }
 
-        public async Task<StudentProfileDTO?> CreateStudentProfileAsync(StudentProfileRequest request)
+        public async Task<bool> CreateStudentProfileAsync(StudentProfileRequest request)
         {
-            try
+            if (request == null)
             {
-                var existingProfile = await _profileRepo.GetByIdAsync(request.StudentId);
-
-                if (existingProfile != null)
-                {
-                    // Cập nhật profile đã có
-                    existingProfile.Allergys = request.Allergys ?? string.Empty;
-                    existingProfile.ChronicIllnesss = request.ChronicIllnesss ?? string.Empty;
-                    existingProfile.LongTermMedications = request.LongTermMedications ?? string.Empty;
-                    existingProfile.OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty;
-
-                    await _profileRepo.CreateOrUpdateAsync(existingProfile);
-                }
-                else
-                {
-                    // Tạo profile mới
-                    var newProfile = new StudentProfile
-                    {
-                        Id = request.StudentId,
-                        Allergys = request.Allergys ?? string.Empty,
-                        ChronicIllnesss = request.ChronicIllnesss ?? string.Empty,
-                        LongTermMedications = request.LongTermMedications ?? string.Empty,
-                        OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
-                    };
-
-                    await _profileRepo.CreateOrUpdateAsync(newProfile);
-                }
-
-                var savedProfile = await _profileRepo.GetByIdAsync(request.StudentId);
-                if (savedProfile == null)
-                {
-                    throw new Exception("Không thể truy xuất hồ sơ y tế sau khi lưu.");
-                }
-
-                return ConvertToDTO(savedProfile);
+                throw new Exception("Yêu cầu không hợp lệ.");
             }
-            catch (DbUpdateException ex)
+
+            var existingProfile = await _profileRepo.GetByIdAsync(request.StudentId);
+
+            if (existingProfile != null)
             {
-                throw new Exception("Lưu hồ sơ y tế thất bại do lỗi cơ sở dữ liệu.", ex);
+                // Cập nhật profile
+                existingProfile.Allergys = request.Allergys ?? string.Empty;
+                existingProfile.ChronicIllnesss = request.ChronicIllnesss ?? string.Empty;
+                existingProfile.LongTermMedications = request.LongTermMedications ?? string.Empty;
+                existingProfile.OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty;
+
+                await _profileRepo.CreateOrUpdateAsync(existingProfile);
             }
-            catch (Exception ex)
+            else
             {
-                throw new Exception("Đã xảy ra lỗi khi tạo hoặc cập nhật hồ sơ y tế.", ex);
+                // Tạo profile mới
+                var newProfile = new StudentProfile
+                {
+                    Id = request.StudentId,
+                    Allergys = request.Allergys ?? string.Empty,
+                    ChronicIllnesss = request.ChronicIllnesss ?? string.Empty,
+                    LongTermMedications = request.LongTermMedications ?? string.Empty,
+                    OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
+                };
+
+                await _profileRepo.CreateOrUpdateAsync(newProfile);
             }
+
+            return true;
         }
 
         public StudentProfileDTO ConvertToDTO(StudentProfile profile)

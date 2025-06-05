@@ -33,6 +33,15 @@ namespace backend.Services
             return student;
         }
 
+        public async Task<Student> GetStudentByIdAsync(int id)
+        {
+            var student = await _studentRepository.GetByIdAsync(id);
+            if (student == null)
+                throw new Exception("Không tìm thấy học sinh");
+
+            return student;
+        }
+
     }
 
 }
