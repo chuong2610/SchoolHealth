@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "tSJ1iANoqwUn+wOYhAWalo6OO95NBjYh4BlXbo09ncA=",
+  "Hash": "/TNbwh0jynV2uSZymikSEoMIVvz5glHAt9KUtGdMAXA=",
   "Source": "backend",
   "BasePath": "_content/backend",
   "Mode": "Default",
@@ -10,219 +10,49 @@
     {
       "Name": "backend\\wwwroot",
       "Source": "backend",
-      "ContentRoot": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\",
+      "ContentRoot": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
+      "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "SourceId": "backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\",
+      "ContentRoot": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
-      "RelativePath": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2#[.{fingerprint}]?.png",
+      "RelativePath": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "f4jcv2jkqp",
-      "Integrity": "z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
     },
     {
-      "Identity": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png",
+      "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png",
       "SourceId": "backend",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\",
+      "ContentRoot": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
-      "RelativePath": "wwwroot/uploads/353f7883-273f-4af7-8389-d14c17664f9c#[.{fingerprint}]?.png",
+      "RelativePath": "wwwroot/uploads/353f7883-273f-4af7-8389-d14c17664f9c.png",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
+      "AssetMergeBehavior": "PreferTarget",
       "AssetMergeSource": "",
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "f4jcv2jkqp",
-      "Integrity": "z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png"
-    }
-  ],
-  "Endpoints": [
-    {
-      "Route": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.f4jcv2jkqp.png",
-      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "326520"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 08:27:21 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "f4jcv2jkqp"
-        },
-        {
-          "Name": "label",
-          "Value": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.png"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs="
-        }
-      ]
-    },
-    {
-      "Route": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.png",
-      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "326520"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 08:27:21 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs="
-        }
-      ]
-    },
-    {
-      "Route": "wwwroot/uploads/353f7883-273f-4af7-8389-d14c17664f9c.f4jcv2jkqp.png",
-      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "326520"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 13:05:38 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "f4jcv2jkqp"
-        },
-        {
-          "Name": "label",
-          "Value": "wwwroot/uploads/353f7883-273f-4af7-8389-d14c17664f9c.png"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs="
-        }
-      ]
-    },
-    {
-      "Route": "wwwroot/uploads/353f7883-273f-4af7-8389-d14c17664f9c.png",
-      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "326520"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 13:05:38 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-z+IB/LufRjEEwgop8eGEeaN301WVKscSGqVLcVTxUzs="
-        }
-      ]
     }
   ]
 }

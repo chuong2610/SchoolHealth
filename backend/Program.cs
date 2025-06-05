@@ -92,13 +92,14 @@ builder.Services.AddAuthorization(option =>
 
 });
 
+// sửa ở đây để fix lỗi cross origin CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
             builder
-                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+                .WithOrigins("http://localhost:3000") // URL của frontend
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -166,12 +167,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCookiePolicy();
-app.UseCors();
+// app.UseCookiePolicy();
+// app.UseCors();
 
 // app.UseHttpsRedirection();
 app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors();                    // 👈 Bật CORS
+app.UseCors("AllowSpecificOrigins"); // Áp dụng chính sách CORS đã định nghĩa
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();
