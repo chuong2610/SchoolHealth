@@ -88,47 +88,50 @@ const HealthDeclaration = () => {
     });
   };
 
+  // Thêm các style header bảng
+  const tableHeaderStyle1 = {
+    background: 'linear-gradient(90deg, #a8edea 0%, #fed6e3 100%)',
+    color: '#1890ff',
+    fontWeight: 700,
+    fontSize: 18,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    padding: '14px 24px 10px 24px',
+    letterSpacing: 0.5,
+    animation: 'fadeInDown 0.7s',
+  };
+
   return (
-    <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 className="fw-bold mb-0" style={{ fontSize: 28 }}>
+    <div className="container py-4" style={{ background: 'linear-gradient(120deg, #f6f8fc 60%, #e0e7ff 100%)', minHeight: '100vh' }}>
+      <div className="mb-4">
+        <h2 className="fw-bold mb-1" style={{ fontSize: 28, color: '#1890ff', letterSpacing: 0.5, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <i className="fas fa-file-medical" style={{ color: '#faad14', fontSize: 28 }}></i>
           Khai Báo Y Tế
         </h2>
-        <button className="btn btn-primary" onClick={() => setModalAdd(true)}>
-          <i className="fas fa-plus me-2"></i> Thêm Khai Báo Mới
-        </button>
       </div>
-      <div className="card shadow-sm border-0 rounded-4">
-        <div className="card-header bg-white border-0 rounded-top-4">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 className="mb-0 fw-bold">Danh sách khai báo y tế</h5>
-            <div className="d-flex align-items-center gap-2 flex-wrap">
-              <select
-                className="form-select me-2"
-                style={{ minWidth: 160 }}
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              >
-                <option value="">Tất cả trạng thái</option>
-                <option value="pending">Chờ xác nhận</option>
-                <option value="confirmed">Đã xác nhận</option>
-                <option value="rejected">Đã từ chối</option>
-              </select>
-              <div style={{ maxWidth: 240 }}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Tìm kiếm..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-            </div>
+      {/* Card/table chính */}
+      <div className="card mb-4 shadow-sm border-0 vibrant-card" style={{ borderRadius: 18, background: 'linear-gradient(90deg, #a8edea 0%, #fed6e3 100%)', boxShadow: '0 4px 24px 0 rgba(168,237,234,0.12)' }}>
+        <div style={tableHeaderStyle1} className="vibrant-header">
+          <i className="fas fa-file-medical" style={{ color: '#faad14', fontSize: 22 }}></i>
+          Danh sách khai báo y tế
+          <div style={{ flex: 1 }}></div>
+          <div style={{ maxWidth: 240 }}>
+            <input
+              type="text"
+              className="form-control vibrant-input"
+              placeholder="Tìm kiếm..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ borderRadius: 8, border: '1.5px solid #a8edea' }}
+            />
           </div>
         </div>
         <div className="card-body">
           <div className="table-responsive">
-            <table className="table align-middle">
+            <table className="table align-middle vibrant-table vibrant-table-1" style={{ borderRadius: 14, overflow: 'hidden' }}>
               <thead>
                 <tr>
                   <th>Mã</th>
@@ -201,7 +204,7 @@ const HealthDeclaration = () => {
           style={{ display: "block", background: "rgba(0,0,0,0.2)" }}
           tabIndex="-1"
         >
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg vibrant-modal">
             <div className="modal-content rounded-4">
               <div className="modal-header">
                 <h5 className="modal-title">Chi tiết khai báo y tế</h5>
@@ -282,7 +285,7 @@ const HealthDeclaration = () => {
           style={{ display: "block", background: "rgba(0,0,0,0.2)" }}
           tabIndex="-1"
         >
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-lg vibrant-modal">
             <div className="modal-content rounded-4">
               <div className="modal-header">
                 <h5 className="modal-title">Thêm Khai Báo Y Tế Mới</h5>
@@ -405,14 +408,64 @@ const HealthDeclaration = () => {
           </div>
         </div>
       )}
-      {/* Custom CSS cho giống bản gốc */}
       <style>{`
-        .card { border-radius: 18px !important; }
-        .card-header { border-radius: 18px 18px 0 0 !important; }
-        .table th, .table td { vertical-align: middle !important; }
-        .badge { font-size: 15px; padding: 7px 16px; border-radius: 8px; }
-        .form-select, .form-control { border-radius: 8px; }
-        .modal-backdrop { display: none; }
+        .vibrant-card {
+          border-radius: 18px !important;
+          box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+          transition: box-shadow 0.18s, transform 0.18s;
+        }
+        .vibrant-card:hover {
+          box-shadow: 0 8px 32px 0 rgba(80,120,255,0.16);
+          transform: scale(1.015);
+        }
+        .vibrant-header {
+          letter-spacing: 0.5px;
+          animation: fadeInDown 0.7s;
+        }
+        .vibrant-table tr {
+          transition: background 0.18s, box-shadow 0.18s, border-left 0.18s;
+        }
+        .vibrant-table-1 tr:hover td {
+          background: #e0f7fa !important;
+          border-left: 4px solid #1890ff;
+          box-shadow: 0 2px 12px 0 rgba(24,144,255,0.08);
+        }
+        .vibrant-btn {
+          border-radius: 8px !important;
+          transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+          font-weight: 600;
+        }
+        .vibrant-btn.btn-info:hover {
+          background: #e0f7fa !important;
+          color: #1890ff !important;
+          box-shadow: 0 2px 8px 0 #a8edea44;
+        }
+        .vibrant-btn.btn-success:hover {
+          background: #e6fffb !important;
+          color: #52c41a !important;
+          box-shadow: 0 2px 8px 0 #52c41a44;
+        }
+        .vibrant-btn.btn-danger:hover {
+          background: #fff1f0 !important;
+          color: #ff4d4f !important;
+          box-shadow: 0 2px 8px 0 #ff4d4f44;
+        }
+        .vibrant-input:focus {
+          border-color: #1890ff !important;
+          box-shadow: 0 0 0 2px #a8edea55 !important;
+        }
+        .vibrant-modal .modal-content {
+          border-radius: 18px !important;
+          box-shadow: 0 8px 32px 0 rgba(80,120,255,0.16) !important;
+        }
+        .vibrant-modal .modal-header {
+          border-top-left-radius: 18px !important;
+          border-top-right-radius: 18px !important;
+        }
+        @keyframes fadeInDown {
+          from { opacity: 0; transform: translateY(-16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
       `}</style>
     </div>
   );
