@@ -9,7 +9,7 @@ namespace backend.Models
         public int Id { get; set; }
         // public string Name { get; set; } = string.Empty;
         // public string Dosage { get; set; } = string.Empty;
-        // public string Status { get; set; } = string.Empty;   // Chờ xác nhận, Đang sử dụng
+        public string Status { get; set; } = string.Empty;   // Chờ xác nhận, Đang sử dụng
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime? ReviceDate { get; set; } = DateTime.UtcNow;
         public List<MedicationDeclare> MedicationDeclares { get; set; } = new List<MedicationDeclare>();
