@@ -1,6 +1,7 @@
 using backend.Models.DTO;
 using backend.Interfaces;
 using backend.Models;
+using System.Text.Json;
 
 namespace backend.Services
 {
@@ -18,27 +19,51 @@ namespace backend.Services
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
         {
             var posts = await _repository.GetAllAsync();
+
             var postDtos = posts.Select(post =>
             {
-                // Kiểm tra nếu ImageUrl tồn tại và tệp hình ảnh tồn tại trong wwwroot
-                string imageUrl = post.ImageUrl;
-                if (!string.IsNullOrEmpty(imageUrl))
+                string fileName = post.ImageUrl;
+                string imageUrl = $"/uploads/{fileName}";
+                string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
+
+                if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
                 {
-                    // Chuyển ImageUrl thành đường dẫn vật lý để kiểm tra
-                    string relativePath = imageUrl.TrimStart('/'); // Loại bỏ "/" đầu tiên
-                    string imagePath = Path.Combine(_environment.WebRootPath, relativePath);
-                    imageUrl = System.IO.File.Exists(imagePath) ? imageUrl : "/uploads/default.jpg";
+                    imageUrl = "/uploads/default.jpg";
                 }
-                else
+
+                string summary = "";
+
+                try
                 {
-                    imageUrl = "/uploads/default.jpg"; // Hình ảnh mặc định nếu ImageUrl null
+                    // Cố gắng deserialize JSON
+                    var contentObj = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
+
+                    // Nếu deserialize thành công và Introduction có giá trị
+                    if (contentObj != null && !string.IsNullOrWhiteSpace(contentObj.Introduction))
+                    {
+                        summary = contentObj.Introduction;
+
+                        // Nếu bạn muốn giới hạn độ dài summary (ví dụ 100 ký tự)
+                        if (summary.Length > 100)
+                            summary = summary.Substring(0, 100) + "...";
+                    }
+                    else
+                    {
+                        // Nếu không có Introduction, fallback lấy raw substring
+                        summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
+                    }
+                }
+                catch
+                {
+                    // Nếu deserialize fail thì fallback lấy raw substring
+                    summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
                 }
 
                 return new BlogPostDTO
                 {
                     Id = post.Id,
                     Title = post.Title,
-                    ContentSummary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content,
+                    ContentSummary = summary,
                     ImageUrl = imageUrl
                 };
             }).ToList();
@@ -46,32 +71,30 @@ namespace backend.Services
             return postDtos;
         }
 
+
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
         {
             var post = await _repository.GetByIdAsync(id);
-            if (post == null)
+            if (post == null) return null;
+
+            string fileName = post.ImageUrl;
+            string imageUrl = $"/uploads/{fileName}";
+            string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
+
+            if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
             {
-                return null;
+                imageUrl = "/uploads/default.jpg";
             }
 
-            // Kiểm tra nếu ImageUrl tồn tại và tệp hình ảnh tồn tại trong wwwroot
-            string imageUrl = post.ImageUrl;
-            if (!string.IsNullOrEmpty(imageUrl))
-            {
-                string relativePath = imageUrl.TrimStart('/'); // Loại bỏ "/" đầu tiên
-                string imagePath = Path.Combine(_environment.WebRootPath, relativePath);
-                imageUrl = System.IO.File.Exists(imagePath) ? imageUrl : "/uploads/default.jpg";
-            }
-            else
-            {
-                imageUrl = "/uploads/default.jpg"; // Hình ảnh mặc định nếu ImageUrl null
-            }
+            var content = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
 
             return new BlogPostDetailDTO
             {
                 Id = post.Id,
                 Title = post.Title,
-                Content = post.Content,
+                Author = post.Author,
+                Content = content ?? new(),
+                CreatedAt = post.CreatedAt,
                 ImageUrl = imageUrl
             };
         }

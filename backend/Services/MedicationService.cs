@@ -4,6 +4,8 @@ using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
+using backend.Interfaces;
+
 
 namespace backend.Services
 {
@@ -11,74 +13,111 @@ namespace backend.Services
     {
         private readonly IMedicationRepository _medicationRepository;
         private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
 
         public MedicationService(
-            IMedicationRepository medicationRepository, ApplicationDbContext context)
+            IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
 
         {
             _medicationRepository = medicationRepository;
             _context = context;
+            _studentService = studentService;
 
         }
 
-        public async Task<MedicationDTO> CreateMedicationAsync(MedicationRequest request)
+        public async Task<bool> CreateMedicationAsync(MedicationRequest request)
         {
-            // Tìm học sinh theo ID
-            var student = await _context.Students
-                .FirstOrDefaultAsync(s => s.Id == request.StudentId);
-
-            if (student == null)
+            // kiểm tra studentId
+            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            // kiểm tra tên thuốc và liều dùng có null hay không
+            if (request.Medicines.Any(m => string.IsNullOrWhiteSpace(m.MedicineName) || string.IsNullOrWhiteSpace(m.Dosage)))
             {
-                throw new Exception("Không tìm thấy học sinh với ID đã cung cấp.");
-            }
-            if (string.IsNullOrWhiteSpace(request.MedicineName))
-            {
-                throw new ArgumentException("Tên thuốc không được để trống.");
+                throw new Exception("MedicineName hoặc Dosage không được để trống.");
             }
 
-            if (request.Quantity <= 0)
+            // Tạo mới Medication
+            var medication = new Medication
             {
-                throw new ArgumentException("Số lượng thuốc phải lớn hơn 0.");
-            }
-
-            var entity = new Medication
-            {
-                Name = request.MedicineName,
-                Dosage = request.Dosage,
-                Quantity = request.Quantity,
-                Notes = request.Notes,
-                StudentId = student.Id,
-                CreatedAt = DateTime.Now,
+                StudentId = request.StudentId,
                 Status = "Pending",
-                UserId = null
+                Date = DateTime.UtcNow,
+                MedicationDeclares = request.Medicines.Select(m => new MedicationDeclare
+                {
+                    Name = m.MedicineName,
+                    Dosage = m.Dosage,
+                    Note = m.Notes
+                }).ToList()
             };
 
-            try
+            // Lưu vào DB
+            await _medicationRepository.AddAsync(medication);
+
+            return true;
+        }
+
+
+        public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsPendingAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsByNurseIdAsync(int id)
+        {
+            var medications = await _medicationRepository.GetMedicationsByNurseIdAsync(id);
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
+        {
+            var medication = await _medicationRepository.GetMedicationByIdAsync(id);
+            if (medication == null)
             {
-                await _medicationRepository.AddAsync(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                throw new Exception("Gửi thuốc thất bại do lỗi cơ sở dữ liệu.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Đã xảy ra lỗi khi gửi thuốc.", ex);
+                throw new KeyNotFoundException("Medication not found");
             }
 
+            return new MedicationDetailDTO
+            {
+                Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
+                {
+                    MedicationName = m.Name,
+                    Dosage = m.Dosage,
+                    Note = m.Note ?? ""
+                }).ToList(),
+                CreatedDate = medication.Date,
+                Status = medication.Status,
+                StudentClass = medication.Student?.ClassName ?? "",
+                NurseName = medication.Nurse?.Name ?? "",
+                StudentName = medication.Student?.Name ?? "",
+                ParentName = medication.Student?.Parent?.Name ?? ""
+            };
+        }
+
+        public async Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId)
+        {
+            return await _medicationRepository.UpdateNurseIdAsync(medicationId, nurseId);
+        }
+
+        private MedicationDTO MapToDTO(Medication medication)
+        {
             return new MedicationDTO
             {
-                Id = entity.Id,
-                MedicationName = entity.Name,
-                Dosage = entity.Dosage,
-                Quantity = entity.Quantity,
-                Notes = entity.Notes,
-                CreatedAt = entity.CreatedAt,
-                StudentId = entity.StudentId,
-                Status = entity.Status,
-                UserId = entity.UserId
+                Id = medication.Id,
+                Medications = medication.MedicationDeclares.Select(m => new MedicationDeclareDTO
+                {
+                    MedicationName = m.Name,
+                    Dosage = m.Dosage,
+                    Note = m.Note ?? ""
+                }).ToList(),
+                CreatedDate = medication.Date,
+                Status = medication.Status,
+                StudentClass = medication.Student?.ClassName ?? "",
+                NurseName = medication.Nurse?.Name ?? "",
+                StudentName = medication.Student?.Name ?? "",
+                StudentClassName = medication.Student?.ClassName ?? "",
+                ParentName = medication.Student?.Parent?.Name ?? ""
             };
+
         }
     }
 }

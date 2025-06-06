@@ -92,14 +92,13 @@ builder.Services.AddAuthorization(option =>
 
 });
 
-// sửa ở đây để fix lỗi cross origin CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
             builder
-                .WithOrigins("http://localhost:3000") // URL của frontend
+                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -152,9 +151,17 @@ builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
-
-
-
+builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
+builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IMedicalEventService, MedicalEventService>();
+builder.Services.AddScoped<IMedicalEventRepository, MedicalEventRepository>();
+builder.Services.AddScoped<IMedicalEventSupplyService, MedicalEventSupplyService>();
+builder.Services.AddScoped<IMedicalEventSupplyRepository, MedicalEventSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
 
 
 
@@ -167,12 +174,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseCookiePolicy();
-// app.UseCors();
+app.UseCookiePolicy();
+app.UseCors();
 
 // app.UseHttpsRedirection();
 app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors("AllowSpecificOrigins"); // Áp dụng chính sách CORS đã định nghĩa
+app.UseCors();                    // 👈 Bật CORS
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();
