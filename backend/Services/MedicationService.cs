@@ -27,7 +27,9 @@ namespace backend.Services
 
         public async Task<bool> CreateMedicationAsync(MedicationRequest request)
         {
+            // kiểm tra studentId
             var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            // kiểm tra tên thuốc và liều dùng có null hay không
             if (request.Medicines.Any(m => string.IsNullOrWhiteSpace(m.MedicineName) || string.IsNullOrWhiteSpace(m.Dosage)))
             {
                 throw new Exception("MedicineName hoặc Dosage không được để trống.");
