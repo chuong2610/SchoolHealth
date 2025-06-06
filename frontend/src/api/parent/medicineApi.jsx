@@ -13,7 +13,7 @@ export const sendMedicineApi = async (data) => {
 export const getStudentListByParentId = async (parentId) => {
   try{
     // fake parentId
-    const parentId = "3";
+    const parentId = localStorage.userId;
     const res = await axiosInstance.get(`/Students/by-parent/${parentId}`);
     if(res.data.success === true) {
       console.log(res.data.message);

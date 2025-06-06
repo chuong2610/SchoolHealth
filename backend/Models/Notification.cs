@@ -9,15 +9,9 @@ namespace backend.Models
     public string Title { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty; // e.g., "MedicalEvent", "Vaccination"
     public string Message { get; set; } = string.Empty;
-<<<<<<< HEAD
-<<<<<<< HEAD
     public string Note { get; set; }
-=======
-    public string Note { get; set; } = string.Empty;
->>>>>>> LoginHistory
-=======
-    public string? Note { get; set; }
->>>>>>> fea9e5d19c44c6d4cfc5eed50a39400d2fb8269a
+    // public string Note { get; set; } = string.Empty;
+    // public string? Note { get; set; }
     public string Location { get; set; } = string.Empty;
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

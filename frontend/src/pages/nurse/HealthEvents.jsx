@@ -168,7 +168,7 @@ const HealthEvents = () => {
       date: new Date().toISOString(),
       medicalEventSupplys: formAdd.itemNeeded,
       studentNumber: formAdd.studentId,
-      nurseId: 3,
+      nurseId: localStorage.userId,
       // nurseId: localStorage.userId
     };
     console.log(data);

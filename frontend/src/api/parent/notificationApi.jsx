@@ -1,6 +1,6 @@
 import axiosInstance from "../axiosInstance";
 
-const parentId = "3";
+const parentId = localStorage.userId;
 
 export const getNotifications = async () => {
     try {
