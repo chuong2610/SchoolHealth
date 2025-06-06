@@ -6,5 +6,6 @@ namespace backend.Interfaces
     public interface INotificationStudentService
     {
         Task<bool> createNotificationStudentAsync(NotificationStudentRequest request);
+        Task<bool> UpdateNotificationStudentAsync(NotificationStudentRequest request);
     }
 }

@@ -146,6 +146,17 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
 builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IMedicalEventService, MedicalEventService>();
+builder.Services.AddScoped<IMedicalEventRepository, MedicalEventRepository>();
+builder.Services.AddScoped<IMedicalEventSupplyService, MedicalEventSupplyService>();
+builder.Services.AddScoped<IMedicalEventSupplyRepository, MedicalEventSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 
 var app = builder.Build();

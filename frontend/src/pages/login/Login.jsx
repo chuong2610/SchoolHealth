@@ -1,134 +1,102 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import "./Login.css";
-import bgImg from "../../assets/login-bg.png";
-import { auth, googleProvider } from "../../firebase";
-import { signInWithPopup } from "firebase/auth";
-import LoginLayout from "../../layouts/LoginLayout";
+// Login.jsx - Đăng nhập cho người dùng
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import 'antd/dist/reset.css';
+import { Form, Input, Button, Alert, Typography, Spin, Card } from 'antd';
+import html2pdf from 'html2pdf.js';
+import { useAuth } from '../../context/AuthContext';
+const { Title } = Typography;
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+    // State lưu thông tin nhập vào form đăng nhập
+    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    // State lưu thông báo lỗi
+    const [error, setError] = useState('');
+    // State loading khi submit
+    const [loading, setLoading] = useState(false);
+    // Hook điều hướng sau khi đăng nhập thành công
+    const navigate = useNavigate();
+    // Lấy hàm login từ context để lưu token, role, userId
+    const { login } = useAuth();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    // Xử lý thay đổi input form đăng nhập
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setCredentials(prev => ({ ...prev, [name]: value }));
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+    // Xử lý submit form đăng nhập
+    const handleSubmit = async (values) => {
+        const email = values.email.trim();
+        const password = values.password.trim();
+        if (!email || !password) {
+            setError('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+        setLoading(true);
+        try {
+            // Gửi request đăng nhập tới backend
+            const response = await axios.post('http://localhost:5182/api/auth/login', { email, password });
+            const { success, data } = response.data;
+            if (!success || !data?.token || !data?.roleName) {
+                setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
+                setLoading(false);
+                return;
+            }
+            // Sử dụng login từ AuthContext để lưu thông tin đăng nhập toàn cục
+            const { token, userId, roleName } = data;
+            if (!token || !roleName || typeof userId === 'undefined') {
+                setError('Đăng nhập thất bại hoặc thiếu thông tin userId!');
+                setLoading(false);
+                return;
+            }
+            await login(token, roleName, Number(userId));
+        } catch (err) {
+            setError(err.response?.data?.message || 'Đăng nhập thất bại!');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    try {
-      // TODO: Implement email/password login logic here
-      console.log("Login with:", formData);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to login. Please check your credentials.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleDownload = () => {
+        const element = document.getElementById('pdf-content');
+        html2pdf().from(element).save('ket-qua.pdf');
+    };
 
-  const handleGoogleLogin = async () => {
-    setError("");
-    setLoading(true);
-
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Failed to login with Google.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <LoginLayout>
-      <div
-        className="login-page d-flex align-items-center min-vh-100"
-        style={{
-          backgroundImage: `url(${bgImg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          minHeight: "100vh",
-        }}
-      >
-        <Container fluid className="login-container">
-          <Row className="justify-content-center align-items-center min-vh-100">
-            <Col xs={12} sm={8} md={6} lg={4}>
-              <div className="login-card">
-                <h2 className="text-center mb-4">Welcome Back</h2>
-                {error && <Alert variant="danger">{error}</Alert>}
-
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </Form.Group>
-
-                  <Form.Group className="mb-4">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Enter your password"
-                      required
-                    />
-                  </Form.Group>
-
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100 mb-3"
-                    disabled={loading}
-                  >
-                    {loading ? "Logging in..." : "Login"}
-                  </Button>
-
-                  <div className="divider">
-                    <span>or</span>
-                  </div>
-
-                  <Button
-                    variant="outline-primary"
-                    className="w-100 google-btn"
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
-                  >
-                    <FaGoogle className="me-2" />
-                    Continue with Google
-                  </Button>
+    return (
+        <div style={{
+            minHeight: '100vh',
+            background: `url('/src/assets/login-bg.png') center/cover no-repeat, #f5f7fa`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+            <Card style={{ maxWidth: 400, width: '100%', borderRadius: 16, boxShadow: '0 4px 32px rgba(0,0,0,0.10)', background: 'rgba(255,255,255,0.95)' }}>
+                <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                    <Title level={2} style={{ marginBottom: 0 }}>
+                        <i className="fas fa-heartbeat" style={{ color: '#1890ff', marginRight: 8 }}></i>
+                        School Health
+                    </Title>
+                    <div style={{ color: '#888', fontSize: 18, marginTop: 8 }}>Đăng nhập hệ thống</div>
+                </div>
+                {error && <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />}
+                <Form layout="vertical" onFinish={handleSubmit} autoComplete="off">
+                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
+                        <Input type="email" placeholder="Nhập email" size="large" />
+                    </Form.Item>
+                    <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
+                        <Input.Password placeholder="Nhập mật khẩu" size="large" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" block size="large" loading={loading}>
+                            Đăng nhập
+                        </Button>
+                    </Form.Item>
                 </Form>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    </LoginLayout>
-  );
+            </Card>
+        </div>
+    );
 };
 
 export default Login;

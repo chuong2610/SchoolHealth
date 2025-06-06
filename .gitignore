@@ -1,5 +1,29 @@
+<<<<<<< HEAD
 **/bin/
 **/obj/
 *.dll
 *.exe
 *.pdb
+=======
+# --- .NET ---
+bin/
+obj/
+*.user
+*.suo
+*.log
+.vs/
+.vscode/
+
+# --- React / Node.js ---
+node_modules/
+build/
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE/editor configs
+.idea/
+*.iml
+.DS_Store
+>>>>>>> b13bdf7f2c14952ecf68271bdbbf805ff459447e
