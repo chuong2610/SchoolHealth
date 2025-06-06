@@ -34,7 +34,11 @@ namespace backend.Controllers
                 }
 
                 return Ok(new BaseResponse<object>(
+<<<<<<< HEAD
                     authDTO,
+=======
+                    new { token = authDTO },
+>>>>>>> LoginHistory
                     "Đăng nhập thành công",
                     true
                 ));

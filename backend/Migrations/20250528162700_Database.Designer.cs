@@ -269,6 +269,13 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+<<<<<<<< HEAD:backend/Migrations/20250528162700_Database.Designer.cs
+========
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>>> LoginHistory:backend/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -283,7 +290,11 @@ namespace backend.Migrations
 
                     b.HasIndex("CreatedById");
 
+<<<<<<<< HEAD:backend/Migrations/20250528162700_Database.Designer.cs
                     b.ToTable("Notification");
+========
+                    b.ToTable("Notifications");
+>>>>>>>> LoginHistory:backend/Migrations/ApplicationDbContextModelSnapshot.cs
                 });
 
             modelBuilder.Entity("backend.Models.NotificationStudent", b =>
@@ -294,6 +305,12 @@ namespace backend.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
+<<<<<<<< HEAD:backend/Migrations/20250528162700_Database.Designer.cs
+========
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+>>>>>>>> LoginHistory:backend/Migrations/ApplicationDbContextModelSnapshot.cs
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -301,7 +318,11 @@ namespace backend.Migrations
 
                     b.HasIndex("StudentId");
 
+<<<<<<<< HEAD:backend/Migrations/20250528162700_Database.Designer.cs
                     b.ToTable("NotificationStudent");
+========
+                    b.ToTable("NotificationStudents");
+>>>>>>>> LoginHistory:backend/Migrations/ApplicationDbContextModelSnapshot.cs
                 });
 
             modelBuilder.Entity("backend.Models.Role", b =>
