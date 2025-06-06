@@ -10,11 +10,12 @@ namespace backend.Models
         public string Name { get; set; } = string.Empty;
         public string Dosage { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public int NurseId { get; set; }
-        [ForeignKey("NurseId")]
-        public Nurse Nurse { get; set; } = new Nurse();
+        public string Note { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User Nurse { get; set; } = null!;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public Student Student { get; set; } = new Student();
+        public Student Student { get; set; } =  null!;
     }    
 }

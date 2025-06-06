@@ -1,0 +1,13 @@
+namespace backend.Models
+{
+    public class NotificationDTO
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string StudentName { get; set; } = string.Empty;
+        public int StudentId { get; set; }
+    }
+}
