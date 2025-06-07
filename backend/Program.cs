@@ -98,7 +98,7 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+                .WithOrigins("http://localhost:3000") // URL của frontend
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials();
@@ -174,12 +174,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCookiePolicy();
-app.UseCors();
+// app.UseCookiePolicy();
+// app.UseCors();
 
 // app.UseHttpsRedirection();
 app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors();                    // 👈 Bật CORS
+app.UseCors("AllowSpecificOrigins");                    // 👈 Bật CORS
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();
