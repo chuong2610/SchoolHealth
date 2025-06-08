@@ -9,11 +9,13 @@ namespace backend.Services
     {
         private readonly IBlogPostRepository _repository;
         private readonly IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BlogPostService(IBlogPostRepository repository, IWebHostEnvironment environment)
+        public BlogPostService(IBlogPostRepository repository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _environment = environment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
@@ -22,13 +24,18 @@ namespace backend.Services
 
             var postDtos = posts.Select(post =>
             {
+                if (post == null) return null;
+
+                var request = _httpContextAccessor.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
+
                 string fileName = post.ImageUrl;
-                string imageUrl = $"/uploads/{fileName}";
+                string imageUrl = $"{baseUrl}/uploads/{fileName}";
                 string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
 
                 if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
                 {
-                    imageUrl = "/uploads/default.jpg";
+                    imageUrl = $"{baseUrl}/uploads/default.jpg";
                 }
 
                 string summary = "";
@@ -77,13 +84,16 @@ namespace backend.Services
             var post = await _repository.GetByIdAsync(id);
             if (post == null) return null;
 
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+
             string fileName = post.ImageUrl;
-            string imageUrl = $"/uploads/{fileName}";
+            string imageUrl = $"{baseUrl}/uploads/{fileName}";
             string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
 
             if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
             {
-                imageUrl = "/uploads/default.jpg";
+                imageUrl = $"{baseUrl}/uploads/default.jpg";
             }
 
             var content = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
