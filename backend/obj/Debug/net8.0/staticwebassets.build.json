@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "/TNbwh0jynV2uSZymikSEoMIVvz5glHAt9KUtGdMAXA=",
+  "Hash": "Lg8CIijld+GrPHGYa8XxpXEgVsgBOM7eXnrtnM22Tds=",
   "Source": "backend",
   "BasePath": "_content/backend",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\uploads\\40b33240-837d-4b82-b941-bc96314f1c0d.jpg",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\",
+      "BasePath": "_content/backend",
+      "RelativePath": "uploads/40b33240-837d-4b82-b941-bc96314f1c0d.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\40b33240-837d-4b82-b941-bc96314f1c0d.jpg"
+    },
     {
       "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "SourceId": "backend",
@@ -34,6 +53,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
+    },
+    {
+      "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\",
+      "BasePath": "_content/backend",
+      "RelativePath": "uploads/ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg"
     },
     {
       "Identity": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\wwwroot\\wwwroot\\uploads\\353f7883-273f-4af7-8389-d14c17664f9c.png",

@@ -22,27 +22,21 @@ namespace backend.Controllers
 
         // POST: api/StudentProfile/declare
         [HttpPost("declare")]
-        public async Task<ActionResult<BaseResponse<StudentProfileDTO>>> DeclareStudentProfile([FromBody] StudentProfileRequest request)
+        public async Task<ActionResult<BaseResponse<object>>> CreateStudentProfile([FromBody] StudentProfileRequest request)
         {
             try
             {
-                var result = await _studentProfileService.CreateStudentProfileAsync(request);
-
-                return Ok(new BaseResponse<StudentProfileDTO>
+                if (request == null)
                 {
-                    Success = true,
-                    Message = "Tạo hoặc cập nhật hồ sơ y tế thành công!",
-                    Data = result
-                });
+                    return BadRequest(new BaseResponse<bool>(false, "Lưu hồ sơ y tế thất bại", false));
+                }
+
+                var isSuccess = await _studentProfileService.CreateStudentProfileAsync(request);
+                return Ok(new BaseResponse<bool>(isSuccess, "Lưu hồ sơ y tế thành công", true));
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse<object>
-                {
-                    Success = false,
-                    Message = ex.InnerException?.Message ?? ex.Message ?? "Tạo hồ sơ y tế thất bại.",
-                    Data = null
-                });
+                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
             }
         }
     }

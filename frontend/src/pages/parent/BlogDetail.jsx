@@ -1,32 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-// const blogData = [
-//   {
-//     id: "1",
-//     title: "Cách phòng tránh bệnh cúm mùa cho học sinh",
-//     date: "15/03/2024",
-//     image:
-//       "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-//     content: `Những biện pháp phòng tránh bệnh cúm mùa hiệu quả cho học sinh trong môi trường học đường.\n\n1. Tiêm phòng cúm đầy đủ.\n2. Giữ vệ sinh cá nhân, rửa tay thường xuyên.\n3. Đeo khẩu trang khi cần thiết.\n4. Tăng cường dinh dưỡng, luyện tập thể thao.\n5. Khi có dấu hiệu bệnh, cần nghỉ học và đi khám bác sĩ.`,
-//   },
-//   {
-//     id: "2",
-//     title: "Dinh dưỡng học đường: Xây dựng thực đơn lành mạnh",
-//     date: "10/03/2024",
-//     image:
-//       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80",
-//     content: `Hướng dẫn xây dựng thực đơn dinh dưỡng cân bằng cho học sinh.\n\n- Đảm bảo đủ 4 nhóm chất: bột đường, đạm, béo, vitamin và khoáng chất.\n- Hạn chế đồ ngọt, nước ngọt có gas.\n- Ăn nhiều rau xanh, trái cây.\n- Uống đủ nước mỗi ngày.`,
-//   },
-//   {
-//     id: "3",
-//     title: "Tầm quan trọng của việc rửa tay đúng cách",
-//     date: "05/03/2024",
-//     image:
-//       "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=80",
-//     content: `Hướng dẫn chi tiết về quy trình rửa tay đúng cách để phòng tránh bệnh.\n\n- Làm ướt tay bằng nước sạch.\n- Dùng xà phòng và chà kỹ các ngón, kẽ tay, móng tay ít nhất 20 giây.\n- Rửa lại bằng nước sạch và lau khô tay.\n- Rửa tay trước khi ăn, sau khi đi vệ sinh, sau khi ho/hắt hơi.`,
-//   },
-// ];
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -52,7 +26,10 @@ const BlogDetail = () => {
         );
 
         //Parse chuỗi JSON trong content
-        response.data.content = JSON.parse(response.data.content);
+        if (typeof response.data.content === "string") {
+          response.data.content = JSON.parse(response.data.content);
+        }
+        // response.data.content = JSON.parse(response.data.content);
         //Kết thúc việc parse chuỗi
 
         setBlog(response.data);
@@ -100,15 +77,23 @@ const BlogDetail = () => {
   //kết thúc sử lí phần loading và lỗi
 
   //Hàm format ngày
+  // const formatDate = (dateString) => {
+  //   return (
+  //     new Date(dateString).toLocaleDateString("vi-VN"),
+  //     {
+  //       day: "2-digit",
+  //       month: "2-digit",
+  //       year: "numeric",
+  //     }
+  //   );
+  // };
+
   const formatDate = (dateString) => {
-    return (
-      new Date(dateString).toLocaleDateString("vi-VN"),
-      {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }
-    );
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
   //Kết thúc hàm format ngày
 
@@ -145,31 +130,31 @@ const BlogDetail = () => {
 
               <h2>Các triệu chứng</h2>
               <ul>
-                {blog.content.Symptoms.map((sympton, index) => (
+                {blog.content.symptoms.map((sympton, index) => (
                   <li key={index}>{sympton}</li>
                 ))}
               </ul>
 
               <h2>Cách phòng tránh</h2>
               <h3>Tiêm phòng</h3>
-              <p>{blog.content.Prevention.Vaccination}</p>
+              <p>{blog.content.prevention.vaccination}</p>
               <h3>Vệ sinh cá nhân</h3>
               <ul>
-                {blog.content.Prevention.PersonalHygiene.map((item, index) => (
+                {blog.content.prevention.personalHygiene.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
 
               <h3>Tăng cường sức đề kháng</h3>
               <ul>
-                {blog.content.Prevention.ImmunityBoost.map((item, index) => (
+                {blog.content.prevention.immunityBoost.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
 
               <h2>Khi nào cần gặp bác sĩ</h2>
               <ul>
-                {blog.content.WhenToSeeDoctor.map((item, index) => (
+                {blog.content.whenToSeeDoctor.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}
               </ul>
