@@ -50,6 +50,11 @@ const BlogDetail = () => {
             },
           }
         );
+
+        //Parse chuỗi JSON trong content
+        response.data.content = JSON.parse(response.data.content);
+        //Kết thúc việc parse chuỗi
+
         setBlog(response.data);
         setLoading(false);
       } catch (err) {
@@ -94,6 +99,19 @@ const BlogDetail = () => {
   }
   //kết thúc sử lí phần loading và lỗi
 
+  //Hàm format ngày
+  const formatDate = (dateString) => {
+    return (
+      new Date(dateString).toLocaleDateString("vi-VN"),
+      {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }
+    );
+  };
+  //Kết thúc hàm format ngày
+
   return (
     <div
       style={{ background: "#f5f7fa", minHeight: "100vh", padding: "32px 0" }}
@@ -119,9 +137,44 @@ const BlogDetail = () => {
             <h1 className="fw-bold mb-3" style={{ fontSize: 30 }}>
               {blog.title}
             </h1>
-            <div style={{ whiteSpace: "pre-line", fontSize: 18 }}>
-              {blog.content}
+
+            {/* Render nội dung từ JSON */}
+            <div>
+              <h2>Giới thiệu</h2>
+              <p>{blog.content.Introduction}</p>
+
+              <h2>Các triệu chứng</h2>
+              <ul>
+                {blog.content.Symptoms.map((sympton, index) => (
+                  <li key={index}>{sympton}</li>
+                ))}
+              </ul>
+
+              <h2>Cách phòng tránh</h2>
+              <h3>Tiêm phòng</h3>
+              <p>{blog.content.Prevention.Vaccination}</p>
+              <h3>Vệ sinh cá nhân</h3>
+              <ul>
+                {blog.content.Prevention.PersonalHygiene.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+
+              <h3>Tăng cường sức đề kháng</h3>
+              <ul>
+                {blog.content.Prevention.ImmunityBoost.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+
+              <h2>Khi nào cần gặp bác sĩ</h2>
+              <ul>
+                {blog.content.WhenToSeeDoctor.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
             </div>
+
             <button
               className="btn btn-outline-primary mt-4"
               onClick={() => navigate(-1)}
