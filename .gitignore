@@ -1,6 +1,6 @@
 # --- .NET ---
 bin/
-obj/
+# obj/
 *.user
 *.suo
 *.log
