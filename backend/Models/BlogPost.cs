@@ -15,5 +15,5 @@ namespace backend.Models
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User Admin { get; set; } = null!;
-    }    
+    }
 }

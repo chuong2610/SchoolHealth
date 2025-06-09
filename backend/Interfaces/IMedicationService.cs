@@ -1,9 +1,11 @@
 using backend.Models.DTO;
+using backend.Models.Request;
 
 namespace backend.Interfaces
 {
     public interface IMedicationService
     {
+        Task<bool> CreateMedicationAsync(MedicationRequest request);
         Task<List<MedicationDTO>> GetMedicationsPendingAsync();
         Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id);
         Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id);
@@ -13,3 +15,4 @@ namespace backend.Interfaces
 
     }
 }
+
