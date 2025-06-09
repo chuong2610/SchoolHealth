@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -94,15 +95,24 @@ builder.Services.AddAuthorization(option =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
-        {
-            builder
-                .WithOrigins("http://localhost:3000") // URL của frontend
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+    // options.AddPolicy("AllowSpecificOrigins",
+    //     builder =>
+    //     {
+    //         builder
+    //             .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+    //             .AllowAnyMethod()
+    //             .AllowAnyHeader()
+    //             .AllowCredentials();
+    //     });
+
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") // 👈 Đúng với React dev server
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // 👈 Chỉ cần nếu dùng cookie
+    });
 });
 
 // Cấu hình Authentication Google + Cookie
@@ -162,6 +172,8 @@ builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
 builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 
 
@@ -174,12 +186,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseCookiePolicy();
+var uploadsPath = Path.Combine(builder.Environment.WebRootPath, "uploads");
+
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+app.UseCookiePolicy();
 // app.UseCors();
+app.UseCors("AllowFrontend"); // 👈 Áp dụng policy đã khai báo ở trên
+
 
 // app.UseHttpsRedirection();
+
 app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors("AllowSpecificOrigins");                    // 👈 Bật CORS
+app.UseCors();                    // 👈 Bật CORS
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();

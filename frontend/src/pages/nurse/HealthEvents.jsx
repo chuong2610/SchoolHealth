@@ -1,541 +1,669 @@
-import React, { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  Modal,
+  Row,
+  Table,
+} from "react-bootstrap";
+import { formatDateTime } from "../../utils/dateFormatter";
+import {
+  getMedicalEventDetail,
+  getMedicalEvents,
+  getMedicalSupply,
+  postMedicalEvent,
+} from "../../api/nurse/healthEventsApi";
+import { toast } from "react-toastify";
 
-const eventsInit = [
-  {
-    id: "EV001",
-    name: "Khám sức khỏe định kỳ",
-    type: "Khám sức khỏe",
-    typeValue: "checkup",
-    dateStart: "01/03/2024",
-    dateEnd: "05/03/2024",
-    location: "Phòng y tế",
-    participants: 120,
-    status: "Đang diễn ra",
-    statusType: "success",
-    desc: "Khám sức khỏe định kỳ cho toàn trường.",
-    note: "Mang theo sổ khám bệnh.",
-  },
-];
+const medicalEventSupplys = {
+  medicalSupplyId: "",
+  quantity: 1,
+};
 
 const HealthEvents = () => {
-  const [events, setEvents] = useState(eventsInit);
-  const [filter, setFilter] = useState("");
-  const [search, setSearch] = useState("");
-  const [modalDetail, setModalDetail] = useState(null); // data
+  const formRef = useRef(null);
+  const [events, setEvents] = useState([]);
+  const [modalEvent, setModalEvent] = useState(false);
+  const [modalEventDetail, setModalEventDetail] = useState({});
   const [modalAdd, setModalAdd] = useState(false);
-  const [modalEdit, setModalEdit] = useState(null); // data
-  const [form, setForm] = useState({
+  const [medicalSupplies, setMedicalSupplies] = useState([
+    {
+      medicalSupplyId: "",
+      quantity: 1,
+    },
+  ]); // khi mo modalAdd se goi api load danh sach thuoc trong kho
+  const [formAdd, setFormAdd] = useState({
     name: "",
-    type: "",
-    dateStart: "",
-    dateEnd: "",
     location: "",
-    participants: "",
-    desc: "",
+    description: "",
     note: "",
+    studentId: "",
+    itemNeeded: [],
   });
 
-  // Lọc
-  const filtered = events.filter(
+  const [search, setSearch] = useState("");
+  const [validated, setValidated] = useState(false);
+
+  const eventFiltered = events.filter(
     (e) =>
-      (filter === "" || e.typeValue === filter) &&
-      (e.name.toLowerCase().includes(search.toLowerCase()) ||
-        e.type.toLowerCase().includes(search.toLowerCase()) ||
-        e.location.toLowerCase().includes(search.toLowerCase()))
+      e.eventType?.toLowerCase().includes(search.toLowerCase()) ||
+      e.location?.toLowerCase().includes(search.toLowerCase()) ||
+      e.studentName?.toLowerCase().includes(search.toLowerCase()) ||
+      e.nurseName?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Thao tác
-  const handleDelete = (e) => {
-    setEvents(events.filter((item) => item.id !== e.id));
+  const handleChangeSelect = (idx, value) => {
+    const updateItemNeeded = [...formAdd.itemNeeded];
+    updateItemNeeded[idx] = {
+      quantity: 1,
+      medicalSupplyId: value,
+    };
+    setFormAdd((prev) => ({
+      ...prev,
+      itemNeeded: updateItemNeeded,
+    }));
   };
-  // Thêm mới
-  const handleAdd = (ev) => {
-    ev.preventDefault();
-    setEvents([
-      {
-        id: `EV${Math.floor(Math.random() * 1000)}`,
-        name: form.name,
-        type:
-          form.type === "checkup"
-            ? "Khám sức khỏe"
-            : form.type === "vaccination"
-            ? "Tiêm chủng"
-            : form.type === "training"
-            ? "Đào tạo"
-            : "Khác",
-        typeValue: form.type,
-        dateStart: form.dateStart,
-        dateEnd: form.dateEnd,
-        location: form.location,
-        participants: form.participants,
-        status: "Sắp diễn ra",
-        statusType: "primary",
-        desc: form.desc,
-        note: form.note,
-      },
-      ...events,
-    ]);
-    setModalAdd(false);
-    setForm({
+
+  // const handleChangeQuantity = (idx, value) => {
+  //   // Nếu input rỗng (""), thì chưa xử lý
+  //   // if (typeof value === "number") {
+  //   //   console.log("s");
+  //   //   return;
+  //   // }
+
+  //   const updateItemNeeded = [...formAdd.itemNeeded];
+  //   const selectedSupply = updateItemNeeded[idx];
+  //   const maxQuantity = medicalSupplies.find(
+  //     (m) => m.id === selectedSupply.id
+  //   )?.quantity;
+  //   updateItemNeeded[idx] = {
+  //     ...selectedSupply,
+  //     quantity: value > maxQuantity ? maxQuantity : value < 1 ? 1 : value,
+  //   };
+
+  //   console.log(updateItemNeeded[idx]);
+
+  //   setFormAdd((prev) => ({
+  //     ...prev,
+  //     itemNeeded: updateItemNeeded,
+  //   }));
+  // };
+
+  // const handleChangeQuantity = (idx, value) => {
+  //   const updateItemNeeded = [...formAdd.itemNeeded];
+  //   const selectedSupply = updateItemNeeded[idx];
+
+  //   const maxQuantity =
+  //     medicalSupplies.find((m) => String(m.id) === String(selectedSupply.id))
+  //       ?.quantity || 1;
+
+  //   updateItemNeeded[idx] = {
+  //     ...selectedSupply,
+  //     quantity: Math.min(Math.max(1, Number(value)), maxQuantity),
+  //   };
+
+  //   setFormAdd((prev) => ({
+  //     ...prev,
+  //     itemNeeded: updateItemNeeded,
+  //   }));
+  // };
+
+  const handleChangeQuantity = (idx, value) => {
+    const updateItemNeeded = [...formAdd.itemNeeded];
+    const selectedSupply = updateItemNeeded[idx];
+
+    // Nếu là chuỗi rỗng, cập nhật tạm thời
+    if (value === "") {
+      updateItemNeeded[idx] = {
+        ...selectedSupply,
+        quantity: "", // giữ rỗng để user tiếp tục nhập
+      };
+    } else {
+      const maxQuantity =
+        medicalSupplies.find(
+          (m) => String(m.id) === String(selectedSupply.medicalSupplyId)
+        )?.quantity || 1;
+
+      updateItemNeeded[idx] = {
+        ...selectedSupply,
+        quantity: Math.min(Math.max(1, value), maxQuantity),
+      };
+    }
+
+    setFormAdd((prev) => ({
+      ...prev,
+      itemNeeded: updateItemNeeded,
+    }));
+  };
+
+  const handleRemoveSupply = (idx) => {
+    const updateItemNeeded = [...formAdd.itemNeeded].filter(
+      (_, i) => i !== idx
+    );
+    setFormAdd({ ...formAdd, itemNeeded: updateItemNeeded });
+  };
+
+  const handleAddSupply = () => {
+    const updateItemNeeded = [...formAdd.itemNeeded, medicalEventSupplys];
+    setFormAdd({ ...formAdd, itemNeeded: updateItemNeeded });
+  };
+
+  const handleSubmitForm = async (e) => {
+    e.preventDefault();
+    const form = formRef.current;
+
+    if (!form.checkValidity()) {
+      e.stopPropagation(); //neu form ko hop le thi chay dong nay de dung su kien
+      setValidated(true);
+      return;
+    }
+
+    const data = {
+      eventType: formAdd.name,
+      location: formAdd.location,
+      description: formAdd.description,
+      date: new Date().toISOString(),
+      medicalEventSupplys: formAdd.itemNeeded,
+      studentNumber: formAdd.studentId,
+      nurseId: localStorage.userId,
+      // nurseId: localStorage.userId
+    };
+    console.log(data);
+
+    try {
+      const res = await postMedicalEvent(data);
+      toast.success("Thêm sự kiện thành công");
+      setModalAdd(false);
+      resetFormAdd();
+      const updatedEvents = await getMedicalEvents();
+      setEvents(updatedEvents);
+    } catch (error) {
+      toast.error("Lỗi khi thêm sự kiện");
+      console.log("Loi handleSubmitForm");
+    }
+  };
+
+  const resetFormAdd = () => {
+    setFormAdd({
       name: "",
-      type: "",
-      dateStart: "",
-      dateEnd: "",
       location: "",
-      participants: "",
-      desc: "",
+      description: "",
       note: "",
+      studentId: "",
+      itemNeeded: [{ medicalSupplyId: "", quantity: 1 }],
     });
   };
 
+  const fetchMedicalSupply = async () => {
+    // load danh sach medical supply
+    try {
+      const res = await getMedicalSupply();
+      console.log(res);
+      setMedicalSupplies(res);
+      setModalAdd(true);
+    } catch (error) {
+      console.log("Loi handleSubmitForm, load danh sach MedicalSupply");
+    }
+  };
+
+  const loadMedicalEventDetailModal = async (eventId) => {
+    try {
+      const res = await getMedicalEventDetail(eventId);
+      console.log(res);
+      setModalEventDetail(res);
+      setModalEvent(true);
+    } catch (error) {
+      console.log("Loi loadMedicalEventDetailModal");
+    }
+  };
+
+  useEffect(() => {
+    const fetchMedicalEvents = async () => {
+      try {
+        const res = await getMedicalEvents();
+        console.log(res);
+        setEvents(res);
+      } catch (error) {
+        console.log("Loi fetchMedicalEvents");
+      }
+    };
+    fetchMedicalEvents();
+  }, []);
+
   return (
-    <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2 className="fw-bold mb-0" style={{ fontSize: 28 }}>
-          Quản lý Sự kiện Y tế
-        </h2>
-        <button className="btn btn-primary" onClick={() => setModalAdd(true)}>
-          <i className="fas fa-plus me-2"></i> Thêm Sự kiện Mới
-        </button>
-      </div>
-      <div className="card shadow-sm border-0 rounded-4">
-        <div className="card-header bg-white border-0 rounded-top-4">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h5 className="mb-0 fw-bold">Danh sách sự kiện y tế</h5>
-            <div className="d-flex align-items-center gap-2 flex-wrap">
-              <select
-                className="form-select me-2"
-                style={{ minWidth: 160 }}
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              >
-                <option value="">Tất cả loại</option>
-                <option value="checkup">Khám sức khỏe</option>
-                <option value="vaccination">Tiêm chủng</option>
-                <option value="training">Đào tạo</option>
-                <option value="other">Khác</option>
-              </select>
-              <div style={{ maxWidth: 240 }}>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Tìm kiếm..."
+    <Container className="py-4">
+      <Row className="justify-content-center">
+        <Col>
+          <Row className="d-flex justify-content-between align-item-center">
+            <Col className="text-start">
+              <h2>Quản lý Sự kiện Y tế</h2>
+            </Col>
+            <Col className="text-end">
+              <Button onClick={() => fetchMedicalSupply()}>
+                <i className="fas fa-plus me-2"></i>Thêm Sự kiện Mới
+              </Button>
+            </Col>
+          </Row>
+          <Row></Row>
+        </Col>
+      </Row>
+
+      {/* <Row className="shadow-sm border-0 rounded-4">
+        <Row>
+          <Col md={6}>
+            <h5>Danh sách sự kiện y tế</h5>
+          </Col>
+          <Col md={3}></Col>
+          <Col md={3}></Col>
+        </Row>
+      </Row> */}
+
+      <Card className="shadow-sm border-0 rounded-3 mt-3">
+        <Card.Header>
+          <Row>
+            <Col md={9}>
+              <h4>Danh sách sự kiện y tế</h4>
+            </Col>
+            <Col md={3}>
+              <Form.Group>
+                <Form.Label>Tìm kiếm</Form.Label>
+                <Form.Control
+                  type="input"
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card-body">
-          <div className="table-responsive">
-            <table className="table align-middle">
-              <thead>
-                <tr>
-                  <th>Mã</th>
-                  <th>Tên sự kiện</th>
-                  <th>Loại</th>
-                  <th>Ngày bắt đầu</th>
-                  <th>Ngày kết thúc</th>
-                  <th>Địa điểm</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    // console.log(search);
+                  }}
+                ></Form.Control>
+              </Form.Group>
+            </Col>
+          </Row>
+        </Card.Header>
+        <Card.Body>
+          <Table responsive className="text-center">
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Tên sự kiện</th>
+                <th>Địa điểm</th>
+                <th>Thời gian</th>
+                <th>Học sinh</th>
+                <th>Y tá</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {eventFiltered?.map((e) => (
+                <tr key={e.id}>
+                  <td>{e.id}</td>
+                  <td>{e.eventType}</td>
+                  <td>{e.location}</td>
+                  <td>{formatDateTime(e.date)}</td>
+                  <td>{e.studentName}</td>
+                  <td>{e.nurseName}</td>
+                  <td>
+                    <Button
+                      variant="info"
+                      className="sm me-1"
+                      title="Xem chi tiết"
+                      onClick={() => loadMedicalEventDetailModal(e.id)}
+                    >
+                      <i className="fas fa-eye"></i>
+                    </Button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filtered.map((e) => (
-                  <tr key={e.id}>
-                    <td>{e.id}</td>
-                    <td>{e.name}</td>
-                    <td>{e.type}</td>
-                    <td>{e.dateStart}</td>
-                    <td>{e.dateEnd}</td>
-                    <td>{e.location}</td>
-                    <td>
-                      <span className={`badge bg-${e.statusType}`}>
-                        {e.status}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-info me-1"
-                        title="Xem chi tiết"
-                        onClick={() => setModalDetail(e)}
-                      >
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-warning me-1"
-                        title="Chỉnh sửa"
-                        onClick={() => setModalEdit(e)}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        title="Xóa"
-                        onClick={() => handleDelete(e)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {filtered.length === 0 && (
+              ))}
+              {eventFiltered.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="text-center text-muted">
+                    Không có sự kiện nào
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
+
+      {/* Modal Event */}
+      {modalEvent && (
+        <Modal
+          show={modalEvent}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          onHide={() => setModalEvent(false)}
+        >
+          <Modal.Header closeButton>
+            <h5>Chi tiết sự kiện y tế</h5>
+          </Modal.Header>
+          <Modal.Body>
+            <Row className="mb-3">
+              <Col>
+                <Form.Label>Tên sự kiện</Form.Label>
+                <p>{modalEventDetail.eventType}</p>
+              </Col>
+              <Col>
+                <Form.Label>Địa điểm</Form.Label>
+                <p>{modalEventDetail.location}</p>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <Form.Label>Thời gian</Form.Label>
+                <p>{formatDateTime(modalEventDetail.date)}</p>
+              </Col>
+              <Col>
+                <Form.Label>Mô tả</Form.Label>
+                <p>{modalEventDetail.description}</p>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col>
+                <Form.Label>Học sinh</Form.Label>
+                <p>{modalEventDetail.studentName}</p>
+              </Col>
+              <Col>
+                <Form.Label>Y tá</Form.Label>
+                <p>{modalEventDetail.nurseName}</p>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Table responsive>
+                <thead>
                   <tr>
-                    <td colSpan={8} className="text-center text-muted">
-                      Không có sự kiện nào
-                    </td>
+                    <th>Tên vật tư</th>
+                    <th>Số lượng</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      {/* Modal chi tiết */}
-      {modalDetail && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", background: "rgba(0,0,0,0.2)" }}
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content rounded-4">
-              <div className="modal-header">
-                <h5 className="modal-title">Chi tiết sự kiện y tế</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setModalDetail(null)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Mã sự kiện:</label>
-                    <p>{modalDetail.id}</p>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Tên sự kiện:</label>
-                    <p>{modalDetail.name}</p>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Loại sự kiện:</label>
-                    <p>{modalDetail.type}</p>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Trạng thái:</label>
-                    <span className={`badge bg-${modalDetail.statusType}`}>
-                      {modalDetail.status}
-                    </span>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Ngày bắt đầu:</label>
-                    <p>{modalDetail.dateStart}</p>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Ngày kết thúc:</label>
-                    <p>{modalDetail.dateEnd}</p>
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">Địa điểm:</label>
-                    <p>{modalDetail.location}</p>
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label fw-bold">
-                      Số lượng tham gia:
-                    </label>
-                    <p>{modalDetail.participants}</p>
-                  </div>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-bold">Mô tả:</label>
-                  <p>
-                    {modalDetail.desc || (
-                      <span className="text-muted">Không có</span>
-                    )}
-                  </p>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-bold">Ghi chú:</label>
-                  <p>
-                    {modalDetail.note || (
-                      <span className="text-muted">Không có</span>
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setModalDetail(null)}
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+                </thead>
+                <tbody>
+                  {modalEventDetail.supplies?.map((s, idx) => (
+                    <tr key={idx}>
+                      <td>{s.medicalSupplyName}</td>
+                      <td>{s.quantity}</td>
+                    </tr>
+                  ))}
+                  {modalEventDetail.supplies?.length === 0 && (
+                    <tr>
+                      <td colSpan={2} className="text-center">
+                        Không có vật tư
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setModalEvent(false)}>
+              Đóng
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-      {/* Modal thêm mới */}
+
+      {/* Modal Add Health Event */}
       {modalAdd && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", background: "rgba(0,0,0,0.2)" }}
-          tabIndex="-1"
+        <Modal
+          show={modalAdd}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          onHide={() => {
+            resetFormAdd();
+            setModalAdd(false);
+          }}
         >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content rounded-4">
-              <div className="modal-header">
-                <h5 className="modal-title">Thêm Sự kiện Y tế Mới</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setModalAdd(false)}
-                ></button>
-              </div>
-              <form onSubmit={handleAdd}>
-                <div className="modal-body">
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <label className="form-label">Tên sự kiện</label>
-                      <input
-                        className="form-control"
-                        required
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, name: e.target.value }))
-                        }
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Loại sự kiện</label>
-                      <select
-                        className="form-select"
-                        required
-                        value={form.type}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, type: e.target.value }))
-                        }
-                      >
-                        <option value="">Chọn loại...</option>
-                        <option value="checkup">Khám sức khỏe</option>
-                        <option value="vaccination">Tiêm chủng</option>
-                        <option value="training">Đào tạo</option>
-                        <option value="other">Khác</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <label className="form-label">Ngày bắt đầu</label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        required
-                        value={form.dateStart}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, dateStart: e.target.value }))
-                        }
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Ngày kết thúc</label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        required
-                        value={form.dateEnd}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, dateEnd: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <label className="form-label">Địa điểm</label>
-                      <input
-                        className="form-control"
-                        required
-                        value={form.location}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, location: e.target.value }))
-                        }
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Số lượng tham gia</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        required
-                        value={form.participants}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            participants: e.target.value,
-                          }))
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Mô tả</label>
-                    <textarea
-                      className="form-control"
-                      rows={4}
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <h5>Thêm Sự kiện Y tế Mới</h5>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form
+              id="myForm"
+              ref={formRef}
+              noValidate
+              validated={validated}
+              onSubmit={handleSubmitForm}
+            >
+              <Row className="mb-3">
+                <Col md={6}>
+                  <Form.Group>
+                    <Form.Label>Tên sự kiện</Form.Label>
+                    <Form.Control
                       required
-                      value={form.desc}
+                      value={formAdd.name}
                       onChange={(e) =>
-                        setForm((f) => ({ ...f, desc: e.target.value }))
+                        setFormAdd({ ...formAdd, name: e.target.value })
                       }
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Ghi chú</label>
-                    <textarea
-                      className="form-control"
-                      rows={3}
-                      value={form.note}
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      Vui lòng nhập tên sự kiện
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>Địa điểm</Form.Label>
+                    <Form.Control
+                      required
+                      value={formAdd.location}
                       onChange={(e) =>
-                        setForm((f) => ({ ...f, note: e.target.value }))
+                        setFormAdd({ ...formAdd, location: e.target.value })
                       }
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setModalAdd(false)}
-                  >
-                    Đóng
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Lưu
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      Vui lòng nhập địa điểm
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col md={3}>
+                  <Form.Group>
+                    <Form.Label>Mã số học sinh</Form.Label>
+                    <Form.Control
+                      required
+                      value={formAdd.studentId}
+                      onChange={(e) =>
+                        setFormAdd({ ...formAdd, studentId: e.target.value })
+                      }
+                    ></Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      Vui lòng nhập mã số học sinh
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row className="mb-3">
+                <Form.Group>
+                  <Form.Label>Mô tả</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    value={formAdd.description}
+                    onChange={(e) =>
+                      setFormAdd({
+                        ...formAdd,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Mô tả sự kiện..."
+                  ></Form.Control>
+                </Form.Group>
+              </Row>
+              <Row className="mb-2">
+                <Form.Label>Tạo mẫu vật tư cần dùng</Form.Label>
+              </Row>
+              <Row className="justify-content-center mb-3">
+                <Row className="justify-content-center">
+                  {formAdd.itemNeeded.map((item, idx) => (
+                    <Row
+                      key={idx}
+                      className="mb-4 border rounded justify-content-center p-3"
+                    >
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label>Vật tư</Form.Label>
+
+                          <Form.Select
+                            required
+                            value={item.medicalSupplyId || ""}
+                            onChange={(e) =>
+                              handleChangeSelect(idx, e.target.value)
+                            }
+                          >
+                            <option value="">--Chọn vật tư--</option>
+                            {medicalSupplies?.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                {item.name}
+                              </option>
+                            ))}
+                          </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            Vui lòng chọn vật tư, xóa mẫu nếu không cần
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                      </Col>
+                      <Col md={4} className="">
+                        <Form.Group>
+                          <Form.Label>Số Lượng</Form.Label>
+                          {/* <Form.Control
+                            type="number"
+                            disabled={
+                              formAdd.itemNeeded[idx].id === "" ? true : false
+                            }
+                            min={1}
+                            max={
+                              medicalSupplies?.find(
+                                (i) =>
+                                  String(i.id) ===
+                                  String(formAdd.itemNeeded[idx].id)
+                              )?.quantity || ""
+                            }
+                            value={formAdd.itemNeeded[idx]?.quantity}
+                            onChange={(e) =>
+                              handleChangeQuantity(idx, e.target.value)
+                            }
+                          ></Form.Control> */}
+                          <Form.Control
+                            disabled={
+                              formAdd.itemNeeded[idx].medicalSupplyId === ""
+                            }
+                            type="number"
+                            value={item.quantity}
+                            onBlur={(e) => {
+                              const val = e.target.value.trim();
+                              if (val === "" || Number(val) === 0) {
+                                handleChangeQuantity(idx, 1);
+                              }
+                            }}
+                            // onChange={(e) => {
+                            //   const value = e.target.value;
+
+                            //   // Chỉ cho phép số
+                            //   if (!/^\d*$/.test(value)) return;
+
+                            //   if (value === "") {
+                            //     // Cho phép xóa input tạm thời (sẽ được xử lý khi blur)
+                            //     const updateItemNeeded = [
+                            //       ...formAdd.itemNeeded,
+                            //     ];
+                            //     updateItemNeeded[idx] = {
+                            //       ...updateItemNeeded[idx],
+                            //       quantity: "",
+                            //     };
+                            //     setFormAdd((prev) => ({
+                            //       ...prev,
+                            //       itemNeeded: updateItemNeeded,
+                            //     }));
+                            //     return;
+                            //   }
+
+                            //   const parsedValue = Number(value);
+                            //   if (parsedValue < 1) return;
+
+                            //   handleChangeQuantity(idx, parsedValue);
+                            // }}
+
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              // Không cho phép ký tự không phải số
+                              if (!/^\d*$/.test(value)) return;
+
+                              // Gọi lại hàm chính, hàm sẽ xử lý "" hoặc số tùy theo giá trị
+                              handleChangeQuantity(
+                                idx,
+                                value === "" ? "" : Number(value)
+                              );
+                            }}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={2} className="">
+                        <Form.Group>
+                          <Form.Label>Thao tác</Form.Label>
+                          <Button
+                            variant="outline-danger"
+                            className="px-4"
+                            onClick={() => handleRemoveSupply(idx)}
+                          >
+                            <i className="fas fa-trash me-1"></i>Xóa
+                          </Button>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  ))}
+                </Row>
+                <Row>
+                  <Col>
+                    <Button
+                      variant="outline-primary"
+                      className="mt-2 mb-3"
+                      onClick={() => handleAddSupply()}
+                    >
+                      <i className="fas fa-plus me-2"></i> Thêm mẫu
+                    </Button>
+                  </Col>
+                </Row>
+              </Row>
+
+              {/* <Row>
+                <Form.Group>
+                  <Form.Label>Ghi chú</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    value={formAdd.note}
+                    onChange={(e) =>
+                      setFormAdd({ ...formAdd, note: e.target.value })
+                    }
+                    placeholder="Nhập lưu ý (nếu cần) ..."
+                  ></Form.Control>
+                </Form.Group>
+              </Row> */}
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                resetFormAdd();
+                setModalAdd(false);
+              }}
+            >
+              Đóng
+            </Button>
+            <Button variant="primary" type="submit" form="myForm">
+              Gửi
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-      {/* Modal sửa (demo) */}
-      {modalEdit && (
-        <div
-          className="modal fade show"
-          style={{ display: "block", background: "rgba(0,0,0,0.2)" }}
-          tabIndex="-1"
-        >
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content rounded-4">
-              <div className="modal-header">
-                <h5 className="modal-title">Chỉnh sửa sự kiện (demo)</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setModalEdit(null)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label className="form-label">Tên sự kiện</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.name}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Loại sự kiện</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.type}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Ngày bắt đầu</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.dateStart}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Ngày kết thúc</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.dateEnd}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Địa điểm</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.location}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Số lượng tham gia</label>
-                  <input
-                    className="form-control"
-                    value={modalEdit.participants}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Mô tả</label>
-                  <textarea
-                    className="form-control"
-                    value={modalEdit.desc}
-                    disabled
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Ghi chú</label>
-                  <textarea
-                    className="form-control"
-                    value={modalEdit.note}
-                    disabled
-                  />
-                </div>
-                <div className="alert alert-info small">
-                  * Demo: Chỉ xem, chưa cho phép chỉnh sửa thực tế.
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setModalEdit(null)}
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Custom CSS cho giống bản gốc */}
-      <style>{`
-        .card { border-radius: 18px !important; }
-        .card-header { border-radius: 18px 18px 0 0 !important; }
-        .table th, .table td { vertical-align: middle !important; }
-        .badge { font-size: 15px; padding: 7px 16px; border-radius: 8px; }
-        .form-select, .form-control { border-radius: 8px; }
-        .modal-backdrop { display: none; }
-      `}</style>
-    </div>
+    </Container>
   );
 };
 

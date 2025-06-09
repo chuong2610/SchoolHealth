@@ -23,12 +23,37 @@ namespace backend.Controllers
             }
 
             var createdMedicalEvent = await _medicalEventService.CreateMedicalEventAsync(request);
-            if(!createdMedicalEvent)
+            if (!createdMedicalEvent)
             {
                 return StatusCode(500, new BaseResponse<bool>(false, "An error occurred while creating the medical event", false));
             }
 
             return Ok(new BaseResponse<bool>(true, "Medical event created successfully", true));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMedicalEventById(int id)
+        {
+            var medicalEvent = await _medicalEventService.GetMedicalEventByIdAsync(id);
+            if (medicalEvent == null)
+            {
+                return NotFound(new BaseResponse<string>(null, "Medical event not found", false));
+            }
+            return Ok(new BaseResponse<MedicalEventDetailDTO>(medicalEvent, "Medical event retrieved successfully", true));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllMedicalEvents()
+        {
+            try
+            {
+                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync();
+                return Ok(new BaseResponse<List<MedicalEventDTO>>(medicalEvents, "Medical events retrieved successfully", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Error: {ex.Message}", false));
+            }
         }
     }
 }

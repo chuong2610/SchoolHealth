@@ -1,15 +1,18 @@
 import React from "react";
+<<<<<<< HEAD
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+=======
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+>>>>>>> e38f409ca73831a352442104dd035d145999f16c
 import MainLayout from "./layouts/MainLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import NurseDashboard from "./pages/nurse/Dashboard";
 import ParentDashboard from "./pages/parent/Dashboard";
-import StudentDashboard from "./pages/student/Dashboard";
 import HealthDeclaration from "./pages/parent/HealthDeclaration";
 import Notifications from "./pages/parent/Notifications";
 import HealthHistory from "./pages/parent/HealthHistory";
@@ -18,13 +21,6 @@ import Profile from "./pages/parent/Profile";
 import Settings from "./pages/parent/Settings";
 import BlogDetail from "./pages/parent/BlogDetail";
 import { useNavigate } from "react-router-dom";
-import StudentHome from "./pages/student/Home";
-import HealthInfo from "./pages/student/HealthInfo";
-import VaccinationHistory from "./pages/student/VaccinationHistory";
-import HealthEvents from "./pages/student/HealthEvents";
-import StudentProfile from "./pages/student/Profile";
-import StudentSettings from "./pages/student/Settings";
-import StudentBlogDetail from "./pages/student/BlogDetail";
 import NurseHealthDeclaration from "./pages/nurse/HealthDeclaration";
 import NurseReceiveMedicine from "./pages/nurse/ReceiveMedicine";
 import NurseHealthEvents from "./pages/nurse/HealthEvents";
@@ -39,20 +35,35 @@ import User from "./pages/admin/User";
 import Accounts from "./pages/admin/Accounts";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
-import Login from "./pages/login/Login";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+
+import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
 import "bootstrap/dist/css/bootstrap.min.css";
+<<<<<<< HEAD
 import MoreKnow from "./pages/parent/MoreKnow";
 import About from "./pages/parent/About";
 import Contact from "./pages/parent/Contact";
 import FAQ from "./pages/parent/FAQ";
 import Privacy from "./pages/parent/Privacy";
+=======
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+import Login from "./pages/login/Login";
+import Unauthorized from "./pages/login/Unauthorized";
+>>>>>>> e38f409ca73831a352442104dd035d145999f16c
 
 function App() {
   return (
-    <Router>
+    <AuthProvider>
+    <ToastContainer />
       <Routes>
-        {/* Route login KHÔNG bọc MainLayout */}
+        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+<<<<<<< HEAD
         {/* Các route khác bọc MainLayout */}
         <Route
           path="/*"
@@ -161,19 +172,61 @@ function App() {
             </MainLayout>
           }
         />
-      </Routes>
-    </Router>
-  );
-}
+=======
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
-function Logout() {
-  const navigate = useNavigate();
-  React.useEffect(() => {
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/login");
-  }, [navigate]);
-  return null;
+        {/* Main Layout Route */}
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Navigate to="/login" replace />} />
+
+          {/* Admin Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="admin">
+              <Route index element={<AdminDashboard />} />
+              <Route path="accounts" element={<Accounts />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="medicines/plan" element={<MedicinePlan />} />
+              <Route path="medicines/requests" element={<MedicineRequests />} />
+              <Route path="medicines/inventory" element={<MedicineInventory />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="profile" element={<AdminProfile />} />
+              <Route path="settings" element={<AdminSettings />} />
+            </Route>
+          </Route>
+
+          {/* Nurse Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['nurse']} />}>
+            <Route path="nurse">
+              <Route index element={<NurseDashboard />} />
+              <Route path="health-declaration" element={<NurseHealthDeclaration />} />
+              <Route path="receive-medicine" element={<NurseReceiveMedicine />} />
+              <Route path="health-events" element={<NurseHealthEvents />} />
+              <Route path="profile" element={<NurseProfile />} />
+              <Route path="settings" element={<NurseSettings />} />
+            </Route>
+          </Route>
+
+          {/* Parent Routes */}
+          <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
+            <Route path="parent">
+              <Route index element={<ParentDashboard />} />
+              <Route path="health-declaration" element={<HealthDeclaration />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="health-history" element={<HealthHistory />} />
+              <Route path="send-medicine" element={<SendMedicine />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="blog/:id" element={<BlogDetail />} />
+              <Route path="health-check" element={<StudentHealthCheck />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Route>
+>>>>>>> e38f409ca73831a352442104dd035d145999f16c
+      </Routes>
+    </AuthProvider>
+  );
 }
 
 export default App;
