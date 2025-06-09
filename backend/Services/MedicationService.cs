@@ -12,12 +12,12 @@ namespace backend.Services
     public class MedicationService : IMedicationService
     {
         private readonly IMedicationRepository _medicationRepository;
+
         private readonly ApplicationDbContext _context;
         private readonly IStudentService _studentService;
 
         public MedicationService(
             IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
-
         {
             _medicationRepository = medicationRepository;
             _context = context;
@@ -62,9 +62,15 @@ namespace backend.Services
             return medications.Select(m => MapToDTO(m)).ToList();
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsByNurseIdAsync(int id)
+        public async Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id)
         {
-            var medications = await _medicationRepository.GetMedicationsByNurseIdAsync(id);
+            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id);
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id)
+        {
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
 
@@ -85,6 +91,7 @@ namespace backend.Services
                     Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
+                ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
@@ -110,6 +117,7 @@ namespace backend.Services
                     Note = m.Note ?? ""
                 }).ToList(),
                 CreatedDate = medication.Date,
+                ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
                 StudentClass = medication.Student?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
@@ -118,6 +126,12 @@ namespace backend.Services
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
 
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId)
+        {
+            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
+            return medications.Select(m => MapToDTO(m)).ToList();
         }
     }
 }
