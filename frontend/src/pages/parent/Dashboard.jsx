@@ -43,6 +43,16 @@ const ParentDashboard = () => {
     /**Kết thúc sử lí logic để nạp API */
   }
 
+  //Bắt đầu hàm format ngày
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+  //Kết thúc hàm format ngày
+
   return (
     <div>
       {/* Mở đầu Banner Section */}
@@ -131,7 +141,9 @@ const ParentDashboard = () => {
                       }}
                     />
                     <div className="card-body">
-                      <small className="text-muted">{blog.createdAt}</small>
+                      <small className="text-muted">
+                        {formatDate(blog.createdAt)}
+                      </small>
                       <h5 className="card-title mt-2">{blog.title}</h5>
                       <p className="card-text">
                         {blog.contentSummary.length > 100

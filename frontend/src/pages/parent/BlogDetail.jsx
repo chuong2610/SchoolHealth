@@ -117,7 +117,7 @@ const BlogDetail = () => {
           />
           <div className="card-body p-4">
             <div className="text-muted mb-2" style={{ fontSize: 16 }}>
-              {blog.createdAt}
+              {formatDate(blog.createdAt)}
             </div>
             <h1 className="fw-bold mb-3" style={{ fontSize: 30 }}>
               {blog.title}
