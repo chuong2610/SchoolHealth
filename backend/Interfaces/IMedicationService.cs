@@ -1,7 +1,7 @@
 using backend.Models.DTO;
 using backend.Models.Request;
 
-namespace backend.Services
+namespace backend.Interfaces
 {
     public interface IMedicationService
     {
