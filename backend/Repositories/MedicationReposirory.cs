@@ -90,7 +90,6 @@ namespace backend.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-
         public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId)
         {
             return await _context.Medications
@@ -101,6 +100,5 @@ namespace backend.Repositories
                 .Where(m => m.Student.ParentId == parentId)
                 .ToListAsync();
         }
-
     }
 }
