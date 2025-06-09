@@ -37,7 +37,7 @@ namespace backend.Controllers
 
         [HttpPatch]
         [Authorize]
-        public async Task<IActionResult> UpdateNotificationStudent([FromBody] NotificationStudentRequest request)
+        public async Task<IActionResult> updateNotificationStudent([FromBody] NotificationStudentRequest request)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace backend.Controllers
                     return BadRequest(new BaseResponse<bool>(false, "Request body is null", false));
                 }
 
-                var isSuccess = await _notificationStudentService.UpdateNotificationStudentAsync(request);
+                var isSuccess = await _notificationStudentService.createNotificationStudentAsync(request);
                 return Ok(new BaseResponse<bool>(isSuccess, "Xác nhận thành công báo thành công", true));
             }
             catch (Exception ex)

@@ -26,6 +26,7 @@ namespace backend.Services
             // return notifications.Select(n => MapToDTO(n)).ToList();
 
         }
+
         public async Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);
@@ -64,7 +65,6 @@ namespace backend.Services
             {
                 Id = notification.Id,
                 Title = notification.Title,
-                Name = notification.Name ?? string.Empty,
                 Message = notification.Message,
                 Note = notification.Note ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
@@ -82,10 +82,10 @@ namespace backend.Services
             return new NotificationDTO
             {
                 Id = notification.Id,
-                Name = notification.Name ?? string.Empty,
-                Title = notification.Title ?? string.Empty,
-                Message = notification.Message ?? string.Empty,
-                Type = notification.Type ?? string.Empty,
+                Name = notification.Name,
+                Title = notification.Title,
+                Message = notification.Message,
+                Type = notification.Type,
                 CreatedAt = notification.CreatedAt,
                 StudentId = stusentId,
                 StudentName = studentName
