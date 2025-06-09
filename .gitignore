@@ -13,6 +13,9 @@ obj/
 *.log
 .vs/
 .vscode/
+*.dll
+*.exe
+*.pdb
 
 # --- React / Node.js ---
 node_modules/
