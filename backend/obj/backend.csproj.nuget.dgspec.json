@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\backend.csproj": {}
+    "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj": {}
   },
   "projects": {
-    "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\backend.csproj": {
+    "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\backend.csproj",
+        "projectUniqueName": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "D:\\code.ansenpai\\SchoolHealth-SWP391\\backend\\obj\\",
+        "projectPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\HIEU NHAN\\.nuget\\packages\\",
+        "outputPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\HIEU NHAN\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -73,9 +73,15 @@
               "target": "Package",
               "version": "[9.0.5, )"
             },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[8.1.2, )"
+              "version": "[8.1.4, )"
             }
           },
           "imports": [
