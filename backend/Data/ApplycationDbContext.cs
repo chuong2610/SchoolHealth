@@ -24,7 +24,6 @@ namespace backend.Data
         public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
 
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>()
