@@ -7,7 +7,10 @@ F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.pdb
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Azure.Core.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Azure.Identity.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\BCrypt.Net-Next.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Humanizer.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Build.Locator.dll
@@ -153,6 +156,7 @@ F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.sourcelink.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets.build.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets.development.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets\msbuild.backend.Microsoft.AspNetCore.StaticWebAssets.props
@@ -167,10 +171,7 @@ F:\dev\.net\swp\backend\obj\Debug\net8.0\refint\backend.dll
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.pdb
 F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 F:\dev\.net\swp\backend\obj\Debug\net8.0\ref\backend.dll
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.sourcelink.json
-F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\BCrypt.Net-Next.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+<<<<<<< HEAD
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
@@ -348,3 +349,5 @@ D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.csproj.Up2Date
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\ref\backend.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
+=======
+>>>>>>> origin/main

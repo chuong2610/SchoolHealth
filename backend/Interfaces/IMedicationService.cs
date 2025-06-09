@@ -7,9 +7,11 @@ namespace backend.Interfaces
     {
         Task<bool> CreateMedicationAsync(MedicationRequest request);
         Task<List<MedicationDTO>> GetMedicationsPendingAsync();
-        Task<List<MedicationDTO>> GetMedicationsByNurseIdAsync(int id);
+        Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id);
+        Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id);
         Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id);
         Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId);
+        Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId);
 
     }
 }

@@ -55,12 +55,26 @@ namespace backend.Controllers
             }
         }
 
-        [HttpGet("nurse/{id}")]
-        public async Task<IActionResult> GetMedicationsByNurseId(int id)
+        [HttpGet("nurse/{id}/Active")]
+        public async Task<IActionResult> GetMedicationsActiveByNurseId(int id)
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsByNurseIdAsync(id);
+                var medications = await _medicationService.GetMedicationsActiveByNurseIdAsync(id);
+                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+         [HttpGet("nurse/{id}/Completed")]
+        public async Task<IActionResult> GetMedicationsCompletedByNurseId(int id)
+        {
+            try
+            {
+                var medications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(id);
                 return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
             }
             catch (Exception ex)
@@ -111,5 +125,18 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("parent/{parentId}")]
+        public async Task<IActionResult> GetMedicationsByParentId(int parentId)
+        {
+            try
+            {
+                var medications = await _medicationService.GetMedicationsByParentIdAsync(parentId);
+                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc theo phụ huynh thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }
