@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace backend.Models
 {
-   
+
     public class Student
     {
         [Key]
@@ -13,7 +13,7 @@ namespace backend.Models
         public string StudentNumber { get; set; } = string.Empty;
         public string ClassName { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
-        public DateOnly DateOfBirth { get; set; } 
+        public DateOnly DateOfBirth { get; set; }
         public StudentProfile Profile { get; set; } = null!;
         public List<HealthCheck> HealthChecks { get; set; } = new List<HealthCheck>();
         public List<Medication> Medications { get; set; } = new List<Medication>();
@@ -23,5 +23,5 @@ namespace backend.Models
         public int ParentId { get; set; }
         [ForeignKey("ParentId")]
         public User Parent { get; set; } = null!;
-    }    
+    }
 }
