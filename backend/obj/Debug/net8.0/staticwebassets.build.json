@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "wf8ozXQiNmvs+q2CHyoBTyw8WMFgl0XcbG1ipyL8tBs=",
+  "Hash": "tvDj8dKs0UFfbQUzT2LTuCo7vy2Zy06Jl53RXngr9lM=",
   "Source": "backend",
   "BasePath": "_content/backend",
   "Mode": "Default",
@@ -16,6 +16,27 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\",
+      "BasePath": "_content/backend",
+      "RelativePath": "uploads/7e55a074-334f-44be-b043-02bb9ebab768#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "36p2mspk89",
+      "Integrity": "60HBv1aw0adPkzQumeiCEl7lFGmO7MpjeDuOUdbtfYQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg"
+    },
     {
       "Identity": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "SourceId": "backend",
@@ -61,6 +82,88 @@
   ],
   "Endpoints": [
     {
+      "Route": "uploads/7e55a074-334f-44be-b043-02bb9ebab768.36p2mspk89.jpg",
+      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "34605"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"60HBv1aw0adPkzQumeiCEl7lFGmO7MpjeDuOUdbtfYQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Jun 2025 06:52:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "36p2mspk89"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/7e55a074-334f-44be-b043-02bb9ebab768.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-60HBv1aw0adPkzQumeiCEl7lFGmO7MpjeDuOUdbtfYQ="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "34605"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"60HBv1aw0adPkzQumeiCEl7lFGmO7MpjeDuOUdbtfYQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 09 Jun 2025 06:52:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-60HBv1aw0adPkzQumeiCEl7lFGmO7MpjeDuOUdbtfYQ="
+        }
+      ]
+    },
+    {
       "Route": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.f4jcv2jkqp.png",
       "AssetFile": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "Selectors": [],
@@ -83,7 +186,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 08:27:21 GMT"
+          "Value": "Mon, 09 Jun 2025 01:06:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -128,7 +231,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 01 Jun 2025 08:27:21 GMT"
+          "Value": "Mon, 09 Jun 2025 01:06:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -165,7 +268,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 06 Jun 2025 09:22:18 GMT"
+          "Value": "Mon, 09 Jun 2025 01:06:34 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -202,7 +305,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 06 Jun 2025 09:22:18 GMT"
+          "Value": "Mon, 09 Jun 2025 01:06:34 GMT"
         },
         {
           "Name": "Cache-Control",

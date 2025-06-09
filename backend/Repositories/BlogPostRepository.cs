@@ -25,5 +25,24 @@ namespace backend.Repositories
         {
             return await _context.BlogPosts.FindAsync(id);
         }
+
+        public async Task<BlogPost> AddAsync(BlogPost post)
+        {
+            _context.BlogPosts.Add(post);
+            await _context.SaveChangesAsync();
+            return post;
+        }
+
+        public async Task<BlogPost> UpdateAsync(BlogPost blogPost)
+        {
+            _context.BlogPosts.Update(blogPost);
+            await _context.SaveChangesAsync();
+            return blogPost;
+        }
+        public async Task DeleteAsync(BlogPost blogPostDetail)
+        {
+            _context.BlogPosts.Remove(blogPostDetail);
+            await _context.SaveChangesAsync();
+        }
     }
 }

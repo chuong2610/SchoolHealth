@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Interfaces;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,16 +54,16 @@ namespace backend.Repositories
 
         public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id)
         {
-             var today = DateTime.Today;
+            var today = DateTime.Today;
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
-                .Where(m => m.Nurse.Id == id && m.Status == "Completed" &&  m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed" && m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
                 .ToListAsync();
         }
-        
+
         public async Task<List<Medication>> GetMedicationsPendingAsync()
         {
             return await _context.Medications
@@ -80,7 +81,7 @@ namespace backend.Repositories
             if (medication == null) return false;
 
             medication.UserId = nurseId;
-            if(medication.Status == "Pending")
+            if (medication.Status == "Pending")
                 medication.Status = "Active";
             else if (medication.Status == "Active")
                 medication.Status = "Completed";
@@ -88,8 +89,7 @@ namespace backend.Repositories
             _context.Medications.Update(medication);
             return await _context.SaveChangesAsync() > 0;
         }
-<<<<<<< HEAD:backend/Repositories/MedicationReposirory.cs
-=======
+
 
         public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId)
         {
@@ -101,6 +101,6 @@ namespace backend.Repositories
                 .Where(m => m.Student.ParentId == parentId)
                 .ToListAsync();
         }
->>>>>>> origin/main:backend/Repositories/MedicationRepository.cs
+
     }
 }
