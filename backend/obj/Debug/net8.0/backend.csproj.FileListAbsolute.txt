@@ -351,3 +351,4 @@ D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\ref\backend.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
 =======
 >>>>>>> origin/main
+F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json

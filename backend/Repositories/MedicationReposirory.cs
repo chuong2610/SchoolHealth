@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Interfaces;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -88,8 +89,6 @@ namespace backend.Repositories
             _context.Medications.Update(medication);
             return await _context.SaveChangesAsync() > 0;
         }
-<<<<<<< HEAD:backend/Repositories/MedicationReposirory.cs
-=======
 
         public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId)
         {
@@ -101,6 +100,5 @@ namespace backend.Repositories
                 .Where(m => m.Student.ParentId == parentId)
                 .ToListAsync();
         }
->>>>>>> origin/main:backend/Repositories/MedicationRepository.cs
     }
 }
