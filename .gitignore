@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+**/bin/
+**/obj/
+*.dll
+*.exe
+*.pdb
+=======
 # --- .NET ---
 bin/
 obj/
@@ -19,3 +26,4 @@ yarn-error.log*
 .idea/
 *.iml
 .DS_Store
+>>>>>>> b13bdf7f2c14952ecf68271bdbbf805ff459447e

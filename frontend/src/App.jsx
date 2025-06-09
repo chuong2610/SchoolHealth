@@ -32,12 +32,17 @@ import { AuthProvider } from "./context/AuthContext";
 
 import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import Login from "./pages/login/Login";
 import Unauthorized from "./pages/login/Unauthorized";
 
 function App() {
   return (
     <AuthProvider>
+    <ToastContainer />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />

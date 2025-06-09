@@ -90,15 +90,24 @@ builder.Services.AddAuthorization(option =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
-        {
-            builder
-                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+    // options.AddPolicy("AllowSpecificOrigins",
+    //     builder =>
+    //     {
+    //         builder
+    //             .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+    //             .AllowAnyMethod()
+    //             .AllowAnyHeader()
+    //             .AllowCredentials();
+    //     });
+
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") // 👈 Đúng với React dev server
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // 👈 Chỉ cần nếu dùng cookie
+    });
 });
 
 // Cấu hình Authentication Google + Cookie
@@ -160,11 +169,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCookiePolicy();
-app.UseCors();
+// app.UseCors();
+app.UseCors("AllowFrontend"); // 👈 Áp dụng policy đã khai báo ở trên
+
 
 // app.UseHttpsRedirection();
-app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors();                    // 👈 Bật CORS
+// app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
+// app.UseCors();                    // 👈 Bật CORS
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();
