@@ -15,7 +15,7 @@ const ParentDashboard = () => {
     const fetchBlogs = async () => {
       try {
         const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MjY3MDczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.pGwWbVchsN1AhuV-NIltYTQYRJNRqzaO-CpnRh8Yrrw";
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
         const response = await axios.get(
           "http://localhost:5182/api/BlogPosts",
           {
@@ -42,6 +42,16 @@ const ParentDashboard = () => {
   {
     /**Kết thúc sử lí logic để nạp API */
   }
+
+  //Bắt đầu hàm format ngày
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+  //Kết thúc hàm format ngày
 
   return (
     <div>
@@ -131,7 +141,9 @@ const ParentDashboard = () => {
                       }}
                     />
                     <div className="card-body">
-                      <small className="text-muted">{blog.createdAt}</small>
+                      <small className="text-muted">
+                        {formatDate(blog.createdAt)}
+                      </small>
                       <h5 className="card-title mt-2">{blog.title}</h5>
                       <p className="card-text">
                         {blog.contentSummary.length > 100
