@@ -90,15 +90,24 @@ builder.Services.AddAuthorization(option =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
-        builder =>
-        {
-            builder
-                .WithOrigins("http://127.0.0.1:5501") // URL của frontend
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
+    // options.AddPolicy("AllowSpecificOrigins",
+    //     builder =>
+    //     {
+    //         builder
+    //             .WithOrigins("http://127.0.0.1:5501") // URL của frontend
+    //             .AllowAnyMethod()
+    //             .AllowAnyHeader()
+    //             .AllowCredentials();
+    //     });
+
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000") // 👈 Đúng với React dev server
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // 👈 Chỉ cần nếu dùng cookie
+    });
 });
 
 // Cấu hình Authentication Google + Cookie
@@ -137,6 +146,17 @@ builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
 builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
+builder.Services.AddScoped<IMedicationService, MedicationService>();
+builder.Services.AddScoped<IMedicalEventService, MedicalEventService>();
+builder.Services.AddScoped<IMedicalEventRepository, MedicalEventRepository>();
+builder.Services.AddScoped<IMedicalEventSupplyService, MedicalEventSupplyService>();
+builder.Services.AddScoped<IMedicalEventSupplyRepository, MedicalEventSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
+builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IHomeService, HomeService>();
 
 
 var app = builder.Build();
@@ -149,11 +169,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCookiePolicy();
-app.UseCors();
+// app.UseCors();
+app.UseCors("AllowFrontend"); // 👈 Áp dụng policy đã khai báo ở trên
+
 
 // app.UseHttpsRedirection();
-app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-app.UseCors();                    // 👈 Bật CORS
+// app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
+// app.UseCors();                    // 👈 Bật CORS
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();

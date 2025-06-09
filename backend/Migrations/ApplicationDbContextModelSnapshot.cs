@@ -139,6 +139,10 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -173,7 +177,7 @@ namespace backend.Migrations
 
                     b.HasIndex("MedicalSupplyId");
 
-                    b.ToTable("MedicalEventSupplys");
+                    b.ToTable("MedicalEventSupplies");
                 });
 
             modelBuilder.Entity("backend.Models.MedicalSupply", b =>
@@ -200,10 +204,43 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicalSupplys");
+                    b.ToTable("MedicalSupplies");
                 });
 
             modelBuilder.Entity("backend.Models.Medication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ReviceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Medications");
+                });
+
+            modelBuilder.Entity("backend.Models.MedicationDeclare", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -215,27 +252,22 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("MedicationId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Medications");
+                    b.ToTable("MedicationDeclares");
                 });
 
             modelBuilder.Entity("backend.Models.Notification", b =>
@@ -266,8 +298,10 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -322,7 +356,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("backend.Models.Student", b =>
@@ -337,9 +371,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DateOfBirth")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateOnly>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -352,9 +385,16 @@ namespace backend.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("StudentNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("StudentNumber")
+                        .IsUnique();
 
                     b.ToTable("Students");
                 });
@@ -551,12 +591,22 @@ namespace backend.Migrations
                     b.HasOne("backend.Models.User", "Nurse")
                         .WithMany("Medications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Nurse");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("backend.Models.MedicationDeclare", b =>
+                {
+                    b.HasOne("backend.Models.Medication", "Medication")
+                        .WithMany("MedicationDeclares")
+                        .HasForeignKey("MedicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medication");
                 });
 
             modelBuilder.Entity("backend.Models.Notification", b =>
@@ -657,6 +707,11 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.MedicalSupply", b =>
                 {
                     b.Navigation("MedicalEventSupplys");
+                });
+
+            modelBuilder.Entity("backend.Models.Medication", b =>
+                {
+                    b.Navigation("MedicationDeclares");
                 });
 
             modelBuilder.Entity("backend.Models.Notification", b =>
