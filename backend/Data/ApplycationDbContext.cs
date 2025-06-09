@@ -20,15 +20,15 @@ namespace backend.Data
         public DbSet<StudentProfile> StudentProfiles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<NotificationStudent> NotificationStudents { get; set; }
-        // public DbSet<Role> Roles { get; set; }
-        // public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-             modelBuilder.Entity<Student>()
-            .HasIndex(s => s.StudentNumber)
-            .IsUnique();
+            modelBuilder.Entity<Student>()
+           .HasIndex(s => s.StudentNumber)
+           .IsUnique();
 
             modelBuilder.Entity<NotificationStudent>()
                 .HasKey(nr => new { nr.NotificationId, nr.StudentId });
