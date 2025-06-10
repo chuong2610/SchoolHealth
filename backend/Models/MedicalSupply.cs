@@ -10,6 +10,7 @@ namespace backend.Models
         public string Description { get; set; } = string.Empty;
         public int Quantity { get; set; }
         public DateTime LastRestoked { get; set; } = DateTime.UtcNow;
+        public bool IsActive { get; set; } = true;
         public List<MedicalEventSupply> MedicalEventSupplys { get; set; } = new List<MedicalEventSupply>();
     }    
 }

@@ -45,5 +45,11 @@ namespace backend.Repositories
         {
             return await _context.Students.FindAsync(id);
         }
+
+        public Task<bool> CreateAsync(Student student)
+        {
+            _context.Students.Add(student);
+            return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
+        }
     }
 }

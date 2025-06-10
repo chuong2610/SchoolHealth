@@ -42,6 +42,10 @@ namespace backend.Services
             return student;
         }
 
+        public Task<bool> CreateAsync(Student student)
+        {
+            return _studentRepository.CreateAsync(student);
+        }
     }
 
 }
