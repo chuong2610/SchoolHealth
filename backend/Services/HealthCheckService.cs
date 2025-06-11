@@ -51,6 +51,12 @@ namespace backend.Services
             return healthChecks.Select(p => MapToDTO(p)).ToList();
         }
 
+        public async Task<List<HealthCheckDTO>> GetHealthChecksByNotificationIdAsync(int notificationId)
+        {
+            var healthChecks = await _healthCheckRepository.GetHealthChecksByNotificationIdAsync(notificationId);
+            return healthChecks.Select(p => MapToDTO(p)).ToList();
+        }
+
         private HealthCheckDTO MapToDTO(HealthCheck healthCheck)
         {
             return new HealthCheckDTO
@@ -65,5 +71,7 @@ namespace backend.Services
                 NurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }
+
+        
     }
 }

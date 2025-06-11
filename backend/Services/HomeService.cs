@@ -20,7 +20,7 @@ namespace backend.Services
             var pendingMedications = await _medicationService.GetMedicationsPendingAsync();
             var activeMedications = await _medicationService.GetMedicationsActiveByNurseIdAsync(nurseId);
             var completedMedications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(nurseId);
-            var notifications = await _notificationService.GetNotificationsByParentIdAsync(nurseId);
+            var notifications = await _notificationService.GetNotificationsByNurseIdAsync(nurseId);
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
 

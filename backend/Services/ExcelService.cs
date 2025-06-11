@@ -9,11 +9,13 @@ namespace backend.Services
     {
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
 
-        public ExcelService(IStudentService studentService, IUserService userService)
+        public ExcelService(IStudentService studentService, IUserService userService, INotificationService notificationService)
         {
             _studentService = studentService;
             _userService = userService;
+            _notificationService = notificationService;
         }
 
         public async Task<ImportPSResult> ImportStudentsAndParentsFromExcelAsync(IFormFile file)
@@ -112,6 +114,50 @@ namespace backend.Services
             }
 
             return result;
+        }
+        public async Task<byte[]> ExportFormResultAsync(int id)
+        {
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+            if (notification == null)
+            {
+                throw new Exception("Không tìm thấy thông báo");
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Kết quả");
+
+            var className = notification.ClassName;
+            var nurseName = notification.NurseName;
+            var title = notification.Title;
+            var date = notification.Date;
+            worksheet.Cell(1, 1).Value = $"Lớp: {className}";
+            worksheet.Cell(2, 1).Value = $"Nhân viên y tế: {nurseName}";
+            worksheet.Cell(3, 1).Value = $"{title} - {date:dd/MM/yyyy}";
+
+
+            // Thêm dữ liệu
+            var headers = new[]
+            {
+                "MSHS","Họ tên", "Chiều cao", "Cân nặng", "Thị lực trái", "Thị lực phải",
+                "BMI", "Huyết áp", "Nhịp tim", "Mô tả", "Kết luận"
+            };
+
+            for (int i = 0; i < headers.Length; i++)
+            {
+                worksheet.Cell(5, i + 1).Value = headers[i];
+                worksheet.Cell(5, i + 1).Style.Font.Bold = true;
+                worksheet.Column(i + 1).Width = 15;
+            }
+            int currentRow = 6;
+            foreach (var student in await _studentService.GetStudentsByNotificationIdAsync(id))
+            {
+                worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
+                worksheet.Cell(currentRow, 2).Value = student.StudentName;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
     }
 }

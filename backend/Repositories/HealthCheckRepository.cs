@@ -37,6 +37,15 @@ namespace backend.Repositories
                 .Include(h => h.Student)
                 .Where(h => h.Student.ParentId == parentId)
                 .ToListAsync();
-        }        
+        }
+
+        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId)
+        {
+            return await _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .Where(h => h.NotificationId == notificationId)
+                .ToListAsync();
+        }
     }
 }

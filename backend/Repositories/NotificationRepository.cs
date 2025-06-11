@@ -52,7 +52,14 @@ namespace backend.Repositories
                 .ThenInclude(ns => ns.Student)
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
-        
 
+        public async Task<List<Notification>> GetNotificationsByNurseIdAsync(int id)
+        {
+            return await _context.Notifications
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
+                .Where(n => n.AssignedToId == id)
+                .ToListAsync();
+        }
     }
 }

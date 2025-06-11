@@ -51,5 +51,12 @@ namespace backend.Repositories
             _context.Students.Add(student);
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
         }
+        public async Task<List<Student>> GetStudentsByNotificationIdAsync(int notificationId)
+        {
+            return await _context.NotificationStudents
+                .Where(ns => ns.NotificationId == notificationId)
+                .Select(ns => ns.Student)
+                .ToListAsync();
+        }
     }
 }

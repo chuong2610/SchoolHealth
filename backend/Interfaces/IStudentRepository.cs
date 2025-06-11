@@ -10,6 +10,7 @@ namespace backend.Interfaces
         Task<Student?> GetStudentByStudentNumberAsync(string studentNumber);
         Task<Student> GetByIdAsync(int id);
         Task<bool> CreateAsync(Student student);
+        Task<List<Student>> GetStudentsByNotificationIdAsync(int notificationId);
 
 
     }

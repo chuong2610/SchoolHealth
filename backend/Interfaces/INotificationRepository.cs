@@ -8,5 +8,7 @@ namespace backend.Interfaces
         Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
         Task<List<Notification>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
         Task<Notification?> GetNotificationByIdAsync(int id);
+        Task<List<Notification>> GetNotificationsByNurseIdAsync(int id);
+
     }
 }
