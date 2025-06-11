@@ -87,7 +87,5 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
             }
         }
-
-
     }
 }

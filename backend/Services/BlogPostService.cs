@@ -113,7 +113,7 @@ namespace backend.Services
 
         public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
         {
-            var Post = new BlogPost
+            var post = new BlogPost
             {
                 Title = request.Title,
                 Content = JsonSerializer.Serialize(request.Content),
@@ -123,7 +123,7 @@ namespace backend.Services
                 UserId = 1 // hoặc lấy từ context
             };
 
-            var created = await _repository.AddAsync(Post);
+            var created = await _repository.AddAsync(post);
 
             return true;
         }

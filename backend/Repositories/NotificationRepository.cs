@@ -52,7 +52,36 @@ namespace backend.Repositories
                 .ThenInclude(ns => ns.Student)
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
-        
+
+        public async Task<IEnumerable<Notification>> GetAllNotificationAsync()
+        {
+            return await _context.Notifications.ToListAsync();
+        }
+
+        public async Task<Notification?> AddNotificationAsync(Notification notification)
+        {
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync();
+            return notification;
+        }
+
+        public async Task<Notification?> GetNoticeByIdAsync(int id)
+        {
+            return await _context.Notifications.FindAsync(id);
+        }
+
+        public async Task<Notification?> UpdateNotificationAsync(Notification notification)
+        {
+            _context.Notifications.Update(notification);
+            await _context.SaveChangesAsync();
+            return notification;
+        }
+
+        public async Task DeleteNotificationAsync(Notification notification)
+        {
+            _context.Notifications.Remove(notification);
+            await _context.SaveChangesAsync();
+        }
 
     }
 }

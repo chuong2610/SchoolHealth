@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Models.Request;
 
 namespace backend.Interfaces
 {
@@ -8,5 +9,10 @@ namespace backend.Interfaces
         Task<List<NotificationDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
         Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
         Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId);
+        Task<NotificationDetailDTO?> GetByIdAsync(int id);
+        Task<bool> CreateNotificationAsync(NotificationRequest request, int createdById);
+        Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest);
+        Task<bool> DeleteNotificationAsync(int id);
+        Task<IEnumerable<NotificationDTO>> GetAllNotificationAsync();
     }
 }

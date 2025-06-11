@@ -35,5 +35,30 @@ namespace backend.Repositories
         {
             return _context.MedicalSupplies.ToListAsync();
         }
+
+        public async Task<MedicalSupply> AddMedicalSuppliesAsync(MedicalSupply medicalSupply)
+        {
+            _context.MedicalSupplies.Add(medicalSupply);
+            await _context.SaveChangesAsync();
+            return medicalSupply;
+        }
+
+        public async Task<MedicalSupply> GetMeidcalSuppliesByIdAsync(int id)
+        {
+            return await _context.MedicalSupplies.FindAsync(id);
+        }
+
+        public async Task<MedicalSupply> UpdateMedicalSuppliesAsync(MedicalSupply medicalSupply)
+        {
+            _context.MedicalSupplies.Update(medicalSupply);
+            await _context.SaveChangesAsync();
+            return medicalSupply;
+        }
+
+        public async Task DeleteMedicalSuppliesAsync(MedicalSupply medicalSupply)
+        {
+            _context.MedicalSupplies.Remove(medicalSupply);
+            await _context.SaveChangesAsync();
+        }
     }
 }

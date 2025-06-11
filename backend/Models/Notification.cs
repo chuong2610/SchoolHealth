@@ -21,7 +21,7 @@ namespace backend.Models
         public User CreatedBy { get; set; } = null!;
 
         // Người thực hiện (Nurse)
-        public int AssignedToId { get; set; }
+        public int? AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
         public User AssignedTo { get; set; } = null!;
     }

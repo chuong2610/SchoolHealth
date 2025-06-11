@@ -1,4 +1,5 @@
 using backend.Models.DTO;
+using backend.Models.Request;
 
 namespace backend.Interfaces
 {
@@ -6,5 +7,8 @@ namespace backend.Interfaces
     {
         Task<bool> UpdateMedicalSupplyQuantityAsync(int supplyId, int quantity);
         Task<List<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync();
+        Task<bool> CreateMedicalSuppliesAsync(MedicalSupplyRequest request);
+        Task<bool> UpdateMedicalSupplyAsync(MedicalSupplyRequest supplyRequest, int id);
+        Task<bool> DeleteMeidcalSuppliesAsync(int id);
     }
 }
