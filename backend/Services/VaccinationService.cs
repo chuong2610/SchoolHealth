@@ -51,6 +51,10 @@ namespace backend.Services
             var vaccinations = await _vaccinationRepository.GetVaccinationByNotificationIdAsync(notificationId);
             return vaccinations.Select(v => MapToDTO(v)).ToList();
         }
+        public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
+        {
+            return await _vaccinationRepository.CreateVaccinationAsync(vaccination);
+        }
         private VaccinationDTO MapToDTO(Vaccination vaccination)
         {
             return new VaccinationDTO

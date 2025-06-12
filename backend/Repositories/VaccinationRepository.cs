@@ -43,5 +43,10 @@ namespace backend.Repositories
                 .Where(v => v.Student.ParentId == parentId)
                 .ToListAsync();
         }
+        public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
+        {
+            _context.Vaccinations.Add(vaccination);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

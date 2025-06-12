@@ -43,14 +43,14 @@ namespace backend.Services
         }
 
 
-        public Task<bool> CreateAsync(Student student)
+        public async Task<bool> CreateAsync(Student student)
         {
-            return _studentRepository.CreateAsync(student);
+            return await _studentRepository.CreateAsync(student);
         }
 
-        public async Task<List<StudentDTO>> GetStudentsByNotificationIdAsync(int notificationId)
+        public async Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
         {
-            var students = await _studentRepository.GetStudentsByNotificationIdAsync(notificationId);
+            var students = await _studentRepository.GetStudentsByNotificationIdAndConfirmedAsync(notificationId);
             return students.Select(s => new StudentDTO
             {
                 Id = s.Id,

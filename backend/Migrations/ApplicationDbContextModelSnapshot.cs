@@ -99,6 +99,9 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -286,6 +289,10 @@ namespace backend.Migrations
 
                     b.Property<int>("AssignedToId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -500,6 +507,9 @@ namespace backend.Migrations
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Result")
                         .IsRequired()
