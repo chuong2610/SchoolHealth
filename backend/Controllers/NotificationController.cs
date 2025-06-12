@@ -82,18 +82,12 @@ namespace backend.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<NotificationsDTO>>> GetAll()
         {
             var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
             return Ok(notifications);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<NotificationDetailDTO>> GetDetails(int id)
-        {
-            var notification = await _notificationService.GetByIdAsync(id);
-            return Ok(notification);
-        }
 
         [HttpPost("notification")]
         [Authorize]
@@ -101,9 +95,9 @@ namespace backend.Controllers
         {
             try
             {
-                if (notificationRequest == null)
+                if (notificationRequest == null || notificationRequest.ClassName == null || !notificationRequest.ClassName.Any())
                 {
-                    return BadRequest(new BaseResponse<bool>(false, "Tạo thông báo thất bại", false));
+                    return BadRequest(new BaseResponse<bool>(false, "Thông báo không hợp lệ hoặc chưa chọn lớp", false));
                 }
 
                 // Lấy userId từ token đăng nhập
@@ -115,9 +109,15 @@ namespace backend.Controllers
 
                 int createdById = int.Parse(userIdClaim.Value);
 
-                // Gửi xuống Service
-                var isSuccess = await _notificationService.CreateNotificationAsync(notificationRequest, createdById);
-                return Ok(new BaseResponse<bool>(isSuccess, "Tạo thông báo thành công", true));
+                // Gọi service xử lý
+                var isSuccess = await _notificationService.CreateAndSendNotificationAsync(
+                    notificationRequest,
+                    notificationRequest.ClassName,
+                    createdById,
+                    notificationRequest.AssignedToId // gửi cho người thực hiện 
+                );
+
+                return Ok(new BaseResponse<bool>(isSuccess, "Tạo và gửi thông báo thành công", true));
             }
             catch (Exception ex)
             {

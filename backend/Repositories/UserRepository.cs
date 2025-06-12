@@ -28,12 +28,6 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<User?> AddUserAsync(User user)
-        {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
@@ -42,17 +36,11 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<User?> UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(User user)
         {
             _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task DeleteUserAsync(User user)
-        {
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
         }
     }
 }

@@ -8,10 +8,10 @@ namespace backend.Interfaces
         Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
         Task<List<Notification>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
         Task<Notification?> GetNotificationByIdAsync(int id);
-        Task<Notification?> AddNotificationAsync(Notification notification);
+        Task<bool> AddNotificationAsync(Notification notification);
         Task<Notification?> GetNoticeByIdAsync(int id);
-        Task<Notification?> UpdateNotificationAsync(Notification notification);
-        Task DeleteNotificationAsync(Notification notification);
-        Task<IEnumerable<Notification>> GetAllNotificationAsync();
+        Task<bool> UpdateNotificationAsync(Notification notification);
+        Task<bool> DeleteNotificationAsync(Notification notification);
+        Task<IEnumerable<Notification>> GetAllNotificationsAsync();
     }
 }

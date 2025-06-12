@@ -8,9 +8,11 @@ namespace backend.Services
     public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
-        public NotificationService(INotificationRepository notificationRepository)
+        private readonly IStudentRepository _studentRepository;
+        public NotificationService(INotificationRepository notificationRepository, IStudentRepository studentRepository)
         {
             _notificationRepository = notificationRepository;
+            _studentRepository = studentRepository;
         }
         public async Task<List<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId)
         {
@@ -79,61 +81,87 @@ namespace backend.Services
             };
         }
 
-        public async Task<IEnumerable<NotificationDTO>> GetAllNotificationAsync()
+        public async Task<IEnumerable<NotificationsDTO>> GetAllNotificationAsync()
         {
-            var notifications = await _notificationRepository.GetAllNotificationAsync();
-            var notificationDtos = notifications.Select(notification =>
+            var notifications = await _notificationRepository.GetAllNotificationsAsync();
+
+            var notificationDtos = new List<NotificationsDTO>();
+
+            foreach (var notification in notifications)
             {
-                return new NotificationDTO
+
+                notificationDtos.Add(new NotificationsDTO
                 {
                     Id = notification.Id,
                     Name = notification.Name ?? string.Empty,
                     Title = notification.Title,
                     Type = notification.Type,
                     Message = notification.Message,
-                };
-            }).ToList();
+                });
+            }
+
             return notificationDtos;
         }
 
-        public async Task<NotificationDetailDTO?> GetByIdAsync(int id)
+        public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, List<string> classNames, int createdById, int? assignedToId)
         {
-            var notification = await _notificationRepository.GetNoticeByIdAsync(id);
-            if (notification == null) return null;
-
-            return new NotificationDetailDTO
+            // 1. Lấy danh sách học sinh theo các lớp
+            var allStudents = new List<Student>();
+            foreach (var className in classNames)
             {
-                Id = notification.Id,
-                Name = notification.Name ?? string.Empty,
-                Title = notification.Title,
-                Type = notification.Type,
-                Message = notification.Message,
-                Date = notification.Date,
-                Note = notification.Note ?? string.Empty,
-                CreatedAt = notification.CreatedAt,
-                Location = notification.Location ?? string.Empty,
+                var studentsInClass = await _studentRepository.GetStudentsByClassNameAsync(className);
+                allStudents.AddRange(studentsInClass);
+            }
 
-            };
-        }
+            // 2. lấy học sinh theo ParentId
+            var parentStudentMap = allStudents
+                .GroupBy(s => s.ParentId)
+                .ToDictionary(g => g.Key, g => g.ToList());
 
-
-        public async Task<bool> CreateNotificationAsync(NotificationRequest request, int createdById)
-        {
-            var notification = new Notification
+            // 3. Gửi thông báo đến phụ huynh
+            foreach (var entry in parentStudentMap)
             {
-                Name = request.NotificationName,
-                Title = request.Title,
-                Type = request.Type,
-                Message = request.Message,
-                Note = request.Note,
-                Location = request.Location,
-                Date = request.Date,
-                CreatedAt = DateTime.UtcNow,
-                CreatedById = createdById,
-                AssignedToId = null
-            };
+                int parentId = entry.Key;
+                var studentList = entry.Value;
 
-            var created = await _notificationRepository.AddNotificationAsync(notification);
+                var studentNames = string.Join(", ", studentList.Select(s => s.Name));
+
+                var parentNotification = new Notification
+                {
+                    Name = request.NotificationName,
+                    Title = request.Title,
+                    Type = request.Type,
+                    Message = $"{request.Message}\nHọc sinh: {studentNames}",
+                    Note = request.Note,
+                    Location = request.Location,
+                    Date = request.Date,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedById = createdById,
+                    AssignedToId = request.AssignedToId
+                };
+
+                await _notificationRepository.AddNotificationAsync(parentNotification);
+            }
+
+            // 4. Gửi thêm thông báo cho người thực hiện 
+            if (assignedToId.HasValue)
+            {
+                var selfNotification = new Notification
+                {
+                    Name = request.NotificationName,
+                    Title = request.Title,
+                    Type = request.Type,
+                    Message = request.Message,
+                    Note = request.Note,
+                    Location = request.Location,
+                    Date = request.Date,
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedById = createdById,
+                    AssignedToId = request.AssignedToId
+                };
+
+                await _notificationRepository.AddNotificationAsync(selfNotification);
+            }
 
             return true;
         }
@@ -173,7 +201,7 @@ namespace backend.Services
 
             var updated = await _notificationRepository.UpdateNotificationAsync(existingNotification);
 
-            return true;
+            return updated;
         }
 
         public async Task<bool> DeleteNotificationAsync(int id)
@@ -184,8 +212,8 @@ namespace backend.Services
                 return false;
             }
 
-            await _notificationRepository.DeleteNotificationAsync(notification);
-            return true;
+            var deleted = await _notificationRepository.DeleteNotificationAsync(notification);
+            return deleted;
         }
 
 

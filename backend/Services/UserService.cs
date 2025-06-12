@@ -8,9 +8,14 @@ namespace backend.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+
+        private readonly IWebHostEnvironment _environment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
+            _environment = environment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
@@ -32,103 +37,20 @@ namespace backend.Services
             return UserDto;
         }
 
-        public async Task<bool> CreatedUserAsync(UserRequest request)
-        {
-            // Kiểm tra confirm password khớp không
-            if (request.Password != request.ConfirmPassword)
-            {
-                return false; // Mật khẩu và confirm không khớp
-            }
-
-            // Hash mật khẩu trước khi lưu
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            // Tạo user mới
-            var user = new User
-            {
-                Name = request.Name,
-                Email = request.Email,
-                Password = hashedPassword,
-                Phone = request.Phone,
-                Status = request.Status,
-                RoleId = request.RoleId
-            };
-
-            await _userRepository.AddUserAsync(user);
-
-            return true;
-        }
-        public async Task<bool> UpdateUserAsync(int id, UserRequest userRequest)
-        {
-            var existingUser = await _userRepository.GetUserByIdAsync(id);
-            if (existingUser == null)
-            {
-                return false;
-            }
-
-            // Update Name if not null
-            if (!string.IsNullOrWhiteSpace(userRequest.Name))
-            {
-                existingUser.Name = userRequest.Name;
-            }
-
-            // Kiểm tra nếu email mới không null, không trống và khác email hiện tại
-            if (!string.IsNullOrWhiteSpace(userRequest.Email))
-            {
-
-                existingUser.Email = userRequest.Email;
-            }
-
-            // Update Password if not null
-            if (!string.IsNullOrWhiteSpace(userRequest.Password))
-            {
-                // Kiểm tra mật khẩu xác nhận
-                if (userRequest.Password != userRequest.ConfirmPassword)
-                {
-                    return false;
-                }
-
-                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userRequest.Password);
-                existingUser.Password = hashedPassword;
-            }
-
-            // Update Phone if not null
-            if (!string.IsNullOrWhiteSpace(userRequest.Phone))
-            {
-                existingUser.Phone = userRequest.Phone;
-            }
-
-            // Update Status if not null
-            if (!string.IsNullOrWhiteSpace(userRequest.Status))
-            {
-                existingUser.Status = userRequest.Status;
-            }
-
-            // Update RoleId if not zero
-            if (userRequest.RoleId != 0)
-            {
-                existingUser.RoleId = userRequest.RoleId;
-            }
-
-            var updated = await _userRepository.UpdateUserAsync(existingUser);
-            return true;
-        }
-
-        public async Task<bool> DeleteUserAsync(int id)
-        {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return false;
-            }
-
-            await _userRepository.DeleteUserAsync(user);
-            return true;
-        }
-
         public async Task<UserProfileDTO> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetUserByIdAsync(id);
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+
+            string fileName = user.ImageUrl;
+            string imageUrl = $"{baseUrl}/uploads/{fileName}";
+            string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
+
+            if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
+            {
+                imageUrl = $"{baseUrl}/uploads/default.jpg";
+            }
             return new UserProfileDTO
             {
                 Name = user.Name,
@@ -137,6 +59,7 @@ namespace backend.Services
                 Address = user.Address,
                 Gender = user.Gender,
                 DateOfBirth = user.DateOfBirth,
+                ImageUrl = imageUrl,
                 RoleName = user.Role?.Name ?? string.Empty
             };
         }
@@ -178,7 +101,7 @@ namespace backend.Services
 
 
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
-            return true;
+            return updated;
         }
 
         public async Task<bool> ChangePasswordAsync(int userId, UserPasswordRequest request)
@@ -206,8 +129,8 @@ namespace backend.Services
             // Hash mật khẩu mới và lưu
             user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
-            await _userRepository.UpdateUserAsync(user);
-            return true;
+            var updated = await _userRepository.UpdateUserAsync(user);
+            return updated;
         }
     }
 }

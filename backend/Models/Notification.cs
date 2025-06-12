@@ -11,6 +11,7 @@ namespace backend.Models
         public string Message { get; set; } = string.Empty;
         public string? Note { get; set; }
         public string Location { get; set; } = string.Empty;
+        public bool IsActive { get; set; } = true;
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();

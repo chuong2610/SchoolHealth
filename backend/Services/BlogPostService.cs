@@ -184,7 +184,7 @@ namespace backend.Services
 
             var updated = await _repository.UpdateAsync(existingBlogPost);
 
-            return true;
+            return updated;
         }
 
         public async Task<bool> DeleteBlogPostDetailAsync(int id)
@@ -195,8 +195,8 @@ namespace backend.Services
                 return false;
             }
 
-            await _repository.DeleteAsync(blogPost);
-            return true;
+            var deleted = await _repository.DeleteAsync(blogPost);
+            return deleted;
         }
 
     }

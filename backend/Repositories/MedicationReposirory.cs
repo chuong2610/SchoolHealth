@@ -14,15 +14,15 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(Medication medication)
+        public async Task<bool> AddAsync(Medication medication)
         {
-            await _context.Medications.AddAsync(medication);
-            await _context.SaveChangesAsync();
+            _context.Medications.AddAsync(medication);
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
         }
 
         public async Task<Medication> GetByIdAsync(int id)
         {
-
             return await _context.Medications.FindAsync(id);
         }
 

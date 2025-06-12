@@ -10,8 +10,8 @@ namespace backend.Interfaces
 
         // Chi tiết bài đăng
         Task<BlogPost> GetByIdAsync(int id);
-        Task<BlogPost> AddAsync(BlogPost post);
-        Task<BlogPost> UpdateAsync(BlogPost blogPost);
-        Task DeleteAsync(BlogPost blogPostDetail);
+        Task<bool> AddAsync(BlogPost post);
+        Task<bool> UpdateAsync(BlogPost blogPost);
+        Task<bool> DeleteAsync(BlogPost blogPostDetail);
     }
 }

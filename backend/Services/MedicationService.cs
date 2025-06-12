@@ -50,7 +50,7 @@ namespace backend.Services
             };
 
             // Lưu vào DB
-            await _medicationRepository.AddAsync(medication);
+            var created = await _medicationRepository.AddAsync(medication);
 
             return true;
         }

@@ -22,7 +22,6 @@ namespace backend.Repositories
                 .Where(n => n.NotificationStudents
                     .Any(ns => ns.Student.ParentId == parentId))
                 .ToListAsync();
-
         }
 
         public async Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
@@ -53,16 +52,21 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
 
-        public async Task<IEnumerable<Notification>> GetAllNotificationAsync()
+        public async Task<IEnumerable<Notification>> GetAllNotificationsAsync()
         {
-            return await _context.Notifications.ToListAsync();
+            return await _context.Notifications
+                .Include(n => n.NotificationStudents)
+                    .ThenInclude(ns => ns.Student)
+                .Where(ms => ms.IsActive)
+                .ToListAsync();
         }
 
-        public async Task<Notification?> AddNotificationAsync(Notification notification)
+
+        public async Task<bool> AddNotificationAsync(Notification notification)
         {
             _context.Notifications.Add(notification);
-            await _context.SaveChangesAsync();
-            return notification;
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
         }
 
         public async Task<Notification?> GetNoticeByIdAsync(int id)
@@ -70,17 +74,19 @@ namespace backend.Repositories
             return await _context.Notifications.FindAsync(id);
         }
 
-        public async Task<Notification?> UpdateNotificationAsync(Notification notification)
+        public async Task<bool> UpdateNotificationAsync(Notification notification)
         {
             _context.Notifications.Update(notification);
-            await _context.SaveChangesAsync();
-            return notification;
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
         }
 
-        public async Task DeleteNotificationAsync(Notification notification)
+        public async Task<bool> DeleteNotificationAsync(Notification notification)
         {
-            _context.Notifications.Remove(notification);
-            await _context.SaveChangesAsync();
+            notification.IsActive = false;
+            _context.Notifications.Update(notification);
+            var deleted = await _context.SaveChangesAsync();
+            return deleted > 0;
         }
 
     }

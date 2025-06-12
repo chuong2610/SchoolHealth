@@ -39,8 +39,7 @@ namespace backend.Services
                 Quantity = request.Quantity
             };
             var created = await _medicalSupplyRepository.AddMedicalSuppliesAsync(supply);
-            return true;
-
+            return created;
         }
 
         public async Task<bool> UpdateMedicalSupplyAsync(MedicalSupplyRequest supplyRequest, int id)
@@ -66,7 +65,7 @@ namespace backend.Services
                 existingMedicalSupply.Quantity = supplyRequest.Quantity;
             }
             var updated = await _medicalSupplyRepository.UpdateMedicalSuppliesAsync(existingMedicalSupply);
-            return true;
+            return updated;
 
         }
 
@@ -78,8 +77,8 @@ namespace backend.Services
                 return false;
             }
 
-            await _medicalSupplyRepository.DeleteMedicalSuppliesAsync(medicalSupply);
-            return true;
+            var deleted = await _medicalSupplyRepository.DeleteMedicalSuppliesAsync(medicalSupply);
+            return deleted;
         }
     }
 }
