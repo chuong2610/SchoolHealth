@@ -8,16 +8,18 @@ namespace backend.Services
         private readonly INotificationService _notificationService;
         private readonly IMedicalEventService _medicalEventService;
         private readonly IMedicationService _medicationService;
+        private readonly IMedicalSupplyService _medicalSupplyService;
         private readonly IStudentService _studentService;
         private readonly IUserService _userService;
 
-        public HomeService(INotificationService notificationService, IMedicalEventService medicalEventService, IMedicationService medicationService, IStudentService studentService, IUserService userService)
+        public HomeService(INotificationService notificationService, IMedicalEventService medicalEventService, IMedicationService medicationService, IStudentService studentService, IUserService userService, IMedicalSupplyService medicalSupplyService)
         {
             _notificationService = notificationService;
             _medicalEventService = medicalEventService;
             _medicationService = medicationService;
             _studentService = studentService;
             _userService = userService;
+            _medicalSupplyService = medicalSupplyService;
         }
         public async Task<HomeNurseDTO> GetHomeNurseAsync(int nurseId)
         {
@@ -52,6 +54,7 @@ namespace backend.Services
             var notifications = await _notificationService.Get5Notifications();
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
+            var medicalSupplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync();
 
             return new HomeAdminDTO
             {
@@ -61,7 +64,7 @@ namespace backend.Services
                 PendingMedicationsNumber = pendingMedications.Count,
                 ActiveMedicationsNumber = activeMedications.Count,
                 CompletedMedicationsNumber = completedMedications.Count,
-                NotificationsNumber = notifications.Count,
+                MedicalSupplies = medicalSupplies,
                 Medications = activeMedications.Concat(completedMedications).ToList(),
                 Notifications = notifications,
                 MedicalEvents = medicalEvents,
