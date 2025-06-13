@@ -14,5 +14,6 @@ namespace backend.Interfaces
         Task<User?> GetUserByPhoneAsync(string phone);
         Task<bool> UpdateUserAsync(UserDetailDTO user);
         Task<bool> DeleteUserAsync(int id);
+        Task<int> GetNumberOfUsersAsync(string role);
     }
 }

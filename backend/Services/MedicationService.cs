@@ -133,5 +133,17 @@ namespace backend.Services
             var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
+
+        public async Task<List<MedicationDTO>> GetMedicationsActiveAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsActiveAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsCompletedAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsCompletedAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
     }
-}
+}   

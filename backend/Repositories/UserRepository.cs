@@ -95,5 +95,11 @@ namespace backend.Repositories
                 .Where(u => u.Role.Name == role && u.IsActive) // Only active users
                 .ToListAsync();
         }
+
+        public Task<int> GetNumberOfUsersAsync(string role)
+        {
+            return _context.Users
+                .CountAsync(u => u.IsActive && u.Role.Name == role); // Count only active users
+        }
     }
 }

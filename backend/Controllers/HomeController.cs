@@ -23,5 +23,15 @@ namespace backend.Controllers
             }
             return Ok(new BaseResponse<HomeNurseDTO>(result, "Lấy thông tin điều dưỡng thành công", true));
         }
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetHomeAdmin()
+        {
+            var result = await _homeService.GetHomeAdminAsync();
+            if (result == null)
+            {
+                return NotFound(new BaseResponse<HomeAdminDTO>(null, "Admin not found", false));
+            }
+            return Ok(new BaseResponse<HomeAdminDTO>(result, "Lấy thông tin quản trị viên thành công", true));
+        }
     }
 }

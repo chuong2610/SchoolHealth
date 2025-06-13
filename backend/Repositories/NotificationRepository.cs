@@ -61,5 +61,14 @@ namespace backend.Repositories
                 .Where(n => n.AssignedToId == id)
                 .ToListAsync();
         }
+
+        public async Task<List<Notification>> Get5Notifications()
+        {
+            return await _context.Notifications
+            .Include(n => n.NotificationStudents)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(5)
+            .ToListAsync();
+        } 
     }
 }

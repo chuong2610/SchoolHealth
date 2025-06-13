@@ -12,6 +12,7 @@ namespace backend.Interfaces
         Task<Student> GetStudentByIdAsync(int id);
         Task<bool> CreateAsync(Student student);
         Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId);
+        Task<int> GetNumberOfStudents();
     }
 
 }

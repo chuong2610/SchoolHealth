@@ -60,6 +60,10 @@ namespace backend.Services
                 StudentNumber = s.StudentNumber
             }).ToList();
         }
+        public async Task<int> GetNumberOfStudents()
+        {
+            return await _studentRepository.GetNumberOfStudents();
+        }
     }
 
 }

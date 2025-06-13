@@ -54,9 +54,14 @@ namespace backend.Repositories
         public async Task<List<Student>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
         {
             return await _context.NotificationStudents
-                .Where(ns => ns.NotificationId == notificationId && ns.Status=="Confirmed")
+                .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
                 .Select(ns => ns.Student)
                 .ToListAsync();
+        }
+        public async Task<int> GetNumberOfStudents()
+        {
+            return await _context.Students
+                .CountAsync(s => s.IsActive);
         }
 
     }

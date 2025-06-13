@@ -136,6 +136,18 @@ namespace backend.Services
 
             return dto;
         }
+        public async Task<List<NotificationSummaryDTO>> Get5Notifications()
+        {
+            var notifications = await _notificationRepository.Get5Notifications();
+            return notifications.Select(n => new NotificationSummaryDTO
+            {
+                Title = n.Title ?? string.Empty,
+                CreatedDate = n.CreatedAt,
+                PendingCount = n.NotificationStudents.Count(ns => ns.Status == "pending"),
+                ConfirmedCount = n.NotificationStudents.Count(ns => ns.Status == "confirmed"),
+                RejectedCount = n.NotificationStudents.Count(ns => ns.Status == "rejected")
+            }).ToList();
+        }
         private NotificationDTO MapToListDTO(Notification notification, int studentId, string studentName)
         {
             return new NotificationDTO
@@ -148,7 +160,7 @@ namespace backend.Services
                 CreatedAt = notification.CreatedAt,
                 StudentId = studentId,
                 StudentName = studentName,
-                
+
             };
         }
 

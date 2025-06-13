@@ -102,5 +102,13 @@ namespace backend.Services
             };
         }
 
+        public Task<int> GetNumberOfUsersAsync(string role)
+        {
+            if (string.IsNullOrEmpty(role))
+            {
+                return _userRepository.GetNumberOfUsersAsync(null);
+            }
+            return _userRepository.GetNumberOfUsersAsync(role);
+        }
     }
 }
