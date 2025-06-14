@@ -17,5 +17,10 @@ namespace backend.Repositories
         {
             return await _context.Classes.ToListAsync();
         }
+
+        public async Task<Class> GetClassByIdAsync(int classId)
+        {
+            return await _context.Classes.FirstOrDefaultAsync(c => c.Id == classId);
+        }
     }
 }

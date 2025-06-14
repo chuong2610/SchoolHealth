@@ -29,6 +29,7 @@ namespace backend.Models
         public int ClassId { get; set; }
         [ForeignKey("ClassId")]
         public Class? Class { get; set; }
+        public string? ClassName { get; set; } = string.Empty;
 
     }
 }

@@ -7,5 +7,6 @@ namespace backend.Interfaces
     public interface IClassRepository
     {
         Task<IEnumerable<Class>> GetAllAsync();
+        Task<Class> GetClassByIdAsync(int classId);
     }
 }

@@ -2,6 +2,7 @@ using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
+using backend.Repositories;
 
 namespace backend.Services
 {
@@ -9,10 +10,12 @@ namespace backend.Services
     {
         private readonly INotificationRepository _notificationRepository;
         private readonly IStudentRepository _studentRepository;
-        public NotificationService(INotificationRepository notificationRepository, IStudentRepository studentRepository)
+        private readonly IClassRepository _classrRepository;
+        public NotificationService(INotificationRepository notificationRepository, IStudentRepository studentRepository, IClassRepository classrRepository)
         {
             _notificationRepository = notificationRepository;
             _studentRepository = studentRepository;
+            _classrRepository = classrRepository;
         }
         public async Task<List<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId)
         {
@@ -123,6 +126,11 @@ namespace backend.Services
             if (studentsInClass == null || !studentsInClass.Any())
                 return false;
 
+            // Lấy className từ repository
+            var classEntity = await _classrRepository.GetClassByIdAsync(classId);
+            if (classEntity == null)
+                return false;
+
             var notification = new Notification
             {
                 Name = request.VaccineName,
@@ -136,6 +144,7 @@ namespace backend.Services
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
                 ClassId = classId,
+                ClassName = classEntity.ClassName, // Gán className lấy từ DB
                 NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
                     StudentId = s.Id,
