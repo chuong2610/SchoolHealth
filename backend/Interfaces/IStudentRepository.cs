@@ -9,9 +9,8 @@ namespace backend.Interfaces
         Task<List<Student>> GetStudentIdsByParentIdAsync(int parentId);
         Task<Student?> GetStudentByStudentNumberAsync(string studentNumber);
         Task<Student> GetByIdAsync(int id);
-        Task<List<Student>> GetStudentsByClassNameAsync(string className);
+        Task<List<Student>> GetStudentsByClassIdAsync(int classId);
         Task<User> GetParentByStudentIdAsync(int studentId);
-        Task<List<string>> GetClassNamesByParentIdAsync(int parentId);
     }
 }
 

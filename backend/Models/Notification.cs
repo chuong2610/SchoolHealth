@@ -24,6 +24,6 @@ namespace backend.Models
         // Người thực hiện (Nurse)
         public int? AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
-        public User AssignedTo { get; set; } = null!;
+        public User? AssignedTo { get; set; }
     }
 }

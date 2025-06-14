@@ -62,6 +62,23 @@ namespace backend.Migrations
                     b.ToTable("BlogPosts");
                 });
 
+            modelBuilder.Entity("backend.Models.Class", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Classes");
+                });
+
             modelBuilder.Entity("backend.Models.HealthCheck", b =>
                 {
                     b.Property<int>("Id")
@@ -376,9 +393,8 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClassName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
@@ -399,6 +415,8 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("ParentId");
 
@@ -458,7 +476,6 @@ namespace backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -665,11 +682,19 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Student", b =>
                 {
+                    b.HasOne("backend.Models.Class", "Class")
+                        .WithMany("Students")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("backend.Models.User", "Parent")
                         .WithMany("Students")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Class");
 
                     b.Navigation("Parent");
                 });
@@ -711,6 +736,11 @@ namespace backend.Migrations
                     b.Navigation("Nurse");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("backend.Models.Class", b =>
+                {
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>

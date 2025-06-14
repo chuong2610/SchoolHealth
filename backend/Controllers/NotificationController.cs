@@ -95,7 +95,7 @@ namespace backend.Controllers
         {
             try
             {
-                if (notificationRequest == null || notificationRequest.ClassName == null || !notificationRequest.ClassName.Any())
+                if (notificationRequest == null || notificationRequest.ClassId == null || !notificationRequest.ClassId.Any())
                 {
                     return BadRequest(new BaseResponse<bool>(false, "Thông báo không hợp lệ hoặc chưa chọn lớp", false));
                 }
@@ -112,9 +112,7 @@ namespace backend.Controllers
                 // Gọi service xử lý
                 var isSuccess = await _notificationService.CreateAndSendNotificationAsync(
                     notificationRequest,
-                    notificationRequest.ClassName,
-                    createdById,
-                    notificationRequest.AssignedToId // gửi cho người thực hiện 
+                    createdById
                 );
 
                 return Ok(new BaseResponse<bool>(isSuccess, "Tạo và gửi thông báo thành công", true));

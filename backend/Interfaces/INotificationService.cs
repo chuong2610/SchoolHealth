@@ -10,7 +10,7 @@ namespace backend.Interfaces
         Task<List<NotificationDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
         Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
         Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId);
-        Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, List<string> classNames, int createdById, int? assignedToId);
+        Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, int createdById);
         Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest);
         Task<bool> DeleteNotificationAsync(int id);
         Task<IEnumerable<NotificationsDTO>> GetAllNotificationAsync();

@@ -57,12 +57,13 @@ namespace backend.Repositories
             return await _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(ms => ms.IsActive)
                 .ToListAsync();
         }
 
 
-        public async Task<bool> AddNotificationAsync(Notification notification)
+        public async Task<bool> CreateNotificationAsync(Notification notification)
         {
             _context.Notifications.Add(notification);
             var created = await _context.SaveChangesAsync();

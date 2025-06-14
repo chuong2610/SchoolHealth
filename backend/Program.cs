@@ -177,6 +177,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 
 

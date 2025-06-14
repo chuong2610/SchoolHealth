@@ -27,7 +27,7 @@ namespace backend.Services
                 {
                     Id = s.Id,
                     StudentName = s.Name,
-                    ClassName = s.ClassName,
+                    ClassName = s.Class?.ClassName,
                     DateOfBirth = s.DateOfBirth
                 })
                 .ToList();
@@ -42,7 +42,7 @@ namespace backend.Services
             {
                 Id = student.Id,
                 StudentName = student.Name,
-                ClassName = student.ClassName,
+                ClassName = student.Class.ClassName,
                 DateOfBirth = student.DateOfBirth
             };
         }
@@ -56,7 +56,7 @@ namespace backend.Services
             {
                 Id = student.Id,
                 StudentName = student.Name,
-                ClassName = student.ClassName,
+                ClassName = student.Class.ClassName,
                 DateOfBirth = student.DateOfBirth
             };
         }

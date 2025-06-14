@@ -89,82 +89,64 @@ namespace backend.Services
 
             foreach (var notification in notifications)
             {
+                var classInfo = notification.NotificationStudents
+                    .Select(ns => ns.Student.Class)
+                    .Where(c => c != null)
+                    .GroupBy(c => c.Id) // loại trùng theo ClassId
+                    .Select(g => g.First())
+                    .ToList();
 
                 notificationDtos.Add(new NotificationsDTO
                 {
                     Id = notification.Id,
-                    Name = notification.Name ?? string.Empty,
+                    VaccineName = notification.Name ?? string.Empty,
                     Title = notification.Title,
                     Type = notification.Type,
                     Message = notification.Message,
+                    CreatedAt = notification.CreatedAt,
+                    ClassId = classInfo.Select(c => c.Id).ToList(),
+                    ClassName = classInfo.Select(c => c.ClassName).ToList()
                 });
             }
 
             return notificationDtos;
         }
 
-        public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, List<string> classNames, int createdById, int? assignedToId)
+        public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, int createdById)
         {
-            // 1. Lấy danh sách học sinh theo các lớp
             var allStudents = new List<Student>();
-            foreach (var className in classNames)
+
+            foreach (var classId in request.ClassId)
             {
-                var studentsInClass = await _studentRepository.GetStudentsByClassNameAsync(className);
+                var studentsInClass = await _studentRepository.GetStudentsByClassIdAsync(classId);
                 allStudents.AddRange(studentsInClass);
             }
 
-            // 2. lấy học sinh theo ParentId
-            var parentStudentMap = allStudents
-                .GroupBy(s => s.ParentId)
-                .ToDictionary(g => g.Key, g => g.ToList());
+            if (!allStudents.Any()) return false;
 
-            // 3. Gửi thông báo đến phụ huynh
-            foreach (var entry in parentStudentMap)
+            var notification = new Notification
             {
-                int parentId = entry.Key;
-                var studentList = entry.Value;
-
-                var studentNames = string.Join(", ", studentList.Select(s => s.Name));
-
-                var parentNotification = new Notification
+                Name = request.VaccineName,
+                Title = request.Title,
+                Type = request.Type,
+                Message = request.Message,
+                Note = request.Note,
+                Location = request.Location,
+                Date = request.Date,
+                CreatedAt = DateTime.UtcNow,
+                CreatedById = createdById,
+                AssignedToId = request.AssignedToId,
+                NotificationStudents = allStudents.Select(s => new NotificationStudent
                 {
-                    Name = request.NotificationName,
-                    Title = request.Title,
-                    Type = request.Type,
-                    Message = $"{request.Message}\nHọc sinh: {studentNames}",
-                    Note = request.Note,
-                    Location = request.Location,
-                    Date = request.Date,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedById = createdById,
-                    AssignedToId = request.AssignedToId
-                };
+                    StudentId = s.Id,
+                    Status = "Pending"
+                }).ToList()
+            };
 
-                await _notificationRepository.AddNotificationAsync(parentNotification);
-            }
-
-            // 4. Gửi thêm thông báo cho người thực hiện 
-            if (assignedToId.HasValue)
-            {
-                var selfNotification = new Notification
-                {
-                    Name = request.NotificationName,
-                    Title = request.Title,
-                    Type = request.Type,
-                    Message = request.Message,
-                    Note = request.Note,
-                    Location = request.Location,
-                    Date = request.Date,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedById = createdById,
-                    AssignedToId = request.AssignedToId
-                };
-
-                await _notificationRepository.AddNotificationAsync(selfNotification);
-            }
-
-            return true;
+            var created = await _notificationRepository.CreateNotificationAsync(notification);
+            return created;
         }
+
 
         public async Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest)
         {
@@ -179,9 +161,9 @@ namespace backend.Services
                 existingNotification.Title = notificationRequest.Title;
             }
             // Update NotificationName if not null
-            if (!string.IsNullOrWhiteSpace(notificationRequest.NotificationName))
+            if (!string.IsNullOrWhiteSpace(notificationRequest.VaccineName))
             {
-                existingNotification.Name = notificationRequest.NotificationName;
+                existingNotification.Name = notificationRequest.VaccineName;
             }
             // Update Mesage if not null
             if (!string.IsNullOrWhiteSpace(notificationRequest.Message))

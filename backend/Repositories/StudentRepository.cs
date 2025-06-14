@@ -41,10 +41,10 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<Student>> GetStudentsByClassNameAsync(string className)
+        public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
         {
             return await _context.Students
-                .Where(s => s.ClassName == className)
+                .Where(s => s.ClassId == classId)
                 .ToListAsync();
         }
 
@@ -54,15 +54,6 @@ namespace backend.Repositories
             if (student?.ParentId == null) return null;
 
             return await _context.Users.FindAsync(student.ParentId);
-        }
-
-        public async Task<List<string>> GetClassNamesByParentIdAsync(int parentId)
-        {
-            return await _context.Students
-                .Where(s => s.ParentId == parentId && !string.IsNullOrEmpty(s.ClassName))
-                .Select(s => s.ClassName)
-                .Distinct()
-                .ToListAsync();
         }
 
     }
