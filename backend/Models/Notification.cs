@@ -25,5 +25,10 @@ namespace backend.Models
         public int? AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
         public User? AssignedTo { get; set; }
+
+        public int ClassId { get; set; }
+        [ForeignKey("ClassId")]
+        public Class? Class { get; set; }
+
     }
 }

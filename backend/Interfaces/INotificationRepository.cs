@@ -12,6 +12,6 @@ namespace backend.Interfaces
         Task<Notification?> GetNoticeByIdAsync(int id);
         Task<bool> UpdateNotificationAsync(Notification notification);
         Task<bool> DeleteNotificationAsync(Notification notification);
-        Task<IEnumerable<Notification>> GetAllNotificationsAsync();
+        Task<List<Notification>> GetAllNotificationsAsync();
     }
 }

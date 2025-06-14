@@ -52,13 +52,13 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
 
-        public async Task<IEnumerable<Notification>> GetAllNotificationsAsync()
+        public async Task<List<Notification>> GetAllNotificationsAsync()
         {
             return await _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
-                    .ThenInclude(s => s.Class)
-                .Where(ms => ms.IsActive)
+                        .ThenInclude(s => s.Class)
+                .Where(n => n.IsActive)
                 .ToListAsync();
         }
 

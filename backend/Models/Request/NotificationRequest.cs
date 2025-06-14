@@ -9,7 +9,7 @@ namespace backend.Models.Request
         public string? Note { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
-        public List<int> ClassId { get; set; } = new();
+        public int ClassId { get; set; }
         public int? AssignedToId { get; set; }
     }
 }

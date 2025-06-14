@@ -95,7 +95,7 @@ namespace backend.Controllers
         {
             try
             {
-                if (notificationRequest == null || notificationRequest.ClassId == null || !notificationRequest.ClassId.Any())
+                if (notificationRequest == null || notificationRequest.ClassId == 0)
                 {
                     return BadRequest(new BaseResponse<bool>(false, "Thông báo không hợp lệ hoặc chưa chọn lớp", false));
                 }

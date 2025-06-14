@@ -89,24 +89,27 @@ namespace backend.Services
 
             foreach (var notification in notifications)
             {
-                var classInfo = notification.NotificationStudents
-                    .Select(ns => ns.Student.Class)
+                var uniqueClasses = notification.NotificationStudents
+                    .Select(ns => ns.Student?.Class)
                     .Where(c => c != null)
-                    .GroupBy(c => c.Id) // loại trùng theo ClassId
+                    .GroupBy(c => c.Id)
                     .Select(g => g.First())
                     .ToList();
 
-                notificationDtos.Add(new NotificationsDTO
+                foreach (var cls in uniqueClasses)
                 {
-                    Id = notification.Id,
-                    VaccineName = notification.Name ?? string.Empty,
-                    Title = notification.Title,
-                    Type = notification.Type,
-                    Message = notification.Message,
-                    CreatedAt = notification.CreatedAt,
-                    ClassId = classInfo.Select(c => c.Id).ToList(),
-                    ClassName = classInfo.Select(c => c.ClassName).ToList()
-                });
+                    notificationDtos.Add(new NotificationsDTO
+                    {
+                        Id = notification.Id,
+                        VaccineName = notification.Name ?? string.Empty,
+                        Title = notification.Title,
+                        Type = notification.Type,
+                        Message = notification.Message,
+                        CreatedAt = notification.CreatedAt,
+                        ClassId = cls.Id,
+                        ClassName = cls.ClassName
+                    });
+                }
             }
 
             return notificationDtos;
@@ -114,15 +117,11 @@ namespace backend.Services
 
         public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, int createdById)
         {
-            var allStudents = new List<Student>();
+            int classId = request.ClassId;
 
-            foreach (var classId in request.ClassId)
-            {
-                var studentsInClass = await _studentRepository.GetStudentsByClassIdAsync(classId);
-                allStudents.AddRange(studentsInClass);
-            }
-
-            if (!allStudents.Any()) return false;
+            var studentsInClass = await _studentRepository.GetStudentsByClassIdAsync(classId);
+            if (studentsInClass == null || !studentsInClass.Any())
+                return false;
 
             var notification = new Notification
             {
@@ -136,15 +135,15 @@ namespace backend.Services
                 CreatedAt = DateTime.UtcNow,
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
-                NotificationStudents = allStudents.Select(s => new NotificationStudent
+                ClassId = classId,
+                NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
                     StudentId = s.Id,
                     Status = "Pending"
                 }).ToList()
             };
 
-            var created = await _notificationRepository.CreateNotificationAsync(notification);
-            return created;
+            return await _notificationRepository.CreateNotificationAsync(notification);
         }
 
 

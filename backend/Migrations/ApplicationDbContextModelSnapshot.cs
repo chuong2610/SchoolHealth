@@ -347,6 +347,21 @@ namespace backend.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("backend.Models.NotificationClass", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotificationId", "ClassId");
+
+                    b.HasIndex("ClassId");
+
+                    b.ToTable("NotificationClasses");
+                });
+
             modelBuilder.Entity("backend.Models.NotificationStudent", b =>
                 {
                     b.Property<int>("NotificationId")
@@ -661,6 +676,25 @@ namespace backend.Migrations
                     b.Navigation("CreatedBy");
                 });
 
+            modelBuilder.Entity("backend.Models.NotificationClass", b =>
+                {
+                    b.HasOne("backend.Models.Class", "Class")
+                        .WithMany("NotificationClasses")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Notification", "Notification")
+                        .WithMany("NotificationClasses")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Notification");
+                });
+
             modelBuilder.Entity("backend.Models.NotificationStudent", b =>
                 {
                     b.HasOne("backend.Models.Notification", "Notification")
@@ -740,6 +774,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Class", b =>
                 {
+                    b.Navigation("NotificationClasses");
+
                     b.Navigation("Students");
                 });
 
@@ -760,6 +796,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Notification", b =>
                 {
+                    b.Navigation("NotificationClasses");
+
                     b.Navigation("NotificationStudents");
                 });
 
