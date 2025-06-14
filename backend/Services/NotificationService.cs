@@ -115,7 +115,8 @@ namespace backend.Services
                 Location = notification.Location ?? string.Empty,
                 Date = notification.Date,
                 NurseName = notification.AssignedTo?.Name ?? string.Empty,
-                ClassName = notification.ClassName ?? string.Empty
+                ClassName = notification.ClassName ?? string.Empty,
+                NurseId = notification.AssignedToId
             };
             switch (notification.Type)
             {

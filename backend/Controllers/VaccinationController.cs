@@ -30,7 +30,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("{id}")]
-        [Authorize(Policy = "ParentOnly")]
+        // [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetVaccinationById(int id)
         {
             try

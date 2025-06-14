@@ -13,6 +13,7 @@ namespace backend.Models.DTO
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string ClassName { get; set; } = string.Empty;
         public string NurseName { get; set; } = string.Empty;
+        public int NurseId { get;set; }
         public List<object> Results { get; set; } = new();
     }
 }
