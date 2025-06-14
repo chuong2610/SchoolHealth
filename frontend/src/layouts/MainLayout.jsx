@@ -18,6 +18,7 @@ const MainLayout = ({ children }) => {
           { path: "/admin/medicines/plan", label: "Kế hoạch thuốc", icon: "fas fa-calendar-check" },
           { path: "/admin/medicines/requests", label: "Yêu cầu thuốc", icon: "fas fa-shopping-cart" },
           { path: "/admin/medicines/inventory", label: "Kho thuốc", icon: "fas fa-boxes" },
+          { path: "/admin/notification/management", label: "Thông báo", icon: "fa-solid fa-bell" },
           { path: "/admin/reports", label: "Báo cáo", icon: "fas fa-file-alt" },
         ];
       case "parent":
