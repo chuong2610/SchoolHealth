@@ -82,7 +82,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationsDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<NotificationClassDTO>>> GetAll()
         {
             var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
             return Ok(notifications);

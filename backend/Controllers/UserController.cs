@@ -77,6 +77,13 @@ namespace backend.Controllers
             }
         }
 
+        [HttpGet("nurses")]
+        public async Task<IActionResult> GetAllNurses()
+        {
+            var nurses = await _userService.GetAllNursesAsync();
+            return Ok(nurses);
+        }
+
 
     }
 }

@@ -132,5 +132,18 @@ namespace backend.Services
             var updated = await _userRepository.UpdateUserAsync(user);
             return updated;
         }
+
+        public async Task<IEnumerable<NurseDTO>> GetAllNursesAsync()
+        {
+            var nurses = await _userRepository.GetAllNursesAsync();
+
+            var result = nurses.Select(n => new NurseDTO
+            {
+                Id = n.Id,
+                NurseName = n.Name
+            });
+
+            return result;
+        }
     }
 }

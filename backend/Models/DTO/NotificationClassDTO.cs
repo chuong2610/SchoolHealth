@@ -1,6 +1,6 @@
 namespace backend.Models.DTO
 {
-    public class NotificationsDTO
+    public class NotificationClassDTO
     {
         public int Id { get; set; }
         public string VaccineName { get; set; } = string.Empty;

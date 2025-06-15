@@ -42,5 +42,13 @@ namespace backend.Repositories
             var updated = await _context.SaveChangesAsync();
             return updated > 0;
         }
+
+        public async Task<List<User>> GetAllNursesAsync()
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.Role.Name == "Nurse")
+                .ToListAsync();
+        }
     }
 }

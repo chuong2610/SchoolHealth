@@ -84,11 +84,11 @@ namespace backend.Services
             };
         }
 
-        public async Task<IEnumerable<NotificationsDTO>> GetAllNotificationAsync()
+        public async Task<IEnumerable<NotificationClassDTO>> GetAllNotificationAsync()
         {
             var notifications = await _notificationRepository.GetAllNotificationsAsync();
 
-            var notificationDtos = new List<NotificationsDTO>();
+            var notificationDtos = new List<NotificationClassDTO>();
 
             foreach (var notification in notifications)
             {
@@ -101,7 +101,7 @@ namespace backend.Services
 
                 foreach (var cls in uniqueClasses)
                 {
-                    notificationDtos.Add(new NotificationsDTO
+                    notificationDtos.Add(new NotificationClassDTO
                     {
                         Id = notification.Id,
                         VaccineName = notification.Name ?? string.Empty,

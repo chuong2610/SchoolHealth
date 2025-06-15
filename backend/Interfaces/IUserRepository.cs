@@ -8,5 +8,6 @@ namespace backend.Interfaces
         Task<IEnumerable<User>> GetAllUserAsync();
         Task<User?> GetUserByIdAsync(int id);
         Task<bool> UpdateUserAsync(User user);
+        Task<List<User>> GetAllNursesAsync();
     }
 }
