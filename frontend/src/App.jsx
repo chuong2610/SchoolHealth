@@ -39,6 +39,9 @@ import Login from "./pages/login/Login";
 import Unauthorized from "./pages/login/Unauthorized";
 import CreateBlogPost from "./pages/admin/CreateBlogPost";
 import BlogPostList from "./pages/admin/BlogPostList";
+import EditBlogPost from "./pages/admin/EditBlogPost";
+
+import "react-quill/dist/quill.snow.css";
 
 function App() {
   return (
@@ -68,8 +71,14 @@ function App() {
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
+              {/**Tạo blog post */}
               <Route path="createBlogPost" element={<CreateBlogPost />} />
               <Route path="/admin/blog-posts" element={<BlogPostList />} />
+              <Route
+                path="/admin/editBlogPost/:id"
+                element={<EditBlogPost />}
+              />
+              {/**Kết thúc việc tạo blog post */}
             </Route>
           </Route>
 

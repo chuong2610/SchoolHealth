@@ -19,7 +19,7 @@ const MainLayout = ({ children }) => {
           { path: "/admin/medicines/requests", label: "Yêu cầu thuốc", icon: "fas fa-shopping-cart" },
           { path: "/admin/medicines/inventory", label: "Kho thuốc", icon: "fas fa-boxes" },
           { path: "/admin/reports", label: "Báo cáo", icon: "fas fa-file-alt" },
-          { path: "/admin/createBlogPost", label: "Tạo Blog Post", icon: "fas fa-file-alt" },
+          { path: "/admin/blog-posts", label: "Quản lí Blog", icon: "fas fa-file-alt" },
 
         ];
       case "parent":

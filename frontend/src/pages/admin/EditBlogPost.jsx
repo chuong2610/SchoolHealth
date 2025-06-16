@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const EditBlogPost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [formDate, setFormData] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     author: "",
     content: {
@@ -32,20 +32,28 @@ const EditBlogPost = () => {
 
   const fetchBlogPost = async () => {
     try {
-      const response = axios.get(`http://localhost:5182/api/BlogPosts/${id}`, {
-        header: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `http://localhost:5182/api/BlogPosts/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setFormData(response.data);
     } catch (error) {
       setError("Failed to fetch blog post.");
+      console.error(
+        "Fetch error: ",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
-  const handleChange = () => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      ({ ...prev, [name]: value });
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleNestedChange = (e, field, subField = null) => {
@@ -154,13 +162,13 @@ const EditBlogPost = () => {
       },
     };
     try {
-      await axios.put(
+      await axios.patch(
         `http://localhost:5182/api/BlogPosts/${id}`,
         cleanedData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "aplication/json",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -168,6 +176,7 @@ const EditBlogPost = () => {
       setTimeout(() => navigate("/admin/blog-posts"), 2000);
     } catch (error) {
       setError(error.response?.data?.message || "Failed to update blog post.");
+      console.error("Update error:", error); // Debug
     }
   };
 
@@ -176,6 +185,10 @@ const EditBlogPost = () => {
       <h2>Edit Blog Post</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
+      <Link to="/admin/blog-posts" className="btn btn-info ms-3">
+        Return Blog Post List
+      </Link>
+
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Title</label>
@@ -292,13 +305,13 @@ const EditBlogPost = () => {
 
         <div className="mb-3">
           <label className="form-label">When To See Doctor</label>
-          {formData.content.whenToSeeDoctor.map((item, index) => {
+          {formData.content.whenToSeeDoctor.map((item, index) => (
             <div key={index} className="input-group mb-2">
               <input
                 type="text"
                 className="form-control"
-                value={formData.content.whenToSeeDoctor[0]}
-                onChange={(e) => handleArrayChange(e, "whenToSeeDoctor", 0)}
+                value={item}
+                onChange={(e) => handleArrayChange(e, "whenToSeeDoctor", index)}
                 placeholder="Enter condition"
               />
               {index === formData.content.whenToSeeDoctor.length - 1 && (
@@ -310,8 +323,8 @@ const EditBlogPost = () => {
                   Add
                 </button>
               )}
-            </div>;
-          })}
+            </div>
+          ))}
         </div>
 
         <div className="mb-3">
