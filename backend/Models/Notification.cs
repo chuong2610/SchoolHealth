@@ -24,7 +24,7 @@ namespace backend.Models
         public bool IsActive { get; set; } = true;
 
         // Người thực hiện (Nurse)
-        public int? AssignedToId { get; set; }
+        public int AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
         public User? AssignedTo { get; set; }
 

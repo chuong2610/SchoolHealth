@@ -54,7 +54,7 @@ namespace backend.Services
                         result.Errors.Add($"Dòng {row.RowNumber()}: Ngày sinh học sinh không hợp lệ ({studentDobStr}).");
                         continue;
                     }
-                    student.ClassName = row.Cell("F").GetString().Trim();
+                    student.Class.ClassName = row.Cell("F").GetString().Trim();
                     if (string.IsNullOrWhiteSpace(student.StudentNumber))
                     {
                         result.Errors.Add($"Dòng {row.RowNumber()}: Thiếu mã học sinh.");
@@ -200,7 +200,7 @@ namespace backend.Services
                 nurseName = parts[0].Trim();
                 int.TryParse(parts[1].Trim(), out id);
             }
-           
+
             int row = 6; // Dòng bắt đầu có dữ liệu
 
             switch (notification.Type)

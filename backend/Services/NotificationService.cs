@@ -13,7 +13,7 @@ namespace backend.Services
         private readonly IVaccinationService _vaccinationService;
         private readonly IStudentRepository _studentRepository;
         private readonly IClassRepository _classrRepository;
-        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationServiceIStudentRepository studentRepository, IClassRepository classrRepositor)
+        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IStudentRepository studentRepository, IClassRepository classrRepository)
         {
             _notificationRepository = notificationRepository;
             _healthCheckService = healthCheckService;
@@ -218,7 +218,6 @@ namespace backend.Services
                 CreatedAt = DateTime.UtcNow,
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
-                ClassId = classId,
                 ClassName = classEntity.ClassName, // Gán className lấy từ DB
                 NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
@@ -280,7 +279,7 @@ namespace backend.Services
             var deleted = await _notificationRepository.DeleteNotificationAsync(notification);
             return deleted;
         }
-        private NotificationDTO MapToListDTO(Notification notification, int stusentId, string studentName)
+        private NotificationDTO MapToListDTO(Notification notification, int studentId, string studentName)
         {
             return new NotificationDTO
             {
