@@ -33,7 +33,36 @@ namespace backend.Repositories
 
         public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync()
         {
-            return _context.MedicalSupplies.ToListAsync();
+            return _context.MedicalSupplies
+                .Where(ms => ms.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<bool> AddMedicalSuppliesAsync(MedicalSupply supply)
+        {
+            _context.MedicalSupplies.Add(supply);
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
+        }
+
+        public async Task<MedicalSupply> GetMeidcalSuppliesByIdAsync(int id)
+        {
+            return await _context.MedicalSupplies.FindAsync(id);
+        }
+
+        public async Task<bool> UpdateMedicalSuppliesAsync(MedicalSupply medicalSupply)
+        {
+            _context.MedicalSupplies.Update(medicalSupply);
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
+        }
+
+        public async Task<bool> DeleteMedicalSuppliesAsync(MedicalSupply medicalSupply)
+        {
+            medicalSupply.IsActive = false;
+            _context.MedicalSupplies.Update(medicalSupply);
+            var deleted = await _context.SaveChangesAsync();
+            return deleted > 0;
         }
     }
 }

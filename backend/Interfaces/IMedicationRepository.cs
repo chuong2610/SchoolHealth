@@ -4,7 +4,7 @@ namespace backend.Interfaces
 {
     public interface IMedicationRepository
     {
-        Task AddAsync(Medication medication);
+        Task<bool> AddAsync(Medication medication);
         Task<List<Medication>> GetMedicationsPendingAsync();
         Task<List<Medication>> GetMedicationsActiveByNurseIdAsync(int id);
         Task<List<Medication>> GetMedicationsActiveAsync();

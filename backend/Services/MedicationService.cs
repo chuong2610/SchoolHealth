@@ -50,7 +50,7 @@ namespace backend.Services
             };
 
             // Lưu vào DB
-            await _medicationRepository.AddAsync(medication);
+            var created = await _medicationRepository.AddAsync(medication);
 
             return true;
         }
@@ -93,7 +93,7 @@ namespace backend.Services
                 CreatedDate = medication.Date,
                 ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
-                StudentClass = medication.Student?.ClassName ?? "",
+                StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
@@ -119,10 +119,10 @@ namespace backend.Services
                 CreatedDate = medication.Date,
                 ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
-                StudentClass = medication.Student?.ClassName ?? "",
+                StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
-                StudentClassName = medication.Student?.ClassName ?? "",
+                StudentClassName = medication.Student?.Class?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
 

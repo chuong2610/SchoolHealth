@@ -22,7 +22,6 @@ namespace backend.Repositories
                 .Where(n => n.NotificationStudents
                     .Any(ns => ns.Student.ParentId == parentId))
                 .ToListAsync();
-
         }
 
         public async Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
@@ -53,6 +52,45 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
 
+
+        public async Task<List<Notification>> GetAllNotificationsAsync()
+        {
+            return await _context.Notifications
+                .Include(n => n.NotificationStudents)
+                    .ThenInclude(ns => ns.Student)
+                        .ThenInclude(s => s.Class)
+                .Where(n => n.IsActive)
+                .ToListAsync();
+        }
+
+
+        public async Task<bool> CreateNotificationAsync(Notification notification)
+        {
+            _context.Notifications.Add(notification);
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
+        }
+
+        public async Task<Notification?> GetNoticeByIdAsync(int id)
+        {
+            return await _context.Notifications.FindAsync(id);
+        }
+
+        public async Task<bool> UpdateNotificationAsync(Notification notification)
+        {
+            _context.Notifications.Update(notification);
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
+        }
+
+        public async Task<bool> DeleteNotificationAsync(Notification notification)
+        {
+            notification.IsActive = false;
+            _context.Notifications.Update(notification);
+            var deleted = await _context.SaveChangesAsync();
+            return deleted > 0;
+        }
+
         public async Task<List<Notification>> GetNotificationsByNurseIdAsync(int id)
         {
             return await _context.Notifications
@@ -69,6 +107,6 @@ namespace backend.Repositories
             .OrderByDescending(n => n.CreatedAt)
             .Take(5)
             .ToListAsync();
-        } 
+        }
     }
 }

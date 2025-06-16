@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -16,6 +17,7 @@ namespace backend.Controllers
         {
             _notificationService = notificationService;
         }
+
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetNotificationsByParentId(int parentId)
@@ -30,6 +32,7 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
         [HttpGet("parent/{parentId}/HealthCheck")]
         [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetHealthChecksNotificationsByParentId(int parentId)
@@ -44,6 +47,7 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
         [HttpGet("parent/{parentId}/Vaccination")]
         [Authorize(Policy = "ParentOnly")]
         public async Task<IActionResult> GetVaccinationsNotificationsByParentId(int parentId)
@@ -58,6 +62,7 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
         [HttpPost("notificationDeatil")]
         [Authorize]
         public async Task<IActionResult> GetNotificationById([FromBody] NotificationDetailRequest request)
@@ -92,7 +97,88 @@ namespace backend.Controllers
             {
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
-        }    
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<NotificationClassDTO>>> GetAll()
+        {
+            var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
+            return Ok(notifications);
+        }
 
+
+
+        [HttpPost("notification")]
+        [Authorize]
+        public async Task<ActionResult<BaseResponse<object>>> CreateNotification([FromBody] NotificationRequest notificationRequest)
+        {
+            try
+            {
+                if (notificationRequest == null || notificationRequest.ClassId == 0)
+                {
+                    return BadRequest(new BaseResponse<bool>(false, "Thông báo không hợp lệ hoặc chưa chọn lớp", false));
+                }
+
+                // Lấy userId từ token đăng nhập
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new BaseResponse<bool>(false, "Bạn chưa đăng nhập.", false));
+                }
+
+                int createdById = int.Parse(userIdClaim.Value);
+
+                // Gọi service xử lý
+                var isSuccess = await _notificationService.CreateAndSendNotificationAsync(
+                    notificationRequest,
+                    createdById
+                );
+
+                return Ok(new BaseResponse<bool>(isSuccess, "Tạo và gửi thông báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BaseResponse<object>>> UpdateNotification([FromBody] NotificationRequest notificationRequest, int id)
+        {
+            try
+            {
+                if (notificationRequest == null)
+                {
+                    return BadRequest(new BaseResponse<bool>(false, "Cập nhật thông báo thất bại", false));
+                }
+
+                var isSuccess = await _notificationService.UpdateNotificationAsync(id, notificationRequest);
+                return Ok(new BaseResponse<bool>(isSuccess, "Cập nhật thông báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<ActionResult<BaseResponse<bool>>> DeleteNotification(int id)
+        {
+            try
+            {
+                var isDeleted = await _notificationService.DeleteNotificationAsync(id);
+                if (!isDeleted)
+                {
+                    return NotFound(new BaseResponse<bool>(false, "Không tìm thấy thông báo cần xóa", false));
+                }
+
+                return Ok(new BaseResponse<bool>(true, "Xóa thông báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

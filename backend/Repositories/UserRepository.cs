@@ -101,5 +101,12 @@ namespace backend.Repositories
             return _context.Users
                 .CountAsync(u => u.IsActive && u.Role.Name == role); // Count only active users
         }
+        public async Task<List<User>> GetAllNursesAsync()
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.Role.Name == "Nurse")
+                .ToListAsync();
+        }
     }
 }

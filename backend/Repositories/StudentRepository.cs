@@ -20,17 +20,11 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId)
+
+        public async Task<List<Student>> GetStudentIdsByParentIdAsync(int parentId)
         {
             return await _context.Students
                 .Where(s => s.ParentId == parentId)
-                .Select(s => new StudentDTO
-                {
-                    Id = s.Id,
-                    StudentName = s.Name,
-                    ClassName = s.ClassName,
-                    DateOfBirth = s.DateOfBirth
-                })
                 .ToListAsync();
         }
 
@@ -63,6 +57,20 @@ namespace backend.Repositories
         {
             return await _context.Students
                 .CountAsync(s => s.IsActive);
+        }
+        public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
+        {
+            return await _context.Students
+                .Where(s => s.ClassId == classId)
+                .ToListAsync();
+        }
+
+        public async Task<User> GetParentByStudentIdAsync(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student?.ParentId == null) return null;
+
+            return await _context.Users.FindAsync(student.ParentId);
         }
 
     }

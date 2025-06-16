@@ -11,7 +11,6 @@ namespace backend.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string StudentNumber { get; set; } = string.Empty;
-        public string ClassName { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
         public DateOnly DateOfBirth { get; set; }
         public StudentProfile Profile { get; set; } = null!;
@@ -25,6 +24,10 @@ namespace backend.Models
 
         [ForeignKey("ParentId")]
         public User Parent { get; set; } = null!;
+
+        public int ClassId { get; set; }
+        [ForeignKey("ClassId")]
+        public Class Class { get; set; } = null!;
     }
 }
 

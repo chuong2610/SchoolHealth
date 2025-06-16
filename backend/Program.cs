@@ -172,7 +172,11 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IHomeService, HomeService>();
 builder.Services.AddScoped<IExcelService, ExcelService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IClassService, ClassService>();
+
 
 
 

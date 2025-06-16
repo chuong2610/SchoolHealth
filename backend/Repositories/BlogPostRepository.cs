@@ -3,6 +3,7 @@ using backend.Models.DTO;
 using backend.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using backend.Models;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace backend.Repositories
 {
@@ -18,12 +19,36 @@ namespace backend.Repositories
         // Lấy danh sách tất cả bài viết
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-            return await _context.BlogPosts.ToListAsync();
+            return await _context.BlogPosts.
+                Where(ms => ms.IsActive)
+                .ToListAsync();
         }
 
         public async Task<BlogPost> GetByIdAsync(int id)
         {
-            return await _context.BlogPosts.FindAsync(id);
+            return await _context.BlogPosts
+                    .FirstOrDefaultAsync(ms => ms.Id == id && ms.IsActive);
+        }
+
+        public async Task<bool> AddAsync(BlogPost post)
+        {
+            _context.BlogPosts.Add(post);
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
+        }
+
+        public async Task<bool> UpdateAsync(BlogPost blogPost)
+        {
+            _context.BlogPosts.Update(blogPost);
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
+        }
+        public async Task<bool> DeleteAsync(BlogPost blogPostDetail)
+        {
+            blogPostDetail.IsActive = false;
+            _context.BlogPosts.Update(blogPostDetail);
+            var deleted = await _context.SaveChangesAsync();
+            return deleted > 0;
         }
     }
 }
