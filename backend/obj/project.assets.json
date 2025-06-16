@@ -5255,16 +5255,11 @@
     ]
   },
   "packageFolders": {
-<<<<<<< HEAD
     "C:\\Users\\ontri\\.nuget\\packages\\": {}
-=======
-    "C:\\Users\\HIEU NHAN\\.nuget\\packages\\": {}
->>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj",
       "projectName": "backend",
       "projectPath": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj",
@@ -5273,16 +5268,6 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ontri\\AppData\\Roaming\\NuGet\\NuGet.Config"
-=======
-      "projectUniqueName": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
-      "projectName": "backend",
-      "projectPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
-      "packagesPath": "C:\\Users\\HIEU NHAN\\.nuget\\packages\\",
-      "outputPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\obj\\",
-      "projectStyle": "PackageReference",
-      "configFilePaths": [
-        "C:\\Users\\HIEU NHAN\\AppData\\Roaming\\NuGet\\NuGet.Config"
->>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
       ],
       "originalTargetFrameworks": [
         "net8.0"
