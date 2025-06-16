@@ -75,6 +75,23 @@ namespace backend.Controllers
             {
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
+        }
+        [HttpGet("admin/{id}")]
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id)
+        {
+            try
+            {
+                var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+                if (notification == null)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
+                }
+                return Ok(new BaseResponse<NotificationDetailAdminDTO>(notification, "Lấy thông tin chi tiết thông báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
         }    
 
     }

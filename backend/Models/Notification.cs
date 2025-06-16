@@ -13,10 +13,11 @@ namespace backend.Models
     public string Location { get; set; } = string.Empty;
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string ClassName { get; set; } = string.Empty; 
     public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();
 
     // Người tạo (Admin)
-        public int CreatedById { get; set; }
+    public int CreatedById { get; set; }
     [ForeignKey("CreatedById")]
     public User CreatedBy { get; set; } = null!;
 

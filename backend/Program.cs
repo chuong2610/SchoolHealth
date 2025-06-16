@@ -157,13 +157,9 @@ builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
 builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
-builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
 builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
-
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicalEventService, MedicalEventService>();
 builder.Services.AddScoped<IMedicalEventRepository, MedicalEventRepository>();
@@ -175,6 +171,8 @@ builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 

@@ -45,5 +45,24 @@ namespace backend.Repositories
         {
             return await _context.Students.FindAsync(id);
         }
+
+        public async Task<bool> CreateAsync(Student student)
+        {
+            _context.Students.Add(student);
+            return await _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
+        }
+        public async Task<List<Student>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
+        {
+            return await _context.NotificationStudents
+                .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
+                .Select(ns => ns.Student)
+                .ToListAsync();
+        }
+        public async Task<int> GetNumberOfStudents()
+        {
+            return await _context.Students
+                .CountAsync(s => s.IsActive);
+        }
+
     }
 }

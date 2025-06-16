@@ -46,6 +46,15 @@ namespace backend.Services
                 NurseName = vaccination.Nurse?.Name ?? string.Empty
             };
         }
+        public async Task<List<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId)
+        {
+            var vaccinations = await _vaccinationRepository.GetVaccinationByNotificationIdAsync(notificationId);
+            return vaccinations.Select(v => MapToDTO(v)).ToList();
+        }
+        public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
+        {
+            return await _vaccinationRepository.CreateVaccinationAsync(vaccination);
+        }
         private VaccinationDTO MapToDTO(Vaccination vaccination)
         {
             return new VaccinationDTO
@@ -57,6 +66,8 @@ namespace backend.Services
                 NurseName = vaccination.Nurse?.Name ?? string.Empty,
                 StudentName = vaccination.Student?.Name ?? string.Empty
             };
-        }    
+        }
+
+        
     }
 }
