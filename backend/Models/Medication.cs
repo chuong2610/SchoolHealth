@@ -18,6 +18,6 @@ namespace backend.Models
         public User Nurse { get; set; } = null!;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
-        public Student Student { get; set; } =  null!;
-    }    
+        public Student Student { get; set; } = null!;
+    }
 }

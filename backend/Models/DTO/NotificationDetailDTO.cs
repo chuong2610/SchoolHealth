@@ -13,6 +13,7 @@ namespace backend.Models
         public string Location { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public string StudentName { get; set; } = string.Empty;
+        public string NurseName { get; set; } = string.Empty;
         public int StudentId { get; set; }
     }
 }

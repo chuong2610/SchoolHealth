@@ -12,8 +12,9 @@ namespace backend.Models
         public string Author { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsActive { get; set; } = true;
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User Admin { get; set; } = null!;
-    }    
+    }
 }

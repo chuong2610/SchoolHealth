@@ -1,6 +1,11 @@
-using backend.Interfaces;
+using backend.Data;
 using backend.Models;
 using backend.Models.DTO;
+using backend.Models.Request;
+using backend.Repositories;
+
+using backend.Interfaces;
+
 
 namespace backend.Services
 {
@@ -8,10 +13,48 @@ namespace backend.Services
     {
         private readonly IMedicationRepository _medicationRepository;
 
-        public MedicationService(IMedicationRepository medicationRepository)
+        private readonly ApplicationDbContext _context;
+        private readonly IStudentService _studentService;
+
+        public MedicationService(
+            IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
         {
             _medicationRepository = medicationRepository;
+            _context = context;
+            _studentService = studentService;
+
         }
+
+        public async Task<bool> CreateMedicationAsync(MedicationRequest request)
+        {
+            // kiểm tra studentId
+            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            // kiểm tra tên thuốc và liều dùng có null hay không
+            if (request.Medicines.Any(m => string.IsNullOrWhiteSpace(m.MedicineName) || string.IsNullOrWhiteSpace(m.Dosage)))
+            {
+                throw new Exception("MedicineName hoặc Dosage không được để trống.");
+            }
+
+            // Tạo mới Medication
+            var medication = new Medication
+            {
+                StudentId = request.StudentId,
+                Status = "Pending",
+                Date = DateTime.UtcNow,
+                MedicationDeclares = request.Medicines.Select(m => new MedicationDeclare
+                {
+                    Name = m.MedicineName,
+                    Dosage = m.Dosage,
+                    Note = m.Notes
+                }).ToList()
+            };
+
+            // Lưu vào DB
+            await _medicationRepository.AddAsync(medication);
+
+            return true;
+        }
+
 
         public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()
         {
@@ -82,6 +125,7 @@ namespace backend.Services
                 StudentClassName = medication.Student?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
+
         }
 
         public async Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId)
@@ -89,5 +133,17 @@ namespace backend.Services
             var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
+
+        public async Task<List<MedicationDTO>> GetMedicationsActiveAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsActiveAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsCompletedAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsCompletedAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
     }
-}
+}   

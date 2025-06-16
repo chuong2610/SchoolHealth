@@ -2,12 +2,15 @@ using System.Text;
 using backend.Data;
 using backend.Filter;
 using backend.Interfaces;
+using backend.Models;
 using backend.Repositories;
 using backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -35,13 +38,15 @@ var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
 
 builder.Services.AddAuthentication(options =>
 {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;      // Cho API
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;      // Cho API
     options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;            // Khi người dùng login
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Cho Google OAuth
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = true,
@@ -134,6 +139,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<FileUploadSettings>(
+builder.Configuration.GetSection("FileUploadSettings"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<FileUploadSettings>>().Value);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -144,9 +153,13 @@ builder.Services.AddScoped<IVaccinationRepository, VaccinationRepository>();
 builder.Services.AddScoped<IVaccinationService, VaccinationService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IBlogPostService, BlogPostService>();
+builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IStudentProfileRepository, StudentProfileRepository>();
+builder.Services.AddScoped<IStudentProfileService, StudentProfileService>();
+builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 builder.Services.AddScoped<INotificationStudentRepository, NotificationStudentRepository>();
 builder.Services.AddScoped<INotificationStudentService, NotificationStudentService>();
-builder.Services.AddScoped<IMedicationRepository, MedicationRepository>();
 builder.Services.AddScoped<IMedicationService, MedicationService>();
 builder.Services.AddScoped<IMedicalEventService, MedicalEventService>();
 builder.Services.AddScoped<IMedicalEventRepository, MedicalEventRepository>();
@@ -156,7 +169,11 @@ builder.Services.AddScoped<IMedicalSupplyRepository, MedicalSupplyRepository>();
 builder.Services.AddScoped<IMedicalSupplyService, MedicalSupplyService>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 
 var app = builder.Build();
@@ -168,14 +185,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+var uploadsPath = Path.Combine(builder.Environment.WebRootPath, "uploads");
+
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
 app.UseCookiePolicy();
 // app.UseCors();
 app.UseCors("AllowFrontend"); // 👈 Áp dụng policy đã khai báo ở trên
 
 
 // app.UseHttpsRedirection();
-// app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
-// app.UseCors();                    // 👈 Bật CORS
+
+app.UseCookiePolicy();            // 👈 Phải có để xử lý SameSite
+app.UseCors();                    // 👈 Bật CORS
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
 app.UseAuthentication();         // 👈 Quan trọng: phải trước MapControllers
 app.UseAuthorization();
 app.MapControllers();
