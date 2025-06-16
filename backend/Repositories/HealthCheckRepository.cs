@@ -17,7 +17,7 @@ namespace backend.Repositories
 
         public async Task<List<HealthCheck>> GetAllHealthChecksAsync()
         {
-            return await _context.HealthChecks.Include(h => h.Nurse) .Include(h => h.Student).ToListAsync();
+            return await _context.HealthChecks.Include(h => h.Nurse).Include(h => h.Student).ToListAsync();
         }
 
 
@@ -37,6 +37,22 @@ namespace backend.Repositories
                 .Include(h => h.Student)
                 .Where(h => h.Student.ParentId == parentId)
                 .ToListAsync();
-        }        
+        }
+
+        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId)
+        {
+            return await _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .Where(h => h.NotificationId == notificationId)
+                .ToListAsync();
+        }
+        public async Task<bool> CreateHealthCheckAsync(HealthCheck healthCheck)
+        {
+            _context.HealthChecks.Add(healthCheck);
+            return await _context.SaveChangesAsync() > 0;
+            
+        }
+
     }
 }

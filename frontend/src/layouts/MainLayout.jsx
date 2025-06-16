@@ -11,13 +11,46 @@ const MainLayout = ({ children }) => {
   const [scrolled, setScrolled] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const getMenuItems = (roleName) => {
+    switch (roleName) {
+      case "admin":
+        return [
+          { path: "/admin", label: "Dashboard", icon: "fas fa-chart-line" },
+          { path: "/admin/accounts", label: "Người dùng", icon: "fas fa-users" },
+          { path: "/admin/categories", label: "Danh mục", icon: "fas fa-list" },
+          { path: "/admin/medicines/plan", label: "Kế hoạch thuốc", icon: "fas fa-calendar-check" },
+          { path: "/admin/medicines/requests", label: "Yêu cầu thuốc", icon: "fas fa-shopping-cart" },
+          { path: "/admin/medicines/inventory", label: "Kho thuốc", icon: "fas fa-boxes" },
+          { path: "/admin/notification/management", label: "Thông báo", icon: "fa-solid fa-bell" },
+          { path: "/admin/reports", label: "Báo cáo", icon: "fas fa-file-alt" },
+        ];
+      case "parent":
+        return [
+          { path: "/parent", label: "Trang chủ", icon: "fas fa-home" },
+          { path: "/parent/health-declaration", label: "Khai báo y tế", icon: "fas fa-file-medical" },
+          { path: "/parent/send-medicine", label: "Gửi thuốc", icon: "fas fa-pills" },
+          { path: "/parent/notifications", label: "Thông báo", icon: "fas fa-bell" },
+          { path: "/parent/health-history", label: "Lịch sử sức khỏe", icon: "fas fa-history" },
+        ];
+      case "student":
+        return [
+          { path: "/student", label: "Trang chủ", icon: "fas fa-home" },
+          { path: "/student/health-info", label: "Thông tin sức khỏe", icon: "fas fa-user-friends" },
+          { path: "/student/health-events", label: "Lịch sử sự kiện", icon: "fas fa-clipboard-list" },
+          { path: "/student/vaccination-history", label: "Tiêm chủng & Khám sức khỏe", icon: "fas fa-syringe" },
+          { path: "/student/notifications", label: "Thông báo", icon: "fas fa-bell" },
+        ];
+      case "nurse":
+        return [
+          { path: "/nurse", label: "Trang chủ", icon: "fas fa-home" },
+          { path: "/nurse/receive-medicine", label: "Nhận thuốc", icon: "fas fa-pills" },
+          { path: "/nurse/health-declaration", label: "Khai báo y tế", icon: "fas fa-file-medical" },
+          { path: "/nurse/health-events", label: "Sự kiện y tế", icon: "fas fa-calendar-check" },
+        ];
+      default:
+        return [{ path: "/", label: "Trang chủ", icon: "fas fa-home" }];
+    }
+  };
 
   useEffect(() => {
     if (!user && location.pathname !== '/login') {

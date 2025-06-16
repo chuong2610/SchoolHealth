@@ -28,6 +28,7 @@ namespace backend.Services
             }
 
             var existingProfile = await _profileRepo.GetByIdAsync(request.StudentId);
+            bool createdOrUpdated;
 
             if (existingProfile != null)
             {
@@ -37,7 +38,7 @@ namespace backend.Services
                 existingProfile.LongTermMedications = request.LongTermMedications ?? string.Empty;
                 existingProfile.OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty;
 
-                await _profileRepo.CreateOrUpdateAsync(existingProfile);
+                createdOrUpdated = await _profileRepo.CreateOrUpdateAsync(existingProfile);
             }
             else
             {
@@ -51,10 +52,10 @@ namespace backend.Services
                     OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
                 };
 
-                await _profileRepo.CreateOrUpdateAsync(newProfile);
+                createdOrUpdated = await _profileRepo.CreateOrUpdateAsync(newProfile);
             }
 
-            return true;
+            return createdOrUpdated;
         }
 
         public StudentProfileDTO ConvertToDTO(StudentProfile profile)

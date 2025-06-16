@@ -26,7 +26,7 @@ namespace backend.Controllers
                     return BadRequest(new BaseResponse<bool>(false, "Request body is null", false));
                 }
 
-                var isSuccess = await _notificationStudentService.createNotificationStudentAsync(request);
+                var isSuccess = await _notificationStudentService.CreateNotificationStudentAsync(request);
                 return Ok(new BaseResponse<bool>(isSuccess, "Tạo thông báo thành công", true));
             }
             catch (Exception ex)
@@ -53,6 +53,6 @@ namespace backend.Controllers
             {
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
             }
-        }        
+        }
     }
 }

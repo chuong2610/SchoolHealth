@@ -14,15 +14,15 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(Medication medication)
+        public async Task<bool> AddAsync(Medication medication)
         {
-            await _context.Medications.AddAsync(medication);
-            await _context.SaveChangesAsync();
+            _context.Medications.AddAsync(medication);
+            var created = await _context.SaveChangesAsync();
+            return created > 0;
         }
 
         public async Task<Medication> GetByIdAsync(int id)
         {
-
             return await _context.Medications.FindAsync(id);
         }
 
@@ -54,16 +54,16 @@ namespace backend.Repositories
 
         public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id)
         {
-             var today = DateTime.Today;
+            var today = DateTime.Today;
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
-                .Where(m => m.Nurse.Id == id && m.Status == "Completed" &&  m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed" && m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
                 .ToListAsync();
         }
-        
+
         public async Task<List<Medication>> GetMedicationsPendingAsync()
         {
             return await _context.Medications
@@ -81,7 +81,7 @@ namespace backend.Repositories
             if (medication == null) return false;
 
             medication.UserId = nurseId;
-            if(medication.Status == "Pending")
+            if (medication.Status == "Pending")
                 medication.Status = "Active";
             else if (medication.Status == "Active")
                 medication.Status = "Completed";
@@ -98,6 +98,28 @@ namespace backend.Repositories
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
                 .Where(m => m.Student.ParentId == parentId)
+                .ToListAsync();
+        }
+
+        public Task<List<Medication>> GetMedicationsActiveAsync()
+        {
+            return _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .Where(m => m.Status == "Active")
+                .ToListAsync();
+        }
+
+        public Task<List<Medication>> GetMedicationsCompletedAsync()
+        {
+            return _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .Where(m => m.Status == "Completed")
                 .ToListAsync();
         }
     }

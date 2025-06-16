@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "TeGZXcXmly+q2mTM8WfE+YCaGYum3oaqxGCJwG/K1bs=",
+=======
+  "Hash": "rmowEUwyzZFMv3N6QIYmy7YXHges/FiJg/OK8VhEang=",
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
   "Source": "backend",
   "BasePath": "_content/backend",
   "Mode": "Default",
@@ -10,17 +14,47 @@
     {
       "Name": "backend\\wwwroot",
       "Source": "backend",
+<<<<<<< HEAD
       "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
+=======
+      "ContentRoot": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\",
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
       "BasePath": "_content/backend",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "SourceId": "backend",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
+=======
+      "Identity": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\",
+      "BasePath": "_content/backend",
+      "RelativePath": "uploads/7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg"
+    },
+    {
+      "Identity": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\",
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
       "BasePath": "_content/backend",
       "RelativePath": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "AssetKind": "All",
@@ -36,10 +70,17 @@
       "OriginalItemSpec": "wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
     },
     {
+<<<<<<< HEAD
       "Identity": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
       "SourceId": "backend",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
+=======
+      "Identity": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+      "SourceId": "backend",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\wwwroot\\",
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
       "BasePath": "_content/backend",
       "RelativePath": "uploads/ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
       "AssetKind": "All",

@@ -14,7 +14,7 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<StudentProfile> CreateOrUpdateAsync(StudentProfile profile)
+        public async Task<bool> CreateOrUpdateAsync(StudentProfile profile)
         {
             var existingProfile = await _context.StudentProfiles.FindAsync(profile.Id);
 
@@ -30,9 +30,9 @@ namespace backend.Repositories
                 existingProfile.OtherMedicalConditions = profile.OtherMedicalConditions;
             }
 
-            await _context.SaveChangesAsync();
+            var createdOrUpdated = await _context.SaveChangesAsync();
 
-            return profile;
+            return createdOrUpdated > 0;
         }
 
 

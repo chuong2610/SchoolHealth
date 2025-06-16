@@ -22,6 +22,7 @@ namespace backend.Data
         public DbSet<NotificationStudent> NotificationStudents { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
+        public DbSet<Class> Classes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,12 +37,13 @@ namespace backend.Data
             modelBuilder.Entity<NotificationStudent>()
                 .HasOne(nr => nr.Notification)
                 .WithMany(n => n.NotificationStudents)
-                .HasForeignKey(nr => nr.NotificationId);
-
+                .HasForeignKey(nr => nr.NotificationId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<NotificationStudent>()
                 .HasOne(nr => nr.Student)
                 .WithMany(s => s.NotificationStudents)
-                .HasForeignKey(nr => nr.StudentId);
+                .HasForeignKey(nr => nr.StudentId)
+                .OnDelete(DeleteBehavior.Cascade); ;
 
             modelBuilder.Entity<MedicalEventSupply>()
                 .HasKey(sc => new { sc.MedicalEventId, sc.MedicalSupplyId });
@@ -95,6 +97,12 @@ namespace backend.Data
                 .HasOne(n => n.AssignedTo)
                 .WithMany(u => u.AssignedNotifications)
                 .HasForeignKey(n => n.AssignedToId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.Class)
+                .WithMany(c => c.Students)
+                .HasForeignKey(s => s.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Giữ Cascade cho Student (xóa học sinh thì xóa luôn health check)

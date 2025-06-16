@@ -17,11 +17,19 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = backend
 build_property.RootNamespace = backend
+<<<<<<< HEAD
 build_property.ProjectDir = C:\Users\ontri\OneDrive\Documents\Kỳ 5\SWP\SchoolHealth\backend\
+=======
+build_property.ProjectDir = E:\SU25\SWP301\SchoolHealth\backend\
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+<<<<<<< HEAD
 build_property.MSBuildProjectDirectory = C:\Users\ontri\OneDrive\Documents\Kỳ 5\SWP\SchoolHealth\backend
+=======
+build_property.MSBuildProjectDirectory = E:\SU25\SWP301\SchoolHealth\backend
+>>>>>>> 0d7a8e5fc6ddf298162dbe7d3be8c2992fafe5df
 build_property._RazorSourceGeneratorDebug = 

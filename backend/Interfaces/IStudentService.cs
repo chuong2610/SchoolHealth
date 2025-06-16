@@ -4,12 +4,14 @@ using backend.Models;
 
 namespace backend.Interfaces
 {
-    public interface IStudentService
-    {
+        public interface IStudentService
+        {
 
-        Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId);
-        Task<Student?> GetStudentByStudentNumberAsync(string studentNumber);
-        Task<Student> GetStudentByIdAsync(int id);
-    }
-
+                Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId);
+                Task<bool> CreateAsync(Student student);
+                Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId);
+                Task<int> GetNumberOfStudents();
+                Task<StudentDTO?> GetStudentByIdAsync(int id);
+                Task<StudentDTO?> GetStudentByStudentNumberAsync(string studentNumber);
+        }
 }

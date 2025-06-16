@@ -13,7 +13,7 @@ namespace backend.Services
             _notificationStudentRepository = notificationStudentRepository;
         }
 
-        public async Task<bool> createNotificationStudentAsync(NotificationStudentRequest request)
+        public async Task<bool> CreateNotificationStudentAsync(NotificationStudentRequest request)
         {
             var notificationStudent = new NotificationStudent
             {
@@ -23,7 +23,7 @@ namespace backend.Services
                 Reason = request.Reason
             };
 
-            return await _notificationStudentRepository.createNotificationStudentAsync(notificationStudent);
+            return await _notificationStudentRepository.CreateNotificationStudentAsync(notificationStudent);
         }
 
         public async Task<bool> UpdateNotificationStudentAsync(NotificationStudentRequest request)
@@ -39,7 +39,7 @@ namespace backend.Services
             return await _notificationStudentRepository.UpdateNotificationStudentAsync(notificationStudent);
         }
 
-        
+
 
     }
 }
