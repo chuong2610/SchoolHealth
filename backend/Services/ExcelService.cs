@@ -136,7 +136,7 @@ namespace backend.Services
             var date = notification.Date;
             var location = notification.Location;
             worksheet.Cell(1, 1).Value = $"Lớp: {className}";
-            worksheet.Cell(2, 1).Value = $"Nhân viên y tế: {nurseName} - {notification.Id}";
+            worksheet.Cell(2, 1).Value = $"Nhân viên y tế: {nurseName} - {notification.NurseId}";
             worksheet.Cell(3, 1).Value = $"{title} - {date:dd/MM/yyyy} - {location}";
             var headers = new List<string>();
             switch (notification.Type)
@@ -200,6 +200,7 @@ namespace backend.Services
                 nurseName = parts[0].Trim();
                 int.TryParse(parts[1].Trim(), out id);
             }
+           
             int row = 6; // Dòng bắt đầu có dữ liệu
 
             switch (notification.Type)
@@ -222,7 +223,8 @@ namespace backend.Services
                             Conclusion = worksheet.Cell(row, 11).GetString(),
                             NotificationId = notificationId,
                             Date = notification.Date,
-                            UserId = id
+                            UserId = id,
+                            Location = notification.Location
 
                         };
                         bool isCreated = await _healthCheckService.CreateHealthCheckAsync(healthCheck);
