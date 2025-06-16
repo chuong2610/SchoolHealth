@@ -2,17 +2,25 @@ using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
+using backend.Repositories;
 
 namespace backend.Services
 {
     public class NotificationService : INotificationService
     {
         private readonly INotificationRepository _notificationRepository;
+        private readonly IHealthCheckService _healthCheckService;
+        private readonly IVaccinationService _vaccinationService;
         private readonly IStudentRepository _studentRepository;
-        public NotificationService(INotificationRepository notificationRepository, IStudentRepository studentRepository)
+        private readonly IClassRepository _classrRepository;
+        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IStudentRepository studentRepository, IClassRepository classrRepository)
         {
             _notificationRepository = notificationRepository;
+            _healthCheckService = healthCheckService;
+            _vaccinationService = vaccinationService;
             _studentRepository = studentRepository;
+            _classrRepository = classrRepository;
+
         }
         public async Task<List<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId)
         {
@@ -76,95 +84,151 @@ namespace backend.Services
                 Location = notification.Location ?? string.Empty,
                 Date = notification.Date,
                 StudentName = notification.NotificationStudents.FirstOrDefault(ns => ns.StudentId == studentId)?.Student.Name ?? string.Empty,
-                StudentId = studentId
+                StudentId = studentId,
+                NurseName = notification.AssignedTo?.Name ?? string.Empty
 
             };
         }
+        public async Task<List<NotificationNurseDTO>> GetNotificationsByNurseIdAsync(int id)
+        {
+            var notifications = await _notificationRepository.GetNotificationsByNurseIdAsync(id);
+            return notifications.Select(n => new NotificationNurseDTO
+            {
+                Id = n.Id,
+                Name = n.Name ?? string.Empty,
+                Title = n.Title ?? string.Empty,
+                Message = n.Message ?? string.Empty,
+                Type = n.Type ?? string.Empty,
+                CreatedAt = n.CreatedAt,
+                ClassName = n.ClassName ?? string.Empty
+            }).ToList();
+        }
+        public async Task<NotificationDetailAdminDTO> GetNotificationDetailAdminDTOAsync(int id)
+        {
+            var notification = await _notificationRepository.GetNotificationByIdAsync(id);
+            if (notification == null)
+            {
+                return null;
+            }
+            var dto = new NotificationDetailAdminDTO
+            {
+                Id = notification.Id,
+                Title = notification.Title ?? string.Empty,
+                Name = notification.Name ?? string.Empty,
+                Message = notification.Message ?? string.Empty,
+                Note = notification.Note ?? string.Empty,
+                CreatedAt = notification.CreatedAt,
+                Type = notification.Type ?? string.Empty,
+                Location = notification.Location ?? string.Empty,
+                Date = notification.Date,
+                NurseName = notification.AssignedTo?.Name ?? string.Empty,
+                ClassName = notification.ClassName ?? string.Empty,
+                NurseId = notification.AssignedToId,
+            };
+            switch (notification.Type)
+            {
+                case "HealthCheck":
+                    var healthChecks = await _healthCheckService.GetHealthChecksByNotificationIdAsync(notification.Id);
+                    dto.Results = healthChecks.Cast<object>().ToList();
+                    break;
 
-        public async Task<IEnumerable<NotificationsDTO>> GetAllNotificationAsync()
+                case "Vaccination":
+                    var vaccinations = await _vaccinationService.GetVaccinationByNotificationIdAsync(notification.Id);
+                    dto.Results = vaccinations.Cast<object>().ToList();
+                    break;
+
+                default:
+                    dto.Results = new List<object>();
+                    break;
+            }
+
+            return dto;
+        }
+        public async Task<List<NotificationSummaryDTO>> Get5Notifications()
+        {
+            var notifications = await _notificationRepository.Get5Notifications();
+            return notifications.Select(n => new NotificationSummaryDTO
+            {
+                Title = n.Title ?? string.Empty,
+                CreatedDate = n.CreatedAt,
+                PendingCount = n.NotificationStudents.Count(ns => ns.Status == "pending"),
+                ConfirmedCount = n.NotificationStudents.Count(ns => ns.Status == "confirmed"),
+                RejectedCount = n.NotificationStudents.Count(ns => ns.Status == "rejected")
+            }).ToList();
+        }
+
+
+
+        public async Task<IEnumerable<NotificationClassDTO>> GetAllNotificationAsync()
         {
             var notifications = await _notificationRepository.GetAllNotificationsAsync();
 
-            var notificationDtos = new List<NotificationsDTO>();
+            var notificationDtos = new List<NotificationClassDTO>();
 
             foreach (var notification in notifications)
             {
+                var uniqueClasses = notification.NotificationStudents
+                    .Select(ns => ns.Student?.Class)
+                    .Where(c => c != null)
+                    .GroupBy(c => c.Id)
+                    .Select(g => g.First())
+                    .ToList();
 
-                notificationDtos.Add(new NotificationsDTO
+                foreach (var cls in uniqueClasses)
                 {
-                    Id = notification.Id,
-                    Name = notification.Name ?? string.Empty,
-                    Title = notification.Title,
-                    Type = notification.Type,
-                    Message = notification.Message,
-                });
+                    notificationDtos.Add(new NotificationClassDTO
+                    {
+                        Id = notification.Id,
+                        VaccineName = notification.Name ?? string.Empty,
+                        Title = notification.Title,
+                        Type = notification.Type,
+                        Message = notification.Message,
+                        CreatedAt = notification.CreatedAt,
+                        ClassId = cls.Id,
+                        ClassName = cls.ClassName
+                    });
+                }
             }
 
             return notificationDtos;
         }
 
-        public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, List<string> classNames, int createdById, int? assignedToId)
+        public async Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, int createdById)
         {
-            // 1. Lấy danh sách học sinh theo các lớp
-            var allStudents = new List<Student>();
-            foreach (var className in classNames)
+            int classId = request.ClassId;
+
+            var studentsInClass = await _studentRepository.GetStudentsByClassIdAsync(classId);
+            if (studentsInClass == null || !studentsInClass.Any())
+                return false;
+
+            // Lấy className từ repository
+            var classEntity = await _classrRepository.GetClassByIdAsync(classId);
+            if (classEntity == null)
+                return false;
+
+            var notification = new Notification
             {
-                var studentsInClass = await _studentRepository.GetStudentsByClassNameAsync(className);
-                allStudents.AddRange(studentsInClass);
-            }
-
-            // 2. lấy học sinh theo ParentId
-            var parentStudentMap = allStudents
-                .GroupBy(s => s.ParentId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            // 3. Gửi thông báo đến phụ huynh
-            foreach (var entry in parentStudentMap)
-            {
-                int parentId = entry.Key;
-                var studentList = entry.Value;
-
-                var studentNames = string.Join(", ", studentList.Select(s => s.Name));
-
-                var parentNotification = new Notification
+                Name = request.VaccineName,
+                Title = request.Title,
+                Type = request.Type,
+                Message = request.Message,
+                Note = request.Note,
+                Location = request.Location,
+                Date = request.Date,
+                CreatedAt = DateTime.UtcNow,
+                CreatedById = createdById,
+                AssignedToId = request.AssignedToId,
+                ClassName = classEntity.ClassName, // Gán className lấy từ DB
+                NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
-                    Name = request.NotificationName,
-                    Title = request.Title,
-                    Type = request.Type,
-                    Message = $"{request.Message}\nHọc sinh: {studentNames}",
-                    Note = request.Note,
-                    Location = request.Location,
-                    Date = request.Date,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedById = createdById,
-                    AssignedToId = request.AssignedToId
-                };
+                    StudentId = s.Id,
+                    Status = "Pending"
+                }).ToList()
+            };
 
-                await _notificationRepository.AddNotificationAsync(parentNotification);
-            }
-
-            // 4. Gửi thêm thông báo cho người thực hiện 
-            if (assignedToId.HasValue)
-            {
-                var selfNotification = new Notification
-                {
-                    Name = request.NotificationName,
-                    Title = request.Title,
-                    Type = request.Type,
-                    Message = request.Message,
-                    Note = request.Note,
-                    Location = request.Location,
-                    Date = request.Date,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedById = createdById,
-                    AssignedToId = request.AssignedToId
-                };
-
-                await _notificationRepository.AddNotificationAsync(selfNotification);
-            }
-
-            return true;
+            return await _notificationRepository.CreateNotificationAsync(notification);
         }
+
 
         public async Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest)
         {
@@ -179,9 +243,9 @@ namespace backend.Services
                 existingNotification.Title = notificationRequest.Title;
             }
             // Update NotificationName if not null
-            if (!string.IsNullOrWhiteSpace(notificationRequest.NotificationName))
+            if (!string.IsNullOrWhiteSpace(notificationRequest.VaccineName))
             {
-                existingNotification.Name = notificationRequest.NotificationName;
+                existingNotification.Name = notificationRequest.VaccineName;
             }
             // Update Mesage if not null
             if (!string.IsNullOrWhiteSpace(notificationRequest.Message))
@@ -215,9 +279,7 @@ namespace backend.Services
             var deleted = await _notificationRepository.DeleteNotificationAsync(notification);
             return deleted;
         }
-
-
-        private NotificationDTO MapToListDTO(Notification notification, int stusentId, string studentName)
+        private NotificationDTO MapToListDTO(Notification notification, int studentId, string studentName)
         {
             return new NotificationDTO
             {
@@ -227,8 +289,9 @@ namespace backend.Services
                 Message = notification.Message ?? string.Empty,
                 Type = notification.Type ?? string.Empty,
                 CreatedAt = notification.CreatedAt,
-                StudentId = stusentId,
-                StudentName = studentName
+                StudentId = studentId,
+                StudentName = studentName,
+
             };
         }
 

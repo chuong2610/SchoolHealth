@@ -52,17 +52,19 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
 
-        public async Task<IEnumerable<Notification>> GetAllNotificationsAsync()
+
+        public async Task<List<Notification>> GetAllNotificationsAsync()
         {
             return await _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
-                .Where(ms => ms.IsActive)
+                        .ThenInclude(s => s.Class)
+                .Where(n => n.IsActive)
                 .ToListAsync();
         }
 
 
-        public async Task<bool> AddNotificationAsync(Notification notification)
+        public async Task<bool> CreateNotificationAsync(Notification notification)
         {
             _context.Notifications.Add(notification);
             var created = await _context.SaveChangesAsync();
@@ -89,5 +91,22 @@ namespace backend.Repositories
             return deleted > 0;
         }
 
+        public async Task<List<Notification>> GetNotificationsByNurseIdAsync(int id)
+        {
+            return await _context.Notifications
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
+                .Where(n => n.AssignedToId == id)
+                .ToListAsync();
+        }
+
+        public async Task<List<Notification>> Get5Notifications()
+        {
+            return await _context.Notifications
+            .Include(n => n.NotificationStudents)
+            .OrderByDescending(n => n.CreatedAt)
+            .Take(5)
+            .ToListAsync();
+        }
     }
 }

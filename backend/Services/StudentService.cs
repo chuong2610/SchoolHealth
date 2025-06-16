@@ -27,7 +27,7 @@ namespace backend.Services
                 {
                     Id = s.Id,
                     StudentName = s.Name,
-                    ClassName = s.ClassName,
+                    ClassName = s.Class?.ClassName,
                     DateOfBirth = s.DateOfBirth
                 })
                 .ToList();
@@ -42,11 +42,33 @@ namespace backend.Services
             {
                 Id = student.Id,
                 StudentName = student.Name,
-                ClassName = student.ClassName,
+                ClassName = student.Class.ClassName,
                 DateOfBirth = student.DateOfBirth
             };
         }
 
+
+        public async Task<bool> CreateAsync(Student student)
+        {
+            return await _studentRepository.CreateAsync(student);
+        }
+
+        public async Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
+        {
+            var students = await _studentRepository.GetStudentsByNotificationIdAndConfirmedAsync(notificationId);
+            return students.Select(s => new StudentDTO
+            {
+                Id = s.Id,
+                StudentName = s.Name,
+                ClassName = s.Class?.ClassName,
+                DateOfBirth = s.DateOfBirth,
+                StudentNumber = s.StudentNumber
+            }).ToList();
+        }
+        public async Task<int> GetNumberOfStudents()
+        {
+            return await _studentRepository.GetNumberOfStudents();
+        }
         public async Task<StudentDTO?> GetStudentByStudentNumberAsync(string studentNumber)
         {
             var student = await _studentRepository.GetStudentByStudentNumberAsync(studentNumber);
@@ -56,7 +78,7 @@ namespace backend.Services
             {
                 Id = student.Id,
                 StudentName = student.Name,
-                ClassName = student.ClassName,
+                ClassName = student.Class.ClassName,
                 DateOfBirth = student.DateOfBirth
             };
         }

@@ -100,5 +100,27 @@ namespace backend.Repositories
                 .Where(m => m.Student.ParentId == parentId)
                 .ToListAsync();
         }
+
+        public Task<List<Medication>> GetMedicationsActiveAsync()
+        {
+            return _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .Where(m => m.Status == "Active")
+                .ToListAsync();
+        }
+
+        public Task<List<Medication>> GetMedicationsCompletedAsync()
+        {
+            return _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Parent)
+                .Where(m => m.Status == "Completed")
+                .ToListAsync();
+        }
     }
 }

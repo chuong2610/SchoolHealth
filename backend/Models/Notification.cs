@@ -11,9 +11,9 @@ namespace backend.Models
         public string Message { get; set; } = string.Empty;
         public string? Note { get; set; }
         public string Location { get; set; } = string.Empty;
-        public bool IsActive { get; set; } = true;
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string ClassName { get; set; } = string.Empty;
         public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();
 
         // Người tạo (Admin)
@@ -21,9 +21,12 @@ namespace backend.Models
         [ForeignKey("CreatedById")]
         public User CreatedBy { get; set; } = null!;
 
+        public bool IsActive { get; set; } = true;
+
         // Người thực hiện (Nurse)
-        public int? AssignedToId { get; set; }
+        public int AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
-        public User AssignedTo { get; set; } = null!;
+        public User? AssignedTo { get; set; }
+
     }
 }

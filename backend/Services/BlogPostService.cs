@@ -40,33 +40,10 @@ namespace backend.Services
                     imageUrl = $"{baseUrl}/uploads/default.jpg";
                 }
 
-                string summary = "";
-
-                try
-                {
-                    // Cố gắng deserialize JSON
-                    var contentObj = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
-
-                    // Nếu deserialize thành công và Introduction có giá trị
-                    if (contentObj != null && !string.IsNullOrWhiteSpace(contentObj.Introduction))
-                    {
-                        summary = contentObj.Introduction;
-
-                        // Nếu bạn muốn giới hạn độ dài summary (ví dụ 100 ký tự)
-                        if (summary.Length > 100)
-                            summary = summary.Substring(0, 100) + "...";
-                    }
-                    else
-                    {
-                        // Nếu không có Introduction, fallback lấy raw substring
-                        summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
-                    }
-                }
-                catch
-                {
-                    // Nếu deserialize fail thì fallback lấy raw substring
-                    summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
-                }
+                // Tạo ContentSummary từ string thuần
+                string summary = string.IsNullOrWhiteSpace(post.Content)
+                    ? ""
+                    : (post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content);
 
                 return new BlogPostDTO
                 {
@@ -79,6 +56,7 @@ namespace backend.Services
 
             return postDtos;
         }
+
 
 
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
@@ -98,25 +76,25 @@ namespace backend.Services
                 imageUrl = $"{baseUrl}/uploads/default.jpg";
             }
 
-            var content = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
-
+            // Không deserialize nữa, dùng trực tiếp Content chuỗi thuần
             return new BlogPostDetailDTO
             {
                 Id = post.Id,
                 Title = post.Title,
                 Author = post.Author,
-                Content = content ?? new(),
+                Content = post.Content, // Dùng trực tiếp
                 CreatedAt = post.CreatedAt,
                 ImageUrl = imageUrl
             };
         }
+
 
         public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
         {
             var post = new BlogPost
             {
                 Title = request.Title,
-                Content = JsonSerializer.Serialize(request.Content),
+                Content = request.Content,
                 Author = request.Author,
                 ImageUrl = request.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
@@ -141,35 +119,9 @@ namespace backend.Services
                 existingBlogPost.Title = request.Title;
             }
             // Content
-            if (request.Content != null)
+            if (!string.IsNullOrWhiteSpace(request.Content))
             {
-                var oldContent = JsonSerializer.Deserialize<BlogPostContent>(existingBlogPost.Content ?? "{}") ?? new BlogPostContent();
-
-                if (!string.IsNullOrWhiteSpace(request.Content.Introduction))
-                    oldContent.Introduction = request.Content.Introduction;
-
-                if (request.Content.Symptoms != null && request.Content.Symptoms.Any(s => !string.IsNullOrWhiteSpace(s)))
-                    oldContent.Symptoms = request.Content.Symptoms;
-
-                if (request.Content.WhenToSeeDoctor != null && request.Content.WhenToSeeDoctor.Any(s => !string.IsNullOrWhiteSpace(s)))
-                    oldContent.WhenToSeeDoctor = request.Content.WhenToSeeDoctor;
-
-                if (request.Content.Prevention != null)
-                {
-                    oldContent.Prevention ??= new Prevention();
-
-                    if (!string.IsNullOrWhiteSpace(request.Content.Prevention.Vaccination))
-                        oldContent.Prevention.Vaccination = request.Content.Prevention.Vaccination;
-
-                    if (request.Content.Prevention.PersonalHygiene != null && request.Content.Prevention.PersonalHygiene.Any(s => !string.IsNullOrWhiteSpace(s)))
-                        oldContent.Prevention.PersonalHygiene = request.Content.Prevention.PersonalHygiene;
-
-                    if (request.Content.Prevention.ImmunityBoost != null && request.Content.Prevention.ImmunityBoost.Any(s => !string.IsNullOrWhiteSpace(s)))
-                        oldContent.Prevention.ImmunityBoost = request.Content.Prevention.ImmunityBoost;
-                }
-
-                // Serialize lại content sau khi chỉnh sửa
-                existingBlogPost.Content = JsonSerializer.Serialize(oldContent);
+                existingBlogPost.Content = request.Content;
             }
             // Author
             if (!string.IsNullOrWhiteSpace(request.Author))

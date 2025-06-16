@@ -81,12 +81,30 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+        [HttpGet("admin/{id}")]
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id)
+        {
+            try
+            {
+                var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+                if (notification == null)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
+                }
+                return Ok(new BaseResponse<NotificationDetailAdminDTO>(notification, "Lấy thông tin chi tiết thông báo thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationsDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<NotificationClassDTO>>> GetAll()
         {
             var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
             return Ok(notifications);
         }
+
 
 
         [HttpPost("notification")]
@@ -95,7 +113,7 @@ namespace backend.Controllers
         {
             try
             {
-                if (notificationRequest == null || notificationRequest.ClassName == null || !notificationRequest.ClassName.Any())
+                if (notificationRequest == null || notificationRequest.ClassId == 0)
                 {
                     return BadRequest(new BaseResponse<bool>(false, "Thông báo không hợp lệ hoặc chưa chọn lớp", false));
                 }
@@ -112,9 +130,7 @@ namespace backend.Controllers
                 // Gọi service xử lý
                 var isSuccess = await _notificationService.CreateAndSendNotificationAsync(
                     notificationRequest,
-                    notificationRequest.ClassName,
-                    createdById,
-                    notificationRequest.AssignedToId // gửi cho người thực hiện 
+                    createdById
                 );
 
                 return Ok(new BaseResponse<bool>(isSuccess, "Tạo và gửi thông báo thành công", true));

@@ -7,6 +7,7 @@ using backend.Models;
 
 using Microsoft.EntityFrameworkCore;
 
+
 namespace backend.Repositories
 {
     public class StudentRepository : IStudentRepository
@@ -40,11 +41,27 @@ namespace backend.Repositories
             return await _context.Students.FindAsync(id);
         }
 
-
-        public async Task<List<Student>> GetStudentsByClassNameAsync(string className)
+        public async Task<bool> CreateAsync(Student student)
+        {
+            _context.Students.Add(student);
+            return await _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
+        }
+        public async Task<List<Student>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
+        {
+            return await _context.NotificationStudents
+                .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
+                .Select(ns => ns.Student)
+                .ToListAsync();
+        }
+        public async Task<int> GetNumberOfStudents()
         {
             return await _context.Students
-                .Where(s => s.ClassName == className)
+                .CountAsync(s => s.IsActive);
+        }
+        public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
+        {
+            return await _context.Students
+                .Where(s => s.ClassId == classId)
                 .ToListAsync();
         }
 
@@ -54,15 +71,6 @@ namespace backend.Repositories
             if (student?.ParentId == null) return null;
 
             return await _context.Users.FindAsync(student.ParentId);
-        }
-
-        public async Task<List<string>> GetClassNamesByParentIdAsync(int parentId)
-        {
-            return await _context.Students
-                .Where(s => s.ParentId == parentId && !string.IsNullOrEmpty(s.ClassName))
-                .Select(s => s.ClassName)
-                .Distinct()
-                .ToListAsync();
         }
 
     }

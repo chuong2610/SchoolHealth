@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -8,7 +9,6 @@ namespace backend.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-
         private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
@@ -18,23 +18,87 @@ namespace backend.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
+        public async Task<bool> CreateUserAsync(CreateUserRequest userRequest)
         {
-            var users = await _userRepository.GetAllUserAsync();
-            var UserDto = users.Select(user =>
+            // Map CreateUserRequest to User model
+            var user = new User
             {
-                return new UserDTO
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email,
-                    Phone = user.Phone,
-                    Status = user.Status,
-                    RoleName = user.Role?.Name ?? string.Empty
+                Name = userRequest.Name,
+                Email = userRequest.Email,
+                Password = "defaultPassword",
+                Address = userRequest.Address,
+                Phone = userRequest.Phone,
+                Gender = userRequest.Gender,
+                DateOfBirth = userRequest.DateOfBirth
+            };
+            // Check if the user already exists by email
+            var existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
+            if (existingUser != null)
+            {
+                return false; // User already exists
+            }
+            user.IsActive = true;
+            return await _userRepository.CreateUserAsync(user);
+        }
 
-                };
-            }).ToList();
-            return UserDto;
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await _userRepository.GetUserByEmailAsync(email);
+        }
+        public async Task<User?> GetUserByPhoneAsync(string phone)
+        {
+            return await _userRepository.GetUserByPhoneAsync(phone);
+        }
+        public async Task<bool> UpdateUserAsync(UserDetailDTO user)
+        {
+            var existingUser = await _userRepository.GetUserByIdAsync(user.Id);
+            if (existingUser == null)
+            {
+                return false;
+            }
+            existingUser.Name = user.Name;
+            existingUser.Email = user.Email;
+            existingUser.Address = user.Address;
+            existingUser.Phone = user.Phone;
+            existingUser.Gender = user.Gender;
+            existingUser.DateOfBirth = user.DateOfBirth;
+            return await _userRepository.UpdateUserAsync(existingUser);
+        }
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            return await _userRepository.DeleteUserAsync(id);
+        }
+        public async Task<List<UserDTO>> GetAllUsersAsync()
+        {
+            var users = await _userRepository.GetAllUsersAsync();
+            return users.Select(MapToUserDTO).ToList();
+        }
+        public async Task<List<UserDTO>> GetUsersByRoleAsync(string role)
+        {
+            var users = await _userRepository.GetUsersByRoleAsync(role);
+            return users.Select(MapToUserDTO).ToList();
+        }
+
+        private UserDTO MapToUserDTO(User user)
+        {
+            return new UserDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Address = user.Address,
+                Phone = user.Phone,
+                Gender = user.Gender
+            };
+        }
+
+        public Task<int> GetNumberOfUsersAsync(string role)
+        {
+            if (string.IsNullOrEmpty(role))
+            {
+                return _userRepository.GetNumberOfUsersAsync(null);
+            }
+            return _userRepository.GetNumberOfUsersAsync(role);
         }
 
         public async Task<UserProfileDTO> GetUserByIdAsync(int id)
@@ -132,5 +196,19 @@ namespace backend.Services
             var updated = await _userRepository.UpdateUserAsync(user);
             return updated;
         }
+
+        public async Task<IEnumerable<NurseDTO>> GetAllNursesAsync()
+        {
+            var nurses = await _userRepository.GetAllNursesAsync();
+
+            var result = nurses.Select(n => new NurseDTO
+            {
+                Id = n.Id,
+                NurseName = n.Name
+            });
+
+            return result;
+        }
     }
 }
+
