@@ -4,7 +4,7 @@ namespace backend.Models.Request
     {
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
-        public BlogPostContent Content { get; set; } = new();
+        public string Content { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
     }
 }
