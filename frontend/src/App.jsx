@@ -1,104 +1,203 @@
 import React from "react";
-import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import MainLayout from "./layouts/MainLayout";
+import LoginLayout from "./layouts/LoginLayout";
+import Login from "./pages/login/Login";
+import { useAuth } from "./context/AuthContext";
+
+// Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminAccounts from "./pages/admin/Accounts";
+import AdminCategories from "./pages/admin/Categories";
+import AdminMedicineInventory from "./pages/admin/MedicineInventory";
+import AdminMedicinePlan from "./pages/admin/MedicinePlan";
+import AdminMedicineRequests from "./pages/admin/MedicineRequests";
+import AdminReports from "./pages/admin/Reports";
+import AdminProfile from "./pages/admin/Profile";
+import AdminSettings from "./pages/admin/Settings";
+
+// Nurse Pages
 import NurseDashboard from "./pages/nurse/Dashboard";
-import ParentDashboard from "./pages/parent/Dashboard";
-import HealthDeclaration from "./pages/parent/HealthDeclaration";
-import Notifications from "./pages/parent/Notifications";
-import HealthHistory from "./pages/parent/HealthHistory";
-import SendMedicine from "./pages/parent/SendMedicine";
-import Profile from "./pages/parent/Profile";
-import Settings from "./pages/parent/Settings";
-import BlogDetail from "./pages/parent/BlogDetail";
-import { useNavigate } from "react-router-dom";
 import NurseHealthDeclaration from "./pages/nurse/HealthDeclaration";
 import NurseReceiveMedicine from "./pages/nurse/ReceiveMedicine";
 import NurseHealthEvents from "./pages/nurse/HealthEvents";
 import NurseProfile from "./pages/nurse/Profile";
 import NurseSettings from "./pages/nurse/Settings";
-import Categories from "./pages/admin/Categories";
-import MedicinePlan from "./pages/admin/MedicinePlan";
-import MedicineRequests from "./pages/admin/MedicineRequests";
-import MedicineInventory from "./pages/admin/MedicineInventory";
-import Reports from "./pages/admin/Reports";
-import User from "./pages/admin/User";
-import Accounts from "./pages/admin/Accounts";
-import AdminProfile from "./pages/admin/Profile";
-import AdminSettings from "./pages/admin/Settings";
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext";
+// Parent Pages
+import ParentDashboard from "./pages/parent/Dashboard";
+import ParentHealthDeclaration from "./pages/parent/HealthDeclaration";
+import ParentSendMedicine from "./pages/parent/SendMedicine";
+import ParentHealthHistory from "./pages/parent/HealthHistory";
+import ParentNotifications from "./pages/parent/Notifications";
+import ParentProfile from "./pages/parent/Profile";
+import ParentSettings from "./pages/parent/Settings";
 
-import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// Public Pages
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Privacy from "./pages/Privacy";
 
+const PrivateRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
 
-import Login from "./pages/login/Login";
-import Unauthorized from "./pages/login/Unauthorized";
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
-function App() {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to={`/${user.role}/dashboard`} />;
+  }
+
+  return children;
+};
+
+const App = () => {
   return (
     <AuthProvider>
-    <ToastContainer />
       <Routes>
         {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route element={<LoginLayout />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
 
-        {/* Main Layout Route */}
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Navigate to="/login" replace />} />
-
+        {/* Protected Routes */}
+        <Route element={<MainLayout />}>
           {/* Admin Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-            <Route path="admin">
-              <Route index element={<AdminDashboard />} />
-              <Route path="accounts" element={<Accounts />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="medicines/plan" element={<MedicinePlan />} />
-              <Route path="medicines/requests" element={<MedicineRequests />} />
-              <Route path="medicines/inventory" element={<MedicineInventory />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="profile" element={<AdminProfile />} />
-              <Route path="settings" element={<AdminSettings />} />
-            </Route>
-          </Route>
+          <Route path="/admin" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/dashboard" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/accounts" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminAccounts />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/categories" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminCategories />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/medicine-inventory" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminMedicineInventory />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/medicine-plan" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminMedicinePlan />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/medicine-requests" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminMedicineRequests />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/reports" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminReports />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/profile" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminProfile />
+            </PrivateRoute>
+          } />
+          <Route path="/admin/settings" element={
+            <PrivateRoute allowedRoles={['admin']}>
+              <AdminSettings />
+            </PrivateRoute>
+          } />
 
           {/* Nurse Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['nurse']} />}>
-            <Route path="nurse">
-              <Route index element={<NurseDashboard />} />
-              <Route path="health-declaration" element={<NurseHealthDeclaration />} />
-              <Route path="receive-medicine" element={<NurseReceiveMedicine />} />
-              <Route path="health-events" element={<NurseHealthEvents />} />
-              <Route path="profile" element={<NurseProfile />} />
-              <Route path="settings" element={<NurseSettings />} />
-            </Route>
-          </Route>
+          <Route path="/nurse/dashboard" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/nurse/health-declaration" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseHealthDeclaration />
+            </PrivateRoute>
+          } />
+          <Route path="/nurse/receive-medicine" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseReceiveMedicine />
+            </PrivateRoute>
+          } />
+          <Route path="/nurse/health-events" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseHealthEvents />
+            </PrivateRoute>
+          } />
+          <Route path="/nurse/profile" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseProfile />
+            </PrivateRoute>
+          } />
+          <Route path="/nurse/settings" element={
+            <PrivateRoute allowedRoles={['nurse']}>
+              <NurseSettings />
+            </PrivateRoute>
+          } />
 
           {/* Parent Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
-            <Route path="parent">
-              <Route index element={<ParentDashboard />} />
-              <Route path="health-declaration" element={<HealthDeclaration />} />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="health-history" element={<HealthHistory />} />
-              <Route path="send-medicine" element={<SendMedicine />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="blog/:id" element={<BlogDetail />} />
-              <Route path="health-check" element={<StudentHealthCheck />} />
-            </Route>
-          </Route>
+          <Route path="/parent/dashboard" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/health-declaration" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentHealthDeclaration />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/send-medicine" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentSendMedicine />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/health-history" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentHealthHistory />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/notifications" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentNotifications />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/profile" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentProfile />
+            </PrivateRoute>
+          } />
+          <Route path="/parent/settings" element={
+            <PrivateRoute allowedRoles={['parent']}>
+              <ParentSettings />
+            </PrivateRoute>
+          } />
 
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          {/* Public Pages */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/privacy" element={<Privacy />} />
+
+          {/* Redirect root to appropriate dashboard */}
+          <Route path="/" element={<Navigate to="/login" />} />
         </Route>
       </Routes>
     </AuthProvider>
   );
-}
+};
 
 export default App;

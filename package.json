@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "chart.js": "^4.4.9",
+    "framer-motion": "^12.16.0",
+    "xlsx": "^0.18.5"
+  }
+}

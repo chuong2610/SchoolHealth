@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FNID3/RpoljckhnCevIPLTPZWysGuQhzE8nRpRa6cTE=",
+  "Hash": "TeGZXcXmly+q2mTM8WfE+YCaGYum3oaqxGCJwG/K1bs=",
   "Source": "backend",
   "BasePath": "_content/backend",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "backend\\wwwroot",
       "Source": "backend",
-      "ContentRoot": "F:\\dev\\.net\\swp\\backend\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
+      "Identity": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "SourceId": "backend",
       "SourceType": "Discovered",
-      "ContentRoot": "F:\\dev\\.net\\swp\\backend\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
       "RelativePath": "uploads/c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "AssetKind": "All",
@@ -36,10 +36,10 @@
       "OriginalItemSpec": "wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
     },
     {
-      "Identity": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+      "Identity": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
       "SourceId": "backend",
       "SourceType": "Discovered",
-      "ContentRoot": "F:\\dev\\.net\\swp\\backend\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\",
       "BasePath": "_content/backend",
       "RelativePath": "uploads/ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
       "AssetKind": "All",
