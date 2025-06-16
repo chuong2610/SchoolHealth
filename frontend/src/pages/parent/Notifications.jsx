@@ -535,7 +535,7 @@ export default function Notifications() {
                   disabled={modal.notification?.status === "Pending" ? false : true}
                   onClick={() => {
                     closeModal();
-                    handleSubmitConsent(false, "Reject", reason);
+                    handleSubmitConsent(false, "Rejected", reason);
                   }}
                 >
                   Từ chối
@@ -546,7 +546,7 @@ export default function Notifications() {
                   disabled={modal.notification?.status === "Pending" ? false : true}
                   onClick={() => {
                     closeModal();
-                    handleSubmitConsent(true, "Confirm");
+                    handleSubmitConsent(true, "Confirmed");
                   }}
                 >
                   Đồng ý

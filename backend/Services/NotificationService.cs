@@ -123,7 +123,11 @@ namespace backend.Services
                 Date = notification.Date,
                 NurseName = notification.AssignedTo?.Name ?? string.Empty,
                 ClassName = notification.ClassName ?? string.Empty,
+<<<<<<< HEAD
                 NurseId = notification.AssignedToId,
+=======
+                NurseId = notification.AssignedToId
+>>>>>>> API/ImportUser
             };
             switch (notification.Type)
             {

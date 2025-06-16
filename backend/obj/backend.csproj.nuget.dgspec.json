@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -12,14 +13,31 @@
         "projectPath": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\tranv\\.nuget\\packages\\",
         "outputPath": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\obj\\",
+=======
+    "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj": {}
+  },
+  "projects": {
+    "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\HIEU NHAN\\.nuget\\packages\\",
+        "outputPath": "E:\\SU25\\SWP301\\SchoolHealth\\backend\\obj\\",
+>>>>>>> API/ImportUser
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+<<<<<<< HEAD
           "C:\\Users\\tranv\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+=======
+          "C:\\Users\\HIEU NHAN\\AppData\\Roaming\\NuGet\\NuGet.Config"
+>>>>>>> API/ImportUser
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -114,7 +132,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.205/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.410/PortableRuntimeIdentifierGraph.json"
+>>>>>>> API/ImportUser
         }
       }
     }

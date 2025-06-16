@@ -51,6 +51,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./pages/login/Login";
 import Unauthorized from "./pages/login/Unauthorized";
+import NotificationsManagement from "./pages/admin/NotificationsManagement";
 
 function App() {
   return (
@@ -76,6 +77,7 @@ function App() {
                 path="medicines/inventory"
                 element={<MedicineInventory />}
               />
+              <Route path="notification/management" element={<NotificationsManagement/>}/>
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
