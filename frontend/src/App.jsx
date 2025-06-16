@@ -32,17 +32,18 @@ import { AuthProvider } from "./context/AuthContext";
 
 import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./pages/login/Login";
 import Unauthorized from "./pages/login/Unauthorized";
+import CreateBlogPost from "./pages/admin/CreateBlogPost";
+import BlogPostList from "./pages/admin/BlogPostList";
 
 function App() {
   return (
     <AuthProvider>
-    <ToastContainer />
+      <ToastContainer />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
@@ -53,26 +54,37 @@ function App() {
           <Route index element={<Navigate to="/login" replace />} />
 
           {/* Admin Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="admin">
               <Route index element={<AdminDashboard />} />
               <Route path="accounts" element={<Accounts />} />
               <Route path="categories" element={<Categories />} />
               <Route path="medicines/plan" element={<MedicinePlan />} />
               <Route path="medicines/requests" element={<MedicineRequests />} />
-              <Route path="medicines/inventory" element={<MedicineInventory />} />
+              <Route
+                path="medicines/inventory"
+                element={<MedicineInventory />}
+              />
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="createBlogPost" element={<CreateBlogPost />} />
+              <Route path="/admin/blog-posts" element={<BlogPostList />} />
             </Route>
           </Route>
 
           {/* Nurse Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['nurse']} />}>
+          <Route element={<ProtectedRoute allowedRoles={["nurse"]} />}>
             <Route path="nurse">
               <Route index element={<NurseDashboard />} />
-              <Route path="health-declaration" element={<NurseHealthDeclaration />} />
-              <Route path="receive-medicine" element={<NurseReceiveMedicine />} />
+              <Route
+                path="health-declaration"
+                element={<NurseHealthDeclaration />}
+              />
+              <Route
+                path="receive-medicine"
+                element={<NurseReceiveMedicine />}
+              />
               <Route path="health-events" element={<NurseHealthEvents />} />
               <Route path="profile" element={<NurseProfile />} />
               <Route path="settings" element={<NurseSettings />} />
@@ -80,10 +92,13 @@ function App() {
           </Route>
 
           {/* Parent Routes */}
-          <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
+          <Route element={<ProtectedRoute allowedRoles={["parent"]} />}>
             <Route path="parent">
               <Route index element={<ParentDashboard />} />
-              <Route path="health-declaration" element={<HealthDeclaration />} />
+              <Route
+                path="health-declaration"
+                element={<HealthDeclaration />}
+              />
               <Route path="notifications" element={<Notifications />} />
               <Route path="health-history" element={<HealthHistory />} />
               <Route path="send-medicine" element={<SendMedicine />} />
