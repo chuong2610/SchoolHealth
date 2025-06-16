@@ -10,6 +10,6 @@ namespace backend.Models.Request
         public string Location { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public int ClassId { get; set; }
-        public int? AssignedToId { get; set; }
+        public int AssignedToId { get; set; }
     }
 }

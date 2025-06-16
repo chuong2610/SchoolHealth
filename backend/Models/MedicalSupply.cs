@@ -11,7 +11,6 @@ namespace backend.Models
         public int Quantity { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime LastRestoked { get; set; } = DateTime.UtcNow;
-        public bool IsActive { get; set; } = true;
         public List<MedicalEventSupply> MedicalEventSupplys { get; set; } = new List<MedicalEventSupply>();
     }
 }
