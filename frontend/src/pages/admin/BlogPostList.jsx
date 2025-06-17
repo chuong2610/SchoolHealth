@@ -169,7 +169,7 @@ const BlogPostList = () => {
             <tr>
               <th>ID</th>
               <th>Title</th>
-              <th>Create At</th>
+              <th>Created At</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -178,8 +178,7 @@ const BlogPostList = () => {
               <tr key={post.id}>
                 <td>{index + 1}</td>
                 <td>{post.title}</td>
-                <td>{formatDate(post.createdAt)}</td>{" "}
-                {/* Giả sử author từ API, thay nếu khác */}
+                <td>{formatDate(post.createdAt)}</td>
                 <td>
                   <Link
                     to={`/admin/editBlogPost/${post.id}`}
