@@ -170,8 +170,8 @@ namespace backend.Services
             {
                 worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
                 worksheet.Cell(currentRow, 2).Value = student.StudentName;
+                Console.WriteLine($"Exporting student: {student.StudentName}");          
             }
-
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
