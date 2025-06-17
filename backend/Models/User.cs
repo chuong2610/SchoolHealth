@@ -22,7 +22,7 @@ namespace backend.Models
         public List<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
         public List<Notification> CreatedNotifications { get; set; } = new();
         public List<Notification> AssignedNotifications { get; set; } = new();
-        public int? RoleId { get; set; }
+        public int RoleId { get; set; }
         [ForeignKey("RoleId")]
         public Role Role { get; set; } = null!;
     }

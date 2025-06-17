@@ -57,6 +57,7 @@ namespace backend.Services
         public async Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
         {
             var students = await _studentRepository.GetStudentsByNotificationIdAndConfirmedAsync(notificationId);
+            Console.WriteLine($"Number of students found: {students[0].Class.ClassName}");
             return students.Select(s => new StudentDTO
             {
                 Id = s.Id,
