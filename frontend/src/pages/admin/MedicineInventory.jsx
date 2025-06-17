@@ -570,7 +570,11 @@ const MedicineInventory = () => {
     e.preventDefault();
     try {
       const response = await axios.patch(
-        `http://localhost:5182/api/MedicalSupply/${id}`,
+        `http://localhost:5182/api/MedicalSupply/${form.id}`,
+        {
+          name: form.name,
+          quantity: form.quantity,
+        },
 
         {
           headers: {
