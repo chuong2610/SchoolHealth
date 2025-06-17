@@ -1,4 +1,3 @@
-import { ExportToExcel } from "../../utils/excelUtils";
 import axiosInstance from "../axiosInstance";
 
 export const getMedicalEvents = async () => {
@@ -6,7 +5,6 @@ export const getMedicalEvents = async () => {
     const res = await axiosInstance.get("/MedicalEvent");
     if (res.data.success === true) {
       console.log(res.data.message);
-      ExportToExcel(res.data.data, "MedicalEvents", "Events");
       return res.data.data;
     } else {
       console.log("Loi getMedicalEvents");
