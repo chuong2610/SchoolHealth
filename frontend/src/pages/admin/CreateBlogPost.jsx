@@ -266,16 +266,19 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import axios from "axios";
 
 const CreateBlogPost = () => {
   const [formData, setFormData] = useState({
     title: "",
-    body: "",
-    topic: "",
+    content: "",
+    author: "",
+    imageUrl: "", //lưu file ảnh
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -285,29 +288,64 @@ const CreateBlogPost = () => {
     }));
   };
 
-  const handleBodyChange = (value) => {
+  const handleContentChange = (value) => {
     setFormData((prev) => ({
       ...prev,
-      body: value,
+      content: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
-    // Giả lập gửi dữ liệu (không gọi API, để backend lo)
-    console.log("Form Data Submitted:", formData);
-    setSuccess("Blog post created successfully! (Simulated)");
-    setTimeout(() => {
-      setSuccess("");
-      navigate("/admin/blog-posts"); // Chuyển về trang danh sách sau 2s
-    }, 2000);
+    // Sử dụng object JSON thay vì FormData
+    const data = {
+      title: formData.title,
+      content: formData.content,
+      author: formData.author,
+      imageUrl: formData.imageUrl || "none",
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5182/api/BlogPosts",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json", // Đúng với dữ liệu JSON
+          },
+        }
+      );
+      setSuccess("Blog post have created successfully!!!");
+      setFormData({
+        title: "",
+        content: "",
+        author: "",
+        imageUrl: "", // sửa lại thành imageUrl
+      });
+      setTimeout(() => navigate("/admin/blog-posts"), 2000);
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Failed to create blog post. Try again."
+      );
+      console.error("Error:", error);
+    }
   };
+
+  // const handleImageChange = (e) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     image: e.target.files[0], //lấy file đầu tiên
+  //   }));
+  // };
 
   return (
     <div className="container mt-4">
+      <h2 className="d-flex justify-content-center mb-5">Create Post</h2>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <Link to="/admin/createBlogPost" className="btn btn-primary me-2">
@@ -317,7 +355,7 @@ const CreateBlogPost = () => {
             Manage Posts
           </Link>
         </div>
-        <h2 className="m-0">Create Post</h2>
+
         <div></div>
       </div>
       {error && <div className="alert alert-danger">{error}</div>}
@@ -336,10 +374,20 @@ const CreateBlogPost = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Body</label>
+          <label className="form-label">Author</label>
+          <input
+            className="form-control"
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Content</label>
           <ReactQuill
-            value={formData.body}
-            onChange={handleBodyChange}
+            value={formData.content}
+            onChange={handleContentChange}
             placeholder="Write your post here..."
             modules={{
               toolbar: [
@@ -364,27 +412,19 @@ const CreateBlogPost = () => {
           />
         </div>
 
-        <div className="mb-3">
-          <label className="form-label">Topic</label>
-          <select
-            className="form-select"
-            name="topic"
-            value={formData.topic}
+        <div>
+          <label className="form-label">ImageUrl</label>
+          <input
+            type="text"
+            className="form-control"
+            name="imageUrl"
+            value={formData.imageUrl}
             onChange={handleChange}
-          >
-            <option value="Preventive Health Care">
-              Preventive Health Care
-            </option>
-            <option value="Mental Health Awareness">
-              Mental Health Awareness
-            </option>
-            <option value="Nutrition and Physical Activity">
-              Nutrition and Physical Activity
-            </option>
-          </select>
+            placeholder="Nhập URL từ API upload"
+          />
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary mt-3 mb-5">
           Save Post
         </button>
       </form>

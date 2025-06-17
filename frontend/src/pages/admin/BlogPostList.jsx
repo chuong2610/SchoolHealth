@@ -137,8 +137,19 @@ const BlogPostList = () => {
     }
   };
 
+  // Hàm format ngày
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <div className="container mt-4">
+      <h2 className="d-flex justify-content-center mb-5">Manage Posts</h2>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <Link to="/admin/createBlogPost" className="btn btn-primary me-2">
@@ -148,7 +159,6 @@ const BlogPostList = () => {
             Manage Posts
           </Link>
         </div>
-        <h2 className="m-0">Manage Posts</h2>
         <div></div> {/* Placeholder để cân bằng flex */}
       </div>
       {error && <div className="alert alert-danger">{error}</div>}
@@ -158,7 +168,7 @@ const BlogPostList = () => {
             <tr>
               <th>ID</th>
               <th>Title</th>
-              <th>Author</th>
+              <th>Create At</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -167,7 +177,7 @@ const BlogPostList = () => {
               <tr key={post.id}>
                 <td>{index + 1}</td>
                 <td>{post.title}</td>
-                <td>{post.Author || "Unknown"}</td>{" "}
+                <td>{formatDate(post.createdAt)}</td>{" "}
                 {/* Giả sử author từ API, thay nếu khác */}
                 <td>
                   <Link
