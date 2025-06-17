@@ -6,6 +6,7 @@ const EditProfile = () => {
   const [userInfo, setUserInfo] = useState(null);
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
+  const [isImageChanged, setIsImageChanged] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,14 +20,59 @@ const EditProfile = () => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5182/api/Upload/image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const imagePath = res.data.filePath;
+      setUserInfo((prev) => ({
+        ...prev,
+        imageUrl: `http://localhost:5182${imagePath}`,
+      }));
+      setIsImageChanged(true);
+    } catch (err) {
+      console.error("Lỗi upload ảnh:", err);
+      alert("Upload ảnh thất bại.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
+      const updatedData = {
+        name: userInfo.name,
+        phone: userInfo.phone,
+        address: userInfo.address,
+        gender: userInfo.gender,
+        dateOfBirth: userInfo.dateOfBirth,
+      };
+
+      if (isImageChanged) {
+        updatedData.imageUrl = userInfo.imageUrl;
+      }
+
+      console.log("🧾 Updated data gửi đi:", updatedData);
       await axios.patch(
         `http://localhost:5182/api/User/profile/${userId}`,
-        userInfo
+        updatedData
       );
       alert("Cập nhật thành công!");
+
       navigate("/profile"); // quay lại trang Profile
     } catch (error) {
       console.error("Lỗi khi cập nhật:", error);
@@ -96,13 +142,12 @@ const EditProfile = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Ảnh đại diện (URL)</label>
+          <label className="form-label">Tải ảnh đại diện mới</label>
           <input
-            type="text"
+            type="file"
             className="form-control"
-            name="imageUrl"
-            value={userInfo.imageUrl}
-            onChange={handleChange}
+            accept="image/*"
+            onChange={handleImageChange}
           />
         </div>
 
