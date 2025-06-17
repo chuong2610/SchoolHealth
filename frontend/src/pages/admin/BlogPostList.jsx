@@ -150,14 +150,14 @@ const BlogPostList = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="d-flex justify-content-center mb-5">Manage Posts</h2>
+      <h2 className="d-flex justify-content-center mb-5">Quản lí Blog Posts</h2>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <Link to="/admin/createBlogPost" className="btn btn-primary me-2">
-            Add Post
+            Tạo Blog Post
           </Link>
           <Link to="/admin/blog-posts" className="btn btn-primary">
-            Manage Posts
+            Xem danh sách Blog Posts
           </Link>
         </div>
         <div></div> {/* Placeholder để cân bằng flex */}
@@ -167,10 +167,10 @@ const BlogPostList = () => {
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Created At</th>
-              <th>Action</th>
+              <th>Mã</th>
+              <th>Tiêu đề</th>
+              <th>Thời gian tạo</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -184,13 +184,13 @@ const BlogPostList = () => {
                     to={`/admin/editBlogPost/${post.id}`}
                     className="btn btn-success btn-sm me-2"
                   >
-                    Edit
+                    Cập nhật
                   </Link>
                   <button
                     className="btn btn-danger btn-sm"
                     onClick={() => handleDelete(post.id)}
                   >
-                    Delete
+                    Xóa
                   </button>
                 </td>
               </tr>

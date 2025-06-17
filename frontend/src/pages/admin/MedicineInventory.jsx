@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Table } from "react-bootstrap";
-import axios from "axios"; // Giả sử bạn đã cài đặt axios
+import axios from "axios";
 
 // const inventory = [
 //   {
