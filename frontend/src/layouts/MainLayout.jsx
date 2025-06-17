@@ -20,7 +20,7 @@ const MainLayout = ({ children }) => {
           { path: "/admin/medicines/inventory", label: "Quản lí Kho thuốc", icon: "fas fa-boxes" },
           { path: "/admin/reports", label: "Báo cáo", icon: "fas fa-file-alt" },
           { path: "/admin/blog-posts", label: "Quản lí Blog Posts", icon: "fas fa-file-alt" },
-
+          
         ];
       case "parent":
         return [
