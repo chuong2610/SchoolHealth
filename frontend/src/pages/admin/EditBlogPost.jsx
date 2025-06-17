@@ -186,9 +186,6 @@ const EditBlogPost = () => {
       <h2>Edit Blog Post</h2>
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
-      <Link to="/admin/blog-posts" className="btn btn-info ms-3">
-        Return Blog Post List
-      </Link>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -379,9 +376,21 @@ const EditBlogPost = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary mb-5">
+        {/* <button type="submit" className="btn btn-primary mb-5">
           Update Blog Post
         </button>
+
+        <Link to="/admin/blog-posts" className="btn btn-primary ms-3">
+          Return Blog Post List
+        </Link> */}
+        <div className="d-flex align-items-center mb-5">
+          <button type="submit" className="btn btn-primary me-3">
+            Cập nhật Blog Post
+          </button>
+          <Link to="/admin/blog-posts" className="btn btn-primary">
+            Trở về quản lí Blog Post
+          </Link>
+        </div>
       </form>
     </div>
   );

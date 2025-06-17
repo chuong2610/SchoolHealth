@@ -345,14 +345,14 @@ const CreateBlogPost = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="d-flex justify-content-center mb-5">Create Post</h2>
+      <h2 className="d-flex justify-content-center mb-5">Tạo Blog Post</h2>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div>
           <Link to="/admin/createBlogPost" className="btn btn-primary me-2">
-            Add Post
+            Thêm Blog Post
           </Link>
           <Link to="/admin/blog-posts" className="btn btn-primary">
-            Manage Posts
+            Quản lí Blog Posts
           </Link>
         </div>
 
@@ -425,7 +425,7 @@ const CreateBlogPost = () => {
         </div>
 
         <button type="submit" className="btn btn-primary mt-3 mb-5">
-          Save Post
+          Lưu
         </button>
       </form>
     </div>

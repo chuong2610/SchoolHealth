@@ -41,7 +41,9 @@ import CreateBlogPost from "./pages/admin/CreateBlogPost";
 import BlogPostList from "./pages/admin/BlogPostList";
 import EditBlogPost from "./pages/admin/EditBlogPost";
 
+// import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.snow.css";
+// import "quill/dist/quill.snow.css";
 
 function App() {
   return (
