@@ -1,100 +1,142 @@
 // Login.jsx - Đăng nhập cho người dùng
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'antd/dist/reset.css';
 import { Form, Input, Button, Alert, Typography, Spin, Card } from 'antd';
-import html2pdf from 'html2pdf.js';
+
 import { useAuth } from '../../context/AuthContext';
+import { auth, googleProvider } from '../../firebase';
+import { signInWithPopup } from 'firebase/auth';
+import loginBg from '../../assets/login-bg.png';
 const { Title } = Typography;
+import './Login.css';
 
 const Login = () => {
-    // State lưu thông tin nhập vào form đăng nhập
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
-    // State lưu thông báo lỗi
-    const [error, setError] = useState('');
-    // State loading khi submit
     const [loading, setLoading] = useState(false);
-    // Hook điều hướng sau khi đăng nhập thành công
+    const [error, setError] = useState('');
     const navigate = useNavigate();
-    // Lấy hàm login từ context để lưu token, role, userId
     const { login } = useAuth();
 
-    // Xử lý thay đổi input form đăng nhập
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCredentials(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Xử lý submit form đăng nhập
-    const handleSubmit = async (values) => {
-        const email = values.email.trim();
-        const password = values.password.trim();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Lấy giá trị từ form
+        const email = e.target.email.value;
+        const password = e.target.password.value;
         if (!email || !password) {
             setError('Vui lòng nhập đầy đủ thông tin!');
             return;
         }
         setLoading(true);
+        setError('');
+
         try {
-            // Gửi request đăng nhập tới backend
-            const response = await axios.post('http://localhost:5182/api/auth/login', { email, password });
+            const response = await axios.post('http://localhost:5182/api/auth/login', {
+                email: email.trim(),
+                password: password.trim()
+            });
+
             const { success, data } = response.data;
+
             if (!success || !data?.token || !data?.roleName) {
                 setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
-                setLoading(false);
                 return;
             }
-            // Sử dụng login từ AuthContext để lưu thông tin đăng nhập toàn cục
+
             const { token, userId, roleName } = data;
-            if (!token || !roleName || typeof userId === 'undefined') {
-                setError('Đăng nhập thất bại hoặc thiếu thông tin userId!');
-                setLoading(false);
-                return;
-            }
             await login(token, roleName, Number(userId));
+
+            // Chuyển hướng đến trang dashboard tương ứng với role
+            navigate(`/${roleName.toLowerCase()}/dashboard`);
+
         } catch (err) {
-            setError(err.response?.data?.message || 'Đăng nhập thất bại!');
+            setError(err.response?.data?.message || 'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDownload = () => {
-        const element = document.getElementById('pdf-content');
-        html2pdf().from(element).save('ket-qua.pdf');
+    // Thêm hàm đăng nhập bằng Google
+    const handleGoogleLogin = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
+            const idToken = await user.getIdToken();
+            // Gửi idToken về backend để xác thực và lấy token hệ thống
+            const response = await axios.post('http://localhost:5182/api/auth/google-login', { idToken });
+            const { success, data } = response.data;
+            if (!success || !data?.token || !data?.roleName) {
+                setError('Đăng nhập Google thất bại hoặc dữ liệu phản hồi không hợp lệ!');
+                return;
+            }
+            // Nếu có context login, gọi login(token, roleName, userId) và chuyển hướng
+            if (typeof login === 'function') {
+                await login(data.token, data.roleName, Number(data.userId));
+                navigate(`/${data.roleName.toLowerCase()}/dashboard`);
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Đăng nhập Google thất bại!');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: `url('/src/assets/login-bg.png') center/cover no-repeat, #f5f7fa`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        }}>
-            <Card style={{ maxWidth: 400, width: '100%', borderRadius: 16, boxShadow: '0 4px 32px rgba(0,0,0,0.10)', background: 'rgba(255,255,255,0.95)' }}>
-                <div style={{ textAlign: 'center', marginBottom: 24 }}>
-                    <Title level={2} style={{ marginBottom: 0 }}>
-                        <i className="fas fa-heartbeat" style={{ color: '#1890ff', marginRight: 8 }}></i>
-                        School Health
-                    </Title>
-                    <div style={{ color: '#888', fontSize: 18, marginTop: 8 }}>Đăng nhập hệ thống</div>
+        <div
+            className="login-bg d-flex align-items-center justify-content-center"
+            style={{
+                background: `url(${loginBg}) center/cover no-repeat`,
+                minHeight: '100vh',
+                width: '100vw',
+            }}
+        >
+            <div className="container" style={{ maxWidth: 620, maxHeight: 800, zIndex: 2 }}>
+                <div className="text-center mb-3">
+                    <i className="fas fa-heartbeat" style={{ color: '#2563eb', fontSize: 40 }}></i>
+                    <div className="fw-bold fs-2" style={{ color: '#2563eb' }}>School Health</div>
+                    <div className="fs-5" style={{ color: '#2563eb' }}>Đăng nhập hệ thống</div>
                 </div>
-                {error && <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />}
-                <Form layout="vertical" onFinish={handleSubmit} autoComplete="off">
-                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
-                        <Input type="email" placeholder="Nhập email" size="large" />
-                    </Form.Item>
-                    <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
-                        <Input.Password placeholder="Nhập mật khẩu" size="large" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block size="large" loading={loading}>
-                            Đăng nhập
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                <div className="bg-white p-4 rounded-4 shadow-lg">
+                    {error && <div className="alert alert-danger">{error}</div>}
+                    <form onSubmit={handleSubmit} autoComplete="off">
+                        <div className="mb-3 position-relative">
+                            <input
+                                type="email"
+                                name="email"
+                                className="form-control form-control-lg ps-5"
+                                placeholder="Nhập email"
+                                autoComplete="email"
+                                required
+                            />
+                            <span className="position-absolute top-50 translate-middle-y ms-3 text-secondary" style={{ left: 10 }}>
+                                <i className="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                        <div className="mb-3 position-relative">
+                            <input
+                                type="password"
+                                name="password"
+                                className="form-control form-control-lg ps-5"
+                                placeholder="Nhập mật khẩu"
+                                autoComplete="current-password"
+                                required
+                            />
+                            <span className="position-absolute top-50 translate-middle-y ms-3 text-secondary" style={{ left: 10 }}>
+                                <i className="fas fa-lock"></i>
+                            </span>
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-lg w-100 mb-3" disabled={loading}>
+                            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                        </button>
+                        <button type="button" className="btn btn-light btn-lg w-100 border d-flex align-items-center justify-content-center" style={{ fontWeight: 600 }} onClick={handleGoogleLogin} disabled={loading}>
+                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style={{ width: 22, marginRight: 8 }} />
+                            Đăng nhập với Google
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 };

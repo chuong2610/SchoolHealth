@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "F:\\dev\\.net\\swp\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -15,6 +16,22 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+    "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\ontri\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\ontri\\AppData\\Roaming\\NuGet\\NuGet.Config"
+>>>>>>> aba5c1616ce6869dc4247fbeae61e979f41f51ac
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -107,7 +124,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.410/PortableRuntimeIdentifierGraph.json"
+>>>>>>> aba5c1616ce6869dc4247fbeae61e979f41f51ac
         }
       }
     }

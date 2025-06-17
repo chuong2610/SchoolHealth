@@ -1,6 +1,7 @@
 {
   "Files": [
     {
+<<<<<<< HEAD
       "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
       "PackagePath": "staticwebassets\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg"
     },
@@ -10,6 +11,17 @@
     },
     {
       "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+=======
+      "Id": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "PackagePath": "staticwebassets\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg"
+    },
+    {
+      "Id": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
+      "PackagePath": "staticwebassets\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
+    },
+    {
+      "Id": "C:\\Users\\ontri\\OneDrive\\Documents\\Kỳ 5\\SWP\\SchoolHealth\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+>>>>>>> aba5c1616ce6869dc4247fbeae61e979f41f51ac
       "PackagePath": "staticwebassets\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg"
     },
     {

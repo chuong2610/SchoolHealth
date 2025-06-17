@@ -103,6 +103,9 @@
 .table .badge {
   font-size: 0.875rem;
   padding: 0.5em 0.75em;
+  position: static !important;
+  display: inline-block !important;
+  vertical-align: baseline !important;
 }
 
 .table-responsive {
@@ -153,6 +156,7 @@
     min-height: 300px;
     padding: 1.5rem 0.5rem;
   }
+
   #eventChart {
     min-height: 200px !important;
     height: 200px !important;
@@ -163,6 +167,7 @@
   from {
     height: 0;
   }
+
   to {
     height: var(--bar-height);
   }
