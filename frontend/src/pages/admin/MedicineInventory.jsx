@@ -517,7 +517,9 @@ const MedicineInventory = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setInventory(respond.data.data || []);
+      const data = respond.data.data || [];
+      console.log("Fetched inventory:", data); // Log toàn bộ dữ liệu
+      setInventory(data);
     } catch (error) {
       setError("Failed to fetch inventory.");
       console.error("Fetch error:", error);
@@ -539,12 +541,23 @@ const MedicineInventory = () => {
   // Xử lý thay đổi form
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === "quantity") {
+      const parsedValue = parseInt(value) || 1; //chuyển đổi thành số mặc định là 1 nếu không hợp lệ
+      setForm((prev) => ({
+        ...prev,
+        [name]: Math.max(1, parsedValue), //đảm bảo không dưới 1
+      }));
+    }
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   //Thêm vật tư
   const handleAdd = async (e) => {
     e.preventDefault();
+    if (form.quantity < 1) {
+      setError("Số lượng phải lớn hơn hoặc bằng 1.");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://localhost:5182/api/MedicalSupply",
@@ -568,6 +581,10 @@ const MedicineInventory = () => {
   //Cập nhật vật tư
   const handleUpdate = async (e) => {
     e.preventDefault();
+    if (form.quantity < 1) {
+      setError("Số lượng phải lớn hơn hoặc bằng 1.");
+      return;
+    }
     try {
       const response = await axios.patch(
         `http://localhost:5182/api/MedicalSupply/${form.id}`,
@@ -598,8 +615,9 @@ const MedicineInventory = () => {
   };
 
   //Xóa vật tư
-  const handleDelete = async (e) => {
-    e.preventDefault();
+  const handleDelete = async (id) => {
+    // Thêm log để kiểm tra id
+    console.log("Received id for delete:", id, "Type:", typeof id); // Log id
     try {
       const response = await axios.delete(
         `http://localhost:5182/api/MedicalSupply/${id}`,
@@ -612,7 +630,7 @@ const MedicineInventory = () => {
       );
       setInventory(inventory.filter((item) => item.id !== id));
     } catch (error) {
-      setError("Faild to delete item.");
+      setError("Failed to delete item.");
       console.log("Delete error:", error);
     }
   };
@@ -705,6 +723,7 @@ const MedicineInventory = () => {
                 name="quantity"
                 value={form.quantity}
                 onChange={handleChange}
+                min="1" // Thêm thuộc tính min
                 required
               />
             </Form.Group>
@@ -743,6 +762,7 @@ const MedicineInventory = () => {
                 name="quantity"
                 value={form.quantity}
                 onChange={handleChange}
+                min="1" // Thêm thuộc tính min
                 required
               />
             </Form.Group>
