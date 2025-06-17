@@ -1,223 +1,278 @@
 import { useEffect, useState } from "react";
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  Container,
-  Form,
-  InputGroup,
-  Modal,
-  Nav,
-  Row,
-} from "react-bootstrap";
-import { toast } from "react-toastify";
+import styled, { keyframes } from 'styled-components';
+import { FaBell, FaSyringe, FaStethoscope, FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaTimesCircle, FaSearch, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { sendConsentApi } from "../../api/parent/sendConsentApi";
-import {
-  getNotificationDetailById,
-  getNotifications,
-} from "../../api/parent/notificationApi";
+import { getNotificationDetailById, getNotifications } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
+import '../../styles/parent-theme.css';
 
-// const notificationsData = [
-//   {
-//     id: 1,
-//     type: "vaccination",
-//     title: "Thông báo tiêm chủng",
-//     date: "15/03/2024",
-//     icon: "fas fa-syringe",
-//     badge: "Tiêm chủng",
-//     badgeClass: "bg-primary",
-//     content: [
-//       "Kính gửi Quý phụ huynh,",
-//       "Nhà trường thông báo lịch tiêm chủng vắc-xin phòng COVID-19 cho học sinh vào ngày 20/03/2024. Vui lòng xem chi tiết và xác nhận tham gia.",
-//     ],
-//     modal: {
-//       title: "Chi tiết thông báo tiêm chủng",
-//       info: [
-//         {
-//           icon: "fas fa-calendar",
-//           label: "Ngày",
-//           value: "20/03/2024",
-//           type: "date",
-//         },
-//         {
-//           icon: "fas fa-clock",
-//           label: "Thời gian",
-//           value: "8:00 - 11:00",
-//           type: "time",
-//         },
-//         {
-//           icon: "fas fa-map-marker-alt",
-//           label: "Địa điểm",
-//           value: "Phòng Y tế trường học",
-//           type: "address",
-//         },
-//         {
-//           icon: "fas fa-syringe",
-//           label: "Loại vắc-xin",
-//           value: "Pfizer-BioNTech",
-//           type: "hospital",
-//         },
-//       ],
-//       notes: [
-//         "Học sinh cần ăn sáng đầy đủ trước khi tiêm",
-//         "Mang theo sổ khám bệnh và giấy tờ tùy thân",
-//         "Phụ huynh cần ký xác nhận đồng ý tiêm chủng",
-//         "Theo dõi sức khỏe sau tiêm 30 phút tại trường",
-//       ],
-//       consentLabel: "Tôi đồng ý cho con tôi tham gia tiêm chủng",
-//       confirmBtn: { class: "btn-primary", label: "Xác nhận tham gia" },
-//     },
-//   },
-//   {
-//     id: 2,
-//     type: "checkup",
-//     title: "Thông báo khám sức khỏe",
-//     date: "10/03/2024",
-//     icon: "fas fa-stethoscope",
-//     badge: "Khám sức khỏe",
-//     badgeClass: "bg-success",
-//     content: [
-//       "Kính gửi Quý phụ huynh,",
-//       "Nhà trường tổ chức khám sức khỏe định kỳ cho học sinh vào ngày 25/03/2024. Vui lòng xem chi tiết và xác nhận tham gia.",
-//     ],
-//     modal: {
-//       title: "Chi tiết thông báo khám sức khỏe",
-//       info: [
-//         { icon: "fas fa-calendar", label: "Ngày", value: "25/03/2024" },
-//         { icon: "fas fa-clock", label: "Thời gian", value: "8:00 - 16:00" },
-//         {
-//           icon: "fas fa-map-marker-alt",
-//           label: "Địa điểm",
-//           value: "Phòng Y tế trường học",
-//         },
-//         {
-//           icon: "fas fa-user-md",
-//           label: "Đơn vị khám",
-//           value: "Bệnh viện Nhi đồng",
-//         },
-//       ],
-//       notes: [
-//         "Khám tổng quát",
-//         "Đo chiều cao, cân nặng",
-//         "Kiểm tra thị lực",
-//         "Khám răng miệng",
-//         "Khám tai mũi họng",
-//       ],
-//       consentLabel: "Tôi đồng ý cho con tôi tham gia khám sức khỏe",
-//       confirmBtn: { class: "btn-success", label: "Xác nhận tham gia" },
-//     },
-//   },
-// ];
-
-const icons = [
-  {
-    id: 1,
-    type: "Vaccination",
-    icon: "fas fa-syringe",
-    badgeClass: "bg-primary",
-  },
-  {
-    id: 2,
-    type: "HealthCheck",
-    icon: "fas fa-stethoscope",
-    badgeClass: "bg-success",
-  },
-  {
-    id: 3,
-    type: "date",
-    icon: "fas fa-calendar",
-    badgeClass: "bg-primary",
-  },
-  {
-    id: 4,
-    type: "time",
-    icon: "fas fa-clock",
-    badgeClass: "bg-primary",
-  },
-  {
-    id: 5,
-    type: "address",
-    icon: "fas fa-map-marker-alt",
-    badgeClass: "bg-primary",
-  },
-  {
-    id: 6,
-    type: "hospital",
-    icon: "fas fa-syringe",
-    badgeClass: "bg-primary",
-  },
-];
+// Styled Components
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+const PageWrapper = styled.div`
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding: 32px 0;
+`;
+const Centered = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+const MainCard = styled.div`
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+  padding: 32px 32px 24px 32px;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: ${fadeIn} 0.7s;
+`;
+const Tabs = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+const Tab = styled.button`
+  background: ${({ active }) => (active ? 'linear-gradient(90deg, #2980B9 60%, #38b6ff 100%)' : '#f0f5ff')};
+  color: ${({ active }) => (active ? '#fff' : '#2563eb')};
+  border: none;
+  border-radius: 12px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: ${({ active }) => (active ? '0 2px 12px rgba(56,182,255,0.18)' : 'none')};
+`;
+const SearchBar = styled.div`
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 8px 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+`;
+const SearchInput = styled.input`
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  flex: 1;
+  margin-left: 8px;
+`;
+const Table = styled.table`
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+`;
+const Thead = styled.thead`
+  background: #f0f5ff;
+`;
+const Th = styled.th`
+  padding: 12px 8px;
+  font-weight: 700;
+  color: #2563eb;
+  font-size: 1.05rem;
+  text-align: left;
+`;
+const Tr = styled.tr`
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(56,182,255,0.08);
+  transition: box-shadow 0.2s, transform 0.2s;
+  &:hover {
+    box-shadow: 0 8px 24px rgba(56,182,255,0.15);
+    transform: scale(1.01);
+  }
+`;
+const Td = styled.td`
+  padding: 14px 8px;
+  font-size: 1rem;
+  color: #2D3436;
+  vertical-align: middle;
+`;
+const StatusBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 4px 16px;
+  font-size: 1rem;
+  background: ${({ status }) =>
+    status === 'Confirmed' ? '#E8F8F5' : status === 'Rejected' ? '#FDEDEC' : '#FEF5E7'};
+  color: ${({ status }) =>
+    status === 'Confirmed' ? '#27AE60' : status === 'Rejected' ? '#E74C3C' : '#F39C12'};
+`;
+const ActionButton = styled.button`
+  background: linear-gradient(90deg, #2980B9 60%, #38b6ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(56,182,255,0.10);
+  &:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #2980B9 100%);
+    box-shadow: 0 6px 24px rgba(56,182,255,0.18);
+    transform: scale(1.05);
+  }
+`;
+const Pagination = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+`;
+const PageBtn = styled.button`
+  background: #f0f5ff;
+  color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  &:hover, &[aria-current='true'] {
+    background: linear-gradient(90deg, #2980B9 60%, #38b6ff 100%);
+    color: #fff;
+  }
+`;
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(44,62,80,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const ModalBox = styled.div`
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+  padding: 32px 32px 24px 32px;
+  min-width: 340px;
+  max-width: 480px;
+  animation: ${fadeIn} 0.4s;
+`;
+const ModalTitle = styled.h3`
+  color: #2563eb;
+  margin-bottom: 18px;
+`;
+const ModalClose = styled.button`
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #aaa;
+  cursor: pointer;
+`;
+const ModalFooter = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+`;
+const ModalInput = styled.textarea`
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid #e6eaf0;
+  background: #f8f9fa;
+  padding: 10px 14px;
+  font-size: 1rem;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  resize: vertical;
+`;
+const Spinner = styled.div`
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2980B9;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 32px auto;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+const EmptyState = styled.div`
+  text-align: center;
+  color: #aaa;
+  margin: 48px 0;
+  font-size: 1.1rem;
+`;
 
 const tabList = [
-  {
-    key: "all",
-    label: (
-      <>
-        <i className="fas fa-bell me-2"></i>Tất cả
-      </>
-    ),
-  },
-  {
-    key: "Vaccination",
-    label: (
-      <>
-        <i className="fas fa-syringe me-2"></i>Tiêm chủng
-      </>
-    ),
-  },
-  {
-    key: "HealthCheck",
-    label: (
-      <>
-        <i className="fas fa-stethoscope me-2"></i>Khám sức khỏe
-      </>
-    ),
-  },
+  { key: "all", label: (<><FaBell /> Tất cả</>) },
+  { key: "Vaccination", label: (<><FaSyringe /> Tiêm chủng</>) },
+  { key: "HealthCheck", label: (<><FaStethoscope /> Khám sức khỏe</>) },
 ];
+
+const icons = {
+  Vaccination: <FaSyringe style={{ color: '#2980B9' }} />,
+  HealthCheck: <FaStethoscope style={{ color: '#27AE60' }} />,
+};
 
 export default function Notifications() {
   const [activeTab, setActiveTab] = useState("all");
   const [notifications, setNotifications] = useState([]);
-  const [modal, setModal] = useState({
-    show: false,
-    notification: null,
-    consent: false,
-  });
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState({ show: false, notification: null, consent: false });
   const [reason, setReason] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
 
-  const fetchModal = async (data) => {
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    setLoading(true);
     try {
-      const res = await getNotificationDetailById(data);
-      return res;
+      const res = await getNotifications();
+      const sortedNotifications = res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setNotifications(sortedNotifications);
     } catch (error) {
-      console.log("Loi fetchModal");
+      setNotifications([]);
+    } finally {
+      setLoading(false);
     }
   };
+  useEffect(() => { fetchNotifications(); }, []);
 
+  // Filtered notifications
+  const filtered = notifications.filter(n =>
+    (activeTab === 'all' || n.type === activeTab) &&
+    (n.title?.toLowerCase().includes(search.toLowerCase()) || n.message?.toLowerCase().includes(search.toLowerCase()))
+  );
+  const totalPage = Math.ceil(filtered.length / pageSize);
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  // Modal logic
   const openModal = async (notificationId, studentId) => {
     const data = { notificationId, studentId };
-    const detail = await fetchModal(data);
-
-    
-    const vaccinationName = notifications.find((n) => n.id === notificationId)?.name || null;
-    
-    console.log({...detail, vaccinationName});
-    setModal({
-      show: true,
-      notification: {...detail, vaccinationName},
-      consent: false,
-    });
+    const detail = await getNotificationDetailById(data);
+    setModal({ show: true, notification: { ...detail }, consent: false });
   };
-
   const closeModal = () => setModal({ ...modal, show: false });
-
-  const filteredNotifications =
-    activeTab === "all"
-      ? [...notifications]
-      : [...notifications].filter((notification) => notification.type === activeTab);
-
   const handleSubmitConsent = async (consent, status, reason) => {
     const data = {
       notificationId: modal.notification.id,
@@ -225,337 +280,132 @@ export default function Notifications() {
       status: status,
       reason,
     };
-
-    console.log(data);
     try {
-      const res = await sendConsentApi(data);
-      if (consent) toast.success("Bạn đã đồng ý tham gia.");
-      else toast.error("Bạn đã từ chối tham gia.");
-    } catch (error) {
-      toast.error("Đã có lỗi xảy ra!!!");
-    }
+      await sendConsentApi(data);
+      fetchNotifications();
+      closeModal();
+    } catch (error) { }
   };
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const res = await getNotifications();
-        // sap xep date tu gan den xa
-        const sortedNotifications = res.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setNotifications(sortedNotifications);
-        // console.log(sortedNotifications)
-      } catch (error) {
-        console.log("Loi fetchNotifications");
-      }
-    };
-    fetchNotifications();
-  }, []);
-
-  useEffect(() => {
-    console.log(notifications);
-  }, [notifications]);
   return (
-    <div
-      style={{ background: "#f5f5f5", minHeight: "100vh", padding: "24px 0" }}
-    >
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={8}>
-            <Row className="mb-3">
-              <Col>
-                <h1 className="text-center">Thông báo</h1>
-              </Col>
-            </Row>
-
-            <Row>
-              <Nav
-                variant="pills"
-                className="justify-content-center mb-4"
-                activeKey={activeTab}
-                onSelect={(eventKey) => setActiveTab(eventKey)}
-              >
-                {tabList.map((tab) => {
-                  return (
-                    <Nav.Item key={tab.key}>
-                      <Nav.Link eventKey={tab.key}>{tab.label}</Nav.Link>
-                    </Nav.Item>
-                  );
-                })}
-              </Nav>
-            </Row>
-
-            {/* List Notifications */}
-            <Row>
-              {filteredNotifications?.map((notification, idx) => (
-                <Card key={idx} className="mb-4">
-                  <Row>
-                    <Card.Body>
-                      <Row className="mb-3">
-                        <Col md={1}>
-                          <div
-                            className={`notification-icon ${
-                              icons.find(
-                                (icon) => icon.type === notification.type
-                              )?.badgeClass
-                            }`}
-                            style={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: 12,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: "#fff",
-                              fontSize: 24,
-                            }}
-                          >
-                            <i
-                              className={
-                                icons.find(
-                                  (icon) => icon.type === notification.type
-                                )?.icon
-                              }
-                            ></i>
-                          </div>
-                        </Col>
-                        <Col>
-                          <Card.Title>{notification.title}</Card.Title>
-                          <Card.Text>{formatDateTime(notification.createdAt)}</Card.Text>
-                        </Col>
-                      </Row>
-                      {/* <>
-                        {notification.description?.map((line, i) => (
-                          <p key={i}>{line}</p>
-                        ))}
-                      </> */}
-                      <Row>
-                        <p>{notification.message}</p>
-                      </Row>
-
-                      <Row>
-                        <Col>
-                          <Badge
-                            className={
-                              icons.find(
-                                (icon) => icon.type === notification.type
-                              )?.badgeClass
-                            }
-                          >
-                            {notification.type === "Vaccination" ? "Tiêm chủng" : "Khám sức khỏe"}
-                          </Badge>
-                        </Col>
-                        <Col className="d-flex justify-content-end">
-                          <Button
-                            className={`d-flex align-items-center justify-content-center`}
-                            style={{ height: "30px" }}
-                            onClick={() =>
-                              openModal(notification.id, notification.studentId)
-                            }
-                          >
-                            Chi tiết
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Card.Body>
-                  </Row>
-                </Card>
+    <PageWrapper>
+      <MainCard>
+        <h1 style={{ textAlign: 'center', marginBottom: 24 }}>Thông báo</h1>
+        <Tabs>
+          {tabList.map(tab => (
+            <Tab key={tab.key} active={activeTab === tab.key} onClick={() => { setActiveTab(tab.key); setPage(1); }}>
+              {tab.label}
+            </Tab>
+          ))}
+        </Tabs>
+        <SearchBar>
+          <FaSearch />
+          <SearchInput
+            placeholder="Tìm kiếm theo tiêu đề, nội dung..."
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+          />
+        </SearchBar>
+        {loading ? (
+          <Spinner />
+        ) : filtered.length === 0 ? (
+          <EmptyState>Không có thông báo nào.</EmptyState>
+        ) : (
+          <Table>
+            <Thead>
+              <tr>
+                <Th style={{ width: 48 }}></Th>
+                <Th>Tiêu đề</Th>
+                <Th>Ngày</Th>
+                <Th>Trạng thái</Th>
+                <Th style={{ textAlign: 'center' }}>Thao tác</Th>
+              </tr>
+            </Thead>
+            <tbody>
+              {paged.map((notification, idx) => (
+                <Tr key={notification.id}>
+                  <Td>{icons[notification.type] || <FaBell />}</Td>
+                  <Td>{notification.title}</Td>
+                  <Td>{formatDateTime(notification.createdAt)}</Td>
+                  <Td>
+                    <StatusBadge status={notification.status}>
+                      {notification.status === 'Confirmed' && <FaCheckCircle />}
+                      {notification.status === 'Rejected' && <FaTimesCircle />}
+                      {notification.status === 'Pending' && <FaExclamationCircle />}
+                      {notification.status === 'Confirmed' ? 'Đã xác nhận' : notification.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
+                    </StatusBadge>
+                  </Td>
+                  <Td style={{ textAlign: 'center' }}>
+                    <ActionButton onClick={() => openModal(notification.id, notification.studentId)} title="Xem chi tiết">
+                      <FaInfoCircle /> Chi tiết
+                    </ActionButton>
+                  </Td>
+                </Tr>
               ))}
-            </Row>
-
-            {/* Modal */}
-
-            <Modal
-              show={modal.show}
-              size="lg"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              onHide={() => setModal({ ...modal, show: false })}
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>
-                  <h5>{modal.notification?.title}</h5>
-                </Modal.Title>
-              </Modal.Header>
-
-              {!modal.notification ? (
-                <Modal.Body>
-                  <div className="text-center">Loading...</div>
-                </Modal.Body>
-              ) : (
-                <Modal.Body>
-                  <h6>Thông tin:</h6>
-                  {/* {modal.notification?.info.map((info, i) => (
-                        <Row key={i}>
-                          <Col md={1}>
-                            <i
-                              className={
-                                icons.find((icon) => icon.type === info.type)
-                                  ?.icon
-                              }
-                            ></i>
-                          </Col>
-                          <Col>
-                            {info.label}: {info.value}
-                          </Col>
-                        </Row>
-                      ))} */}
-                  {/* <p>{modal.notification.message}</p> */}
-
-                  {/* Render thong tin detail */}
-                  <Row>
-                    <Col md={1}>
-                      <i
-                        className={
-                          icons.find((icon) => icon.type === "date")?.icon
-                        }
-                      ></i>
-                    </Col>
-                    <Col>
-                      Ngày:{" "}
-                      {new Date(modal.notification?.date).toLocaleDateString(
-                        "en-US"
-                      )}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={1}>
-                      <i
-                        className={
-                          icons.find((icon) => icon.type === "time")?.icon
-                        }
-                      ></i>
-                    </Col>
-                    <Col>
-                      Thời gian:{" "}
-                      {new Date(modal.notification?.date).toLocaleTimeString()}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md={1}>
-                      <i
-                        className={
-                          icons.find((icon) => icon.type === "address")?.icon
-                        }
-                      ></i>
-                    </Col>
-                    <Col>Địa điểm: {modal.notification?.location}</Col>
-                  </Row>
-                  {modal.notification?.type === "Vaccination" && (
-                    <Row>
-                      <Col md={1}>
-                        <i
-                          className={
-                            icons.find((icon) => icon.type === "hospital")?.icon
-                          }
-                        ></i>
-                      </Col>
-                      <Col>Vắc-xin:  {modal.notification?.vaccinationName} </Col>
-                    </Row>
-                  )}
-
-                  <h6 className="mt-4">
-                    {/* {modal.notification?.type === "Vaccination"
-                      ? "Luu y quan trong:"
-                      : "Noi dung kham:"} */}
-                    Ghi chú:
-                  </h6>
-
-                  <ul>
-                    {/* {modal.notification?.notes.map((note, i) => (
-                          <li key={i}>{note}</li>
-                        ))} */}
-                    <li>{modal.notification.note}</li>
-                  </ul>
-
-                  {/* <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          id="consentCheckbox"
-                          type="checkbox"
-                          checked={modal.consent}
-                          onChange={(e) =>
-                            setModal((modal) => ({
-                              ...modal,
-                              consent: e.target.checked,
-                            }))
-                          }
-                        ></input>
-                        <label
-                          htmlFor="consentCheckbox"
-                          className="form-check-label"
-                        >
-                          {modal.notification?.consentLabel}
-                        </label>
-                      </div> */}
-
-                  {/* Them o input lí do từ chối */}
-                  <Row>
-                    <h6>Lý do từ chối:</h6>
-                    <Row>
-                      <InputGroup>
-                        <Form.Control
-                          as="textarea"
-                          rows={3}
-                          name="reason"
+            </tbody>
+          </Table>
+        )}
+        {totalPage > 1 && (
+          <Pagination>
+            <PageBtn onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}><FaChevronLeft /></PageBtn>
+            {[...Array(totalPage)].map((_, i) => (
+              <PageBtn key={i} aria-current={page === i + 1} onClick={() => setPage(i + 1)}>{i + 1}</PageBtn>
+            ))}
+            <PageBtn onClick={() => setPage(p => Math.min(totalPage, p + 1))} disabled={page === totalPage}><FaChevronRight /></PageBtn>
+          </Pagination>
+        )}
+      </MainCard>
+      {modal.show && (
+        <ModalOverlay>
+          <ModalBox>
+            <ModalClose onClick={closeModal}>&times;</ModalClose>
+            <ModalTitle>{modal.notification?.title}</ModalTitle>
+            <div style={{ marginBottom: 12 }}>
+              <b>Ngày:</b> {modal.notification?.date ? new Date(modal.notification.date).toLocaleDateString('vi-VN') : ''}
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Địa điểm:</b> {modal.notification?.location || '---'}
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Nội dung:</b> {modal.notification?.message || ''}
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Ghi chú:</b> {modal.notification?.note || ''}
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Trạng thái:</b> <StatusBadge status={modal.notification?.status}>
+                {modal.notification?.status === 'Confirmed' && <FaCheckCircle />}
+                {modal.notification?.status === 'Rejected' && <FaTimesCircle />}
+                {modal.notification?.status === 'Pending' && <FaExclamationCircle />}
+                {modal.notification?.status === 'Confirmed' ? 'Đã xác nhận' : modal.notification?.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
+              </StatusBadge>
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Lý do từ chối:</b>
+              <ModalInput
+                rows={2}
                           value={reason}
-                          onChange={(e) => setReason(e.target.value)}
+                onChange={e => setReason(e.target.value)}
                           placeholder="Điền lý do nếu từ chối"
-                        />
-                      </InputGroup>
-                    </Row>
-                  </Row>
-
-                  {/* Neu xac nhan or tu choi truoc do thi hien thi thong bao nay */}
-                  {modal.notification?.status !== "Pending" && (
-                    <Row>
-                      <label
-                        className={
-                          modal.notification?.status === "Confirmed"
-                            ? "text-success"
-                            : "text-danger"
-                        }
-                      >
-                        {modal.notification?.status === "Confirmed"
-                          ? "Thông báo trước đã được xác nhận"
-                          : "Thông báo trước đã bị từ chối"}
-                      </label>
-                    </Row>
-                  )}
-                </Modal.Body>
-              )}
-
-              <Modal.Footer>
-                <Button variant="secondary" onClick={closeModal}>
-                  Đóng
-                </Button>
-                <Button
-                  variant="danger"
-                  disabled={modal.notification?.status === "Pending" ? false : true}
-                  onClick={() => {
-                    closeModal();
-                    handleSubmitConsent(false, "Rejected", reason);
-                  }}
-                >
-                  Từ chối
-                </Button>
-                <Button
-                  // disabled={!modal.consent}
-                  className={modal.notification?.badgeClass}
-                  disabled={modal.notification?.status === "Pending" ? false : true}
-                  onClick={() => {
-                    closeModal();
-                    handleSubmitConsent(true, "Confirmed");
-                  }}
-                >
-                  Đồng ý
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+                disabled={modal.notification?.status !== 'Pending'}
+              />
+            </div>
+            <ModalFooter>
+              <ActionButton style={{ background: '#e0e0e0', color: '#2563eb' }} onClick={closeModal}>Đóng</ActionButton>
+              <ActionButton
+                style={{ background: '#E74C3C', color: '#fff' }}
+                disabled={modal.notification?.status !== 'Pending'}
+                onClick={() => handleSubmitConsent(false, "Rejected", reason)}
+              >Từ chối</ActionButton>
+              <ActionButton
+                style={{ background: '#27AE60', color: '#fff' }}
+                disabled={modal.notification?.status !== 'Pending'}
+                onClick={() => handleSubmitConsent(true, "Confirmed")}
+              >Đồng ý</ActionButton>
+            </ModalFooter>
+          </ModalBox>
+        </ModalOverlay>
+      )}
+    </PageWrapper>
   );
 }

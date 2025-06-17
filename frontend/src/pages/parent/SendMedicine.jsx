@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import {
   getStudentListByParentId,
   sendMedicineApi,
 } from "../../api/parent/medicineApi";
+import styled, { keyframes } from 'styled-components';
+import { FaUser, FaCalendarAlt, FaPills, FaCheckCircle, FaPlusCircle, FaTrash, FaPaperPlane } from 'react-icons/fa';
+import '../../styles/parent-theme.css';
+import { Tooltip } from 'antd';
 
 const defaultMedicine = {
   medicineName: "",
@@ -13,6 +17,97 @@ const defaultMedicine = {
   // time: "",
   notes: "",
 };
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const CardInput = styled.div`
+  background: linear-gradient(120deg, #e6f7ff 60%, #f0f5ff 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(56,182,255,0.12);
+  padding: 32px 28px 18px 28px;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.7s;
+`;
+
+const InputLabel = styled.div`
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+  display: flex;
+  align-items: center;
+`;
+
+const StyledInput = styled.input`
+  border-radius: 10px;
+  border: 2px solid #e6f7ff;
+  background: #fff;
+  padding: 10px 16px;
+  width: 100%;
+  margin-bottom: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+  &:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 2px rgba(56,182,255,0.12);
+    outline: none;
+  }
+`;
+
+const MiniCard = styled.div`
+  background: #f0f5ff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(56,182,255,0.08);
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  animation: ${fadeIn} 0.5s;
+`;
+
+const MiniIcon = styled.span`
+  color: #38b6ff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+`;
+
+const GradientButton = styled(Button)`
+  background: linear-gradient(90deg, #2980B9 60%, #38b6ff 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 16px !important;
+  font-weight: 600 !important;
+  padding: 12px 32px !important;
+  font-size: 1.1rem !important;
+  box-shadow: 0 2px 12px rgba(56,182,255,0.18) !important;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  &:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #2980B9 100%) !important;
+    box-shadow: 0 6px 24px rgba(56,182,255,0.22) !important;
+    transform: scale(1.05) !important;
+  }
+`;
+
+const StyledFormControl = styled(Form.Control)`
+  border-radius: 12px !important;
+  border: 2px solid #e6eaf0 !important;
+  background: #f8f9fa !important;
+  padding: 12px 16px !important;
+  font-size: 1rem !important;
+  margin-bottom: 12px !important;
+  transition: border 0.2s, box-shadow 0.2s !important;
+  &:focus {
+    border-color: #38b6ff !important;
+    box-shadow: 0 0 0 2px rgba(56,182,255,0.12) !important;
+    outline: none !important;
+  }
+`;
 
 const SendMedicine = () => {
   const [students, setStudents] = useState([]);
@@ -211,7 +306,7 @@ const SendMedicine = () => {
                       <Col md={6}>
                         <Form.Group controlId={`formMedName-${idx}`}>
                           <Form.Label>Tên thuốc</Form.Label>
-                          <Form.Control
+                          <StyledFormControl
                             required
                             type="text"
                             value={med.medicineName}
@@ -248,16 +343,12 @@ const SendMedicine = () => {
                       <Col md={6}>
                         <Form.Group controlId={`formMedDosage-${idx}`}>
                           <Form.Label>Liều dùng</Form.Label>
-                          <Form.Control
+                          <StyledFormControl
                             required
                             type="text"
                             value={med.dosage}
                             onChange={(e) =>
-                              handleMedicineChange(
-                                idx,
-                                "dosage",
-                                e.target.value
-                              )
+                              handleMedicineChange(idx, "dosage", e.target.value)
                             }
                             placeholder="Ví dụ: 1 viên/lần"
                           />
@@ -289,7 +380,7 @@ const SendMedicine = () => {
                       <Col>
                         <Form.Group controlId={`formMedNote-${idx}`}>
                           <Form.Label>Ghi chú</Form.Label>
-                          <Form.Control
+                          <StyledFormControl
                             as="textarea"
                             rows={2}
                             placeholder="Nhập hướng dẫn sử dụng hoặc lưu ý..."
@@ -308,12 +399,14 @@ const SendMedicine = () => {
                     <Row>
                       <Col className="d-flex align-items-end justify-content-end mt-2">
                         {medicines.length > 1 && (
-                          <Button
-                            variant="outline-danger"
-                            onClick={() => handleRemoveMedicine(idx)}
-                          >
-                            <i className="fas fa-trash me-1"></i> Xóa thuốc
-                          </Button>
+                          <Tooltip title="Xóa thuốc">
+                            <Button
+                              variant="outline-danger"
+                              onClick={() => handleRemoveMedicine(idx)}
+                            >
+                              <FaTrash className="me-1" /> Xóa thuốc
+                            </Button>
+                          </Tooltip>
                         )}
                       </Col>
                     </Row>
@@ -387,9 +480,9 @@ const SendMedicine = () => {
 
                 <Row>
                   <Col className="text-center mt-5">
-                    <Button variant="primary" type="submit">
-                      <i className="fas fa-paper-plane me-2"></i> Gửi thuốc
-                    </Button>
+                    <GradientButton variant="primary" type="submit">
+                      <FaPaperPlane /> Gửi thuốc
+                    </GradientButton>
                   </Col>
                 </Row>
               </Form>

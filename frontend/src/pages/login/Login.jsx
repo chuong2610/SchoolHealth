@@ -1,13 +1,10 @@
 // Login.jsx - Đăng nhập cho người dùng
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'antd/dist/reset.css';
 import { Form, Input, Button, Alert, Typography, Spin, Card } from 'antd';
-
 import { useAuth } from '../../context/AuthContext';
-import { auth, googleProvider } from '../../firebase';
-import { signInWithPopup } from 'firebase/auth';
 import loginBg from '../../assets/login-bg.png';
 const { Title } = Typography;
 import './Login.css';
@@ -16,7 +13,14 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, user } = useAuth();
+
+    // Nếu đã đăng nhập thì tự động chuyển hướng về dashboard đúng role
+    useEffect(() => {
+        if (user && user.role) {
+            navigate(`/${user.role}/dashboard`, { replace: true });
+        }
+    }, [user, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,33 +55,6 @@ const Login = () => {
 
         } catch (err) {
             setError(err.response?.data?.message || 'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Thêm hàm đăng nhập bằng Google
-    const handleGoogleLogin = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
-            const user = result.user;
-            const idToken = await user.getIdToken();
-            // Gửi idToken về backend để xác thực và lấy token hệ thống
-            const response = await axios.post('http://localhost:5182/api/auth/google-login', { idToken });
-            const { success, data } = response.data;
-            if (!success || !data?.token || !data?.roleName) {
-                setError('Đăng nhập Google thất bại hoặc dữ liệu phản hồi không hợp lệ!');
-                return;
-            }
-            // Nếu có context login, gọi login(token, roleName, userId) và chuyển hướng
-            if (typeof login === 'function') {
-                await login(data.token, data.roleName, Number(data.userId));
-                navigate(`/${data.roleName.toLowerCase()}/dashboard`);
-            }
-        } catch (err) {
-            setError(err.response?.data?.message || 'Đăng nhập Google thất bại!');
         } finally {
             setLoading(false);
         }
@@ -127,12 +104,8 @@ const Login = () => {
                                 <i className="fas fa-lock"></i>
                             </span>
                         </div>
-                        <button type="submit" className="btn btn-primary btn-lg w-100 mb-3" disabled={loading}>
+                        <button type="submit" className="btn btn-primary btn-lg w-100" disabled={loading}>
                             {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                        </button>
-                        <button type="button" className="btn btn-light btn-lg w-100 border d-flex align-items-center justify-content-center" style={{ fontWeight: 600 }} onClick={handleGoogleLogin} disabled={loading}>
-                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style={{ width: 22, marginRight: 8 }} />
-                            Đăng nhập với Google
                         </button>
                     </form>
                 </div>

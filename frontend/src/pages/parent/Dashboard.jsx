@@ -1,6 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { Spinner } from "react-bootstrap";
+import styled from "styled-components";
+
+// Hiệu ứng cho card/blog
+const BlogCard = styled.div`
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: #fff;
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+    z-index: 2;
+  }
+`;
+
+const BlogTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #2563eb, #38b6ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 8px rgba(56,182,255,0.08);
+`;
+
+const SectionTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-shadow: 1px 1px 6px rgba(37,99,235,0.08);
+`;
 
 const ParentDashboard = () => {
   {
@@ -30,9 +65,8 @@ const ParentDashboard = () => {
         console.error("API error:", err.response ? err.response : err); // Log chi tiết lỗi
         setError(
           err.response
-            ? `Lỗi ${err.response.status}: ${
-                err.response.data.message || "Không thể tải dữ liệu blog."
-              }`
+            ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."
+            }`
             : "Không thể kết nối đến server."
         );
       }
@@ -81,7 +115,7 @@ const ParentDashboard = () => {
       {/* Mở đầu School Information Section */}
       <section className="py-5 bg-light">
         <div className="container">
-          <h2 className="text-center mb-5">Giới thiệu về trường học</h2>
+          <SectionTitle>Giới thiệu về trường học</SectionTitle>
           <div className="row align-items-center">
             <div className="col-lg-6 mb-4 mb-lg-0">
               <img
@@ -112,17 +146,18 @@ const ParentDashboard = () => {
       {/* Mở đầu Health Blog Section */}
       <section className="py-5">
         <div className="container">
-          <h2 className="text-center mb-5">Blog sức khỏe học đường</h2>
-          {/** */}
+          <BlogTitle>Blog sức khỏe học đường</BlogTitle>
           {loading ? (
-            <p className="text-center">Đang tải dữ liệu...</p> //Hiển thị khi đang gọi
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 180 }}>
+              <Spinner animation="border" variant="primary" style={{ width: 60, height: 60 }} />
+            </div>
           ) : error ? (
-            <p className="text-center text-danger">{error}</p> //hiển thị lỗi nếu có
+            <p className="text-center text-danger">{error}</p>
           ) : (
             <div className="row g-4">
               {blogs.map((blog) => (
                 <div className="col-md-4" key={blog.id}>
-                  <div className="card h-100 shadow-sm">
+                  <BlogCard className="card h-100">
                     <img
                       src={blog.imageUrl}
                       className="card-img-top"
@@ -131,8 +166,8 @@ const ParentDashboard = () => {
                         width: "100%",
                         height: 180,
                         objectFit: "cover",
-                        borderTopLeftRadius: "0.75rem",
-                        borderTopRightRadius: "0.75rem",
+                        borderTopLeftRadius: "1.25rem",
+                        borderTopRightRadius: "1.25rem",
                       }}
                       onError={(e) => {
                         e.target.onError = null;
@@ -144,7 +179,7 @@ const ParentDashboard = () => {
                       <small className="text-muted">
                         {formatDate(blog.createdAt)}
                       </small>
-                      <h5 className="card-title mt-2">{blog.title}</h5>
+                      <h5 className="card-title mt-2 fw-bold" style={{ color: '#2563eb' }}>{blog.title}</h5>
                       <p className="card-text">
                         {blog.contentSummary.length > 100
                           ? blog.contentSummary.substring(0, 100) + "..."
@@ -157,7 +192,7 @@ const ParentDashboard = () => {
                         Đọc thêm →
                       </Link>
                     </div>
-                  </div>
+                  </BlogCard>
                 </div>
               ))}
             </div>

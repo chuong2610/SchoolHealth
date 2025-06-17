@@ -3,6 +3,8 @@ import { Link, useLocation, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaHeartbeat, FaBars, FaUserCircle } from "react-icons/fa";
 import Sidebar from "../components/Sidebar";
+import { Dropdown, Button, Modal } from "antd";
+import '../styles/parent-theme.css';
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
@@ -10,6 +12,7 @@ const MainLayout = ({ children }) => {
   const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const getMenuItems = (roleName) => {
     switch (roleName) {
@@ -60,42 +63,140 @@ const MainLayout = ({ children }) => {
 
   // Xác định className cho layout
   const isAdmin = user?.role === 'admin';
+  const isParent = user?.role === 'parent';
   const layoutClass = isAdmin ? 'd-flex admin-theme admin-gradient-background' : 'd-flex';
 
+  // Menu cho parent
+  const parentMenu = [
+    { path: '/parent', label: 'Trang chủ', icon: 'fas fa-home' },
+    { path: '/parent/health-declaration', label: 'Khai báo y tế', icon: 'fas fa-file-medical' },
+    { path: '/parent/send-medicine', label: 'Gửi thuốc', icon: 'fas fa-pills' },
+    { path: '/parent/notifications', label: 'Thông báo', icon: 'fas fa-bell' },
+    { path: '/parent/health-history', label: 'Lịch sử sức khỏe', icon: 'fas fa-history' },
+  ];
+
+  const handleMenuClick = ({ key }) => {
+    if (key === "profile") {
+      navigate(`/${user.role}/profile`);
+    } else if (key === "settings") {
+      navigate(`/${user.role}/settings`);
+    } else if (key === "logout") {
+      setShowLogoutModal(true);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Menu cho account user (bỏ Đăng xuất nếu là parent)
+  const accountMenuItems = isParent ? [
+    { key: "profile", label: "Trang cá nhân" },
+    { key: "settings", label: "Cài đặt" },
+    { type: "divider" }
+  ] : [
+    { key: "profile", label: "Trang cá nhân" },
+    { key: "settings", label: "Cài đặt" },
+    { type: "divider" },
+    { key: "logout", label: "Đăng xuất" },
+  ];
+
   return (
-    <div className={layoutClass}>
+    <div className={isParent ? `parent-theme ${layoutClass}` : layoutClass}>
       {/* Sidebar */}
-      <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+      {!isParent && (
+        <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+      )}
 
       {/* Main Content */}
-      <div className="flex-grow-1" style={{ marginLeft: sidebarCollapsed ? '80px' : '250px', minHeight: '100vh' }}>
+      <div
+        className="flex-grow-1"
+        style={{
+          marginLeft: !isParent ? (sidebarCollapsed ? '80px' : '250px') : 0,
+          minHeight: '100vh',
+        }}
+      >
         {/* Header */}
         <header
           className="header w-100 bg-white border-bottom"
-          style={{ height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}
+          style={{
+            height: '56px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 24px',
+          }}
         >
-          <button
-            className="btn btn-link p-0 border-0"
-            style={{ fontSize: '1.8rem', color: '#333' }}
-            onClick={() => setSidebarCollapsed((prev) => !prev)}
-            aria-label="Toggle sidebar"
-          >
-            <FaBars />
-          </button>
-          <div>
-            <FaUserCircle style={{ fontSize: '2rem', color: '#888' }} />
+          {/* Left: Logo + tên hệ thống */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: 70 }}>
+            <FaHeartbeat style={{ color: '#2563eb', fontSize: 40 }} />
+            <span className="fw-bold fs-5" style={{ color: '#2563eb' }}>School Health</span>
           </div>
+          {/* Right: Navigation menu + avatar */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+            {isParent && (
+              <nav style={{ display: 'flex', gap: '24px' }}>
+                {parentMenu.map((item) => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={
+                      location.pathname === item.path
+                        ? 'fw-bold text-primary'
+                        : 'text-dark'
+                    }
+                    style={{ textDecoration: 'none', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                  >
+                    <i className={item.icon} style={{ marginRight: 4 }}></i>
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            )}
+            {/* Nút Đăng xuất cho parent */}
+            {isParent && (
+              <Button type="primary" danger onClick={() => setShowLogoutModal(true)}>
+                Đăng xuất
+              </Button>
+            )}
+            <Dropdown
+              menu={{ items: accountMenuItems, onClick: handleMenuClick }}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
+              <FaUserCircle style={{ fontSize: '2rem', color: '#888', cursor: 'pointer' }} />
+            </Dropdown>
+          </div>
+          <Modal
+            open={showLogoutModal}
+            onCancel={() => setShowLogoutModal(false)}
+            title="Xác nhận đăng xuất"
+            footer={[
+              <Button key="cancel" onClick={() => setShowLogoutModal(false)}>
+                Ở lại
+              </Button>,
+              <Button key="logout" type="primary" danger onClick={handleLogout}>
+                Có
+              </Button>
+            ]}
+            centered
+          >
+            <p>Bạn có muốn đăng xuất không?</p>
+          </Modal>
         </header>
 
         {/* Main Content Wrapper */}
-        <div style={{ marginTop: "80px", padding: "20px" }}>
-          <main style={{
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            padding: '30px',
-            minHeight: 'calc(100vh - 150px)' /* Adjust for header/footer */
-          }}>
+        <div style={{ marginTop: '80px', padding: '20px' }}>
+          <main
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '8px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              padding: '30px',
+              minHeight: 'calc(100vh - 150px)', // Adjust for header/footer
+            }}
+          >
             <Outlet />
           </main>
         </div>
