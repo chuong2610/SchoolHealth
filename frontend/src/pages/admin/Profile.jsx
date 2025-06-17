@@ -78,7 +78,7 @@
 // export default Profile;
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const Profile = () => {
@@ -101,6 +101,8 @@ const Profile = () => {
   }, [userId]);
 
   if (!userInfo) return <div>Loading...</div>;
+
+  console.log("Image URL:", userInfo.imageUrl);
 
   return (
     <div
@@ -132,13 +134,14 @@ const Profile = () => {
             >
               Vai trò: {userInfo.roleName}
             </span>
-            <button
-              className="btn btn-outline-primary px-4"
-              style={{ borderRadius: 8 }}
+            <Link
+              to="/admin/edit-profile"
+              className="btn btn-primary"
+              style={{ fontSize: 16, borderRadius: 8 }}
               disabled
             >
-              <i className="fas fa-edit me-2"></i>Chỉnh sửa
-            </button>
+              <i className="fas fa-edit "></i>Chỉnh sửa
+            </Link>
           </div>
           <div className="row mb-3">
             <div className="col-6 mb-2">

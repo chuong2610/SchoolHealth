@@ -43,6 +43,7 @@ import EditBlogPost from "./pages/admin/EditBlogPost";
 
 // import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.snow.css";
+import EditProfile from "./pages/admin/EditProfile";
 // import "quill/dist/quill.snow.css";
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
               />
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
+              <Route path="edit-profile" element={<EditProfile />} />
               <Route path="settings" element={<AdminSettings />} />
               {/**Tạo blog post */}
               <Route path="createBlogPost" element={<CreateBlogPost />} />
