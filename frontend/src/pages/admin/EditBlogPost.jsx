@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const EditBlogPost = () => {
   const { id } = useParams();
@@ -9,16 +11,7 @@ const EditBlogPost = () => {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    content: {
-      introduction: "",
-      symptoms: [""],
-      prevention: {
-        vaccination: "",
-        personalHygiene: [""],
-        immunityBoost: [""],
-      },
-      whenToSeeDoctor: [""],
-    },
+    content: "", // Sử dụng ReactQuill cho content HTML
     imageUrl: "",
   });
 
@@ -38,7 +31,12 @@ const EditBlogPost = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setFormData(response.data);
+      setFormData({
+        title: response.data.title || "",
+        author: response.data.author || "",
+        content: response.data.content || "", //HTML từ api
+        imageUrl: response.data.imageUrl || "",
+      });
     } catch (error) {
       setError("Failed to fetch blog post.");
       console.error(
@@ -56,84 +54,91 @@ const EditBlogPost = () => {
     }));
   };
 
-  const handleNestedChange = (e, field, subField = null) => {
-    const { value } = e.target;
-    setFormData((prev) => {
-      if (subField) {
-        return {
-          ...prev,
-          content: {
-            ...prev.content,
-            [field]: {
-              ...prev.content[field],
-              [subField]: value,
-            },
-          },
-        };
-      }
-      return {
-        ...prev,
-        content: {
-          ...prev.content,
-          [field]: value,
-        },
-      };
-    });
-  };
+  // const handleNestedChange = (e, field, subField = null) => {
+  //   const { value } = e.target;
+  //   setFormData((prev) => {
+  //     if (subField) {
+  //       return {
+  //         ...prev,
+  //         content: {
+  //           ...prev.content,
+  //           [field]: {
+  //             ...prev.content[field],
+  //             [subField]: value,
+  //           },
+  //         },
+  //       };
+  //     }
+  //     return {
+  //       ...prev,
+  //       content: {
+  //         ...prev.content,
+  //         [field]: value,
+  //       },
+  //     };
+  //   });
+  // };
 
-  const handleArrayChange = (e, field, index) => {
-    const { value } = e.target;
-    setFormData((prev) => {
-      const newArray = [...prev.content[field]];
-      newArray[index] = value;
-      return {
-        ...prev,
-        content: {
-          ...prev.content,
-          [field]: newArray,
-        },
-      };
-    });
-  };
+  // const handleArrayChange = (e, field, index) => {
+  //   const { value } = e.target;
+  //   setFormData((prev) => {
+  //     const newArray = [...prev.content[field]];
+  //     newArray[index] = value;
+  //     return {
+  //       ...prev,
+  //       content: {
+  //         ...prev.content,
+  //         [field]: newArray,
+  //       },
+  //     };
+  //   });
+  // };
 
-  const handleArrayPreventionChange = (e, subField, index) => {
-    const { value } = e.target;
-    setFormData((prev) => {
-      const newArray = [...prev.content.prevention[subField]];
-      newArray[index] = value;
-      return {
-        ...prev,
-        content: {
-          ...prev.content,
-          prevention: {
-            ...prev.content.prevention,
-            [subField]: newArray,
-          },
-        },
-      };
-    });
-  };
+  // const handleArrayPreventionChange = (e, subField, index) => {
+  //   const { value } = e.target;
+  //   setFormData((prev) => {
+  //     const newArray = [...prev.content.prevention[subField]];
+  //     newArray[index] = value;
+  //     return {
+  //       ...prev,
+  //       content: {
+  //         ...prev.content,
+  //         prevention: {
+  //           ...prev.content.prevention,
+  //           [subField]: newArray,
+  //         },
+  //       },
+  //     };
+  //   });
+  // };
 
-  const addArrayItem = (field) => {
+  // const addArrayItem = (field) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     content: {
+  //       ...prev.content,
+  //       [field]: [...prev.content[field], ""],
+  //     },
+  //   }));
+  // };
+
+  // const addPreventionArrayItem = (subField) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     content: {
+  //       ...prev.content,
+  //       prevention: {
+  //         ...prev.content.prevention,
+  //         [subField]: [...prev.content.prevention[subField], ""],
+  //       },
+  //     },
+  //   }));
+  // };
+
+  const handleContentChange = (value) => {
     setFormData((prev) => ({
       ...prev,
-      content: {
-        ...prev.content,
-        [field]: [...prev.content[field], ""],
-      },
-    }));
-  };
-
-  const addPreventionArrayItem = (subField) => {
-    setFormData((prev) => ({
-      ...prev,
-      content: {
-        ...prev.content,
-        prevention: {
-          ...prev.content.prevention,
-          [subField]: [...prev.content.prevention[subField], ""],
-        },
-      },
+      content: value,
     }));
   };
 
@@ -142,36 +147,32 @@ const EditBlogPost = () => {
     setError("");
     setSuccess("");
 
-    const cleanedData = {
-      ...formData,
-      content: {
-        ...formData.content,
-        symptoms: formData.content.symptoms.filter((s) => s.trim() != ""),
-        prevention: {
-          ...formData.content.prevention,
-          personalHygiene: formData.content.prevention.personalHygiene.filter(
-            (p) => p.trim() !== ""
-          ),
-          immunityBoost: formData.content.prevention.immunityBoost.filter(
-            (i) => i.trim() !== ""
-          ),
-        },
-        whenToSeeDoctor: formData.content.whenToSeeDoctor.filter(
-          (w) => w.trim() !== ""
-        ),
-      },
-    };
+    // const cleanedData = {
+    //   ...formData,
+    //   content: {
+    //     ...formData.content,
+    //     symptoms: formData.content.symptoms.filter((s) => s.trim() != ""),
+    //     prevention: {
+    //       ...formData.content.prevention,
+    //       personalHygiene: formData.content.prevention.personalHygiene.filter(
+    //         (p) => p.trim() !== ""
+    //       ),
+    //       immunityBoost: formData.content.prevention.immunityBoost.filter(
+    //         (i) => i.trim() !== ""
+    //       ),
+    //     },
+    //     whenToSeeDoctor: formData.content.whenToSeeDoctor.filter(
+    //       (w) => w.trim() !== ""
+    //     ),
+    //   },
+    // };
     try {
-      await axios.patch(
-        `http://localhost:5182/api/BlogPosts/${id}`,
-        cleanedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.patch(`http://localhost:5182/api/BlogPosts/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       setSuccess("Blog post updated Successfully!");
       setTimeout(() => navigate("/admin/blog-posts"), 2000);
     } catch (error) {
@@ -214,7 +215,7 @@ const EditBlogPost = () => {
           />
         </div>
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label className="form-label">Introduction</label>
           <textarea
             className="form-control"
@@ -336,7 +337,48 @@ const EditBlogPost = () => {
             value={formData.imageUrl}
             onChange={handleChange}
           />
+        </div> */}
+
+        <div className="mb-3">
+          <label className="form-label">Content</label>
+          <ReactQuill
+            value={formData.content}
+            onChange={handleContentChange}
+            placeholder="Write your post here..."
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, false] }],
+                ["bold", "italic", "underline", "strike"],
+                [{ list: "ordered" }, { list: "bullet" }],
+                ["link", "image"],
+                ["clean"],
+              ],
+            }}
+            formats={[
+              "header",
+              "bold",
+              "italic",
+              "underline",
+              "strike",
+              "list",
+              "bullet",
+              "link",
+              "image",
+            ]}
+          />
         </div>
+
+        <div className="mb-3">
+          <label className="form-label">Image URL</label>
+          <input
+            type="text"
+            className="form-control"
+            name="imageUrl"
+            value={formData.imageUrl}
+            onChange={handleChange}
+          />
+        </div>
+
         <button type="submit" className="btn btn-primary mb-5">
           Update Blog Post
         </button>
