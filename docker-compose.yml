@@ -1,0 +1,9 @@
+services:
+  redis:
+    image: redis/redis-stack
+    container_name: redisSchoolHealth
+    ports:
+      - "6379:6379"
+      - "8001:8001" 
+    environment:
+      REDIS_ARGS: --requirepass chuong0105
