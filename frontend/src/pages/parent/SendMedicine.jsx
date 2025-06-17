@@ -118,7 +118,7 @@ const SendMedicine = () => {
   // const [senderPhone, setSenderPhone] = useState("");
   // const [senderNote, setSenderNote] = useState("");
   const [validated, setValidated] = useState(false);
-  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   const handleMedicineChange = (idx, field, value) => {
     setMedicines((prev) =>
@@ -155,7 +155,7 @@ const SendMedicine = () => {
       //   senderNote,
       // };
       const data = {
-        studentId: selectedStudentId,
+        studentId: Number(selectedStudentId),
         medicines,
       };
       console.log("Form submitted:", data);

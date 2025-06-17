@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Spinner, Table, Badge } from 'react-bootstrap';
-import styled, { keyframes } from 'styled-components';
-import { FaUser, FaCalendarAlt, FaCheckCircle, FaExclamationCircle, FaHeartbeat, FaPaperPlane, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
-import '../../styles/parent-theme.css';
+import { Spinner, Table, Badge } from "react-bootstrap";
+import styled, { keyframes } from "styled-components";
+import {
+  FaUser,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaHeartbeat,
+  FaPaperPlane,
+  FaEye,
+  FaCheck,
+  FaTimes,
+} from "react-icons/fa";
+import "../../styles/parent-theme.css";
 
 // Hàm lấy parentId từ token (thủ công)
 const getParentIdFromToken = (token) => {
@@ -26,7 +36,7 @@ const fadeIn = keyframes`
 const CardInfo = styled.div`
   background: linear-gradient(120deg, #e6f7ff 60%, #f0f5ff 100%);
   border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(56,182,255,0.12);
+  box-shadow: 0 4px 24px rgba(56, 182, 255, 0.12);
   padding: 32px 28px 18px 28px;
   margin-bottom: 24px;
   animation: ${fadeIn} 0.7s;
@@ -43,7 +53,7 @@ const Avatar = styled.div`
   align-items: center;
   justify-content: center;
   margin-right: 28px;
-  box-shadow: 0 2px 12px rgba(56,182,255,0.18);
+  box-shadow: 0 2px 12px rgba(56, 182, 255, 0.18);
 `;
 
 const InfoLabel = styled.div`
@@ -64,7 +74,7 @@ const InfoValue = styled.div`
 const StyledForm = styled.form`
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(44,62,80,0.08);
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
   padding: 32px 28px 18px 28px;
   margin-bottom: 24px;
   animation: ${fadeIn} 0.7s;
@@ -80,7 +90,7 @@ const StyledInput = styled.input`
   transition: border 0.2s, box-shadow 0.2s;
   &:focus {
     border-color: #38b6ff;
-    box-shadow: 0 0 0 2px rgba(56,182,255,0.12);
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
     outline: none;
   }
 `;
@@ -95,7 +105,7 @@ const StyledSelect = styled.select`
   transition: border 0.2s, box-shadow 0.2s;
   &:focus {
     border-color: #38b6ff;
-    box-shadow: 0 0 0 2px rgba(56,182,255,0.12);
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
     outline: none;
   }
 `;
@@ -110,28 +120,28 @@ const StyledTextarea = styled.textarea`
   transition: border 0.2s, box-shadow 0.2s;
   &:focus {
     border-color: #38b6ff;
-    box-shadow: 0 0 0 2px rgba(56,182,255,0.12);
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
     outline: none;
   }
 `;
 
 const GradientButton = styled.button`
-  background: linear-gradient(90deg, #2980B9 60%, #38b6ff 100%);
+  background: linear-gradient(90deg, #2980b9 60%, #38b6ff 100%);
   color: #fff;
   border: none;
   border-radius: 16px;
   font-weight: 600;
   padding: 12px 32px;
   font-size: 1.1rem;
-  box-shadow: 0 2px 12px rgba(56,182,255,0.18);
+  box-shadow: 0 2px 12px rgba(56, 182, 255, 0.18);
   transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   &:hover {
-    background: linear-gradient(90deg, #38b6ff 0%, #2980B9 100%);
-    box-shadow: 0 6px 24px rgba(56,182,255,0.22);
+    background: linear-gradient(90deg, #38b6ff 0%, #2980b9 100%);
+    box-shadow: 0 6px 24px rgba(56, 182, 255, 0.22);
     transform: scale(1.05);
   }
 `;
@@ -158,9 +168,12 @@ const HealthDeclaration = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
-        const parentId = getParentIdFromToken(token); // Lấy parentId từ token
+        // const token =
+        //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
+        // const parentId = getParentIdFromToken(token); // Lấy parentId từ token
+
+        const token = localStorage.token; // Lấy token từ localStorage
+        const parentId = localStorage.userId; // Lấy parentId từ localStorage (thủ công)
         const response = await axios.get(
           `http://localhost:5182/api/Students/by-parent/${parentId}`,
           {
@@ -182,9 +195,10 @@ const HealthDeclaration = () => {
         );
         setError(
           err.response
-            ? `Lỗi ${err.response.status} : ${err.response.data.message ||
-            "Không thể tải danh sách học sinh. "
-            }`
+            ? `Lỗi ${err.response.status} : ${
+                err.response.data.message ||
+                "Không thể tải danh sách học sinh. "
+              }`
             : "Không thể kết nối đến server."
         );
         setStudents([]); // Đặt lại students là mảng rỗng nếu lỗi
@@ -245,8 +259,10 @@ const HealthDeclaration = () => {
 
     try {
       // Sử dụng token trực tiếp
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MzY4MzAxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.c2y0FVhuS5IYr71JC3F45O3F3pKfP896XnyNwNvyWBE";
+      // const token =
+      //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MzY4MzAxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.c2y0FVhuS5IYr71JC3F45O3F3pKfP896XnyNwNvyWBE";
+
+      const token = localStorage.token;
       const response = await axios.post(
         "http://localhost:5182/api/StudentProfile/declare",
         dataToSubmit,
@@ -273,8 +289,9 @@ const HealthDeclaration = () => {
       console.error("Submit error:", err.response ? err.response : err);
       alert(
         err.response
-          ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể gửi khai báo."
-          }`
+          ? `Lỗi ${err.response.status}: ${
+              err.response.data.message || "Không thể gửi khai báo."
+            }`
           : "Không thể kết nối đến server."
       );
     }
@@ -284,8 +301,12 @@ const HealthDeclaration = () => {
   useEffect(() => {
     const fetchDeclarations = async () => {
       try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
-        const parentId = getParentIdFromToken(token);
+        // const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
+        // const parentId = getParentIdFromToken(token);
+
+        const token = localStorage.token; // Lấy token từ localStorage
+        console.log("Token:", token); // Log token để kiểm tra
+        const parentId = localStorage.userId; // Lấy parentId từ localStorage (thủ công)
         const response = await axios.get(
           `http://localhost:5182/api/StudentProfile/by-parent/${parentId}`,
           {
@@ -370,7 +391,8 @@ const HealthDeclaration = () => {
                         {Array.isArray(students) && students.length > 0 ? (
                           students.map((student) => (
                             <option key={student.id} value={student.id}>
-                              {student.studentName} (Mã: {student.id}, Lớp: {student.className})
+                              {student.studentName} (Mã: {student.id}, Lớp:{" "}
+                              {student.className})
                             </option>
                           ))
                         ) : (
@@ -454,7 +476,10 @@ const HealthDeclaration = () => {
                       />
                     </div>
                     <div className="mb-3">
-                      <label htmlFor="longTermMedications" className="form-label">
+                      <label
+                        htmlFor="longTermMedications"
+                        className="form-label"
+                      >
                         Thuốc sử dụng lâu dài
                       </label>
                       <input
@@ -468,7 +493,10 @@ const HealthDeclaration = () => {
                       />
                     </div>
                     <div className="mb-3">
-                      <label htmlFor="otherMedicalConditions" className="form-label">
+                      <label
+                        htmlFor="otherMedicalConditions"
+                        className="form-label"
+                      >
                         Tình trạng y tế khác
                       </label>
                       <textarea
@@ -482,7 +510,10 @@ const HealthDeclaration = () => {
                       ></textarea>
                     </div>
                     <div className="d-grid">
-                      <button type="submit" className="parent-btn parent-gradient-btn">
+                      <button
+                        type="submit"
+                        className="parent-btn parent-gradient-btn"
+                      >
                         <FaPaperPlane /> Gửi khai báo
                       </button>
                     </div>
@@ -512,40 +543,52 @@ const HealthDeclaration = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {declarations.map((declaration) => (
-                      <tr key={declaration.id}>
-                        <td>{declaration.studentId}</td>
-                        <td>{declaration.studentName}</td>
-                        <td>{declaration.className}</td>
-                        <td>{new Date(declaration.declaredAt).toLocaleDateString('vi-VN')}</td>
-                        <td>{getStatusBadge(declaration.status)}</td>
-                        <td>
-                          <div className="action-buttons icon-row">
-                            <button
-                              className="action-btn view-btn"
-                              onClick={() => handleViewDetails(declaration)}
-                              title="Xem chi tiết"
-                            >
-                              <FaEye />
-                            </button>
-                            <button
-                              className="action-btn confirm-btn"
-                              // onClick={() => handleConfirm(declaration)}
-                              title="Xác nhận"
-                            >
-                              <FaCheck />
-                            </button>
-                            <button
-                              className="action-btn reject-btn"
-                              // onClick={() => handleReject(declaration)}
-                              title="Từ chối"
-                            >
-                              <FaTimes />
-                            </button>
-                          </div>
+                    {declarations.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center">
+                          Không có khai báo y tế nào
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      declarations.map((declaration) => (
+                        <tr key={declaration.id}>
+                          <td>{declaration.studentId}</td>
+                          <td>{declaration.studentName}</td>
+                          <td>{declaration.className}</td>
+                          <td>
+                            {new Date(
+                              declaration.declaredAt
+                            ).toLocaleDateString("vi-VN")}
+                          </td>
+                          <td>{getStatusBadge(declaration.status)}</td>
+                          <td>
+                            <div className="action-buttons icon-row">
+                              <button
+                                className="action-btn view-btn"
+                                onClick={() => handleViewDetails(declaration)}
+                                title="Xem chi tiết"
+                              >
+                                <FaEye />
+                              </button>
+                              <button
+                                className="action-btn confirm-btn"
+                                // onClick={() => handleConfirm(declaration)}
+                                title="Xác nhận"
+                              >
+                                <FaCheck />
+                              </button>
+                              <button
+                                className="action-btn reject-btn"
+                                // onClick={() => handleReject(declaration)}
+                                title="Từ chối"
+                              >
+                                <FaTimes />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </Table>
               </div>
@@ -556,7 +599,10 @@ const HealthDeclaration = () => {
 
       {/* Detail Modal */}
       {selectedDeclaration && (
-        <div className="modal fade show" style={{ display: showDetailModal ? 'block' : 'none' }}>
+        <div
+          className="modal fade show"
+          style={{ display: showDetailModal ? "block" : "none" }}
+        >
           <div className="modal-dialog modal-lg">
             <div className="modal-content detail-modal">
               <div className="modal-header-custom">
@@ -582,21 +628,27 @@ const HealthDeclaration = () => {
                         <FaUser className="me-2" />
                         Họ và tên
                       </div>
-                      <div className="detail-value">{selectedDeclaration.studentName}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.studentName}
+                      </div>
                     </div>
                     <div className="detail-item">
                       <div className="detail-label">
                         <FaIdCard className="me-2" />
                         Mã học sinh
                       </div>
-                      <div className="detail-value">{selectedDeclaration.studentId}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.studentId}
+                      </div>
                     </div>
                     <div className="detail-item">
                       <div className="detail-label">
                         <FaGraduationCap className="me-2" />
                         Lớp
                       </div>
-                      <div className="detail-value">{selectedDeclaration.className}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.className}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -612,28 +664,37 @@ const HealthDeclaration = () => {
                         <FaExclamationTriangle className="me-2" />
                         Dị ứng
                       </div>
-                      <div className="detail-value">{selectedDeclaration.allergys || "Không có"}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.allergys || "Không có"}
+                      </div>
                     </div>
                     <div className="detail-item">
                       <div className="detail-label">
                         <FaHeartbeat className="me-2" />
                         Bệnh mãn tính
                       </div>
-                      <div className="detail-value">{selectedDeclaration.chronicIllnesss || "Không có"}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.chronicIllnesss || "Không có"}
+                      </div>
                     </div>
                     <div className="detail-item">
                       <div className="detail-label">
                         <FaPills className="me-2" />
                         Thuốc sử dụng
                       </div>
-                      <div className="detail-value">{selectedDeclaration.longTermMedications || "Không có"}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.longTermMedications || "Không có"}
+                      </div>
                     </div>
                     <div className="detail-item full-width">
                       <div className="detail-label">
                         <FaStickyNote className="me-2" />
                         Tình trạng khác
                       </div>
-                      <div className="detail-value">{selectedDeclaration.otherMedicalConditions || "Không có"}</div>
+                      <div className="detail-value">
+                        {selectedDeclaration.otherMedicalConditions ||
+                          "Không có"}
+                      </div>
                     </div>
                   </div>
                 </div>

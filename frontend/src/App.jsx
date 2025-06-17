@@ -56,7 +56,6 @@ import MedicineRequests from "./pages/admin/MedicineRequests";
 import MedicineInventory from "./pages/admin/MedicineInventory";
 import NotificationsManagement from "./pages/admin/NotificationsManagement";
 import Reports from "./pages/admin/Reports";
-import HealthDeclaration from "./pages/nurse/HealthDeclaration";
 import Notifications from "./pages/parent/Notifications";
 import HealthHistory from "./pages/parent/HealthHistory";
 import SendMedicine from "./pages/parent/SendMedicine";
@@ -65,6 +64,7 @@ import Settings from "./pages/admin/Settings";
 import BlogDetail from "./pages/parent/BlogDetail";
 import MoreKnow from "./pages/parent/MoreKnow";
 import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
+import HealthDeclaration from "./pages/parent/HealthDeclaration";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();

@@ -120,6 +120,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                     label: 'Yêu cầu cấp thuốc'
                 },
                 {
+                    path: '/admin/notification/management',
+                    icon: <FaBell />,
+                    label: 'Thông báo'
+                },
+                {
                     path: '/admin/reports',
                     icon: <FaFileAlt />,
                     label: 'Báo cáo thống kê'
