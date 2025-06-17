@@ -37,7 +37,7 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+                return BadRequest(new BaseResponse<object>(false, $"Lỗi: {ex.Message}", false));
             }
         }
 
@@ -69,7 +69,7 @@ namespace backend.Controllers
             }
         }
 
-         [HttpGet("nurse/{id}/Completed")]
+        [HttpGet("nurse/{id}/Completed")]
         public async Task<IActionResult> GetMedicationsCompletedByNurseId(int id)
         {
             try
