@@ -1,4 +1,6 @@
 import React from "react";
+// import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 
 import {
   Routes,
@@ -8,62 +10,90 @@ import {
   Outlet,
 } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
+import LoginLayout from "./layouts/LoginLayout";
+import Login from "./pages/login/Login";
+import { useAuth } from "./context/AuthContext";
+
+// Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminAccounts from "./pages/admin/Accounts";
+import AdminCategories from "./pages/admin/Categories";
+import AdminMedicineInventory from "./pages/admin/MedicineInventory";
+import AdminMedicinePlan from "./pages/admin/MedicinePlan";
+import AdminMedicineRequests from "./pages/admin/MedicineRequests";
+import AdminReports from "./pages/admin/Reports";
+import AdminProfile from "./pages/admin/Profile";
+import AdminSettings from "./pages/admin/Settings";
+
+// Nurse Pages
 import NurseDashboard from "./pages/nurse/Dashboard";
-import ParentDashboard from "./pages/parent/Dashboard";
-import HealthDeclaration from "./pages/parent/HealthDeclaration";
-import Notifications from "./pages/parent/Notifications";
-import HealthHistory from "./pages/parent/HealthHistory";
-import SendMedicine from "./pages/parent/SendMedicine";
-import Profile from "./pages/parent/Profile";
-import Settings from "./pages/parent/Settings";
-import BlogDetail from "./pages/parent/BlogDetail";
-import { useNavigate } from "react-router-dom";
 import NurseHealthDeclaration from "./pages/nurse/HealthDeclaration";
 import NurseReceiveMedicine from "./pages/nurse/ReceiveMedicine";
 import NurseHealthEvents from "./pages/nurse/HealthEvents";
 import NurseProfile from "./pages/nurse/Profile";
 import NurseSettings from "./pages/nurse/Settings";
+
+// Parent Pages
+import ParentDashboard from "./pages/parent/Dashboard";
+import ParentHealthDeclaration from "./pages/parent/HealthDeclaration";
+import ParentSendMedicine from "./pages/parent/SendMedicine";
+import ParentHealthHistory from "./pages/parent/HealthHistory";
+import ParentNotifications from "./pages/parent/Notifications";
+import ParentProfile from "./pages/parent/Profile";
+import ParentSettings from "./pages/parent/Settings";
+
+// Public Pages
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Privacy from "./pages/Privacy";
+import { ToastContainer } from "react-toastify";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Accounts from "./pages/admin/Accounts";
 import Categories from "./pages/admin/Categories";
 import MedicinePlan from "./pages/admin/MedicinePlan";
 import MedicineRequests from "./pages/admin/MedicineRequests";
 import MedicineInventory from "./pages/admin/MedicineInventory";
+import NotificationsManagement from "./pages/admin/NotificationsManagement";
 import Reports from "./pages/admin/Reports";
-import User from "./pages/admin/User";
-import Accounts from "./pages/admin/Accounts";
-import AdminProfile from "./pages/admin/Profile";
-import AdminSettings from "./pages/admin/Settings";
-
-import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./context/AuthContext";
-
-import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import Notifications from "./pages/parent/Notifications";
+import HealthHistory from "./pages/parent/HealthHistory";
+import SendMedicine from "./pages/parent/SendMedicine";
+import Profile from "./pages/admin/Profile";
+import Settings from "./pages/admin/Settings";
+import BlogDetail from "./pages/parent/BlogDetail";
 import MoreKnow from "./pages/parent/MoreKnow";
-import About from "./pages/parent/About";
-import Contact from "./pages/parent/Contact";
-import FAQ from "./pages/parent/FAQ";
-import Privacy from "./pages/parent/Privacy";
+import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
+import HealthDeclaration from "./pages/parent/HealthDeclaration";
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+const PrivateRoute = ({ children, allowedRoles }) => {
+  const { user } = useAuth();
 
-import Login from "./pages/login/Login";
-import Unauthorized from "./pages/login/Unauthorized";
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
-function App() {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to={`/${user.role}/dashboard`} />;
+  }
+
+  return children;
+};
+
+const App = () => {
   return (
     <AuthProvider>
       <ToastContainer />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
+        {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
 
-        <Route path="/" element={<MainLayout />}>
+        <Route path="/" element={<MainLayout />}/>
           <Route index element={<Navigate to="/login" replace />} />
 
+        {/* Protected Routes */}
+        <Route element={<MainLayout />}>
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="admin">
@@ -76,6 +106,7 @@ function App() {
                 path="medicines/inventory"
                 element={<MedicineInventory />}
               />
+              <Route path="notification/management" element={<NotificationsManagement/>}/>
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
@@ -150,6 +181,6 @@ function App() {
       </Routes>
     </AuthProvider>
   );
-}
+};
 
 export default App;

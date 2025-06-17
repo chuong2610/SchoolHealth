@@ -1,3 +1,4 @@
+import { ExportToExcel } from "../../utils/excelUtils";
 import axiosInstance from "../axiosInstance";
 
 export const getMedicalEvents = async () => {
