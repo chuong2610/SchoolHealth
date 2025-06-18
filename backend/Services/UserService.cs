@@ -164,6 +164,11 @@ namespace backend.Services
             {
                 existingUserProfile.DateOfBirth = request.DateOfBirth;
             }
+            // Update ImageUrl if not null
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
+                existingUserProfile.ImageUrl = request.ImageUrl;
+            }
 
 
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
