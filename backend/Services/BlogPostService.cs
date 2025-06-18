@@ -20,11 +20,52 @@ namespace backend.Services
         }
 
 
-        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
+        // public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
+        // {
+        //     var posts = await _repository.GetAllAsync();
+
+        //     var postDtos = posts.Select(post =>
+        //     {
+        //         if (post == null) return null;
+
+        //         var request = _httpContextAccessor.HttpContext.Request;
+        //         var baseUrl = $"{request.Scheme}://{request.Host}";
+
+        //         string fileName = post.ImageUrl;
+        //         string imageUrl = $"{baseUrl}/uploads/{fileName}";
+        //         string imagePath = Path.Combine(_environment.WebRootPath, "uploads", fileName ?? "");
+
+        //         if (string.IsNullOrEmpty(fileName) || !System.IO.File.Exists(imagePath))
+        //         {
+        //             imageUrl = $"{baseUrl}/uploads/default.jpg";
+        //         }
+
+        //         // Tạo ContentSummary từ string thuần
+        //         string summary = string.IsNullOrWhiteSpace(post.Content)
+        //             ? ""
+        //             : (post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content);
+
+        //         return new BlogPostDTO
+        //         {
+        //             Id = post.Id,
+        //             Title = post.Title,
+        //             ContentSummary = summary,
+        //             ImageUrl = imageUrl
+        //         };
+        //     }).ToList();
+
+        //     return postDtos;
+        // }
+        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync(int pageNumber = 1, int pageSize = 3)
         {
             var posts = await _repository.GetAllAsync();
 
-            var postDtos = posts.Select(post =>
+            // Phân trang dữ liệu
+            var pagedPosts = posts
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+
+            var postDtos = pagedPosts.Select(post =>
             {
                 if (post == null) return null;
 
@@ -40,7 +81,6 @@ namespace backend.Services
                     imageUrl = $"{baseUrl}/uploads/default.jpg";
                 }
 
-                // Tạo ContentSummary từ string thuần
                 string summary = string.IsNullOrWhiteSpace(post.Content)
                     ? ""
                     : (post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content);
