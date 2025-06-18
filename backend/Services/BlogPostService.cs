@@ -2,6 +2,7 @@ using backend.Models.DTO;
 using backend.Interfaces;
 using backend.Models;
 using System.Text.Json;
+using backend.Models.Request;
 
 namespace backend.Services
 {
@@ -17,6 +18,7 @@ namespace backend.Services
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
         }
+
 
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
         {
@@ -38,33 +40,10 @@ namespace backend.Services
                     imageUrl = $"{baseUrl}/uploads/default.jpg";
                 }
 
-                string summary = "";
-
-                try
-                {
-                    // Cố gắng deserialize JSON
-                    var contentObj = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
-
-                    // Nếu deserialize thành công và Introduction có giá trị
-                    if (contentObj != null && !string.IsNullOrWhiteSpace(contentObj.Introduction))
-                    {
-                        summary = contentObj.Introduction;
-
-                        // Nếu bạn muốn giới hạn độ dài summary (ví dụ 100 ký tự)
-                        if (summary.Length > 100)
-                            summary = summary.Substring(0, 100) + "...";
-                    }
-                    else
-                    {
-                        // Nếu không có Introduction, fallback lấy raw substring
-                        summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
-                    }
-                }
-                catch
-                {
-                    // Nếu deserialize fail thì fallback lấy raw substring
-                    summary = post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content;
-                }
+                // Tạo ContentSummary từ string thuần
+                string summary = string.IsNullOrWhiteSpace(post.Content)
+                    ? ""
+                    : (post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content);
 
                 return new BlogPostDTO
                 {
@@ -77,6 +56,7 @@ namespace backend.Services
 
             return postDtos;
         }
+
 
 
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
@@ -96,17 +76,79 @@ namespace backend.Services
                 imageUrl = $"{baseUrl}/uploads/default.jpg";
             }
 
-            var content = JsonSerializer.Deserialize<BlogPostContent>(post.Content);
-
+            // Không deserialize nữa, dùng trực tiếp Content chuỗi thuần
             return new BlogPostDetailDTO
             {
                 Id = post.Id,
                 Title = post.Title,
                 Author = post.Author,
-                Content = content ?? new(),
+                Content = post.Content, // Dùng trực tiếp
                 CreatedAt = post.CreatedAt,
                 ImageUrl = imageUrl
             };
+        }
+
+
+        public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
+        {
+            var post = new BlogPost
+            {
+                Title = request.Title,
+                Content = request.Content,
+                Author = request.Author,
+                ImageUrl = request.ImageUrl,
+                CreatedAt = DateTime.UtcNow,
+                UserId = 1 // hoặc lấy từ context
+            };
+
+            var created = await _repository.AddAsync(post);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateBlogPostDetailAsync(int id, BlogPostDetailRequest request)
+        {
+            var existingBlogPost = await _repository.GetByIdAsync(id);
+            if (existingBlogPost == null)
+            {
+                return false; // hoặc xử lý phù hợp
+            }
+            // Title
+            if (!string.IsNullOrWhiteSpace(request.Title))
+            {
+                existingBlogPost.Title = request.Title;
+            }
+            // Content
+            if (!string.IsNullOrWhiteSpace(request.Content))
+            {
+                existingBlogPost.Content = request.Content;
+            }
+            // Author
+            if (!string.IsNullOrWhiteSpace(request.Author))
+            {
+                existingBlogPost.Author = request.Author;
+            }
+            // ImageUrl
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
+                existingBlogPost.ImageUrl = request.ImageUrl;
+            }
+
+            var updated = await _repository.UpdateAsync(existingBlogPost);
+
+            return updated;
+        }
+
+        public async Task<bool> DeleteBlogPostDetailAsync(int id)
+        {
+            var blogPost = await _repository.GetByIdAsync(id);
+            if (blogPost == null)
+            {
+                return false;
+            }
+
+            var deleted = await _repository.DeleteAsync(blogPost);
+            return deleted;
         }
 
     }

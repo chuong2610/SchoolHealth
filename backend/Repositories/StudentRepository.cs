@@ -7,6 +7,7 @@ using backend.Models;
 
 using Microsoft.EntityFrameworkCore;
 
+
 namespace backend.Repositories
 {
     public class StudentRepository : IStudentRepository
@@ -19,17 +20,11 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId)
+
+        public async Task<List<Student>> GetStudentIdsByParentIdAsync(int parentId)
         {
             return await _context.Students
                 .Where(s => s.ParentId == parentId)
-                .Select(s => new StudentDTO
-                {
-                    Id = s.Id,
-                    StudentName = s.Name,
-                    ClassName = s.ClassName,
-                    DateOfBirth = s.DateOfBirth
-                })
                 .ToListAsync();
         }
 
@@ -45,5 +40,38 @@ namespace backend.Repositories
         {
             return await _context.Students.FindAsync(id);
         }
+
+        public async Task<bool> CreateAsync(Student student)
+        {
+            _context.Students.Add(student);
+            return await _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
+        }
+        public async Task<List<Student>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
+        {
+            return await _context.NotificationStudents
+                .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
+                .Select(ns => ns.Student)
+                .ToListAsync();
+        }
+        public async Task<int> GetNumberOfStudents()
+        {
+            return await _context.Students
+                .CountAsync(s => s.IsActive);
+        }
+        public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
+        {
+            return await _context.Students
+                .Where(s => s.ClassId == classId)
+                .ToListAsync();
+        }
+
+        public async Task<User> GetParentByStudentIdAsync(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student?.ParentId == null) return null;
+
+            return await _context.Users.FindAsync(student.ParentId);
+        }
+
     }
 }

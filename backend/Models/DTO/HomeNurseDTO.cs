@@ -7,7 +7,7 @@ namespace backend.Models.DTO
         public int CompletedMedicationsNumber { get; set; }
         public int NotificationsNumber { get; set; }
         public List<MedicationDTO> Medications { get; set; } = new List<MedicationDTO>();
-        public List<NotificationDTO> Notifications { get; set; } = new List<NotificationDTO>();
+        public List<NotificationNurseDTO> Notifications { get; set; } = new List<NotificationNurseDTO>();
         public List<MedicalEventDTO> MedicalEvents { get; set; } = new List<MedicalEventDTO>();
         public Dictionary<string, int> WeeklyMedicalEventCounts { get; set; } = new Dictionary<string, int>();
     }

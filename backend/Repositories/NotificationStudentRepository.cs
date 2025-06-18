@@ -13,7 +13,7 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<bool> createNotificationStudentAsync(NotificationStudent notificationStudent)
+        public async Task<bool> CreateNotificationStudentAsync(NotificationStudent notificationStudent)
         {
             _context.NotificationStudents.Add(notificationStudent);
             return await _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);

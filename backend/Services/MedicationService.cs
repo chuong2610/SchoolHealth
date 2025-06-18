@@ -3,7 +3,7 @@ using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
-using Microsoft.EntityFrameworkCore;
+
 using backend.Interfaces;
 
 
@@ -50,7 +50,7 @@ namespace backend.Services
             };
 
             // Lưu vào DB
-            await _medicationRepository.AddAsync(medication);
+            var created = await _medicationRepository.AddAsync(medication);
 
             return true;
         }
@@ -93,7 +93,7 @@ namespace backend.Services
                 CreatedDate = medication.Date,
                 ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
-                StudentClass = medication.Student?.ClassName ?? "",
+                StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
@@ -119,10 +119,10 @@ namespace backend.Services
                 CreatedDate = medication.Date,
                 ReviceDate = medication.ReviceDate,
                 Status = medication.Status,
-                StudentClass = medication.Student?.ClassName ?? "",
+                StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
-                StudentClassName = medication.Student?.ClassName ?? "",
+                StudentClassName = medication.Student?.Class?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
 
@@ -133,5 +133,17 @@ namespace backend.Services
             var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
             return medications.Select(m => MapToDTO(m)).ToList();
         }
+
+        public async Task<List<MedicationDTO>> GetMedicationsActiveAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsActiveAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
+
+        public async Task<List<MedicationDTO>> GetMedicationsCompletedAsync()
+        {
+            var medications = await _medicationRepository.GetMedicationsCompletedAsync();
+            return medications.Select(m => MapToDTO(m)).ToList();
+        }
     }
-}
+}   
