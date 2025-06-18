@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ParentDashboard = () => {
@@ -9,13 +9,13 @@ const ParentDashboard = () => {
   const [blogs, setBlogs] = useState([]); //state để lưu danh sách blog
   const [loading, setLoading] = useState(true); //state để hiển thị trạng thái loading
   const [error, setError] = useState(null); //state để lưu lỗi nếu có
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   // Gọi API khi component được mount
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
         const response = await axios.get(
           "http://localhost:5182/api/BlogPosts",
           {
@@ -24,6 +24,7 @@ const ParentDashboard = () => {
             },
           }
         );
+        console.log("API blogs data:", response.data); // 👈 thêm dòng này
         setBlogs(response.data); //lưu dữ liệu của blog vào state
         setLoading(false); // tắt trạng thái loading
       } catch (err) {
@@ -51,7 +52,29 @@ const ParentDashboard = () => {
       year: "numeric",
     });
   };
-  //Kết thúc hàm format ngày
+  //
+  const getPreviewText = (html, maxLength = 100) => {
+    if (!html) return ""; // tránh null
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const text = div.textContent || div.innerText || "";
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
+  // function BlogCard({ blog }) {
+  //   const preview = getPreviewText(blog.content, 100);
+
+  //   return (
+  //     <div className="card-body">
+  //       <h5>{blog.title}</h5>
+  //       <p className="card-text">{preview}</p>
+  //     </div>
+  //   );
+  // }
+
+  //Kết thúc hàm chuyển HTML sang plain text
 
   return (
     <div>
@@ -120,173 +143,54 @@ const ParentDashboard = () => {
             <p className="text-center text-danger">{error}</p> //hiển thị lỗi nếu có
           ) : (
             <div className="row g-4">
-              {blogs.map((blog) => (
-                <div className="col-md-4" key={blog.id}>
-                  <div className="card h-100 shadow-sm">
-                    <img
-                      src={blog.imageUrl}
-                      className="card-img-top"
-                      alt={blog.title}
-                      style={{
-                        width: "100%",
-                        height: 180,
-                        objectFit: "cover",
-                        borderTopLeftRadius: "0.75rem",
-                        borderTopRightRadius: "0.75rem",
-                      }}
-                      onError={(e) => {
-                        e.target.onError = null;
-                        e.target.src =
-                          "https://placehold.jp/800x180.png?text=No+Image";
-                      }}
-                    />
-                    <div className="card-body">
-                      <small className="text-muted">
-                        {formatDate(blog.createdAt)}
-                      </small>
-                      <h5 className="card-title mt-2">{blog.title}</h5>
-                      <p className="card-text">
-                        {blog.contentSummary.length > 100
-                          ? blog.contentSummary.substring(0, 100) + "..."
-                          : blog.contentSummary}
-                      </p>
-                      <Link
-                        to={`/parent/blog/${blog.id}`}
-                        className="btn btn-link text-primary p-0"
+              {blogs.map(
+                (blog) => (
+                  console.log("Blog content preview:", blog.content),
+                  (
+                    <div className="col-md-4" key={blog.id}>
+                      <div
+                        className="card h-100 shadow-sm"
+                        onClick={() => navigate(`/parent/blog/${blog.id}`)}
+                        style={{ cursor: "pointer", overflow: "hidden" }}
                       >
-                        Đọc thêm →
-                      </Link>
+                        <img
+                          src={
+                            blog.imageUrl ||
+                            "https://placehold.jp/800x180.png?text=No+Image"
+                          }
+                          className="card-img-top"
+                          alt={blog.title}
+                          style={{
+                            width: "100%",
+                            height: 180,
+                            objectFit: "cover",
+                            // borderTopLeftRadius: "0.75rem", // dòng này gây ra lỗi có khoảng trắng nhỏ giữa ảnh và card bên trái
+                            // borderTopRightRadius: "0.75rem", // dòng này gây ra lỗi có khoảng trắng nhỏ giữa ảnh và card bên phải
+                            display: "block",
+                          }}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src =
+                              "https://placehold.jp/800x180.png?text=No+Image";
+                          }}
+                        />
+                        <div className="card-body">
+                          <small className="text-muted">
+                            {formatDate(blog.createdAt)}
+                          </small>
+                          <h5 className="card-title mt-2">{blog.title}</h5>
+                          <p className="card-text">
+                            {getPreviewText(blog.contentSummary, 100)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  )
+                )
+              )}
             </div>
           )}
           {/** */}
-
-          {false && ( // cái false ở đây để tắt đoạn code dưới này làm nó ko chạy được
-            <div className="row g-4">
-              {/* Mở đầu Blog Post 1 */}
-              <div className="col-md-4">
-                <div className="card h-100 shadow-sm">
-                  <img
-                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                    className="card-img-top"
-                    alt="Phòng tránh cúm"
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      objectFit: "cover",
-                      borderTopLeftRadius: "0.75rem",
-                      borderTopRightRadius: "0.75rem",
-                    }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://via.placeholder.com/800x180?text=No+Image";
-                    }}
-                  />
-                  <div className="card-body">
-                    <small className="text-muted">15/03/2024</small>
-                    <h5 className="card-title mt-2">
-                      Cách phòng tránh bệnh cúm mùa cho học sinh
-                    </h5>
-                    <p className="card-text">
-                      Những biện pháp phòng tránh bệnh cúm mùa hiệu quả cho học
-                      sinh trong môi trường học đường...
-                    </p>
-                    <Link
-                      to="/parent/blog/1"
-                      className="btn btn-link text-primary p-0"
-                    >
-                      Đọc thêm →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              {/* Kết thúc Blog Post 1 */}
-
-              {/* Mở đầu Blog Post 2 */}
-              <div className="col-md-4">
-                <div className="card h-100 shadow-sm">
-                  <img
-                    src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    className="card-img-top"
-                    alt="Dinh dưỡng học đường"
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      objectFit: "cover",
-                      borderTopLeftRadius: "0.75rem",
-                      borderTopRightRadius: "0.75rem",
-                    }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://via.placeholder.com/800x180?text=No+Image";
-                    }}
-                  />
-                  <div className="card-body">
-                    <small className="text-muted">10/03/2024</small>
-                    <h5 className="card-title mt-2">
-                      Dinh dưỡng học đường: Xây dựng thực đơn lành mạnh
-                    </h5>
-                    <p className="card-text">
-                      Hướng dẫn xây dựng thực đơn dinh dưỡng cân bằng cho học
-                      sinh...
-                    </p>
-                    <Link
-                      to="/parent/blog/2"
-                      className="btn btn-link text-primary p-0"
-                    >
-                      Đọc thêm →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              {/* Kết thúc Blog Post 2 */}
-
-              {/* Mở đầu Blog Post 3 */}
-              <div className="col-md-4">
-                <div className="card h-100 shadow-sm">
-                  <img
-                    src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    className="card-img-top"
-                    alt="Rửa tay đúng cách"
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      objectFit: "cover",
-                      borderTopLeftRadius: "0.75rem",
-                      borderTopRightRadius: "0.75rem",
-                    }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        "https://via.placeholder.com/800x180?text=No+Image";
-                    }}
-                  />
-                  <div className="card-body">
-                    <small className="text-muted">05/03/2024</small>
-                    <h5 className="card-title mt-2">
-                      Tầm quan trọng của việc rửa tay đúng cách
-                    </h5>
-                    <p className="card-text">
-                      Hướng dẫn chi tiết về quy trình rửa tay đúng cách để phòng
-                      tránh bệnh...
-                    </p>
-                    <Link
-                      to="/parent/blog/3"
-                      className="btn btn-link text-primary p-0"
-                    >
-                      Đọc thêm →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              {/* Kết thúc Blog Post 3 */}
-            </div>
-          )}
         </div>
       </section>
       {/* Kết thúc Health Blog Section */}
