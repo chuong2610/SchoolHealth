@@ -138,39 +138,56 @@ namespace backend.Services
                 return false;
             }
 
-            // Update Name if not null
+            // Update Name
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
                 existingUserProfile.Name = request.Name;
             }
 
-            // Update Phone if not null
+            // Update Phone
             if (!string.IsNullOrWhiteSpace(request.Phone))
             {
                 existingUserProfile.Phone = request.Phone;
             }
-            // Update Address if not null
+
+            // Update Address
             if (!string.IsNullOrWhiteSpace(request.Address))
             {
                 existingUserProfile.Address = request.Address;
             }
-            // Update Gender if not null
+
+            // Update Gender
             if (!string.IsNullOrWhiteSpace(request.Gender))
             {
                 existingUserProfile.Gender = request.Gender;
             }
+
             // Update DateOfBirth if not null
             if (request.DateOfBirth != null)
             {
                 existingUserProfile.DateOfBirth = request.DateOfBirth;
             }
-            // Update ImageUrl if not null
-            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+
+            // Update Image if uploaded
+            if (request.ImageUrl != null && request.ImageUrl.Length > 0)
             {
-                existingUserProfile.ImageUrl = request.ImageUrl;
+                // Generate new file name
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                // Ensure the directory exists
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.ImageUrl.CopyToAsync(stream);
+                }
+
+                // Update the image file name in the database
+                existingUserProfile.ImageUrl = fileName;
             }
 
-
+            // Save changes
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
             return updated;
         }

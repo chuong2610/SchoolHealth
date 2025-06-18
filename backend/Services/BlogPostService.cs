@@ -91,19 +91,35 @@ namespace backend.Services
 
         public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
         {
+            string fileName = null;
+
+            if (request.ImageUrl != null && request.ImageUrl.Length > 0)
+            {
+                // Tạo tên file duy nhất
+                fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                // Tạo thư mục nếu chưa tồn tại
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.ImageUrl.CopyToAsync(stream);
+                }
+            }
+
             var post = new BlogPost
             {
                 Title = request.Title,
                 Content = request.Content,
                 Author = request.Author,
-                ImageUrl = request.ImageUrl,
+                ImageUrl = fileName, // Chỉ lưu tên file, còn URL sẽ tạo khi hiển thị
                 CreatedAt = DateTime.UtcNow,
-                UserId = 1 // hoặc lấy từ context
+                UserId = 1 // Gợi ý: lấy từ context hoặc token
             };
 
             var created = await _repository.AddAsync(post);
-
-            return true;
+            return created != null;
         }
 
         public async Task<bool> UpdateBlogPostDetailAsync(int id, BlogPostDetailRequest request)
@@ -111,33 +127,50 @@ namespace backend.Services
             var existingBlogPost = await _repository.GetByIdAsync(id);
             if (existingBlogPost == null)
             {
-                return false; // hoặc xử lý phù hợp
+                return false;
             }
+
             // Title
             if (!string.IsNullOrWhiteSpace(request.Title))
             {
                 existingBlogPost.Title = request.Title;
             }
+
             // Content
             if (!string.IsNullOrWhiteSpace(request.Content))
             {
                 existingBlogPost.Content = request.Content;
             }
+
             // Author
             if (!string.IsNullOrWhiteSpace(request.Author))
             {
                 existingBlogPost.Author = request.Author;
             }
-            // ImageUrl
-            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+
+            // Image (nếu có upload mới)
+            if (request.ImageUrl != null && request.ImageUrl.Length > 0)
             {
-                existingBlogPost.ImageUrl = request.ImageUrl;
+                // Tạo tên file mới
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
+                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
+
+                // Tạo thư mục nếu chưa có
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await request.ImageUrl.CopyToAsync(stream);
+                }
+
+                // Gán tên file vào DB
+                existingBlogPost.ImageUrl = fileName;
             }
 
             var updated = await _repository.UpdateAsync(existingBlogPost);
-
             return updated;
         }
+
 
         public async Task<bool> DeleteBlogPostDetailAsync(int id)
         {
