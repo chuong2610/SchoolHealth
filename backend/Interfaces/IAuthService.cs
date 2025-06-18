@@ -11,5 +11,6 @@ namespace backend.Interfaces
         Task<bool> IsVerified(string PhoneNumber);
         Task<bool> SendOtpAsync(string PhoneNumber);
         Task<bool> VerifyOtpAsync(string PhoneNumber, string otp);
+         Task<AuthDTO> LoginWithGoogleAsync(GoogleAuthRequest request);
     }
 }

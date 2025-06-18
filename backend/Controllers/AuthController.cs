@@ -44,7 +44,6 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
-
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyRequest request)
         {
@@ -62,10 +61,32 @@ namespace backend.Controllers
         [HttpGet("is-verified/{phoneNumber}")]
         public async Task<IActionResult> IsVerified(string phoneNumber)
         {
-           try
+            try
             {
                 var isVerified = await _authService.IsVerified(phoneNumber);
                 return Ok(new BaseResponse<bool>(isVerified, "Kiểm tra xác thực thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+        [HttpPost("login-google")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleAuthRequest request)
+        {
+            try
+            {
+                var authDTO = await _authService.LoginWithGoogleAsync(request);
+                if (authDTO == null)
+                {
+                    return Unauthorized(new BaseResponse<string>(null, "Google login failed", false));
+                }
+
+                return Ok(new BaseResponse<object>(
+                    authDTO,
+                    "Đăng nhập Google thành công",
+                    true
+                ));
             }
             catch (Exception ex)
             {
