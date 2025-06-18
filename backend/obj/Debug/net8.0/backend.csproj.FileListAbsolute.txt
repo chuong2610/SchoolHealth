@@ -385,5 +385,8 @@ D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\ExcelNumberFormat.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\RBush.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\SixLabors.Fonts.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.IO.Packaging.dll
+<<<<<<< HEAD
 =======
 >>>>>>> b0a94bd5730761b856e134fdd933d3d2dcfd39a7
+=======
+>>>>>>> API/Blog

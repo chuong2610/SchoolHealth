@@ -28,7 +28,8 @@ namespace backend.Services
                     Id = s.Id,
                     StudentName = s.Name,
                     ClassName = s.Class.ClassName,
-                    DateOfBirth = s.DateOfBirth
+                    DateOfBirth = s.DateOfBirth,
+                    StudentNumber = s.StudentNumber
                 })
                 .ToList();
         }

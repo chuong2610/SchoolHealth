@@ -19,10 +19,10 @@ namespace backend.Controllers
 
         // GET: api/BlogPosts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BlogPostDTO>>> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 3)
         {
-            var posts = (await _blogPostService.GetAllAsync()).ToList();
-            return Ok(posts);
+            var result = await _blogPostService.GetAllAsync(pageNumber, pageSize);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

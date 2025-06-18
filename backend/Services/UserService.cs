@@ -29,6 +29,7 @@ namespace backend.Services
                 Address = userRequest.Address,
                 Phone = userRequest.Phone,
                 Gender = userRequest.Gender,
+                RoleId = userRequest.RoleId,
                 DateOfBirth = userRequest.DateOfBirth
             };
             // Check if the user already exists by email
@@ -88,7 +89,8 @@ namespace backend.Services
                 Email = user.Email,
                 Address = user.Address,
                 Phone = user.Phone,
-                Gender = user.Gender
+                Gender = user.Gender,
+                RoleName = user.Role.Name
             };
         }
 
@@ -136,34 +138,44 @@ namespace backend.Services
                 return false;
             }
 
-            // Update Name if not null
+            // Update Name
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
                 existingUserProfile.Name = request.Name;
             }
 
-            // Update Phone if not null
+            // Update Phone
             if (!string.IsNullOrWhiteSpace(request.Phone))
             {
                 existingUserProfile.Phone = request.Phone;
             }
-            // Update Address if not null
+
+            // Update Address
             if (!string.IsNullOrWhiteSpace(request.Address))
             {
                 existingUserProfile.Address = request.Address;
             }
-            // Update Gender if not null
+
+            // Update Gender
             if (!string.IsNullOrWhiteSpace(request.Gender))
             {
                 existingUserProfile.Gender = request.Gender;
             }
+
             // Update DateOfBirth if not null
             if (request.DateOfBirth != null)
             {
                 existingUserProfile.DateOfBirth = request.DateOfBirth;
             }
 
+            // Update Image if uploaded
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
 
+                existingUserProfile.ImageUrl = request.ImageUrl;
+            }
+
+            // Save changes
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
             return updated;
         }
