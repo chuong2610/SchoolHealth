@@ -131,11 +131,11 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
                 }
             ],
             nurse: [
-                {
-                    path: '/nurse/health-declaration',
-                    icon: <FaFileAlt />,
-                    label: 'Khai báo sức khỏe'
-                },
+                // {
+                //     path: '/nurse/health-declaration',
+                //     icon: <FaFileAlt />,
+                //     label: 'Khai báo sức khỏe'
+                // },
                 {
                     path: '/nurse/receive-medicine',
                     icon: <FaPills />,

@@ -521,3 +521,448 @@
 .custom-table tbody tr:last-child td {
     border-bottom: none;
 }
+
+/* Nurse Theme Base */
+.nurse-theme {
+    background-color: var(--nurse-background);
+    color: var(--nurse-text);
+    min-height: 100vh;
+}
+
+/* Nurse Theme Components */
+.nurse-theme .card,
+.nurse-theme .ant-card {
+    background: #fff;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(255, 75, 145, 0.10) !important;
+    border: none !important;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.nurse-theme .card:hover,
+.nurse-theme .ant-card:hover {
+    box-shadow: 0 12px 32px rgba(255, 75, 145, 0.18) !important;
+    transform: translateY(-6px) scale(1.02);
+}
+
+/* Header Styles */
+.nurse-theme .nurse-header {
+    background: #fff;
+    border-bottom: 1px solid var(--nurse-accent);
+}
+
+/* Button Styles */
+.nurse-theme .ant-btn {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    background: linear-gradient(90deg, var(--nurse-primary) 60%, var(--nurse-secondary) 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    transition: background 0.3s, box-shadow 0.3s !important;
+}
+
+.nurse-theme .ant-btn:hover {
+    background: linear-gradient(90deg, var(--nurse-secondary) 0%, var(--nurse-primary) 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 12px rgba(255, 75, 145, 0.18) !important;
+}
+
+/* Table Styles */
+.nurse-theme .ant-table {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(255, 75, 145, 0.12) !important;
+    background: #fff !important;
+}
+
+.nurse-theme .ant-table-thead>tr>th {
+    background: linear-gradient(90deg, #FFF0F5 0%, #FFE4E1 100%) !important;
+    color: var(--nurse-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.08rem;
+    border-bottom: 2px solid var(--nurse-accent) !important;
+}
+
+.nurse-theme .ant-table-tbody>tr:hover>td {
+    background: #FFF0F5 !important;
+    transform: scale(1.01);
+}
+
+/* Form Elements */
+.nurse-theme .ant-input {
+    border-radius: 10px !important;
+    border: 2px solid #FFF0F5 !important;
+    background: #fff !important;
+    transition: border 0.2s !important;
+}
+
+.nurse-theme .ant-input:focus {
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 0 0 2px rgba(255, 75, 145, 0.12) !important;
+}
+
+/* Modal Styles */
+.nurse-theme .ant-modal-content {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px rgba(255, 75, 145, 0.12) !important;
+}
+
+/* Badge Styles */
+.nurse-theme .ant-badge-status-dot {
+    box-shadow: 0 0 0 2px #FFF0F5;
+}
+
+.nurse-theme .ant-badge-status-success {
+    background: #38ff8b !important;
+}
+
+.nurse-theme .ant-badge-status-processing {
+    background: var(--nurse-primary) !important;
+}
+
+/* Card Headers */
+.nurse-theme .ant-card-head-title {
+    font-weight: 700;
+    color: var(--nurse-primary);
+    font-size: 1.2rem;
+}
+
+/* Status Badges */
+.nurse-theme .status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.nurse-theme .status-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 75, 145, 0.2);
+}
+
+/* Action Buttons */
+.nurse-theme .action-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.nurse-theme .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 75, 145, 0.2);
+}
+
+/* Custom Scrollbar */
+.nurse-theme ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.nurse-theme ::-webkit-scrollbar-track {
+    background: #FFF0F5;
+}
+
+.nurse-theme ::-webkit-scrollbar-thumb {
+    background: var(--nurse-accent);
+    border-radius: 4px;
+}
+
+.nurse-theme ::-webkit-scrollbar-thumb:hover {
+    background: var(--nurse-primary);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-theme .fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Health Events Page Styles */
+.nurse-theme .health-events-container {
+    padding: 24px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Health Events Cards */
+.nurse-theme .health-event-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(248, 187, 217, 0.15);
+    transition: all 0.3s ease;
+    border: 1px solid var(--nurse-accent);
+    overflow: hidden;
+}
+
+.nurse-theme .health-event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(248, 187, 217, 0.25);
+}
+
+.nurse-theme .health-event-card .card-header {
+    background: linear-gradient(90deg, var(--nurse-primary) 0%, var(--nurse-primary-light) 100%);
+    padding: 20px;
+    border-bottom: 2px solid var(--nurse-accent);
+}
+
+.nurse-theme .health-event-card .card-title {
+    color: var(--nurse-text);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nurse-theme .health-event-card .card-title i {
+    color: var(--nurse-accent);
+}
+
+.nurse-theme .health-event-card .card-body {
+    padding: 20px;
+}
+
+/* Health Events Table */
+.nurse-theme .health-events-table {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(248, 187, 217, 0.15);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.nurse-theme .health-events-table .ant-table {
+    border-radius: 16px;
+}
+
+.nurse-theme .health-events-table .ant-table-thead>tr>th {
+    background: linear-gradient(90deg, var(--nurse-primary) 0%, var(--nurse-primary-light) 100%);
+    color: var(--nurse-text);
+    font-weight: 600;
+    padding: 16px;
+    border-bottom: 2px solid var(--nurse-accent);
+}
+
+.nurse-theme .health-events-table .ant-table-tbody>tr>td {
+    padding: 16px;
+    border-bottom: 1px solid var(--nurse-primary-light);
+    transition: all 0.3s ease;
+}
+
+.nurse-theme .health-events-table .ant-table-tbody>tr:hover>td {
+    background: var(--nurse-primary-light);
+    transform: scale(1.01);
+}
+
+/* Event Status Badges */
+.nurse-theme .event-status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nurse-theme .event-status-badge.scheduled {
+    background: var(--nurse-primary-light);
+    color: var(--nurse-text);
+}
+
+.nurse-theme .event-status-badge.completed {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.nurse-theme .event-status-badge.cancelled {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+/* Event Action Buttons */
+.nurse-theme .event-action-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.nurse-theme .event-action-btn.view {
+    background: var(--nurse-primary-light);
+    color: var(--nurse-text);
+}
+
+.nurse-theme .event-action-btn.edit {
+    background: var(--nurse-primary);
+    color: #fff;
+}
+
+.nurse-theme .event-action-btn.delete {
+    background: #FFEBEE;
+    color: #C62828;
+}
+
+.nurse-theme .event-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(248, 187, 217, 0.2);
+}
+
+/* Event Details Modal */
+.nurse-theme.event-details-modal {
+    max-width: 500px !important;
+    margin: 1.5rem auto !important;
+    height: 20 !important;
+}
+
+.nurse-theme.event-details-modal .modal-content {
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    padding: 0 !important;
+}
+
+.nurse-theme.event-details-modal .modal-header {
+    background: white !important;
+    border-bottom: none !important;
+    padding: 1.5rem 1.5rem 0.5rem !important;
+}
+
+.nurse-theme.event-details-modal .modal-title {
+    color: #111827 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+}
+
+.nurse-theme.event-details-modal .modal-body {
+    padding: 0.5rem 1rem 1rem !important;
+    background: rgb(252, 252, 252) !important;
+}
+
+.nurse-theme.event-details-modal .event-detail-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    
+}
+
+.nurse-theme.event-details-modal .detail-group {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.nurse-theme.event-details-modal .detail-label {
+    min-width: 120px !important;
+    color: #6B7280 !important;
+    font-size: 0.875rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin: 0 !important;
+}
+
+.nurse-theme.event-details-modal .detail-label svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: #2563EB !important;
+}
+
+.nurse-theme.event-details-modal .detail-value {
+    flex: 1 !important;
+    color: #111827 !important;
+    font-weight: 400 !important;
+    font-size: 0.875rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.nurse-theme.event-details-modal .detail-value.status-badge {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.25rem 0.5rem !important;
+    background: #22C55E !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin-right: 210px !important;
+}
+
+.nurse-theme.event-details-modal .supplies-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.nurse-theme.event-details-modal .supply-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.25rem 0 !important;
+    border-bottom: 1px solid #E5E7EB !important;
+    margin: 0 !important;
+}
+
+.nurse-theme.event-details-modal .supply-name {
+    color: #111827 !important;
+    font-size: 0.875rem !important;
+}
+
+.nurse-theme.event-details-modal .supply-quantity {
+    color: #6B7280 !important;
+    font-size: 0.875rem !important;
+}
+
+.nurse-theme.event-details-modal .modal-footer {
+    border-top: none !important;
+    padding: 1rem 1.5rem !important;
+    margin-bottom: 10px !important;
+}
+
+.nurse-theme.event-details-modal .btn-primary {
+    background-color: #2563EB !important;
+    border-color: #2563EB !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.375rem !important;
+}
+
+@media (max-width: 640px) {
+    .nurse-theme.event-details-modal .detail-group {
+        flex-direction: column !important;
+        gap: 0.25rem !important;
+    }
+
+    .nurse-theme.event-details-modal .detail-label {
+        min-width: 100% !important;
+    }
+}

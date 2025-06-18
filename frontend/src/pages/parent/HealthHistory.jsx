@@ -59,7 +59,7 @@ const gradientAnimation = keyframes`
 // Styled components
 const StyledContainer = styled.div`
   padding: 32px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: .parent-bg-img;
   min-height: 100vh;
   animation: ${fadeIn} 0.5s ease-out;
 `;
@@ -514,7 +514,7 @@ const MedicationActionButton = styled.button`
     transform: scale(1.05);
   }
 `;
-const MedicationStatusBadge = styled.span`
+const HealthBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -522,31 +522,15 @@ const MedicationStatusBadge = styled.span`
   border-radius: 12px;
   padding: 4px 16px;
   font-size: 1rem;
-  background: ${({ status }) =>
-    status === "Active"
-      ? "#E8F8F5"
-      : status === "Pending"
-      ? "#FEF5E7"
-      : "#FDEDEC"};
-  color: ${({ status }) =>
-    status === "Active"
-      ? "#27AE60"
-      : status === "Pending"
-      ? "#F39C12"
-      : "#E74C3C"};
+  background: ${({ conclusion }) =>
+    conclusion === "Healthy"
+      ? "#green"
+      : conclusion === "Sick"
+        ? "#eaee00"
+        : ""};
 `;
 
-const HealthBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  background: #e8f8f5;
-  color: #27ae60;
-  border-radius: 12px;
-  padding: 4px 12px;
-  font-size: 0.98rem;
-  font-weight: 500;
-  gap: 6px;
-`;
+
 
 const CardHeader = styled.div`
   background: #f4f6f8;
@@ -614,7 +598,7 @@ const TABS = [
     key: "checkup",
     label: (
       <>
-        <i className="fas fa-stethoscope me-2"></i>Khám sức khỏe
+        <i className="fas fa-stethoscope me-2" style={{ color: "#27AE60" }} ></i>Khám sức khỏe
       </>
     ),
   },
@@ -622,7 +606,7 @@ const TABS = [
     key: "vaccination",
     label: (
       <>
-        <i className="fas fa-syringe me-2"></i>Tiêm chủng
+        <i className="fas fa-syringe me-2" style={{ color: "#2980B9" }}></i>Tiêm chủng
       </>
     ),
   },
@@ -630,7 +614,7 @@ const TABS = [
     key: "chart",
     label: (
       <>
-        <i className="fas fa-chart-line me-2"></i>Theo dõi sức khỏe
+        <i className="fas fa-chart-line me-2" style={{ color: "#2563eb" }}></i>Theo dõi sức khỏe
       </>
     ),
   },
@@ -638,7 +622,7 @@ const TABS = [
     key: "medication",
     label: (
       <>
-        <i className="fas fa-pills me-2"></i>Lịch sử gửi thuốc
+        <i className="fas fa-pills me-2" style={{ color: "#2563eb" }}></i>Gửi thuốc
       </>
     ),
   },
@@ -655,7 +639,7 @@ const HealthHistory = () => {
   // Lấy user từ context để lấy parentId
   const { user, logout } = useAuth();
   const parentId = user?.id ? Number(user.id) : undefined;
-  const navigate = useNavigate ? useNavigate() : () => {};
+  const navigate = useNavigate ? useNavigate() : () => { };
 
   // State cho modal chi tiết (dùng chung cho các tab)
   const [showModal, setShowModal] = useState(false);
@@ -799,796 +783,838 @@ const HealthHistory = () => {
       setLoadingMedicationDetail(false);
     }
   };
+  function getStatusConclusion(conclusion) {
+    if (!conclusion) return "badge-status";
+    const c = conclusion.toLowerCase();
+    if (c === "healthy" || c === "Khỏe mạnh") return "badge-status healthy";
+    if (c === "sick" || c === "Bệnh") return "badge-status sick";
+    return "badge-status";
+  } function getStatusVaccine(result) {
+    if (!result) return "badge-status";
+    const r = result.toLowerCase();
+    if (r === "successful" || r === "đã tiêm") return "badge-status successful";
+    if (r === "pending" || r === "chờ tiêm") return "badge-status pending";
+    if (r === "rejected" || r === "đã từ chối") return "badge-status rejected";
+  }
+  // Hàm xác định class cho badge trạng thái
+  function getStatusClass(status) {
+    if (!status) return "badge-status";
+
+    const s = status.toLowerCase();
+    if (s === "completed" || s === "đã hoàn thành") return "badge-status completed";
+    if (s === "active" || s === "đang sử dụng") return "badge-status active";
+    if (s === "pending" || s === "chờ xác nhận") return "badge-status pending";
+    if (s === "rejected" || s === "đã từ chối") return "badge-status rejected";
+
+    return "badge-status";
+  }
 
   return (
-    <StyledContainer>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 10,
-        }}
-      >
-        <StyledTitle
-          level={1}
-          style={{ marginBottom: -2, marginLeft: 500, marginTop: 30 }}
+    <div className="parent-bg-img parent-theme parent-bg">
+      <StyledContainer>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 10,
+          }}
         >
-          Lịch sử sức khỏe
-        </StyledTitle>
-      </div>
-
-      <Space
-        style={{ marginBottom: 32, justifyContent: "center", width: "100%" }}
-      >
-        {TABS.map((tab) => (
-          <TabButton
-            key={tab.key}
-            $active={activeTab === tab.key}
-            onClick={() => setActiveTab(tab.key)}
+          <StyledTitle
+            level={8}
+            style={{ marginBottom: -2, marginLeft: 440, marginTop: 30, fontSize: "4rem", fontWeight: "bold" }}
           >
-            {tab.label}
-          </TabButton>
-        ))}
-      </Space>
+            Lịch sử sức khỏe
+          </StyledTitle>
+        </div>
+        <div style={{ backgroundColor: "white", borderRadius: 16, padding: 20, marginBottom: 10, width: "70%", marginLeft: "16%" }}>
 
-      <ContentCard>
-        {loading ? (
-          <Skeleton
-            active
-            paragraph={{ rows: 6 }}
-            title={false}
-            style={{ margin: 32 }}
-          />
-        ) : error ? (
-          <Alert
-            type="error"
-            message={error}
-            showIcon
-            style={{ margin: "24px 0" }}
-          />
-        ) : (
-          <FadeInDiv>
-            {activeTab === "checkup" && (
-              <CheckupTableWrapper>
-                <CardHeader>
-                  Lần khám gần nhất:{" "}
-                  {data[0]?.date
-                    ? new Date(data[0].date).toLocaleDateString("vi-VN")
-                    : "---"}
-                  <span>Tổng cộng: {data.length} lượt khám</span>
-                </CardHeader>
-                <CheckupTable>
-                  <CheckupThead>
-                    <tr>
-                      <CheckupTh>
-                        <FaCalendarAlt
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Ngày khám
-                      </CheckupTh>
-                      <CheckupTh>
-                        <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
-                        Tên học sinh
-                      </CheckupTh>
-                      <CheckupTh>
-                        <FaRulerVertical
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Chiều cao
-                      </CheckupTh>
-                      <CheckupTh>
-                        <FaWeight
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Cân nặng
-                      </CheckupTh>
-                      <CheckupTh>BMI</CheckupTh>
-                      <CheckupTh>
-                        <FaCheckCircle
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Kết luận
-                      </CheckupTh>
-                      <CheckupTh>
-                        <FaUserMd
-                          style={{ color: "#2563eb", marginRight: 4 }}
-                        />
-                        Bác sĩ
-                      </CheckupTh>
-                      <CheckupTh>Chi tiết</CheckupTh>
-                    </tr>
-                  </CheckupThead>
-                  <tbody>
-                    {checkupPaged.length === 0 ? (
-                      <tr>
-                        <CheckupTd
-                          colSpan="8"
-                          style={{ textAlign: "center", color: "#999" }}
-                        >
-                          Không có dữ liệu khám sức khỏe
-                        </CheckupTd>
-                      </tr>
-                    ) : (
-                      checkupPaged.map((row) => (
-                        <CheckupTr key={row.id}>
-                          <CheckupTd>
-                            {new Date(row.date).toLocaleDateString("vi-VN")}
-                          </CheckupTd>
-                          <CheckupTd>{row.studentName}</CheckupTd>
-                          <CheckupTd>{row.height} cm</CheckupTd>
-                          <CheckupTd>{row.weight} kg</CheckupTd>
-                          <CheckupTd>{row.bmi}</CheckupTd>
-                          <CheckupTd>
-                            <HealthBadge>
-                              {row.healthStatus === "Healthy"
-                                ? "Khỏe mạnh"
-                                : row.healthStatus === "Sick"
-                                ? "Bệnh"
-                                : "Cần chú ý"}
-                            </HealthBadge>
-                          </CheckupTd>
-                          <CheckupTd>{row.doctorName}</CheckupTd>
-                          <CheckupTd>
-                            <Tooltip title="Xem chi tiết hồ sơ khám sức khỏe">
-                              <OutlineButton
-                                onClick={() =>
-                                  handleShowDetail(row.id, "checkup")
-                                }
-                              >
-                                <FaEye /> Xem hồ sơ
-                              </OutlineButton>
-                            </Tooltip>
-                          </CheckupTd>
-                        </CheckupTr>
-                      ))
-                    )}
-                  </tbody>
-                </CheckupTable>
-                {checkupTotalPage > 1 && (
-                  <Pagination>
-                    <PageBtn
-                      onClick={() => setCheckupPage((p) => Math.max(1, p - 1))}
-                      disabled={checkupPage === 1}
-                    >
-                      <FaChevronLeft />
-                    </PageBtn>
-                    <span>
-                      Trang {checkupPage}/{checkupTotalPage}
-                    </span>
-                    <PageBtn
-                      onClick={() =>
-                        setCheckupPage((p) => Math.min(checkupTotalPage, p + 1))
-                      }
-                      disabled={checkupPage === checkupTotalPage}
-                    >
-                      <FaChevronRight />
-                    </PageBtn>
-                  </Pagination>
-                )}
-              </CheckupTableWrapper>
-            )}
-
-            {activeTab === "vaccination" && (
-              <>
-                <VaccinationTable>
-                  <VaccinationThead>
-                    <tr>
-                      <VaccinationTh>
-                        <FaCalendarAlt
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Ngày tiêm
-                      </VaccinationTh>
-                      <VaccinationTh>
-                        <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
-                        Tên học sinh
-                      </VaccinationTh>
-                      <VaccinationTh>
-                        <FaSyringe
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Loại vắc-xin
-                      </VaccinationTh>
-                      <VaccinationTh>
-                        <FaBuilding
-                          style={{ color: "#2563eb", marginRight: 4 }}
-                        />
-                        Địa điểm
-                      </VaccinationTh>
-                      <VaccinationTh>
-                        <FaUserMd
-                          style={{ color: "#2563eb", marginRight: 4 }}
-                        />
-                        Bác sĩ
-                      </VaccinationTh>
-                      <VaccinationTh>Chi tiết</VaccinationTh>
-                    </tr>
-                  </VaccinationThead>
-                  <tbody>
-                    {vaccinationPaged.length === 0 ? (
-                      <tr>
-                        <VaccinationTd
-                          colSpan="6"
-                          style={{ textAlign: "center", color: "#999" }}
-                        >
-                          Không có dữ liệu tiêm chủng
-                        </VaccinationTd>
-                      </tr>
-                    ) : (
-                      vaccinationPaged.map((row) => (
-                        <VaccinationTr key={row.id}>
-                          <VaccinationTd>{row.date}</VaccinationTd>
-                          <VaccinationTd>{row.studentName}</VaccinationTd>
-                          <VaccinationTd>{row.vaccineName}</VaccinationTd>
-                          <VaccinationTd>{row.location}</VaccinationTd>
-                          <VaccinationTd>{row.nurseName}</VaccinationTd>
-                          <VaccinationTd>
-                            <Tooltip title="Xem chi tiết hồ sơ tiêm chủng">
-                              <OutlineButton
-                                onClick={() =>
-                                  handleShowDetail(row.id, "vaccination")
-                                }
-                              >
-                                <FaEye /> Xem hồ sơ
-                              </OutlineButton>
-                            </Tooltip>
-                          </VaccinationTd>
-                        </VaccinationTr>
-                      ))
-                    )}
-                  </tbody>
-                </VaccinationTable>
-                {vaccinationTotalPage > 1 && (
-                  <Pagination>
-                    <PageBtn
-                      onClick={() =>
-                        setVaccinationPage((p) => Math.max(1, p - 1))
-                      }
-                      disabled={vaccinationPage === 1}
-                    >
-                      <FaChevronLeft />
-                    </PageBtn>
-                    <span>
-                      Trang {vaccinationPage}/{vaccinationTotalPage}
-                    </span>
-                    <PageBtn
-                      onClick={() =>
-                        setVaccinationPage((p) =>
-                          Math.min(vaccinationTotalPage, p + 1)
-                        )
-                      }
-                      disabled={vaccinationPage === vaccinationTotalPage}
-                    >
-                      <FaChevronRight />
-                    </PageBtn>
-                  </Pagination>
-                )}
-              </>
-            )}
-
-            {activeTab === "chart" && (
-              <>
-                <Button
-                  type={showChart ? "default" : "primary"}
-                  onClick={() => setShowChart((v) => !v)}
-                  style={{
-                    marginBottom: 24,
-                    borderRadius: 12,
-                    padding: "8px 24px",
-                    height: "auto",
-                  }}
-                >
-                  {showChart ? "Ẩn biểu đồ" : "Hiển thị biểu đồ"}
-                </Button>
-                {showChart && (
-                  <ChartContainer>
-                    <Bar
-                      data={data}
-                      xField="date"
-                      yField="height"
-                      seriesField="studentName"
-                      colorField="studentName"
-                      xAxis={{
-                        title: { text: "Ngày đo" },
-                      }}
-                      yAxis={{
-                        title: { text: "Chiều cao (cm)" },
-                      }}
-                      height={320}
-                      legend={{ position: "top" }}
-                      barStyle={{
-                        stroke: "#333",
-                        lineWidth: 1,
-                        radius: [4, 4, 0, 0],
-                      }}
-                    />
-                  </ChartContainer>
-                )}
-                <ChartTable>
-                  <ChartThead>
-                    <tr>
-                      <ChartTh>
-                        <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
-                        Tên học sinh
-                      </ChartTh>
-                      <ChartTh>
-                        <FaCalendarAlt
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Ngày đo
-                      </ChartTh>
-                      <ChartTh>
-                        <FaRulerVertical
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Chiều cao (cm)
-                      </ChartTh>
-                    </tr>
-                  </ChartThead>
-                  <tbody>
-                    {data.length === 0 ? (
-                      <tr>
-                        <ChartTd
-                          colSpan="3"
-                          style={{ textAlign: "center", color: "#999" }}
-                        >
-                          Không có dữ liệu theo dõi sức khỏe
-                        </ChartTd>
-                      </tr>
-                    ) : (
-                      data.slice(0, 8).map((row) => (
-                        <ChartTr key={row.id}>
-                          <ChartTd>{row.studentName}</ChartTd>
-                          <ChartTd>
-                            {row.date ? (
-                              <>
-                                {new Date(row.date).toLocaleDateString("vi-VN")}
-                              </>
-                            ) : (
-                              ""
-                            )}
-                          </ChartTd>
-                          <ChartTd>{row.height}</ChartTd>
-                        </ChartTr>
-                      ))
-                    )}
-                  </tbody>
-                </ChartTable>
-              </>
-            )}
-
-            {activeTab === "medication" && (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 24,
-                  }}
-                >
-                  <h5 style={{ margin: 0, color: "#1a365d" }}>
-                    Lịch sử gửi thuốc
-                  </h5>
-                  <SearchInput
-                    placeholder="Tìm kiếm theo mã đơn, học sinh, thuốc, ghi chú..."
-                    value={searchMedication}
-                    onChange={(e) => {
-                      setSearchMedication(e.target.value);
-                      setMedicationPage(1);
-                    }}
-                  />
-                </div>
-                <MedicationTable>
-                  <MedicationThead>
-                    <tr>
-                      <MedicationTh>
-                        <FaPills style={{ color: "#38b6ff", marginRight: 4 }} />
-                        Mã đơn
-                      </MedicationTh>
-                      <MedicationTh>
-                        <FaBuilding
-                          style={{ color: "#2563eb", marginRight: 4 }}
-                        />
-                        Mã lớp
-                      </MedicationTh>
-                      <MedicationTh>
-                        <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
-                        Học sinh
-                      </MedicationTh>
-                      <MedicationTh>
-                        <FaPills style={{ color: "#38b6ff", marginRight: 4 }} />
-                        Danh sách thuốc
-                      </MedicationTh>
-                      <MedicationTh>
-                        <FaCalendarAlt
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Ngày gửi
-                      </MedicationTh>
-                      <MedicationTh>
-                        <FaCheckCircle
-                          style={{ color: "#38b6ff", marginRight: 4 }}
-                        />
-                        Trạng thái
-                      </MedicationTh>
-                      <MedicationTh>Chi tiết</MedicationTh>
-                    </tr>
-                  </MedicationThead>
-                  <tbody>
-                    {medicationPaged.length === 0 ? (
-                      <tr>
-                        <MedicationTd
-                          colSpan="7"
-                          style={{ textAlign: "center", color: "#999" }}
-                        >
-                          Không có dữ liệu gửi thuốc
-                        </MedicationTd>
-                      </tr>
-                    ) : (
-                      medicationPaged.map((row) => (
-                      <MedicationTr key={row.id}>
-                        <MedicationTd>{row.id}</MedicationTd>
-                        <MedicationTd>
-                          {row.studentClassName || "-"}
-                        </MedicationTd>
-                        <MedicationTd>{row.studentName}</MedicationTd>
-                        <MedicationTd>
-                          <ul style={{ margin: 0, paddingLeft: 20 }}>
-                            {row.medications?.map((med, idx) => (
-                              <li key={idx}>
-                                <FaPills
-                                  style={{ color: "#38b6ff", marginRight: 4 }}
-                                />
-                                <b>{med.medicationName}</b> - {med.dosage}
-                                {med.note && (
-                                  <>
-                                    <br />
-                                    <span style={{ color: "#666" }}>
-                                      {med.note}
-                                    </span>
-                                  </>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
-                        </MedicationTd>
-                        <MedicationTd>
-                          {row.createdDate
-                            ? row.createdDate.split("T")[0]
-                            : "-"}
-                        </MedicationTd>
-                        <MedicationTd>
-                          <MedicationStatusBadge status={row.status}>
-                            <FaCheckCircle style={{ marginRight: 4 }} />
-                            {row.status === "Active"
-                              ? "Đang sử dụng"
-                              : row.status === "Pending"
-                              ? "Chờ xác nhận"
-                              : row.status}
-                          </MedicationStatusBadge>
-                        </MedicationTd>
-                        <MedicationTd>
-                          <Tooltip title="Xem chi tiết gửi thuốc">
-                            <OutlineButton
-                              onClick={() => handleShowMedicationDetail(row.id)}
-                            >
-                              <FaEye /> Xem hồ sơ
-                            </OutlineButton>
-                          </Tooltip>
-                        </MedicationTd>
-                      </MedicationTr>
-                    )))}
-                  </tbody>
-                </MedicationTable>
-                {medicationTotalPage > 1 && (
-                  <Pagination>
-                    <PageBtn
-                      onClick={() =>
-                        setMedicationPage((p) => Math.max(1, p - 1))
-                      }
-                      disabled={medicationPage === 1}
-                    >
-                      <FaChevronLeft />
-                    </PageBtn>
-                    <span>
-                      Trang {medicationPage}/{medicationTotalPage}
-                    </span>
-                    <PageBtn
-                      onClick={() =>
-                        setMedicationPage((p) =>
-                          Math.min(medicationTotalPage, p + 1)
-                        )
-                      }
-                      disabled={medicationPage === medicationTotalPage}
-                    >
-                      <FaChevronRight />
-                    </PageBtn>
-                  </Pagination>
-                )}
-              </>
-            )}
-          </FadeInDiv>
-        )}
-      </ContentCard>
-
-      <Modal
-        open={showModal}
-        onCancel={() => setShowModal(false)}
-        title={
-          activeTab === "checkup"
-            ? "Chi tiết khám sức khỏe"
-            : "Chi tiết tiêm chủng"
-        }
-        footer={[
-          <Button key="close" onClick={() => setShowModal(false)}>
-            Đóng
-          </Button>,
-        ]}
-        width={750}
-      >
-        {loadingDetail ? (
-          <Spin tip="Đang tải chi tiết..." />
-        ) : errorDetail ? (
-          <Alert type="error" message={errorDetail} showIcon />
-        ) : detail ? (
-          activeTab === "checkup" ? (
-            <DetailBox>
-              <Row gutter={30}>
-                <Col span={12}>
-                  <DetailLabel>
-                    <i className="fas fa-calendar-alt me-2"></i>Ngày khám
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.date
-                      ? new Date(detail.date).toLocaleDateString("vi-VN")
-                      : ""}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-user-md me-2"></i>Bác sĩ
-                  </DetailLabel>
-                  <DetailValue>{detail.nurseName}</DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-building me-2"></i>Địa điểm
-                  </DetailLabel>
-                  <DetailValue>{detail.location}</DetailValue>
-                </Col>
-                <Col span={12}>
-                  <DetailLabel>
-                    <i className="fas fa-ruler-vertical me-2"></i>Chiều cao
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.height != null && detail.height !== ""
-                      ? detail.height + " cm"
-                      : "N/A"}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-weight me-2"></i>Cân nặng
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.weight != null && detail.weight !== ""
-                      ? detail.weight + " kg"
-                      : "N/A"}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-eye me-2"></i>Thị lực
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.visionLeft != null && detail.visionRight != null
-                      ? `${detail.visionLeft}/${detail.visionRight}`
-                      : detail.visionLeft != null
-                      ? `${detail.visionLeft}/-`
-                      : detail.visionRight != null
-                      ? `-/${detail.visionRight}`
-                      : "N/A"}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-calculator me-2"></i>BMI
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.bmi != null && detail.bmi !== ""
-                      ? detail.bmi
-                      : "N/A"}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-tint me-2"></i>Huyết áp
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.bloodPressure ? detail.bloodPressure : "N/A"}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-heartbeat me-2"></i>Nhịp tim
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.heartRate ? detail.heartRate : "N/A"}
-                  </DetailValue>
-                </Col>
-                <Col span={24}>
-                  <DetailLabel>
-                    Kết luận<DetailBadge>{detail.conclusion}</DetailBadge>
-                  </DetailLabel>
-                  {detail.suggestions &&
-                    Array.isArray(detail.suggestions) &&
-                    detail.suggestions.length > 0 && (
-                      <div className="mb-3">
-                        <DetailLabel>Đề xuất</DetailLabel>
-                        <ul className="mb-0">
-                          {detail.suggestions.map((s, idx) => (
-                            <li key={idx}>{s}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  {detail.description && (
-                    <div className="mb-2">
-                      <DetailLabel>Ghi chú</DetailLabel>
-                      <DetailValue>{detail.description}</DetailValue>
-                    </div>
-                  )}
-                </Col>
-              </Row>
-            </DetailBox>
+          <Space
+            style={{ marginBottom: 5, marginTop: 5, justifyContent: "center", width: "100%" }}
+          >
+            {TABS.map((tab) => (
+              <TabButton
+                key={tab.key}
+                $active={activeTab === tab.key}
+                onClick={() => setActiveTab(tab.key)}
+              >
+                {tab.label}
+              </TabButton>
+            ))}
+          </Space>
+        </div>
+        <ContentCard>
+          {loading ? (
+            <Skeleton
+              active
+              paragraph={{ rows: 6 }}
+              title={false}
+              style={{ margin: 32 }}
+            />
+          ) : error ? (
+            <Alert
+              type="error"
+              message={error}
+              showIcon
+              style={{ margin: "24px 0" }}
+            />
           ) : (
-            // Chi tiết tiêm chủng
-            <DetailBox>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <DetailLabel>
-                    <i className="fas fa-calendar-alt me-2"></i>Ngày tiêm
-                  </DetailLabel>
-                  <DetailValue>
-                    {detail.date
-                      ? new Date(detail.date).toLocaleDateString("vi-VN")
-                      : ""}
-                  </DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-user me-2"></i>Học sinh
-                  </DetailLabel>
-                  <DetailValue>{detail.studentName}</DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-building me-2"></i>Địa điểm
-                  </DetailLabel>
-                  <DetailValue>{detail.location}</DetailValue>
-                </Col>
-                <Col span={12}>
-                  <DetailLabel>
-                    <i className="fas fa-syringe me-2"></i>Vắc-xin
-                  </DetailLabel>
-                  <DetailValue>{detail.vaccineName}</DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-check-circle me-2"></i>Kết quả
-                  </DetailLabel>
-                  <DetailValue>{detail.result}</DetailValue>
-                  <DetailLabel>
-                    <i className="fas fa-user-md me-2"></i>Y tá/Bác sĩ
-                  </DetailLabel>
-                  <DetailValue>{detail.nurseName}</DetailValue>
-                </Col>
-                <Col span={24}>
-                  {detail.description && (
-                    <div className="mb-2">
-                      <DetailLabel>Ghi chú</DetailLabel>
-                      <DetailValue>{detail.description}</DetailValue>
-                    </div>
+            <FadeInDiv>
+              {activeTab === "checkup" && (
+                <CheckupTableWrapper>
+                  <CardHeader>
+                    Lần khám gần nhất:{" "}
+                    {data[0]?.date
+                      ? new Date(data[0].date).toLocaleDateString("vi-VN")
+                      : "---"}
+                    <span>Tổng cộng: {data.length} lượt khám</span>
+                  </CardHeader>
+                  <CheckupTable >
+                    <CheckupThead>
+                      <tr>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaCalendarAlt
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Ngày khám
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
+                          Tên học sinh
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaRulerVertical
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Chiều cao
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaWeight
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Cân nặng
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>BMI</CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaCheckCircle
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Kết luận
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>
+                          <FaUserMd
+                            style={{ color: "#2563eb", marginRight: 4 }}
+                          />
+                          Bác sĩ
+                        </CheckupTh>
+                        <CheckupTh style={{ textAlign: "center" }}>Chi tiết</CheckupTh>
+                      </tr>
+                    </CheckupThead>
+                    <tbody>
+                      {checkupPaged.length === 0 ? (
+                        <tr>
+                          <CheckupTd
+                            colSpan="8"
+                            style={{ textAlign: "center", color: "#999" }}
+                          >
+                            Không có dữ liệu khám sức khỏe
+                          </CheckupTd>
+                        </tr>
+                      ) : (
+                        checkupPaged.map((row) => (
+                          <CheckupTr key={row.id} style={{ textAlign: "center" }}  >
+                            <CheckupTd style={{ textAlign: "center" }}>
+                              {new Date(row.date).toLocaleDateString("vi-VN")}
+                            </CheckupTd>
+                            <CheckupTd>{row.studentName}</CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>{row.height} cm</CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>{row.weight} kg</CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>{row.bmi}</CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>
+                              <span className={getStatusConclusion(row.conclusion)}>
+                                {row.conclusion === "Healthy"
+                                  ? "Khỏe mạnh"
+                                  : row.conclusion === "Sick"
+                                    ? "Bệnh"
+                                    : "Cần chú ý"}
+                              </span>
+                            </CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>{row.nurseName}</CheckupTd>
+                            <CheckupTd style={{ textAlign: "center" }}>
+                              <Tooltip title="Xem chi tiết hồ sơ khám sức khỏe" style={{ textAlign: "center", }}>
+                                <OutlineButton style={{ textAlign: "center", marginLeft: "16%" }}
+                                  onClick={() =>
+                                    handleShowDetail(row.id, "checkup")
+                                  }
+                                >
+                                  <FaEye /> Xem hồ sơ
+                                </OutlineButton>
+                              </Tooltip>
+                            </CheckupTd>
+                          </CheckupTr>
+                        ))
+                      )}
+                    </tbody>
+                  </CheckupTable>
+                  {checkupTotalPage > 1 && (
+                    <Pagination>
+                      <PageBtn
+                        onClick={() => setCheckupPage((p) => Math.max(1, p - 1))}
+                        disabled={checkupPage === 1}
+                      >
+                        <FaChevronLeft />
+                      </PageBtn>
+                      <span>
+                        Trang {checkupPage}/{checkupTotalPage}
+                      </span>
+                      <PageBtn
+                        onClick={() =>
+                          setCheckupPage((p) => Math.min(checkupTotalPage, p + 1))
+                        }
+                        disabled={checkupPage === checkupTotalPage}
+                      >
+                        <FaChevronRight />
+                      </PageBtn>
+                    </Pagination>
                   )}
-                  {detail.status && (
-                    <div className="mb-2">
-                      <DetailLabel>Trạng thái</DetailLabel>
-                      <DetailBadge>{detail.status}</DetailBadge>
-                    </div>
+                </CheckupTableWrapper>
+              )}
+
+              {activeTab === "vaccination" && (
+                <>
+                  <VaccinationTable>
+                    <VaccinationThead>
+                      <tr>
+                        <VaccinationTh style={{ textAlign: "center" }}>
+                          <FaCalendarAlt
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Ngày tiêm
+                        </VaccinationTh>
+                        <VaccinationTh style={{ textAlign: "center" }}>
+                          <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
+                          Tên học sinh
+                        </VaccinationTh>
+                        <VaccinationTh style={{ textAlign: "center" }}>
+                          <FaSyringe
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Loại vắc-xin
+                        </VaccinationTh>
+                        <VaccinationTh style={{ textAlign: "center" }}>
+                          <FaBuilding
+                            style={{ color: "#2563eb", marginRight: 4 }}
+                          />
+                          Địa điểm
+                        </VaccinationTh>
+                        <VaccinationTh style={{ textAlign: "center" }}>
+                          <FaUserMd
+                            style={{ color: "#2563eb", marginRight: 4 }}
+                          />
+                          Bác sĩ
+                        </VaccinationTh>
+                        <VaccinationTh style={{ textAlign: "center" }}>Chi tiết</VaccinationTh>
+                      </tr>
+                    </VaccinationThead>
+                    <tbody>
+                      {vaccinationPaged.length === 0 ? (
+                        <tr>
+                          <VaccinationTd
+                            colSpan="6"
+                            style={{ textAlign: "center", color: "#999" }}
+                          >
+                            Không có dữ liệu tiêm chủng
+                          </VaccinationTd>
+                        </tr>
+                      ) : (
+                        vaccinationPaged.map((row) => (
+                          <VaccinationTr key={row.id} style={{ textAlign: "center" }}>
+                            <VaccinationTd style={{ textAlign: "center" }}>{row.date}</VaccinationTd>
+                            <VaccinationTd style={{ textAlign: "center" }}>{row.studentName}</VaccinationTd>
+                            <VaccinationTd style={{ textAlign: "center" }}>{row.vaccineName}</VaccinationTd>
+                            <VaccinationTd>{row.location}</VaccinationTd>
+                            <VaccinationTd>{row.nurseName}</VaccinationTd>
+                            <VaccinationTd>
+                              <Tooltip title="Xem chi tiết hồ sơ tiêm chủng" style={{ textAlign: "center" }}>
+                                <OutlineButton style={{ textAlign: "center", marginLeft: "16%" }}
+                                  onClick={() =>
+                                    handleShowDetail(row.id, "vaccination")
+                                  }
+                                >
+                                  <FaEye /> Xem hồ sơ
+                                </OutlineButton>
+                              </Tooltip>
+                            </VaccinationTd>
+                          </VaccinationTr>
+                        ))
+                      )}
+                    </tbody>
+                  </VaccinationTable>
+                  {vaccinationTotalPage > 1 && (
+                    <Pagination>
+                      <PageBtn
+                        onClick={() =>
+                          setVaccinationPage((p) => Math.max(1, p - 1))
+                        }
+                        disabled={vaccinationPage === 1}
+                      >
+                        <FaChevronLeft />
+                      </PageBtn>
+                      <span>
+                        Trang {vaccinationPage}/{vaccinationTotalPage}
+                      </span>
+                      <PageBtn
+                        onClick={() =>
+                          setVaccinationPage((p) =>
+                            Math.min(vaccinationTotalPage, p + 1)
+                          )
+                        }
+                        disabled={vaccinationPage === vaccinationTotalPage}
+                      >
+                        <FaChevronRight />
+                      </PageBtn>
+                    </Pagination>
                   )}
-                  {detail.message && (
-                    <div className="mb-2">
-                      <DetailLabel>Thông báo</DetailLabel>
-                      <DetailValue>{detail.message}</DetailValue>
-                    </div>
+                </>
+              )}
+
+              {activeTab === "chart" && (
+                <>
+                  <Button
+                    type={showChart ? "default" : "primary"}
+                    onClick={() => setShowChart((v) => !v)}
+                    style={{
+                      marginBottom: 5,
+                      borderRadius: 12,
+                      padding: "8px 10px",
+                      height: "auto",
+                    }}
+                  >
+                    {showChart ? "Ẩn biểu đồ" : "Hiển thị biểu đồ"}
+                  </Button>
+                  {showChart && (
+                    <ChartContainer>
+                      <Bar
+                        data={data}
+                        xField="date"
+                        yField="height"
+                        seriesField="studentName"
+                        colorField="studentName"
+                        xAxis={{
+                          title: { text: "Ngày đo" },
+                        }}
+                        yAxis={{
+                          title: { text: "Chiều cao (cm)" },
+                        }}
+                        height={320}
+                        legend={{ position: "top" }}
+                        barStyle={{
+                          stroke: "#333",
+                          lineWidth: 1,
+                          radius: [4, 4, 0, 0],
+
+                        }}
+                      />
+                    </ChartContainer>
                   )}
-                </Col>
-              </Row>
-            </DetailBox>
-          )
-        ) : null}
-      </Modal>
-      <Modal
-        open={showMedicationDetail}
-        onCancel={() => setShowMedicationDetail(false)}
-        title="Chi tiết gửi thuốc"
-        footer={
-          <Button onClick={() => setShowMedicationDetail(false)}>Đóng</Button>
-        }
-        width={750}
-      >
-        {loadingMedicationDetail ? (
-          <Spin tip="Đang tải chi tiết..." />
-        ) : medicationDetail ? (
-          <DetailBox>
-            <Row gutter={24}>
-              <Col span={12}>
-                <DetailLabel>Mã lớp</DetailLabel>
-                <DetailValue>
-                  {medicationDetail.studentClass ||
-                    medicationDetail.studentClassName ||
-                    ""}
-                </DetailValue>
-                <DetailLabel>Học sinh</DetailLabel>
-                <DetailValue>{medicationDetail.studentName}</DetailValue>
-                <DetailLabel>Phụ huynh</DetailLabel>
-                <DetailValue>{medicationDetail.parentName}</DetailValue>
-              </Col>
-              <Col span={12}>
-                <DetailLabel>Y tá phụ trách</DetailLabel>
-                <DetailValue>{medicationDetail.nurseName || "-"}</DetailValue>
-                <DetailLabel>Trạng thái</DetailLabel>
-                <DetailBadge>
-                  {medicationDetail.status === "Active"
-                    ? "Đang sử dụng"
-                    : medicationDetail.status === "Pending"
-                    ? "Chờ xác nhận"
-                    : medicationDetail.status}
-                </DetailBadge>
-                <DetailLabel>Ngày gửi</DetailLabel>
-                <DetailValue>
-                  {medicationDetail.createdDate
-                    ? medicationDetail.createdDate.split("T")[0]
-                    : ""}
-                </DetailValue>
-                {medicationDetail.status === "Active" && (
-                  <>
-                    <DetailLabel>Ngày nhận</DetailLabel>
+                  <ChartTable>
+                    <ChartThead>
+                      <tr>
+                        <ChartTh style={{ textAlign: "center" }}>
+                          <FaUser style={{ color: "#2563eb", textAlign: "center" }} />
+                          Tên học sinh
+                        </ChartTh>
+                        <ChartTh style={{ textAlign: "center" }}>
+                          <FaCalendarAlt
+                            style={{ color: "#38b6ff", textAlign: "center" }}
+                          />
+                          Ngày đo
+                        </ChartTh>
+                        <ChartTh style={{ textAlign: "center" }}>
+                          <FaRulerVertical
+                            style={{ color: "#38b6ff", textAlign: "center" }}
+                          />
+                          Chiều cao (cm)
+                        </ChartTh>
+                      </tr>
+                    </ChartThead>
+                    <tbody>
+                      {data.length === 0 ? (
+                        <tr>
+                          <ChartTd
+                            colSpan="3"
+                            style={{ textAlign: "center", color: "#999" }}
+                          >
+                            Không có dữ liệu theo dõi sức khỏe
+                          </ChartTd>
+                        </tr>
+                      ) : (
+                        data.slice(0, 8).map((row) => (
+                          <ChartTr key={row.id} style={{ textAlign: "center" }}>
+                            <ChartTd style={{ textAlign: "center" }}>{row.studentName}</ChartTd>
+                            <ChartTd style={{ textAlign: "center" }}>
+                              {row.date ? (
+                                <>
+                                  {new Date(row.date).toLocaleDateString("vi-VN")}
+                                </>
+                              ) : (
+                                ""
+                              )}
+                            </ChartTd>
+                            <ChartTd>{row.height}</ChartTd>
+                          </ChartTr>
+                        ))
+                      )}
+                    </tbody>
+                  </ChartTable>
+                </>
+              )}
+
+              {activeTab === "medication" && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 24,
+                    }}
+                  >
+                    <div style={{ marginLeft: "35%" }}>
+                      <h5 style={{ margin: 0, color: "#1a365d", fontSize: "3rem", fontWeight: "bold", textAlign: "center" }}>
+                        Lịch sử gửi thuốc
+                      </h5>
+                      <div style={{ marginLeft: "-120%", marginTop: "5%", marginBottom: "-8%" }}>
+
+                        <SearchInput style={{ width: "150%" }}
+                          placeholder="Tìm kiếm theo mã đơn, học sinh, thuốc, ghi chú..."
+                          value={searchMedication}
+                          onChange={(e) => {
+                            setSearchMedication(e.target.value);
+                            setMedicationPage(1);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <MedicationTable>
+                    <MedicationThead style={{ textAlign: "center" }}>
+                      <tr>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaPills style={{ color: "#38b6ff", marginRight: 4 }} />
+                          Mã đơn
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaBuilding
+                            style={{ color: "#2563eb", marginRight: 4 }}
+                          />
+                          Mã lớp
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaUser style={{ color: "#2563eb", marginRight: 4 }} />
+                          Học sinh
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaPills style={{ color: "#38b6ff", marginRight: 4 }} />
+                          Danh sách thuốc
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaCalendarAlt
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Ngày gửi
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>
+                          <FaCheckCircle
+                            style={{ color: "#38b6ff", marginRight: 4 }}
+                          />
+                          Trạng thái
+                        </MedicationTh>
+                        <MedicationTh style={{ textAlign: "center" }}>Chi tiết</MedicationTh>
+                      </tr>
+                    </MedicationThead>
+                    <tbody>
+                      {medicationPaged.length === 0 ? (
+                        <tr>
+                          <MedicationTd
+                            colSpan="7"
+                            style={{ textAlign: "center", color: "#999" }}
+                          >
+                            Không có dữ liệu gửi thuốc
+                          </MedicationTd>
+                        </tr>
+                      ) : (
+                        medicationPaged.map((row) => (
+                          <MedicationTr key={row.id} style={{ textAlign: "center" }}>
+                            <MedicationTd style={{ textAlign: "center" }}>{row.id}</MedicationTd>
+                            <MedicationTd style={{ textAlign: "center" }}>
+                              {row.studentClassName || "-"}
+                            </MedicationTd>
+                            <MedicationTd style={{ textAlign: "center" }}>{row.studentName}</MedicationTd>
+                            <MedicationTd style={{ textAlign: "center" }}>
+                              <ul style={{ margin: 0, paddingLeft: 20 }}>
+                                {row.medications?.map((med, idx) => (
+                                  <li key={idx}>
+                                    <FaPills
+                                      style={{ color: "#38b6ff", marginRight: 4 }}
+                                    />
+                                    <b>{med.medicationName}</b> - {med.dosage}
+                                    {med.note && (
+                                      <>
+                                        <br />
+                                        <span style={{ color: "#666" }}>
+                                          {med.note}
+                                        </span>
+                                      </>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            </MedicationTd>
+                            <MedicationTd>
+                              {row.createdDate
+                                ? row.createdDate.split("T")[0]
+                                : "-"}
+                            </MedicationTd>
+                            <MedicationTd>
+                              <span className={getStatusClass(row.status)}>
+                                {row.status === "Active"
+                                  ? "Đang sử dụng"
+                                  : row.status === "Pending"
+                                    ? "Chờ xác nhận"
+                                    : row.status === "Completed"
+                                      ? "Đã hoàn thành"
+                                      : row.status}
+                              </span>
+                            </MedicationTd>
+                            <MedicationTd>
+                              <Tooltip title="Xem chi tiết gửi thuốc">
+                                <OutlineButton style={{ textAlign: "center", marginLeft: "16%" }}
+                                  onClick={() => handleShowMedicationDetail(row.id)}
+                                >
+                                  <FaEye /> Xem hồ sơ
+                                </OutlineButton>
+                              </Tooltip>
+                            </MedicationTd>
+                          </MedicationTr>
+                        )))}
+                    </tbody>
+                  </MedicationTable>
+                  {medicationTotalPage > 1 && (
+                    <Pagination>
+                      <PageBtn
+                        onClick={() =>
+                          setMedicationPage((p) => Math.max(1, p - 1))
+                        }
+                        disabled={medicationPage === 1}
+                      >
+                        <FaChevronLeft />
+                      </PageBtn>
+                      <span>
+                        Trang {medicationPage}/{medicationTotalPage}
+                      </span>
+                      <PageBtn
+                        onClick={() =>
+                          setMedicationPage((p) =>
+                            Math.min(medicationTotalPage, p + 1)
+                          )
+                        }
+                        disabled={medicationPage === medicationTotalPage}
+                      >
+                        <FaChevronRight />
+                      </PageBtn>
+                    </Pagination>
+                  )}
+                </>
+              )}
+            </FadeInDiv>
+          )}
+        </ContentCard>
+
+        <Modal
+          open={showModal}
+          onCancel={() => setShowModal(false)}
+          title={
+            activeTab === "checkup"
+              ? "Chi tiết khám sức khỏe"
+              : "Chi tiết tiêm chủng"
+          }
+          footer={[
+            <Button key="close" onClick={() => setShowModal(false)}>
+              Đóng
+            </Button>,
+          ]}
+          width={750}
+        >
+          {loadingDetail ? (
+            <Spin tip="Đang tải chi tiết..." />
+          ) : errorDetail ? (
+            <Alert type="error" message={errorDetail} showIcon />
+          ) : detail ? (
+            activeTab === "checkup" ? (
+              <DetailBox>
+                <Row gutter={30}>
+                  <Col span={12}>
+                    <DetailLabel>
+                      <i className="fas fa-calendar-alt me-2"></i>Ngày khám
+                    </DetailLabel>
                     <DetailValue>
-                      {medicationDetail.receivedDate
-                        ? medicationDetail.receivedDate.split("T")[0]
-                        : medicationDetail.createdDate
-                        ? medicationDetail.createdDate.split("T")[0]
+                      {detail.date
+                        ? new Date(detail.date).toLocaleDateString("vi-VN")
                         : ""}
                     </DetailValue>
-                  </>
-                )}
-              </Col>
-              <Col span={24}>
-                <DetailLabel>Danh sách thuốc</DetailLabel>
-                <ul style={{ margin: 0, paddingLeft: 20 }}>
-                  {medicationDetail.medications &&
+                    <DetailLabel>
+                      <i className="fas fa-user-md me-2"></i>Bác sĩ
+                    </DetailLabel>
+                    <DetailValue>{detail.nurseName}</DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-building me-2"></i>Địa điểm
+                    </DetailLabel>
+                    <DetailValue>{detail.location}</DetailValue>
+                  </Col>
+                  <Col span={12}>
+                    <DetailLabel>
+                      <i className="fas fa-ruler-vertical me-2"></i>Chiều cao
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.height != null && detail.height !== ""
+                        ? detail.height + " cm"
+                        : "N/A"}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-weight me-2"></i>Cân nặng
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.weight != null && detail.weight !== ""
+                        ? detail.weight + " kg"
+                        : "N/A"}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-eye me-2"></i>Thị lực
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.visionLeft != null && detail.visionRight != null
+                        ? `${detail.visionLeft}/${detail.visionRight}`
+                        : detail.visionLeft != null
+                          ? `${detail.visionLeft}/-`
+                          : detail.visionRight != null
+                            ? `-/${detail.visionRight}`
+                            : "N/A"}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-calculator me-2"></i>BMI
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.bmi != null && detail.bmi !== ""
+                        ? detail.bmi
+                        : "N/A"}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-tint me-2"></i>Huyết áp
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.bloodPressure ? detail.bloodPressure : "N/A"}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-heartbeat me-2"></i>Nhịp tim
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.heartRate ? detail.heartRate : "N/A"}
+                    </DetailValue>
+                  </Col>
+                  <Col span={24}>
+                    <DetailLabel>
+                      Kết luận<span className={getStatusConclusion(detail.conclusion)}>{detail.conclusion === "Healthy"
+                        ? "Khỏe mạnh"
+                        : detail.conclusion === "Sick"
+                          ? "Bệnh"
+                          : "Cần chú ý"}</span>
+                    </DetailLabel>
+                    {detail.suggestions &&
+                      Array.isArray(detail.suggestions) &&
+                      detail.suggestions.length > 0 && (
+                        <div className="mb-3">
+                          <DetailLabel>Đề xuất</DetailLabel>
+                          <ul className="mb-0">
+                            {detail.suggestions.map((s, idx) => (
+                              <li key={idx}>{s}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    {detail.description && (
+                      <div className="mb-2">
+                        <DetailLabel>Ghi chú</DetailLabel>
+                        <DetailValue>{detail.description}</DetailValue>
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+              </DetailBox>
+            ) : (
+              // Chi tiết tiêm chủng
+              <DetailBox>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <DetailLabel>
+                      <i className="fas fa-calendar-alt me-2"></i>Ngày tiêm
+                    </DetailLabel>
+                    <DetailValue>
+                      {detail.date
+                        ? new Date(detail.date).toLocaleDateString("vi-VN")
+                        : ""}
+                    </DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-user me-2"></i>Học sinh
+                    </DetailLabel>
+                    <DetailValue>{detail.studentName}</DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-building me-2"></i>Địa điểm
+                    </DetailLabel>
+                    <DetailValue>{detail.location}</DetailValue>
+                  </Col>
+                  <Col span={12}>
+                    <DetailLabel>
+                      <i className="fas fa-syringe me-2"></i>Vắc-xin
+                    </DetailLabel>
+                    <DetailValue>{detail.vaccineName}</DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-check-circle me-2"></i>Kết quả
+                    </DetailLabel>
+                    <DetailValue>
+                      <span className={getStatusVaccine(detail.result)}>{detail.result === "Successful"
+                        ? "Đã tiêm"
+                        : detail.result === "Pending"
+                          ? "Chờ tiêm"
+                          : detail.result === "Rejected"
+                            ? "Đã từ chối"
+                            : " "}</span></DetailValue>
+                    <DetailLabel>
+                      <i className="fas fa-user-md me-2"></i>Y tá/Bác sĩ
+                    </DetailLabel>
+                    <DetailValue>{detail.nurseName}</DetailValue>
+                  </Col>
+                  <Col span={24}>
+                    {detail.description && (
+                      <div className="mb-2">
+                        <DetailLabel>Ghi chú</DetailLabel>
+                        <DetailValue>{detail.description}</DetailValue>
+                      </div>
+                    )}
+                    {detail.status && (
+                      <div className="mb-2">
+                        <DetailLabel>Trạng thái</DetailLabel>
+                        <DetailBadge>{detail.status}</DetailBadge>
+                      </div>
+                    )}
+                    {detail.message && (
+                      <div className="mb-2">
+                        <DetailLabel>Thông báo</DetailLabel>
+                        <DetailValue>{detail.message}</DetailValue>
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+              </DetailBox>
+            )
+          ) : null}
+        </Modal>
+        <Modal
+          open={showMedicationDetail}
+          onCancel={() => setShowMedicationDetail(false)}
+          title="Chi tiết gửi thuốc"
+          footer={
+            <Button onClick={() => setShowMedicationDetail(false)}>Đóng</Button>
+          }
+          width={850}
+        >
+          {loadingMedicationDetail ? (
+            <Spin tip="Đang tải chi tiết..." />
+          ) : medicationDetail ? (
+            <div className="medicine-detail-card">
+              <div className="medicine-detail-grid-2col">
+                <div>
+                  <div className="medicine-label"><i className="fas fa-building me-2"></i>Mã lớp</div>
+                  <div className="medicine-detail-value">{medicationDetail.studentClass || medicationDetail.studentClassName || ""}</div>
+                </div>
+                <div>
+                  <div className="medicine-label"><i className="fas fa-user-md me-2"></i>Y tá phụ trách</div>
+                  <div className="medicine-detail-value">{medicationDetail.nurseName || "-"}</div>
+                </div>
+                <div>
+                  <div className="medicine-label"><i className="fas fa-user me-2"></i>Học sinh</div>
+                  <div className="medicine-detail-value">{medicationDetail.studentName}</div>
+                </div>
+                <div>
+                  <div className="medicine-label"><i className="fas fa-user-friends me-2"></i>Phụ huynh</div>
+                  <div className="medicine-detail-value">{medicationDetail.parentName}</div>
+                </div>
+                <div>
+                  <div className="medicine-label"><i className="fas fa-calendar-alt me-2"></i>Ngày gửi</div>
+                  <div className="medicine-detail-value">{medicationDetail.createdDate ? new Date(medicationDetail.createdDate).toLocaleDateString("vi-VN") : ""}</div>
+                </div>
+                <div>
+                  <div className="medicine-label"><i className="fas fa-calendar-check me-2"></i>Ngày nhận</div>
+                  <div className="medicine-detail-value">{medicationDetail.reviceDate ? new Date(medicationDetail.reviceDate).toLocaleDateString("vi-VN") : "-"}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', margin: '18px 0' }}>
+                <span className={`medicine-status-badge ${getStatusClass(medicationDetail.status).replace('badge-status', '')}`.trim()}>
+                  {medicationDetail.status === "Completed" || medicationDetail.status === "Đã hoàn thành"
+                    ? "Đã hoàn thành"
+                    : medicationDetail.status === "Active" || medicationDetail.status === "Đang sử dụng"
+                      ? "Đang sử dụng"
+                      : medicationDetail.status === "Pending" || medicationDetail.status === "Chờ xác nhận"
+                        ? "Chờ xác nhận"
+                        : medicationDetail.status}
+                </span>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <div className="medicine-label" style={{ color: '#2563eb', fontWeight: 700, marginBottom: 6 }}><i className="fas fa-pills me-2"></i>Danh sách thuốc</div>
+                <ul style={{ margin: 0, paddingLeft: 24 }}>
+                  {medicationDetail.medications && medicationDetail.medications.length > 0 ? (
                     medicationDetail.medications.map((med, idx) => (
-                      <li key={idx}>
-                        <b>{med.medicationName}</b> - {med.dosage} <br />
-                        <span style={{ color: "#666" }}>{med.note}</span>
+                      <li key={idx} style={{ marginBottom: 6 }}>
+                        <b>{med.medicationName}</b> - {med.dosage}
+                        {med.note && <span style={{ color: '#666', marginLeft: 8 }}>({med.note})</span>}
                       </li>
-                    ))}
+                    ))
+                  ) : (
+                    <li>Không có thông tin thuốc.</li>
+                  )}
                 </ul>
-              </Col>
-            </Row>
-          </DetailBox>
-        ) : (
-          <div className="text-danger">Không lấy được chi tiết gửi thuốc.</div>
-        )}
-      </Modal>
-      <Modal
-        open={showLogoutModal}
-        onCancel={() => setShowLogoutModal(false)}
-        title="Xác nhận đăng xuất"
-        footer={[
-          <Button key="cancel" onClick={() => setShowLogoutModal(false)}>
-            Ở lại
-          </Button>,
-          <Button
-            key="logout"
-            type="primary"
-            danger
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
-          >
-            Có
-          </Button>,
-        ]}
-        centered
-      >
-        <p>Bạn có muốn đăng xuất không?</p>
-      </Modal>
-    </StyledContainer>
+              </div>
+            </div>
+          ) : (
+            <div className="text-danger">Không lấy được chi tiết gửi thuốc.</div>
+          )}
+        </Modal>
+        <Modal
+          open={showLogoutModal}
+          onCancel={() => setShowLogoutModal(false)}
+          title="Xác nhận đăng xuất"
+          footer={[
+            <Button key="cancel" onClick={() => setShowLogoutModal(false)}>
+              Ở lại
+            </Button>,
+            <Button
+              key="logout"
+              type="primary"
+              danger
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
+              Có
+            </Button>,
+          ]}
+          centered
+        >
+          <p>Bạn có muốn đăng xuất không?</p>
+        </Modal>
+      </StyledContainer>
+    </div>
   );
 };
 

@@ -18,7 +18,10 @@ import {
   postMedicalEvent,
 } from "../../api/nurse/healthEventsApi";
 import { toast } from "react-toastify";
-import { FaCalendarAlt, FaSearch, FaPlus, FaEye, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaCalendarAlt, FaSearch, FaPlus, FaEye, FaTrash, FaEdit, FaMedkit, FaUserGraduate, FaMapMarkerAlt, FaUserNurse, FaCheckCircle, FaStickyNote, FaList } from 'react-icons/fa';
+import "../../styles/nurse-theme.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarAlt, faStethoscope, faUser, faClipboardList, faMapMarkedAlt, faUserNurse, faMapMarkerAlt, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 const medicalEventSupplys = {
   medicalSupplyId: "",
@@ -190,7 +193,7 @@ const HealthEvents = () => {
   }, []);
 
   return (
-    <div className="container-fluid">
+    <div className="nurse-theme health-events-container">
       {/* Page Heading */}
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 className="h3 mb-0 text-gray-800">
@@ -199,15 +202,18 @@ const HealthEvents = () => {
       </div>
 
       {/* Data Table */}
-      <div className="card shadow mb-4">
-        <div className="card-header py-3">
+      <div className="health-event-card">
+        <div className="card-header">
           <div className="d-sm-flex align-items-center justify-content-between">
-            <h6 className="m-0 font-weight-bold text-primary">Danh sách Sự kiện Y tế</h6>
+            <h6 className="card-title">
+              <FaCalendarAlt className="me-2" />
+              Danh sách Sự kiện Y tế
+            </h6>
             <div className="d-flex">
-              <div className="input-group me-3">
+              <div style={{ width: "700px" }} className="input-group me-3">
                 <input
                   type="text"
-                  className="form-control bg-light border-0 small"
+                  className="form-control search-input"
                   placeholder="Tìm kiếm..."
                   aria-label="Search"
                   aria-describedby="basic-addon2"
@@ -215,12 +221,10 @@ const HealthEvents = () => {
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="input-group-append">
-                  <Button variant="primary" type="button">
-                    <FaSearch />
-                  </Button>
+
                 </div>
               </div>
-              <Button variant="primary" onClick={() => fetchMedicalSupply()}>
+              <Button variant="" style={{ width: "150px", backgroundColor: "#FFCCFF", color: "black" }} onClick={() => fetchMedicalSupply()}>
                 <FaPlus className="me-2" /> Thêm Sự kiện Mới
               </Button>
             </div>
@@ -228,35 +232,34 @@ const HealthEvents = () => {
         </div>
         <div className="card-body">
           <div className="table-responsive">
-            <Table className="table table-bordered" id="dataTable" width="100%" cellSpacing="0">
-              <thead>
-                <tr>
+            <Table className="health-events-table" id="dataTable" width="100%" cellSpacing="0">
+              <thead >
+                <tr style={{ textAlign: "center" }}>
                   <th>Tên sự kiện</th>
                   <th>Địa điểm</th>
                   <th>Ngày</th>
                   <th>Học sinh liên quan</th>
                   <th>Y tá phụ trách</th>
-                  <th>Mô tả</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {eventFiltered.length > 0 ? (
                   eventFiltered.map((event) => (
-                    <tr key={event.id}>
+                    <tr key={event.id} style={{ textAlign: "center" }}>
                       <td>{event.eventType}</td>
                       <td>{event.location}</td>
                       <td>{formatDateTime(event.date)}</td>
                       <td>{event.studentName}</td>
                       <td>{event.nurseName}</td>
-                      <td>{event.description}</td>
                       <td>
-                        <Button variant="info" size="sm" className="btn-circle me-1" onClick={() => loadMedicalEventDetailModal(event.id)} title="Xem chi tiết">
+                        <Button
+                          className="event-action-btn view me-1"
+                          onClick={() => loadMedicalEventDetailModal(event.id)}
+                          title="Xem chi tiết"
+                        >
                           <FaEye />
                         </Button>
-                        {/* <Button variant="danger" size="sm" className="btn-circle" onClick={() => handleDeleteEvent(event.id)} title="Xóa sự kiện">
-                          <FaTrash />
-                        </Button> */}
                       </td>
                     </tr>
                   ))
@@ -272,41 +275,118 @@ const HealthEvents = () => {
       </div>
 
       {/* Detail Event Modal */}
-      <Modal show={modalEvent} onHide={() => setModalEvent(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Chi tiết Sự kiện Y tế</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {modalEventDetail && (
-            <>
-              <p><strong>Tên sự kiện:</strong> {modalEventDetail.eventType}</p>
-              <p><strong>Địa điểm:</strong> {modalEventDetail.location}</p>
-              <p><strong>Ngày:</strong> {formatDateTime(modalEventDetail.date)}</p>
-              <p><strong>Học sinh liên quan:</strong> {modalEventDetail.studentName}</p>
-              <p><strong>Y tá phụ trách:</strong> {modalEventDetail.nurseName}</p>
-              <p><strong>Mô tả:</strong> {modalEventDetail.description}</p>
+      
+        <Modal
+          show={modalEvent}
+          onHide={() => setModalEvent(false)}
+          dialogClassName="nurse-theme event-details-modal"
+          
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Chi tiết Sự kiện Y tế</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="event-detail-content">
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faCalendarAlt} />
+                  Ngày
+                </div>
+                <div className="detail-value">
+                  {formatDateTime(modalEventDetail.date)}
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faStethoscope} />
+                  Loại sự kiện
+                </div>
+                <div className="detail-value">
+                  {modalEventDetail.eventType}
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faUser} />
+                  Học sinh
+                </div>
+                <div className="detail-value">
+                  {modalEventDetail.studentName}
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} />
+                  Địa điểm
+                </div>
+                <div className="detail-value">
+                  {modalEventDetail.location}
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faUserNurse} />
+                  Y tá phụ trách
+                </div>
+                <div className="detail-value">
+                  {modalEventDetail.nurseName}
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faCheckCircle} />
+                  Trạng thái
+                </div>
+                <div className="detail-value status-badge">
+                  Đã hoàn thành
+                </div>
+              </div>
+
+              <div className="detail-group">
+                <div className="detail-label">
+                  <FontAwesomeIcon icon={faClipboardList} />
+                  Mô tả
+                </div>
+                <div className="detail-value">
+                  {modalEventDetail.description}
+                </div>
+              </div>
+
               {modalEventDetail.medicalEventSupplys && modalEventDetail.medicalEventSupplys.length > 0 && (
-                <>
-                  <p><strong>Vật tư y tế đã sử dụng:</strong></p>
-                  <ul>
+                <div className="detail-group">
+                  <div className="detail-label">
+                    <FontAwesomeIcon icon={faMedkit} />
+                    Vật tư y tế
+                  </div>
+                  <div className="supplies-list">
                     {modalEventDetail.medicalEventSupplys.map((supply, index) => (
-                      <li key={index}>{supply.medicalSupplyName}: {supply.quantity}</li>
+                      <div key={index} className="supply-item">
+                        <span className="supply-name">{supply.medicalSupplyName}</span>
+                        <span className="supply-quantity">{supply.quantity}</span>
+                      </div>
                     ))}
-                  </ul>
-                </>
+                  </div>
+                </div>
               )}
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setModalEvent(false)}>Đóng</Button>
-        </Modal.Footer>
-      </Modal>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => setModalEvent(false)}>
+              Đóng
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      
 
       {/* Add New Event Modal */}
-      <Modal show={modalAdd} onHide={() => setModalAdd(false)} size="lg">
+      <Modal show={modalAdd} onHide={() => setModalAdd(false)} size="lg" >
         <Modal.Header closeButton>
-          <Modal.Title>Thêm Sự kiện Y tế Mới</Modal.Title>
+          <Modal.Title style={{ textAlign: "center", marginLeft: "100px", fontSize: "20px" }}>Thêm Sự kiện Y tế Mới</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form ref={formRef} noValidate validated={validated} onSubmit={handleSubmitForm}>
@@ -403,6 +483,106 @@ const HealthEvents = () => {
         </Modal.Body>
       </Modal>
     </div>
+  );
+};
+
+const EventDetailsModal = ({ event, onClose }) => {
+  return (
+    <Modal show={true} onHide={onClose} className="event-details-modal nurse-theme" size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Chi tiết Sự kiện Y tế</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="event-detail-content">
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faCalendarAlt} />
+              Ngày
+            </div>
+            <div className="detail-value">
+              {new Date(event.date).toLocaleDateString('vi-VN')}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faStethoscope} />
+              Loại sự kiện
+            </div>
+            <div className="detail-value">
+              {event.eventType}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faUser} />
+              Học sinh
+            </div>
+            <div className="detail-value">
+              {event.studentName}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faMapMarkerAlt} />
+              Địa điểm
+            </div>
+            <div className="detail-value">
+              {event.location}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faUserNurse} />
+              Y tá phụ trách
+            </div>
+            <div className="detail-value">
+              {event.nurseName}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faCheckCircle} />
+              Trạng thái
+            </div>
+            <div className="detail-value status-badge">
+              {event.status}
+            </div>
+          </div>
+
+          <div className="detail-group">
+            <div className="detail-label">
+              <FontAwesomeIcon icon={faClipboardList} />
+              Mô tả
+            </div>
+            <div className="detail-value">
+              {event.description}
+            </div>
+          </div>
+
+          {event.supplies && event.supplies.length > 0 && (
+            <div className="detail-group">
+              <div className="detail-label">
+                <FontAwesomeIcon icon={faMedkit} />
+                Vật tư y tế
+              </div>
+              <div className="supplies-list">
+                {event.supplies.map((supply, index) => (
+                  <div key={index} className="supply-item">
+                    <span className="supply-name">{supply.name}</span>
+                    <span className="supply-quantity">{supply.quantity} {supply.unit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 

@@ -135,25 +135,26 @@ const SendMedicine = () => {
   };
 
   const handleSubmit = async (e) => {
-    //check validated
     e.preventDefault();
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-      setValidated(true);
-      return;
+    let hasError = false;
+    if (!selectedStudentId) {
+      toast.error("Vui lòng chọn học sinh.");
+      hasError = true;
     }
+    medicines.forEach((med, idx) => {
+      if (!med.medicineName) {
+        toast.error(`Vui lòng nhập tên thuốc!`);
+        hasError = true;
+      }
+      if (!med.dosage) {
+        toast.error(`Vui lòng nhập liều dùng!`);
+        hasError = true;
+      }
+    });
+    if (hasError) return;
 
-    if (form.checkValidity() === true) {
+    if (e.currentTarget.checkValidity() === true) {
       console.log("submit success");
-      // const data = {
-      //   studentName,
-      //   studentClass,
-      //   medicines,
-      //   senderName,
-      //   senderPhone,
-      //   senderNote,
-      // };
       const data = {
         studentId: Number(selectedStudentId),
         medicines,
@@ -169,13 +170,8 @@ const SendMedicine = () => {
         toast.success("Gửi thành công!");
 
         // reset form
-        // setStudentName("");
-        // setStudentClass("");
         setSelectedStudentId("");
         setMedicines([]);
-        // setSenderName("");
-        // setSenderPhone("");
-        // setSenderNote("");
         setValidated(false);
 
         // Cuộn lên đầu
@@ -204,292 +200,128 @@ const SendMedicine = () => {
     console.log(students);
   }, [students]);
   return (
-    <div
-      style={{
-        background: "#f5f5f5",
-        minHeight: "100vh",
-        padding: "24px 0px",
-      }}
-    >
-      <Container className="">
-        <Row className="justify-content-center">
-          <Col md={8}>
-            <div className="bg-light p-4 rounded shadow">
-              <Form onSubmit={handleSubmit} noValidate validated={validated}>
-                <Row className="mb-5">
-                  <Col className="text-center">
-                    <h1>Gửi thuốc cho học sinh</h1>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col>
-                    <h2 className="d-flex align-items-center mb-4">
-                      <i className="fas fa-user-graduate me-2"></i> Thông tin
-                      học sinh
-                    </h2>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col>
-                    {/* <Form.Group className="mb-3" controlId="FormStudentName">
-                      <Form.Label>Họ và tên học sinh</Form.Label>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={studentName}
-                        onChange={(e) => setStudentName(e.target.value)}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Không được để trống
-                      </Form.Control.Feedback>
-                    </Form.Group> */}
-
-                    <Form.Group>
-                      <Form.Label>Họ và tên học sinh</Form.Label>
-                      <Form.Select
-                        className="mb-3"
-                        value={selectedStudentId}
-                        onChange={(e) => setSelectedStudentId(e.target.value)}
-                      >
-                        <option value="">-- Chọn học sinh --</option>
-                        {students?.map((student) => (
-                          <option key={student.id} value={student.id}>{student.studentName}</option>
-                        ))}
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    {/* <Form.Group className="mb-3" controlId="FormStudentClass">
-                      <Form.Label>Lớp</Form.Label>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={studentClass}
-                        onChange={(e) => setStudentClass(e.target.value)}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Không được để trống
-                      </Form.Control.Feedback>
-                    </Form.Group> */}
-
-                    {/* Lay lop tu student duoc chon */}
-                    {/* <label>Lớp</label>
-                    <input readOnly value={selectedStudentId} /> */}
-                    <Form.Group>
-                      <Form.Label>Lớp</Form.Label>
-                      <Form.Control
-                        readOnly
-                        value={
-                          students?.find(
-                            (student) =>
-                              student.id.toString() === selectedStudentId
-                          )?.className || ""
-                        }
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col>
-                    <h2 className="d-flex align-item-center mb-4">
-                      <i className="fas fa-pills me-2"></i>Thông tin thuốc
-                    </h2>
-                  </Col>
-                </Row>
-
+    <div className="parent-bg-img parent-theme" style={{ minHeight: "100vh", padding: "24px 0px" }}>
+      <div className="fade-in-up">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+              <form className="parent-form" onSubmit={handleSubmit} noValidate>
+                <div className="parent-form-header">
+                  <h2>
+                    <FaPills style={{ color: "#38b6ff", marginRight: 12, fontSize: 32, verticalAlign: "middle" }} />
+                    Gửi thuốc cho học sinh
+                  </h2>
+                  <p>Vui lòng điền thông tin thuốc và hướng dẫn sử dụng để nhà trường hỗ trợ tốt nhất.</p>
+                </div>
+                <div className="parent-form-grid">
+                  <div className="form-group">
+                    <label htmlFor="studentSelect">Chọn học sinh</label>
+                    <select
+                      className="parent-input"
+                      id="studentSelect"
+                      value={selectedStudentId}
+                      onChange={(e) => setSelectedStudentId(e.target.value)}
+                      required
+                    >
+                      <option value="">-- Chọn học sinh --</option>
+                      {students?.map((student) => (
+                        <option key={student.id} value={student.id}>{student.studentName} (Mã: {student.id}, Lớp: {student.className})</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="class">Lớp</label>
+                    <input
+                      className="parent-input"
+                      id="class"
+                      readOnly
+                      value={
+                        students?.find((student) => student.id.toString() === selectedStudentId)?.className || ""
+                      }
+                    />
+                  </div>
+                </div>
+                <h4 className="mt-4 mb-3" style={{ color: "#2563eb", fontWeight: 700 }}>
+                  <FaPills style={{ marginRight: 8 }} /> Thông tin thuốc
+                </h4>
                 {medicines.map((med, idx) => (
-                  <div key={idx} className="mb-4 border rounded p-3">
-                    <Row className="mb-3">
-                      <Col md={6}>
-                        <Form.Group controlId={`formMedName-${idx}`}>
-                          <Form.Label>Tên thuốc</Form.Label>
-                          <StyledFormControl
-                            required
-                            type="text"
-                            value={med.medicineName}
-                            onChange={(e) =>
-                              handleMedicineChange(idx, "medicineName", e.target.value)
-                            }
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            Không được để trống
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Col>
-                      {/* <Col md={2}>
-                        <Form.Group controlId={`formMedQuantity-${idx}`}>
-                          <Form.Label>Số lượng</Form.Label>
-                          <Form.Control
-                            required
-                            type="number"
-                            min={1}
-                            value={med.quantity}
-                            onChange={(e) =>
-                              handleMedicineChange(
-                                idx,
-                                "quantity",
-                                e.target.value
-                              )
-                            }
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            Không được để trống
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Col> */}
-                      <Col md={6}>
-                        <Form.Group controlId={`formMedDosage-${idx}`}>
-                          <Form.Label>Liều dùng</Form.Label>
-                          <StyledFormControl
-                            required
-                            type="text"
-                            value={med.dosage}
-                            onChange={(e) =>
-                              handleMedicineChange(idx, "dosage", e.target.value)
-                            }
-                            placeholder="Ví dụ: 1 viên/lần"
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            Không được để trống
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Col>
-                      {/* <Col md={3}>
-                        <Form.Group controlId={`formMedTime-${idx}`}>
-                          <Form.Label>Thời gian</Form.Label>
-                          <Form.Control
-                            required
-                            type="text"
-                            value={med.time}
-                            onChange={(e) =>
-                              handleMedicineChange(idx, "time", e.target.value)
-                            }
-                            placeholder="Ví dụ: sáng, trưa, tối,..."
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            Không được để trống
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Col> */}
-                    </Row>
-
-                    <Row>
-                      <Col>
-                        <Form.Group controlId={`formMedNote-${idx}`}>
-                          <Form.Label>Ghi chú</Form.Label>
-                          <StyledFormControl
-                            as="textarea"
-                            rows={2}
-                            placeholder="Nhập hướng dẫn sử dụng hoặc lưu ý..."
-                            value={med.notes}
-                            onChange={(e) =>
-                              handleMedicineChange(idx, "notes", e.target.value)
-                            }
-                            onInput={(e) => {
-                              e.target.style.height = "auto"; // reset lại chiều cao
-                              e.target.style.height = `${e.target.scrollHeight}px`; // đặt theo chiều cao thực tế của nội dung
-                            }}
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col className="d-flex align-items-end justify-content-end mt-2">
-                        {medicines.length > 1 && (
-                          <Tooltip title="Xóa thuốc">
-                            <Button
-                              variant="outline-danger"
-                              onClick={() => handleRemoveMedicine(idx)}
-                            >
-                              <FaTrash className="me-1" /> Xóa thuốc
-                            </Button>
-                          </Tooltip>
-                        )}
-                      </Col>
-                    </Row>
+                  <div key={idx} className="parent-form-grid mb-4" style={{ border: "1px solid #e6eaf0", borderRadius: 12, padding: 16 }}>
+                    <div className="form-group">
+                      <label htmlFor={`medicineName-${idx}`}>Tên thuốc</label>
+                      <input
+                        className="parent-input"
+                        id={`medicineName-${idx}`}
+                        required
+                        type="text"
+                        value={med.medicineName}
+                        onChange={(e) => handleMedicineChange(idx, "medicineName", e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor={`dosage-${idx}`}>Liều dùng</label>
+                      <input
+                        className="parent-input"
+                        id={`dosage-${idx}`}
+                        required
+                        type="text"
+                        value={med.dosage}
+                        onChange={(e) => handleMedicineChange(idx, "dosage", e.target.value)}
+                        placeholder="Ví dụ: 1 viên/lần"
+                      />
+                    </div>
+                    <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                      <label htmlFor={`notes-${idx}`}>Ghi chú</label>
+                      <textarea
+                        className="parent-input"
+                        id={`notes-${idx}`}
+                        rows={2}
+                        placeholder="Nhập hướng dẫn sử dụng hoặc lưu ý..."
+                        value={med.notes}
+                        onChange={(e) => handleMedicineChange(idx, "notes", e.target.value)}
+                        onInput={(e) => {
+                          e.target.style.height = "auto";
+                          e.target.style.height = `${e.target.scrollHeight}px`;
+                        }}
+                      />
+                    </div>
+                    <div className="d-flex align-items-end justify-content-end mt-2" style={{ gridColumn: "1/-1" }}>
+                      {medicines.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger"
+                          onClick={() => handleRemoveMedicine(idx)}
+                          style={{ display: "flex", alignItems: "center", gap: 4 }}
+                        >
+                          <FaTrash className="me-1" /> Xóa thuốc
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
-
-                <Row>
-                  <Col>
-                    <Button
-                      variant="outline-primary"
-                      className="mt-2 mb-5"
-                      onClick={handleAddMedicine}
-                    >
-                      <i className="fas fa-plus me-2"></i> Thêm thuốc
-                    </Button>
-                  </Col>
-                </Row>
-
-                {/* Thong tin nguoi gui */}
-                {/* <Row>
-                  <Col>
-                    <h2 className="d-flex align-item-center mb-4">
-                      <i className="fas fa-user me-2"></i> Thông tin người gửi
-                    </h2>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <Form.Group controlId="formParentName">
-                      <Form.Label>Họ và tên</Form.Label>
-                      <Form.Control
-                        required
-                        value={senderName}
-                        onChange={(e) => setSenderName(e.target.value)}
-                      ></Form.Control>
-                      <Form.Control.Feedback type="invalid">
-                        Không được để trống
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId="formParentPhone">
-                      <Form.Label>Số điện thoại</Form.Label>
-                      <Form.Control
-                        required
-                        value={senderPhone}
-                        onChange={(e) => setSenderPhone(e.target.value)}
-                      ></Form.Control>
-                      <Form.Control.Feedback type="invalid">
-                        Không được để trống
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row>
-                  <Form.Group controlId="formParentNote">
-                    <Form.Label>Ghi chú thêm</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      row={2}
-                      value={senderNote}
-                      onChange={(e) => setSenderNote(e.target.value)}
-                      onInput={(e) => {
-                        e.target.style.height = "auto"; // reset lại chiều cao
-                        e.target.style.height = `${e.target.scrollHeight}px`; // đặt theo chiều cao thực tế của nội dung
-                      }}
-                      placeholder="Nhập thông tin bổ sung nếu cần"
-                    ></Form.Control>
-                  </Form.Group>
-                </Row> */}
-
-                <Row>
-                  <Col className="text-center mt-5">
-                    <GradientButton variant="primary" type="submit">
-                      <FaPaperPlane /> Gửi thuốc
-                    </GradientButton>
-                  </Col>
-                </Row>
-              </Form>
+                <div className="mb-4">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onClick={handleAddMedicine}
+                    style={{ display: "flex", alignItems: "center", gap: 4 }}
+                  >
+                    <FaPlusCircle className="me-2" /> Thêm thuốc
+                  </button>
+                </div>
+                <div className="d-grid" style={{ gridColumn: "1/-1" }}>
+                  <button
+                    type="submit"
+                    className="parent-btn parent-gradient-btn"
+                    style={{ marginTop: 16 }}
+                  >
+                    <FaPaperPlane /> Gửi thuốc
+                  </button>
+                </div>
+              </form>
             </div>
-          </Col>
-        </Row>
-      </Container>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

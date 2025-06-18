@@ -4,7 +4,7 @@ import { FaPills, FaClock, FaCalendarAlt, FaUserCheck, FaCheckCircle, FaUserNurs
 import { PieChart, Pie as RePie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area, AreaChart } from 'recharts';
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/nurse.css";
+import "../../styles/nurse-theme.css";
 import CustomTable from "../../components/CustomTable";
 import MedicalExaminationFemaleSvg from "../../assets/medical-examination-female-svgrepo-com.svg";
 

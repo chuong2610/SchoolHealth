@@ -26,7 +26,7 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 const PageWrapper = styled.div`
-  background: #f5f5f5;
+  background:.parent-bg-img;
   min-height: 100vh;
   padding: 32px 0;
 `;
@@ -126,14 +126,14 @@ const StatusBadge = styled.span`
     status === "Confirmed"
       ? "#E8F8F5"
       : status === "Rejected"
-      ? "#FDEDEC"
-      : "#FEF5E7"};
+        ? "#FDEDEC"
+        : "#FEF5E7"};
   color: ${({ status }) =>
     status === "Confirmed"
       ? "#27AE60"
       : status === "Rejected"
-      ? "#E74C3C"
-      : "#F39C12"};
+        ? "#E74C3C"
+        : "#F39C12"};
 `;
 const ActionButton = styled.button`
   background: linear-gradient(90deg, #2980b9 60%, #38b6ff 100%);
@@ -286,6 +286,16 @@ const icons = {
   HealthCheck: <FaStethoscope style={{ color: "#27AE60" }} />,
 };
 
+// Thêm hàm getStatusClass cho badge trạng thái
+function getStatusClass(status) {
+  if (!status) return "badge-status";
+  const s = status.toLowerCase();
+  if (s === "confirmed" || s === "đã xác nhận") return "badge-status completed";
+  if (s === "pending" || s === "chờ xác nhận") return "badge-status pending";
+  if (s === "rejected" || s === "đã từ chối") return "badge-status rejected";
+  return "badge-status";
+}
+
 export default function Notifications() {
   const [activeTab, setActiveTab] = useState("all");
   const [notifications, setNotifications] = useState([]);
@@ -348,154 +358,159 @@ export default function Notifications() {
       await sendConsentApi(data);
       fetchNotifications();
       closeModal();
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
-    <PageWrapper>
-      <MainCard>
-        <h1 style={{ textAlign: "center", marginBottom: 24 }}>Thông báo</h1>
-        <Tabs>
-          {tabList.map((tab) => (
-            <Tab
-              key={tab.key}
-              active={activeTab === tab.key}
-              onClick={() => {
-                setActiveTab(tab.key);
+    <div className="parent-bg-img parent-theme parent-bg">
+      <PageWrapper >
+        <MainCard style={{ marginTop: 10, marginBottom: 10, width: "100%", marginLeft: "23%" }}>
+          <h1 style={{ textAlign: "center", marginBottom: 24, marginTop: 10, fontSize: "4rem", fontWeight: "bold", boxSizing: "border-box" }}>Thông báo</h1>
+          <Tabs style={{ textAlign: "center", marginBottom: 10, marginLeft: "13%" }}>
+            {tabList.map((tab) => (
+              <Tab
+                key={tab.key}
+                active={activeTab === tab.key}
+                onClick={() => {
+                  setActiveTab(tab.key);
+                  setPage(1);
+                }}
+              >
+                {tab.label}
+              </Tab>
+            ))}
+          </Tabs>
+          <SearchBar style={{ marginBottom: 10 }}>
+            <FaSearch />
+            <SearchInput
+              placeholder="Tìm kiếm theo tiêu đề, nội dung..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
                 setPage(1);
               }}
-            >
-              {tab.label}
-            </Tab>
-          ))}
-        </Tabs>
-        <SearchBar>
-          <FaSearch />
-          <SearchInput
-            placeholder="Tìm kiếm theo tiêu đề, nội dung..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
-        </SearchBar>
-        {loading ? (
-          <Spinner />
-        ) : filtered.length === 0 ? (
-          <EmptyState>Không có thông báo nào.</EmptyState>
-        ) : (
-          <Table>
-            <Thead>
-              <tr>
-                <Th style={{ width: 48 }}></Th>
-                <Th>Tiêu đề</Th>
-                <Th>Ngày</Th>
-                <Th>Loại</Th>
-                <Th style={{ textAlign: "center" }}>Thao tác</Th>
-              </tr>
-            </Thead>
-            <tbody>
-              {paged.map((notification, idx) => (
-                <Tr key={notification.id}>
-                  <Td>{icons[notification.type] || <FaBell />}</Td>
-                  <Td>{notification.title}</Td>
-                  <Td>{formatDateTime(notification.createdAt)}</Td>
-                  <Td>
-                    {console.log("Notifications", notification)}
-                    {/* <StatusBadge status={notification.status}>
-                      {notification.status === 'Confirmed' && <FaCheckCircle />}
-                      {notification.status === 'Rejected' && <FaTimesCircle />}
-                      {notification.status === 'Pending' && <FaExclamationCircle />}
-                      {notification.status === 'Confirmed' ? 'Đã xác nhận' : notification.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
-                    </StatusBadge> */}
-                    <StatusBadge status={notification.status}>
-                      {notification.type === "Vaccination" && <FaSyringe />}
-                      {notification.type === "HealthCheck" && <FaStethoscope />}
-                      {notification.type === "Vaccination" ? "Tiêm chủng" : "Khám sức khỏe"}
-                    </StatusBadge>
-                  </Td>
-                  <Td style={{ textAlign: "center" }}>
-                    <ActionButton
-                      onClick={() =>
-                        openModal(notification.id, notification.studentId)
-                      }
-                      title="Xem chi tiết"
-                    >
-                      <FaInfoCircle /> Chi tiết
-                    </ActionButton>
-                  </Td>
-                </Tr>
-              ))}
-            </tbody>
-          </Table>
-        )}
-        {totalPage > 1 && (
-          <Pagination>
-            <PageBtn
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-            >
-              <FaChevronLeft />
-            </PageBtn>
-            {[...Array(totalPage)].map((_, i) => (
+            />
+          </SearchBar>
+          {loading ? (
+            <Spinner />
+          ) : filtered.length === 0 ? (
+            <EmptyState>Không có thông báo nào.</EmptyState>
+          ) : (
+            <Table>
+              <Thead>
+                <tr>
+                  <Th style={{ width: 48 }}></Th>
+                  <Th style={{ textAlign: "center" }}>Tiêu đề</Th>
+                  <Th style={{ textAlign: "center" }}>Ngày</Th>
+                  <Th style={{ textAlign: "center" }}>Loại</Th>
+                  <Th style={{ textAlign: "center" }}>Thao tác</Th>
+                </tr>
+              </Thead>
+              <tbody>
+                {paged.map((notification, idx) => (
+                  <Tr key={notification.id}>
+                    <Td>{icons[notification.type] || <FaBell />}</Td>
+                    <Td>{notification.title}</Td>
+                    <Td>{formatDateTime(notification.createdAt)}</Td>
+                    <Td>
+                      {console.log("Notifications", notification)}
+                      {/* <StatusBadge status={notification.status}>
+                        {notification.status === 'Confirmed' && <FaCheckCircle />}
+                        {notification.status === 'Rejected' && <FaTimesCircle />}
+                        {notification.status === 'Pending' && <FaExclamationCircle />}
+                        {notification.status === 'Confirmed' ? 'Đã xác nhận' : notification.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
+                      </StatusBadge> */}
+                      <StatusBadge status={notification.status}>
+                        {notification.type === "Vaccination" && <FaSyringe />}
+                        {notification.type === "HealthCheck" && <FaStethoscope />}
+                        {notification.type === "Vaccination" ? "Tiêm chủng" : "Khám sức khỏe"}
+                      </StatusBadge>
+                    </Td>
+                    <Td style={{ textAlign: "center" }}>
+                      <ActionButton
+                        onClick={() =>
+                          openModal(notification.id, notification.studentId)
+                        }
+                        title="Xem chi tiết"
+                      >
+                        <FaInfoCircle /> Chi tiết
+                      </ActionButton>
+                    </Td>
+                  </Tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+          {totalPage > 1 && (
+            <Pagination>
               <PageBtn
-                key={i}
-                aria-current={page === i + 1}
-                onClick={() => setPage(i + 1)}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
               >
-                {i + 1}
+                <FaChevronLeft />
               </PageBtn>
-            ))}
-            <PageBtn
-              onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
-              disabled={page === totalPage}
-            >
-              <FaChevronRight />
-            </PageBtn>
-          </Pagination>
-        )}
-      </MainCard>
-      {modal.show && (
-        <ModalOverlay>
-          <ModalBox>
-            <ModalClose onClick={closeModal}>&times;</ModalClose>
-            <ModalTitle>{modal.notification?.title}</ModalTitle>
-            <div style={{ marginBottom: 12 }}>
-              <b>Ngày:</b>{" "}
-              {modal.notification?.date
-                ? new Date(modal.notification.date).toLocaleDateString("vi-VN")
-                : ""}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <b>Địa điểm:</b> {modal.notification?.location || "---"}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <b>Nội dung:</b> {modal.notification?.message || ""}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <b>Ghi chú:</b> {modal.notification?.note || ""}
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <b>Trạng thái:</b>{" "}
-              <StatusBadge status={modal.notification?.status}>
-                {modal.notification?.status === "Confirmed" && (
-                  <FaCheckCircle />
-                )}
-                {modal.notification?.status === "Rejected" && <FaTimesCircle />}
-                {modal.notification?.status === "Pending" && (
-                  <FaExclamationCircle />
-                )}
-                {modal.notification?.status === "Confirmed"
-                  ? "Đã xác nhận"
-                  : modal.notification?.status === "Rejected"
-                  ? "Đã từ chối"
-                  : "Chờ xác nhận"}
-              </StatusBadge>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              {modal.notification?.status === "Pending" && (
-                <>
+              {[...Array(totalPage)].map((_, i) => (
+                <PageBtn
+                  key={i}
+                  aria-current={page === i + 1}
+                  onClick={() => setPage(i + 1)}
+                >
+                  {i + 1}
+                </PageBtn>
+              ))}
+              <PageBtn
+                onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
+                disabled={page === totalPage}
+              >
+                <FaChevronRight />
+              </PageBtn>
+            </Pagination>
+          )}
+        </MainCard>
+        {modal.show && (
+          <ModalOverlay>
+            <ModalBox>
+              <ModalClose onClick={closeModal}>&times;</ModalClose>
+              <ModalTitle>{modal.notification?.title}</ModalTitle>
+              <div className="medicine-detail-card" style={{ marginBottom: 0 }}>
+                <div className="medicine-detail-grid-2col">
+                  <div>
+                    <div className="medicine-label"><i className="fas fa-calendar-alt me-2"></i>Ngày</div>
+                    <div className="medicine-detail-value">{modal.notification?.createdAt ? new Date(modal.notification.date).toLocaleDateString("vi-VN") : ""}</div>
+                  </div>
+                  <div>
+                    <div className="medicine-label"><i className="fas fa-building me-2"></i>Địa điểm</div>
+                    <div className="medicine-detail-value">{modal.notification?.location || "---"}</div>
+                  </div>
+                  <div>
+                    <div className="medicine-label"><i className="fas fa-user me-2"></i>Học sinh</div>
+                    <div className="medicine-detail-value">{modal.notification?.studentName || "---"}</div>
+                  </div>
+                  
+                </div>
+                
+                <div style={{ marginTop: 8 }}>
+                  <div className="medicine-label" style={{ color: '#2563eb', fontWeight: 700, marginBottom: 6 }}><i className="fas fa-info-circle me-2"></i>Nội dung</div>
+                  <div className="medicine-detail-value">{modal.notification?.message || ""}</div>
+                  {modal.notification?.note && (
+                    <>
+                      <div className="medicine-label" style={{ color: '#2563eb', fontWeight: 700, marginTop: 8 }}><i className="fas fa-sticky-note me-2"></i>Ghi chú</div>
+                      <div className="medicine-detail-value">{modal.notification?.note}</div>
+                    </>
+                  )}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                  <span className={`medicine-status-badge ${getStatusClass(modal.notification?.status).replace('badge-status', '')}`.trim()}>
+                    {modal.notification?.status === "Confirmed"
+                      ? "Đã xác nhận"
+                      : modal.notification?.status === "Rejected"
+                        ? "Đã từ chối"
+                        : "Chờ xác nhận"}
+                  </span>
+                </div>
+              </div>
+              {modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận" ? (
+                <div style={{ marginBottom: 12 }}>
                   <b>Ý kiến:</b>
                   <ModalInput
                     placeholder="Nhập ý kiến của bạn (nếu có)"
@@ -503,34 +518,36 @@ export default function Notifications() {
                     onChange={(e) => setReason(e.target.value)}
                     rows={3}
                   />
-                </>
-              )}
-            </div>
-            <ModalFooter>
-              <ActionButton
-                style={{ background: "#e0e0e0", color: "#2563eb" }}
-                onClick={closeModal}
-              >
-                Đóng
-              </ActionButton>
-              <ActionButton
-                style={{ background: "#E74C3C", color: "#fff" }}
-                disabled={modal.notification?.status !== "Pending"}
-                onClick={() => handleSubmitConsent(false, "Rejected", reason)}
-              >
-                Từ chối
-              </ActionButton>
-              <ActionButton
-                style={{ background: "#27AE60", color: "#fff" }}
-                disabled={modal.notification?.status !== "Pending"}
-                onClick={() => handleSubmitConsent(true, "Confirmed")}
-              >
-                Đồng ý
-              </ActionButton>
-            </ModalFooter>
-          </ModalBox>
-        </ModalOverlay>
-      )}
-    </PageWrapper>
+                </div>
+              ) : null}
+              <ModalFooter>
+                <ActionButton
+                  style={{ background: "#e0e0e0", color: "#2563eb" }}
+                  onClick={closeModal}
+                >
+                  Đóng
+                </ActionButton>
+                {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
+                  <>
+                    <ActionButton
+                      style={{ background: "#E74C3C", color: "#fff" }}
+                      onClick={() => handleSubmitConsent(false, "Rejected", reason)}
+                    >
+                      Từ chối
+                    </ActionButton>
+                    <ActionButton
+                      style={{ background: "#27AE60", color: "#fff" }}
+                      onClick={() => handleSubmitConsent(true, "Confirmed")}
+                    >
+                      Đồng ý
+                    </ActionButton>
+                  </>
+                )}
+              </ModalFooter>
+            </ModalBox>
+          </ModalOverlay>
+        )}
+      </PageWrapper>
+    </div>
   );
 }
