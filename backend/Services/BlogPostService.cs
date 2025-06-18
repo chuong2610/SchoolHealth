@@ -91,6 +91,12 @@ namespace backend.Services
 
         public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
         {
+            // Kiểm tra nếu chỉ là tên file thì thêm đường dẫn
+            // if (!string.IsNullOrEmpty(request.ImageUrl) && !request.ImageUrl.StartsWith("http"))
+            // {
+            //     request.ImageUrl = $"/uploads/{request.ImageUrl}";
+            // }
+            
             var post = new BlogPost
             {
                 Title = request.Title,

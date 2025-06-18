@@ -33,33 +33,60 @@ const CreateBlogPost = () => {
   };
 
   //sử lí upload ảnh
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   const formData = new FormData();
+  //   formData.append("file", file); // Tên tham số backend yêu cầu
+
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:5182/api/Upload/image", // API upload ảnh của bạn
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     const imagePath = res.data.filePath; // Lấy đường dẫn ảnh từ response
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       imageUrl: `http://localhost:5182${imagePath}`, // Gắn url tuyệt đối vào blog
+  //     }));
+  //   } catch (error) {
+  //     console.error("Upload image failed:", error);
+  //     setError("Upload ảnh thất bại");
+  //   }
+  // };
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
-    formData.append("file", file); // Tên tham số backend yêu cầu
+    formData.append("file", file);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5182/api/Upload/image", // API upload ảnh của bạn
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await fetch("http://localhost:5182/api/Upload/image", {
+        method: "POST",
+        body: formData,
+      });
 
-      const imagePath = res.data.filePath; // Lấy đường dẫn ảnh từ response
+      const data = await res.json();
+      console.log("📦 Res upload ảnh:", data);
+
+      // Chỉ lưu tên file được backend trả về vào userInfo
       setFormData((prev) => ({
         ...prev,
-        imageUrl: `http://localhost:5182${imagePath}`, // Gắn url tuyệt đối vào blog
+        imageUrl: data.fileName, // Ví dụ: "abc123.jpg"
+        // imageUrl: `http://localhost:5182${data.filePath}`,
       }));
     } catch (error) {
-      console.error("Upload image failed:", error);
-      setError("Upload ảnh thất bại");
+      console.error("Lỗi upload ảnh:", error);
+      alert("Tải ảnh thất bại!");
     }
   };
 
@@ -190,6 +217,20 @@ const CreateBlogPost = () => {
             accept="image/*"
             onChange={handleImageChange}
           />
+          {/* {formData.imageUrl && (
+            <div className="mt-3">
+              <p>Preview ảnh:</p>
+              <img
+                src={`http://localhost:5182/uploads/${formData.imageUrl}`}
+                alt="Uploaded preview"
+                style={{
+                  maxWidth: "300px",
+                  maxHeight: "300px",
+                  objectFit: "cover",
+                }}
+              />
+            </div> */}
+          {/* )} */}
         </div>
 
         <button type="submit" className="btn btn-primary mt-3 mb-5">

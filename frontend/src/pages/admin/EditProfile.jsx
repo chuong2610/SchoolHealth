@@ -20,6 +20,36 @@ const EditProfile = () => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
 
+  // const handleImageChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:5182/api/Upload/image",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     const imagePath = res.data.filePath;
+  //     setUserInfo((prev) => ({
+  //       ...prev,
+  //       imageUrl: `http://localhost:5182${imagePath}`,
+  //     }));
+  //     setIsImageChanged(true);
+  //   } catch (err) {
+  //     console.error("Lỗi upload ảnh:", err);
+  //     alert("Upload ảnh thất bại.");
+  //   }
+  // };
+
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -28,25 +58,25 @@ const EditProfile = () => {
     formData.append("file", file);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5182/api/Upload/image",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await fetch("http://localhost:5182/api/Upload/image", {
+        method: "POST",
+        body: formData,
+      });
 
-      const imagePath = res.data.filePath;
+      const data = await res.json();
+      console.log("📦 Res upload ảnh:", data);
+
+
+      // Chỉ lưu tên file được backend trả về vào userInfo
       setUserInfo((prev) => ({
         ...prev,
-        imageUrl: `http://localhost:5182${imagePath}`,
+        imageUrl: data.fileName, // Ví dụ: "abc123.jpg"
+        // imageUrl: `http://localhost:5182${data.filePath}`,
       }));
       setIsImageChanged(true);
-    } catch (err) {
-      console.error("Lỗi upload ảnh:", err);
-      alert("Upload ảnh thất bại.");
+    } catch (error) {
+      console.error("Lỗi upload ảnh:", error);
+      alert("Tải ảnh thất bại!");
     }
   };
 

@@ -119,9 +119,14 @@ const EditBlogPost = () => {
       );
 
       const imagePath = res.data.filePath; // Lấy đường dẫn ảnh từ response
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   imageUrl: `http://localhost:5182${imagePath}`, // Gắn url tuyệt đối vào blog
+      // }));
+      const fileName = res.data.fileName; // giả sử backend trả về tên file
       setFormData((prev) => ({
         ...prev,
-        imageUrl: `http://localhost:5182${imagePath}`, // Gắn url tuyệt đối vào blog
+        imageUrl: fileName, // chỉ lưu 'abc123.jpg'
       }));
       setIsImageChanged(true);
     } catch (error) {
