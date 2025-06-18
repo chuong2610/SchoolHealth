@@ -209,6 +209,17 @@ namespace backend.Services
 
             return result;
         }
+        public async Task<bool> UpdatePasswordAsync(LoginRequest loginRequest)
+        {
+            var user = await _userRepository.GetUserByPhoneAsync(loginRequest.PhoneNumber);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Password = BCrypt.Net.BCrypt.HashPassword(loginRequest.Password);
+            var updated = await _userRepository.UpdateUserAsync(user);
+            return updated;
+        }
     }
 }
 

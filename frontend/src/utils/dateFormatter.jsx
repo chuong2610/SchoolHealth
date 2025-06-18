@@ -11,13 +11,25 @@ export const formatDateTime = (date = new Date()) => {
 };
 
 export const formatDDMMYYYY = (date = new Date()) => {
-  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
+  const d = new Date(date);
+  return `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1)
     .toString()
-    .padStart(2, "0")}/${date.getFullYear()}`;
+    .padStart(2, "0")}/${d.getFullYear()}`;
 };
 
 export const formatYYYYMMDD = (date = new Date()) => {
-  return `${date.getFullYear()}-${(date.getMonth() + 1)
+  const d = new Date(date);
+  return `${d.getFullYear()}-${(d.getMonth() + 1)
     .toString()
-    .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
 };
+
+export const formatTime = (date = new Date()) => {
+  const d = new Date(date);
+  const hours = d.getHours().toString().padStart(2, "0");
+  const minutes = d.getMinutes().toString().padStart(2, "0");
+  const seconds = d.getSeconds().toString().padStart(2, "0");
+
+  return `${hours}:${minutes}:${seconds}`;
+};
+
