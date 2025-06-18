@@ -169,22 +169,10 @@ namespace backend.Services
             }
 
             // Update Image if uploaded
-            if (request.ImageUrl != null && request.ImageUrl.Length > 0)
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
             {
-                // Generate new file name
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
-                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
 
-                // Ensure the directory exists
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await request.ImageUrl.CopyToAsync(stream);
-                }
-
-                // Update the image file name in the database
-                existingUserProfile.ImageUrl = fileName;
+                existingUserProfile.ImageUrl = request.ImageUrl;
             }
 
             // Save changes

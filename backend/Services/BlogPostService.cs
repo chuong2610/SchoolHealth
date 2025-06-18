@@ -20,11 +20,16 @@ namespace backend.Services
         }
 
 
-        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync()
+        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync(int pageNumber = 1, int pageSize = 3)
         {
             var posts = await _repository.GetAllAsync();
 
-            var postDtos = posts.Select(post =>
+            // Phân trang dữ liệu
+            var pagedPosts = posts
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+
+            var postDtos = pagedPosts.Select(post =>
             {
                 if (post == null) return null;
 
@@ -40,7 +45,6 @@ namespace backend.Services
                     imageUrl = $"{baseUrl}/uploads/default.jpg";
                 }
 
-                // Tạo ContentSummary từ string thuần
                 string summary = string.IsNullOrWhiteSpace(post.Content)
                     ? ""
                     : (post.Content.Length > 100 ? post.Content.Substring(0, 100) + "..." : post.Content);
@@ -91,29 +95,13 @@ namespace backend.Services
 
         public async Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request)
         {
-            string fileName = null;
-
-            if (request.ImageUrl != null && request.ImageUrl.Length > 0)
-            {
-                // Tạo tên file duy nhất
-                fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
-                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
-
-                // Tạo thư mục nếu chưa tồn tại
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await request.ImageUrl.CopyToAsync(stream);
-                }
-            }
 
             var post = new BlogPost
             {
                 Title = request.Title,
                 Content = request.Content,
                 Author = request.Author,
-                ImageUrl = fileName, // Chỉ lưu tên file, còn URL sẽ tạo khi hiển thị
+                ImageUrl = request.ImageUrl, // Chỉ lưu tên file, còn URL sẽ tạo khi hiển thị
                 CreatedAt = DateTime.UtcNow,
                 UserId = 1 // Gợi ý: lấy từ context hoặc token
             };
@@ -151,20 +139,7 @@ namespace backend.Services
             // Image (nếu có upload mới)
             if (request.ImageUrl != null && request.ImageUrl.Length > 0)
             {
-                // Tạo tên file mới
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
-                var filePath = Path.Combine(_environment.WebRootPath, "uploads", fileName);
-
-                // Tạo thư mục nếu chưa có
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await request.ImageUrl.CopyToAsync(stream);
-                }
-
-                // Gán tên file vào DB
-                existingBlogPost.ImageUrl = fileName;
+                existingBlogPost.ImageUrl = request.ImageUrl;
             }
 
             var updated = await _repository.UpdateAsync(existingBlogPost);

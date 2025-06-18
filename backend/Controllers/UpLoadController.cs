@@ -66,7 +66,7 @@ namespace backend.Controllers
                 {
                     Success = true,
                     Message = "File uploaded successfully",
-                    FilePath = fileUrl
+                    FileName = fileName
                 });
             }
             catch (Exception ex)
