@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -15,13 +16,15 @@ namespace backend.Services
         private readonly IUserRepository _userRepository;
         private readonly IRedisService _redisService;
         private readonly IEmailService _emailService;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AuthService(IConfiguration configuration, IUserRepository userRepository, IRedisService redisService, IEmailService emailService)
+        public AuthService(IConfiguration configuration, IUserRepository userRepository, IRedisService redisService, IEmailService emailService, IHttpClientFactory httpClientFactory)
         {
             _configuration = configuration;
             _userRepository = userRepository;
             _redisService = redisService;
             _emailService = emailService;
+            _httpClientFactory = httpClientFactory;
         }
 
         private string GenerateToken(User user)
@@ -127,6 +130,53 @@ namespace backend.Services
                 await _userRepository.UpdateUserAsync(user);
             }
             return true;
+        }
+
+        public async Task<AuthDTO> LoginWithGoogleAsync(GoogleAuthRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var values = new Dictionary<string, string>
+        {
+            { "code", request.Code },
+            { "client_id", _configuration["Google:ClientId"] },
+            { "client_secret", _configuration["Google:ClientSecret"] },
+            { "redirect_uri", request.RedirectUri },
+            { "grant_type", "authorization_code" }
+        };
+            var response = await client.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(values));
+            // var errorJson = await response.Content.ReadAsStringAsync();
+            // Console.WriteLine("Google Token Error Response: " + errorJson);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+            // Console.WriteLine($"Google Auth Response: {json}");
+            var tokenResponse = JsonSerializer.Deserialize<GoogleTokenResponse>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            // Console.WriteLine($"Google Auth Token: {tokenResponse?.IdToken}");
+            if (tokenResponse?.IdToken == null)
+                return null;
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(tokenResponse.IdToken);
+
+            var email = jwt.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            Console.WriteLine($"Google Auth Email: {email}");
+
+            if (string.IsNullOrEmpty(email))
+                return null;
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+                return null;
+
+            var token = GenerateToken(user);
+
+            return new AuthDTO
+            {
+                Token = token,
+                UserId = user.Id,
+                RoleName = user.Role.Name
+            };
         }
     }
 }

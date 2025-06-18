@@ -33,6 +33,7 @@ namespace backend.Repositories
         public async Task<Student?> GetStudentByStudentNumberAsync(string studentNumber)
         {
             return await _context.Students
+            .Include(s => s.Class)
             .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
         }
 
@@ -51,6 +52,7 @@ namespace backend.Repositories
             return await _context.NotificationStudents
                 .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
                 .Select(ns => ns.Student)
+                .Include(s => s.Class)
                 .ToListAsync();
         }
         public async Task<int> GetNumberOfStudents()
