@@ -54,12 +54,12 @@
 .login-title {
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 18px;
+    margin-bottom: 10px;
     letter-spacing: 1px;
 }
 
 .login-box {
-    background: #fff;
+    background: #ffffff;
     border-radius: 22px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
     padding: 36px 32px 32px 32px;
@@ -152,7 +152,7 @@
     }
 
     .login-box {
-        padding: 24px 8px 20px 8px;
+        padding: 30 px 8px 30px 8px;
     }
 
     .login-logo {

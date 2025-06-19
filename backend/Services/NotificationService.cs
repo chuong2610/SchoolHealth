@@ -279,7 +279,6 @@ namespace backend.Services
             var deleted = await _notificationRepository.DeleteNotificationAsync(notification);
             return deleted;
         }
-
         private NotificationParentDTO MapToNotificationParentDTO(Notification notification, int studentId, string studentName)
         {
             return new NotificationParentDTO

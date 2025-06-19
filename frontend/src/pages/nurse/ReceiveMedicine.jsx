@@ -348,9 +348,11 @@ const ReceiveMedicine = () => {
               <p><strong>Số ngày:</strong> {detailData.days}</p>
               <p><strong>Ghi chú:</strong> {detailData.medications?.[0]?.note || "Không có"}</p>
               <p><strong>Ngày gửi:</strong> {detailData.createdDate?.split("T")[0]}</p>
-              <p><strong>Trạng thái:</strong> <Badge bg={modalDetail.type === "pending" ? "primary" : modalDetail.type === "active" ? "warning" : "success"}>
-                {modalDetail.type === "pending" ? "Chờ xác nhận" : modalDetail.type === "active" ? "Đang sử dụng" : "Đã hoàn thành"}
-              </Badge></p>
+              <p><strong>Trạng thái:</strong> 
+                <Badge bg={detailData.status === "Pending" ? "primary" : detailData.status === "Active" ? "warning" : "success"}>
+                  {detailData.status === "Pending" ? "Chờ xác nhận" : detailData.status === "Active" ? "Đang sử dụng" : "Đã hoàn thành"}
+                </Badge>
+              </p>
             </>
           )}
         </Modal.Body>

@@ -1,6 +1,7 @@
 import React from "react";
 // import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import {
   Routes,
@@ -13,6 +14,8 @@ import MainLayout from "./layouts/MainLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import Login from "./pages/login/Login";
 import { useAuth } from "./context/AuthContext";
+import AuthCallback from "./pages/login/AuthCallback";
+
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -56,7 +59,6 @@ import MedicineRequests from "./pages/admin/MedicineRequests";
 import MedicineInventory from "./pages/admin/MedicineInventory";
 import NotificationsManagement from "./pages/admin/NotificationsManagement";
 import Reports from "./pages/admin/Reports";
-import HealthDeclaration from "./pages/nurse/HealthDeclaration";
 import Notifications from "./pages/parent/Notifications";
 import HealthHistory from "./pages/parent/HealthHistory";
 import SendMedicine from "./pages/parent/SendMedicine";
@@ -65,6 +67,13 @@ import Settings from "./pages/admin/Settings";
 import BlogDetail from "./pages/parent/BlogDetail";
 import MoreKnow from "./pages/parent/MoreKnow";
 import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
+import HealthDeclaration from "./pages/parent/HealthDeclaration";
+
+// Styles
+import "react-toastify/dist/ReactToastify.css";
+import "./styles/main.css";
+import "./styles/dashboard.css";
+import "./styles/themes.css";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -85,12 +94,11 @@ const App = () => {
     <AuthProvider>
       <ToastContainer />
       <Routes>
-        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
-
-        <Route path="/" element={<MainLayout />}/>
-          <Route index element={<Navigate to="/login" replace />} />
+        <Route path="/auth/google/callback" element={<AuthCallback />} />
+        {/* Public Routes */}
+        <Route path="/" element={<MainLayout />} />
+        <Route index element={<Navigate to="/login" replace />} />
 
         {/* Protected Routes */}
         <Route element={<MainLayout />}>
@@ -106,7 +114,7 @@ const App = () => {
                 path="medicines/inventory"
                 element={<MedicineInventory />}
               />
-              <Route path="notification/management" element={<NotificationsManagement/>}/>
+              <Route path="notification/management" element={<NotificationsManagement />} />
               <Route path="reports" element={<Reports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
