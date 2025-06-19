@@ -50,7 +50,6 @@ namespace backend.Repositories
                 .Include(ns => ns.Student).ThenInclude(s => s.Class)
                 .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
                 .Select(ns => ns.Student)
-                .Include(s => s.Class)
                 .ToListAsync();
         }
         public async Task<int> GetNumberOfStudents()
