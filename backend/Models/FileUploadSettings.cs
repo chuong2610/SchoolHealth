@@ -9,7 +9,7 @@ namespace backend.Models
 
     public class FileUploadResponse
     {
-        public string FilePath { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public bool Success { get; set; }
     }

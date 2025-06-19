@@ -36,7 +36,7 @@ namespace backend.Services
             {
                 Name = request.Name,
                 Description = request.Description,
-                Quantity = request.Quantity
+                Quantity = request.Quantity ?? 0
             };
             var created = await _medicalSupplyRepository.AddMedicalSuppliesAsync(supply);
             return created;
@@ -60,9 +60,9 @@ namespace backend.Services
                 existingMedicalSupply.Description = supplyRequest.Description;
             }
             // update Quantity if not null
-            if (supplyRequest.Quantity != 0)
+            if (supplyRequest.Quantity.HasValue)
             {
-                existingMedicalSupply.Quantity = supplyRequest.Quantity;
+                existingMedicalSupply.Quantity = supplyRequest.Quantity.Value;
             }
             var updated = await _medicalSupplyRepository.UpdateMedicalSuppliesAsync(existingMedicalSupply);
             return updated;
