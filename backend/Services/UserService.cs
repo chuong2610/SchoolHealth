@@ -163,9 +163,9 @@ namespace backend.Services
             }
 
             // Update DateOfBirth if not null
-            if (request.DateOfBirth != null)
+            if (request.DateOfBirth.HasValue)
             {
-                existingUserProfile.DateOfBirth = request.DateOfBirth;
+                existingUserProfile.DateOfBirth = request.DateOfBirth.Value;
             }
 
             // Update Image if uploaded

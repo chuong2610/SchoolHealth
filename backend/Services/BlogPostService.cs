@@ -22,12 +22,8 @@ namespace backend.Services
 
         public async Task<IEnumerable<BlogPostDTO>> GetAllAsync(int pageNumber = 1, int pageSize = 3)
         {
-            var posts = await _repository.GetAllAsync();
-
             // Phân trang dữ liệu
-            var pagedPosts = posts
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+            var pagedPosts = await _repository.GetAllAsync(pageNumber, pageSize);
 
             var postDtos = pagedPosts.Select(post =>
             {
@@ -107,7 +103,7 @@ namespace backend.Services
             };
 
             var created = await _repository.AddAsync(post);
-            return created != null;
+            return created;
         }
 
         public async Task<bool> UpdateBlogPostDetailAsync(int id, BlogPostDetailRequest request)
