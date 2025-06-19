@@ -5,6 +5,7 @@ import { PieChart, Pie as RePie, Cell, Legend, ResponsiveContainer, LineChart, L
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import "../../styles/nurse-theme.css";
+import "../../styles/sidebar.css";
 import CustomTable from "../../components/CustomTable";
 import MedicalExaminationFemaleSvg from "../../assets/medical-examination-female-svgrepo-com.svg";
 

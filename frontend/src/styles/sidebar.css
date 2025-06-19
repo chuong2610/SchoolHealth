@@ -1,0 +1,337 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+i {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Layout wrapper */
+.wrapper {
+  display: flex;
+}
+
+/* Main content */
+.main {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  transition: margin-left 0.3s ease;
+  /* margin-left: 260px; */
+  background-color: rgb(165, 168, 166);
+  padding-top: 50px;
+  /* Added to account for fixed header */
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  /* background-color: #f8f9fa; Light background for the header */
+  background: linear-gradient(to bottom right, #eecff6, #ffe2e4);
+  border-bottom: 1px solid #ddd;
+  left: 70px;
+  /* Default collapsed state */
+  width: calc(100% - 70px);
+  /* Default collapsed state width */
+  transition: left 0.3s ease, width 0.3s ease;
+  /* Add transition for smooth resizing */
+}
+
+.toggle-btn-main {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.notification-dot {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff0000;
+  /* Red dot for new notifications */
+  border-radius: 50%;
+}
+
+.user-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #853452;
+  color: #f2f2f2;
+  background-color: #caa2b0;
+}
+
+.user-avatar i {
+  font-size: 1.8rem;
+  /* Increased font size for the icon */
+  color: #a40640;
+  /* Default color for the icon, can be adjusted */
+}
+
+/* (Tuỳ chọn) Hover cho từng role */
+/* #sidebar.nurse a.sidebar-link:hover {
+  color: #4a4a4a;
+  border-left: 7px solid #8b8b6e; màu đậm hơn màu nền
+}
+
+#sidebar.admin a.sidebar-link:hover {
+  color: #ffffff;
+  border-left: 7px solid #3f7dff;
+} */
+
+/* Khi sidebar mở rộng, đẩy main sang phải */
+#sidebar.expand~.main {
+  margin-left: 260px;
+}
+
+/* Khi sidebar thu gọn, main trở về sát lề */
+#sidebar~.main {
+  margin-left: 70px;
+}
+
+/* Nurse: màu be */
+#sidebar.nurse {
+  color: white;
+  background: linear-gradient(to bottom, #ff6b6b, #ff007f);
+  /* Pink gradient */
+}
+
+#sidebar.nurse .d-flex {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  /* padding-bottom: 1rem; */
+  margin-bottom: 1rem;
+}
+
+/* Admin: xanh dương đậm */
+#sidebar.admin {
+  background-color: #1e3a5f;
+  /* xanh dương đậm */
+}
+
+/* Sidebar styles */
+#sidebar {
+  position: fixed;
+  left: 0;
+  /* Ensure it's fixed to the left */
+  width: 70px;
+  /* Revert to normal width, remove !important */
+  min-width: 70px;
+  height: 100vh;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+  /* background-color: #3f4244; */
+}
+
+#sidebar.expand {
+  width: 260px;
+  /* Revert to normal width, remove !important */
+  max-width: 260px;
+}
+
+/* Toggle button */
+.toggle-btn {
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+}
+
+.toggle-btn i {
+  margin-left: 0.25rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  /* Changed to white */
+}
+
+/* Logo area */
+.sidebar-logo {
+  margin: auto 0;
+  padding: 0 0rem;
+}
+
+.sidebar-logo a {
+  color: white;
+  /* Changed to white */
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+/* Smooth text transition */
+.sidebar-logo span,
+.sidebar-link span {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Hide text smoothly when collapsed */
+#sidebar:not(.expand) .sidebar-logo span,
+#sidebar:not(.expand) .sidebar-link span {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+/* Sidebar navigation */
+.sidebar-nav {
+  padding: 1rem 0;
+  flex: 1 1 auto;
+}
+
+/* Sidebar links */
+a.sidebar-link {
+  padding: 0.625rem 1.25rem;
+  color: white;
+  /* Changed to white */
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border-left: 3px solid transparent;
+  transition: background-color 0.3s ease, border-left 0.3s ease;
+}
+
+.sidebar-link i {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+/* Hover state */
+a.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  /* Lighter white for hover */
+  border-left: 7px solid transparent;
+  /* Remove left border on hover */
+  color: white;
+}
+
+/* Active state for sidebar link */
+a.sidebar-link.active {
+  background-color: white;
+  color: black;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+a.sidebar-link.active i {
+  color: black;
+}
+
+a.sidebar-link.active span {
+  color: black;
+}
+
+a.sidebar-link,
+a.sidebar-link:hover,
+a.sidebar-link:focus {
+  text-decoration: none !important;
+}
+
+/* Footer */
+.sidebar-footer {
+  /* padding: 1rem 1.5rem; */
+  padding-top: 1rem;
+  /* Added padding to separate from last item */
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  /* Light separator line */
+}
+
+/* When sidebar expands, adjust main header's left and width */
+#sidebar.expand~.main .main-header {
+  left: 260px;
+  width: calc(100% - 260px);
+}
+
+/* Nút tròn toggle cho nurse sidebar */
+.sidebar-toggle-btn-nurse {
+  position: fixed;
+  top: 24px;
+  left: 60px;
+  z-index: 1100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.3s, background 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-toggle-btn-nurse.expanded {
+  left: 250px;
+}
+
+.sidebar-toggle-btn-nurse:hover {
+  background: #ffe2e4;
+}
+
+/* Đảm bảo sidebar nurse expand đúng width */
+#sidebar.nurse.expand {
+  width: 260px;
+  max-width: 260px;
+}
+
+#sidebar.nurse {
+  width: 70px;
+  min-width: 70px;
+  transition: width 0.3s;
+}

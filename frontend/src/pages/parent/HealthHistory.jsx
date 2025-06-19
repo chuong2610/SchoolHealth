@@ -1094,27 +1094,38 @@ const HealthHistory = () => {
                   </Button>
                   {showChart && (
                     <ChartContainer>
-                      <Bar
-                        data={data}
-                        xField="date"
-                        yField="height"
-                        seriesField="studentName"
-                        colorField="studentName"
-                        xAxis={{
-                          title: { text: "Ngày đo" },
-                        }}
-                        yAxis={{
-                          title: { text: "Chiều cao (cm)" },
-                        }}
-                        height={320}
-                        legend={{ position: "top" }}
-                        barStyle={{
-                          stroke: "#333",
-                          lineWidth: 1,
-                          radius: [4, 4, 0, 0],
+                      {data.length > 0 ? (
+                        <Bar
+                          data={data}
+                          xField="date"
+                          yField="height"
+                          seriesField="studentName"
+                          colorField="studentName"
+                          xAxis={{
+                            title: { text: "Ngày đo" },
+                          }}
+                          yAxis={{
+                            title: { text: "Chiều cao (cm)" },
+                          }}
+                          height={320}
+                          legend={{ position: "top" }}
+                          barStyle={{
+                            stroke: "#333",
+                            lineWidth: 1,
+                            radius: [4, 4, 0, 0],
 
-                        }}
-                      />
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          textAlign: 'center',
+                          padding: '40px 20px',
+                          color: '#999',
+                          fontSize: '16px'
+                        }}>
+                          Không có dữ liệu để hiển thị biểu đồ
+                        </div>
+                      )}
                     </ChartContainer>
                   )}
                   <ChartTable>

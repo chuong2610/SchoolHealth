@@ -30,7 +30,7 @@ const MoreKnow = () => {
             tiết.
           </p>
         </div>
-        <Link style={{ marginLeft: '110px' }} to='/parent' className='btn btn-secondary mt-4'>
+        <Link style={{ }} to='/parent' className='btn btn-secondary mt-7'>
           Quay lại Trang chính
         </Link>
       </section>

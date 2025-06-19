@@ -262,7 +262,11 @@ const HealthDeclaration = () => {
       toast.error("Vui lòng nhập ít nhất một thông tin y tế.");
       hasError = true;
     }
-    if (hasError) return;
+    if (hasError) {
+      // Cuộn lên đầu form để người dùng thấy lỗi
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     const dataToSubmit = {
       studentId: parseInt(formData.studentId),
@@ -334,7 +338,7 @@ const HealthDeclaration = () => {
                         id="studentSelect"
                         value={selectedStudent?.id || ""}
                         onChange={handleStudentChange}
-                        required
+
                       >
                         <option value="">-- Chọn học sinh --</option>
                         {Array.isArray(students) && students.length > 0 ? (

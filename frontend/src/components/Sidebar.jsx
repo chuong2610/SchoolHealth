@@ -176,74 +176,61 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
 
     const menuItems = getMenuItems();
 
+    const isNurse = user?.role === 'nurse';
+
+    // Xác định class cho sidebar theo role
+    const roleClass = user?.role ? user.role : '';
+
     return (
-        <div
-            className="position-fixed h-100 d-flex flex-column"
-            style={{
-                width: collapsed ? '60px' : '250px',
-                left: 0,
-                top: 0,
-                background: styles.gradient,
-                boxShadow: styles.shadow,
-                zIndex: 1000,
-                transition: 'all 0.3s ease'
-            }}
-        >
-            {/* Logo (không còn nút 3 gạch ở đây) */}
-            <div className="border-bottom d-flex align-items-center justify-content-center"
-                style={{ borderColor: 'rgba(255,255,255,0.3)', height: '56px', padding: 0, margin: 0 }}>
-                <FaHeartbeat className="text-white" style={{ fontSize: '3.2rem', display: 'block' }} />
-                {!collapsed && (
-                    <span className="ms-3 text-white fw-bold" style={{ fontSize: '1.25rem' }}>School Health</span>
-                )}
-            </div>
-
-            {/* Menu Items */}
-            <ul className="nav flex-column mt-3">
-                {menuItems.map((item, idx) => (
-                    <li key={idx} className="nav-item mb-2">
-                        <Link
-                            to={item.path}
-                            className={`nav-link d-flex align-items-center rounded-3 ${location.pathname === item.path ? 'active bg-white text-dark fw-bold' : 'text-white'}`}
-                            style={{
-                                fontSize: '1.1rem',
-                                transition: 'all 0.2s',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                justifyContent: collapsed ? 'center' : 'flex-start',
-                                textAlign: collapsed ? 'center' : 'left',
-                                padding: collapsed ? '12px 0' : '12px 16px',
-                                minWidth: 0
-                            }}
-                        >
-                            <span style={{
-                                fontSize: '1.3rem',
-                                minWidth: 28,
-                                width: 28,
-                                display: 'inline-flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginRight: collapsed ? 0 : 12
-                            }}>{item.icon}</span>
-                            {!collapsed && <span>{item.label}</span>}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-
-            {/* Logout Button */}
-            <div className="mt-auto p-4 border-top">
+        <>
+            {isNurse && (
                 <button
-                    className="btn btn-link text-white d-flex align-items-center w-100 justify-content-center"
-                    onClick={handleLogout}
-                    style={{ fontSize: '1.2rem', padding: collapsed ? '12px 0' : '12px 16px' }}
+                    className={`sidebar-toggle-btn-nurse${collapsed ? '' : ' expanded'}`}
+                    onClick={() => setCollapsed(!collapsed)}
+                    aria-label={collapsed ? 'Mở rộng sidebar' : 'Thu gọn sidebar'}
                 >
-                    <span style={{ fontSize: '1.3rem', minWidth: 32, width: 32, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginRight: collapsed ? 0 : 12 }}><FaSignOutAlt /></span>
-                    {!collapsed && <span style={{ fontSize: '1rem' }}>Đăng xuất</span>}
+                    <span style={{ fontSize: 22, color: '#ff6b6b', transition: 'transform 0.3s', transform: collapsed ? 'rotate(0deg)' : 'rotate(180deg)' }}>
+                        {collapsed ? <FaChevronLeft /> : <FaChevronLeft />}
+                    </span>
                 </button>
+            )}
+            <div id="sidebar" className={`${roleClass}${collapsed ? '' : ' expand'}`}>
+                {/* Logo */}
+                <div className="sidebar-logo d-flex align-items-center justify-content-center">
+                    <FaHeartbeat className="text-white" style={{ fontSize: '2.2rem', display: 'block' }} />
+                    {!collapsed && (
+                        <span className="ms-2 fw-bold">School Health</span>
+                    )}
+                </div>
+                {/* Menu Items */}
+                <nav className="sidebar-nav">
+                    <ul>
+                        {menuItems.map((item, idx) => (
+                            <li key={idx}>
+                                <Link
+                                    to={item.path}
+                                    className={`sidebar-link${location.pathname === item.path ? ' active' : ''}`}
+                                >
+                                    <span style={{ fontSize: '1.3rem', minWidth: 28, width: 28, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginRight: 0 }}>{item.icon}</span>
+                                    <span>{item.label}</span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+                {/* Logout Button */}
+                <div className="sidebar-footer mt-auto">
+                    <button
+                        className="sidebar-link d-flex align-items-center w-100"
+                        onClick={handleLogout}
+                        style={{ background: 'none', border: 'none', color: 'white', fontWeight: 700, fontSize: '1rem', cursor: 'pointer' }}
+                    >
+                        <span style={{ fontSize: '1.3rem', minWidth: 32, width: 32, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', marginRight: 0 }}><FaSignOutAlt /></span>
+                        <span>Đăng xuất</span>
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 
