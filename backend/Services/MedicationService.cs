@@ -27,15 +27,24 @@ namespace backend.Services
 
         public async Task<bool> CreateMedicationAsync(MedicationRequest request)
         {
-            // kiểm tra studentId
-            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
-            // kiểm tra tên thuốc và liều dùng có null hay không
+            // 1. Kiểm tra Medicines null hoặc rỗng
+            if (request.Medicines == null || !request.Medicines.Any())
+            {
+                throw new Exception("Danh sách thuốc không được để trống.");
+            }
+
+            // 2. Kiểm tra dữ liệu từng thuốc
             if (request.Medicines.Any(m => string.IsNullOrWhiteSpace(m.MedicineName) || string.IsNullOrWhiteSpace(m.Dosage)))
             {
                 throw new Exception("MedicineName hoặc Dosage không được để trống.");
             }
 
-            // Tạo mới Medication
+            // 3. Kiểm tra student tồn tại
+            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            if (student == null)
+                throw new Exception("Không tìm thấy học sinh.");
+
+            // 4. Tạo Medication và các MedicationDeclare
             var medication = new Medication
             {
                 StudentId = request.StudentId,
@@ -43,17 +52,18 @@ namespace backend.Services
                 Date = DateTime.UtcNow,
                 MedicationDeclares = request.Medicines.Select(m => new MedicationDeclare
                 {
-                    Name = m.MedicineName,
-                    Dosage = m.Dosage,
-                    Note = m.Notes
+                    Name = m.MedicineName ?? "",
+                    Dosage = m.Dosage ?? "",
+                    Note = m.Notes ?? ""
                 }).ToList()
             };
 
-            // Lưu vào DB
+            // 5. Lưu vào DB
             var created = await _medicationRepository.AddAsync(medication);
 
-            return true;
+            return created;
         }
+
 
 
         public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()
@@ -146,4 +156,4 @@ namespace backend.Services
             return medications.Select(m => MapToDTO(m)).ToList();
         }
     }
-}   
+}

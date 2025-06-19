@@ -1,0 +1,1275 @@
+/* =====================
+   PARENT THEME (Primary: #2563eb, Accent: #38b6ff)
+   ===================== */
+.parent-theme {
+    color: #1a365d;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+}
+
+.parent-theme .card,
+.parent-theme .ant-card,
+.parent-theme .parent-card {
+    background: #fff;
+    color: #1a365d;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(56, 182, 255, 0.10) !important;
+    border: none !important;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.parent-theme .card:hover,
+.parent-theme .ant-card:hover,
+.parent-theme .parent-card:hover {
+    box-shadow: 0 12px 32px rgba(56, 182, 255, 0.18) !important;
+    transform: translateY(-6px) scale(1.02);
+}
+
+.parent-theme .ant-table {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(56, 182, 255, 0.12) !important;
+    background: #fff !important;
+}
+
+.parent-theme .ant-table-thead>tr>th {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%) !important;
+    color: #2563eb !important;
+    font-weight: 700 !important;
+    font-size: 1.08rem;
+    border-bottom: 2px solid #38b6ff !important;
+    transition: background 0.3s;
+}
+
+.parent-theme .ant-table-tbody>tr {
+    transition: background 0.2s, transform 0.2s;
+}
+
+.parent-theme .ant-table-tbody>tr:hover>td {
+    background: #e6f7ff !important;
+    transform: scale(1.01);
+}
+
+.parent-theme .ant-pagination-item {
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.parent-theme .ant-pagination-item-active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.parent-theme .ant-btn {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    background: linear-gradient(90deg, #2563eb 60%, #38b6ff 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    transition: background 0.3s, box-shadow 0.3s !important;
+}
+
+.parent-theme .ant-btn:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #2563eb 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 12px rgba(56, 182, 255, 0.18) !important;
+}
+
+.parent-theme .ant-badge-status-dot {
+    box-shadow: 0 0 0 2px #e6f7ff;
+}
+
+.parent-theme .ant-badge-status-success {
+    background: #38ff8b !important;
+}
+
+.parent-theme .ant-badge-status-processing {
+    background: #eaee00 !important;
+}
+
+.parent-theme .ant-badge-status-default {
+    background: #bfbfbf !important;
+}
+
+.parent-theme .ant-alert {
+    border-radius: 12px;
+    font-size: 1.05rem;
+}
+
+.parent-theme .ant-modal-content {
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px rgba(56, 182, 255, 0.12) !important;
+}
+
+.parent-theme .ant-input {
+    border-radius: 10px !important;
+    border: 2px solid #e6f7ff !important;
+    background: #fff !important;
+    transition: border 0.2s !important;
+}
+
+.parent-theme .ant-input:focus {
+    border-color: #38b6ff !important;
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12) !important;
+}
+
+.parent-theme .ant-skeleton {
+    background: #e6f7ff;
+    border-radius: 16px;
+}
+
+.parent-theme .ant-card-head-title {
+    font-weight: 700;
+    color: #2563eb;
+    font-size: 1.2rem;
+}
+
+.parent-theme .ant-card-body {
+    padding: 24px;
+}
+
+.parent-theme .text-gradient {
+    background: linear-gradient(90deg, #2563eb, #38b6ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Health Declaration Page Styles */
+.health-declaration {
+    padding: 24px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.health-declaration .search-filter-card {
+    margin-bottom: 2rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.health-declaration .search-filter-card .card-header {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%);
+    border-bottom: 2px solid #38b6ff;
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem;
+}
+
+.health-declaration .page-title {
+    font-size: 1.8rem;
+    color: #2563eb;
+    margin: 0;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.health-declaration .page-title svg {
+    color: #38b6ff;
+}
+
+.health-declaration .search-group {
+    position: relative;
+}
+
+.health-declaration .search-input {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 2px solid #e6f7ff;
+    background: #fff;
+    transition: all 0.3s;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.health-declaration .search-input:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 3px rgba(56, 182, 255, 0.15);
+}
+
+.health-declaration .filter-select {
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #e6f7ff;
+    background: #fff;
+    transition: all 0.3s;
+    font-size: 1rem;
+}
+
+.health-declaration .filter-select:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 3px rgba(56, 182, 255, 0.15);
+}
+
+.health-declaration .reset-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border: 2px solid #e6f7ff;
+    color: #2563eb;
+    transition: all 0.3s;
+}
+
+.health-declaration .reset-btn:hover:not(:disabled) {
+    background: #e6f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+.health-declaration .reset-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.health-declaration .add-btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #2563eb 0%, #38b6ff 100%);
+    border: none;
+    transition: all 0.3s;
+    font-weight: 600;
+}
+
+.health-declaration .add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+/* Data Table Styles */
+.health-declaration .data-table {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+    margin-top: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.health-declaration .data-table:hover {
+    box-shadow: 0 6px 16px rgba(56, 182, 255, 0.12);
+}
+
+.health-declaration .table {
+    margin-bottom: 0;
+}
+
+.health-declaration .table thead th {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%);
+    color: #2563eb;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 2px solid #38b6ff;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.health-declaration .table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e6f7ff;
+    text-align: center;
+}
+
+.health-declaration .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.health-declaration .table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.health-declaration .table tbody tr:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+/* Table Cell Alignment */
+.health-declaration .table td:nth-child(1) {
+    /* ID */
+    width: 80px;
+    text-align: center;
+}
+
+.health-declaration .table td:nth-child(2) {
+    /* Student ID */
+    width: 120px;
+    text-align: center;
+}
+
+.health-declaration .table td:nth-child(3) {
+    /* Student Name */
+    width: 200px;
+    text-align: left;
+}
+
+.health-declaration .table td:nth-child(4) {
+    /* Class */
+    width: 120px;
+    text-align: center;
+}
+
+.health-declaration .table td:nth-child(5) {
+    /* Date */
+    width: 150px;
+    text-align: center;
+}
+
+.health-declaration .table td:nth-child(6) {
+    /* Status */
+    width: 150px;
+    text-align: center;
+}
+
+.health-declaration .table td:nth-child(7) {
+    /* Actions */
+    width: 200px;
+    text-align: center;
+}
+
+/* Action Buttons Container */
+.health-declaration .action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Table Container */
+.health-declaration .table-container {
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+    margin-top: 1.5rem;
+}
+
+/* Table Header */
+.health-declaration .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.health-declaration .table-title {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Table Footer */
+.health-declaration .table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 1rem 0.5rem;
+    border-top: 1px solid #e6f7ff;
+}
+
+/* Responsive Table */
+@media (max-width: 992px) {
+    .health-declaration .table-responsive {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+    }
+
+    .health-declaration .table td,
+    .health-declaration .table th {
+        white-space: nowrap;
+    }
+
+    .health-declaration .action-buttons {
+        flex-wrap: wrap;
+    }
+}
+
+/* Detail Modal Styles */
+.health-declaration .detail-modal .modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 8px 32px rgba(56, 182, 255, 0.15);
+}
+
+.health-declaration .detail-modal .modal-header-custom {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%);
+    border-bottom: 2px solid #38b6ff;
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem;
+}
+
+.health-declaration .detail-modal .modal-title {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.health-declaration .detail-modal .modal-title svg {
+    color: #38b6ff;
+}
+
+.health-declaration .detail-section {
+    margin-bottom: 2rem;
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.health-declaration .detail-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(56, 182, 255, 0.12);
+}
+
+.health-declaration .detail-section:last-child {
+    margin-bottom: 0;
+}
+
+.health-declaration .section-title {
+    color: #2563eb;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e6f7ff;
+    display: flex;
+    align-items: center;
+}
+
+.health-declaration .section-title svg {
+    color: #38b6ff;
+    margin-right: 0.5rem;
+}
+
+.health-declaration .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.health-declaration .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.health-declaration .detail-item:hover {
+    background: #e6f7ff;
+    transform: translateY(-2px);
+}
+
+.health-declaration .detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.health-declaration .detail-label {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.health-declaration .detail-label svg {
+    color: #38b6ff;
+    margin-right: 0.5rem;
+}
+
+.health-declaration .detail-value {
+    color: #1a365d;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e6f7ff;
+}
+
+/* Status Badge Styles */
+.health-declaration .status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.health-declaration .status-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+.health-declaration .status-badge svg {
+    font-size: 1rem;
+}
+
+/* Action Button Styles */
+.health-declaration .action-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.health-declaration .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+.health-declaration .view-btn {
+    background: #e6f7ff;
+    color: #2563eb;
+    border: none;
+}
+
+.health-declaration .confirm-btn {
+    background: #e6f7ff;
+    color: #2ecc71;
+    border: none;
+}
+
+.health-declaration .reject-btn {
+    background: #fff1f0;
+    color: #e74c3c;
+    border: none;
+}
+
+/* Modal Footer Styles */
+.health-declaration .modal-footer {
+    border-top: 2px solid #e6f7ff;
+    padding: 1.5rem;
+}
+
+.health-declaration .close-btn {
+    padding: 8px 24px;
+    border-radius: 12px;
+    background: #f0f5ff;
+    color: #2563eb;
+    border: none;
+    transition: all 0.3s;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.health-declaration .close-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.health-declaration .detail-modal .modal-content {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* Table Styles for Parent Theme */
+.parent-theme .table-container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(56, 182, 255, 0.12);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.parent-theme .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.parent-theme .table-title {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.parent-theme .table-title svg {
+    color: #38b6ff;
+    margin-right: 0.75rem;
+}
+
+.parent-theme .data-table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.parent-theme .data-table thead th {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%);
+    color: #2563eb;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 2px solid #38b6ff;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.parent-theme .data-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #e6f7ff;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.parent-theme .data-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.parent-theme .data-table tbody tr:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+}
+
+.parent-theme .data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badge Styles */
+.parent-theme .status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+.parent-theme .status-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 182, 255, 0.2);
+}
+
+.parent-theme .status-badge svg {
+    font-size: 1rem;
+}
+
+/* Action Button Styles */
+.parent-theme .action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.parent-theme .action-btn {
+    padding: 3px 7px;
+    border-radius: 7px;
+    font-size: 0.92rem;
+    min-width: 44px;
+    height: 28px;
+    gap: 3px;
+}
+
+.parent-theme .view-btn {
+    background: #e6f7ff;
+    color: #2563eb;
+}
+
+.parent-theme .confirm-btn {
+    background: #2ecc71;
+    color: #fff;
+}
+
+.parent-theme .reject-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+
+/* Responsive Table */
+@media (max-width: 992px) {
+    .parent-theme .table-responsive {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(56, 182, 255, 0.08);
+    }
+
+    .parent-theme .data-table td,
+    .parent-theme .data-table th {
+        white-space: nowrap;
+    }
+
+    .parent-theme .action-buttons {
+        flex-wrap: wrap;
+    }
+}
+
+.parent-theme .data-table th:nth-child(3),
+.parent-theme .data-table td:nth-child(3) {
+    max-width: 110px;
+    width: 110px;
+    min-width: 80px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.parent-theme .data-table th:last-child,
+.parent-theme .data-table td:last-child {
+    max-width: 160px;
+    width: 160px;
+    min-width: 120px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.parent-theme .table-responsive {
+    overflow-x: auto;
+}
+
+.parent-theme .action-buttons.column-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.parent-theme .action-row-below {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    margin-top: 2px;
+    justify-content: center;
+}
+
+.parent-theme .action-btn {
+    width: 90px;
+    min-width: 0;
+    max-width: 100%;
+    padding: 4px 0;
+    height: 28px;
+    font-size: 0.92rem;
+    border-radius: 7px;
+    justify-content: center;
+}
+
+.parent-theme .action-buttons.t-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 60px;
+    justify-content: center;
+}
+
+.parent-theme .action-view-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.parent-theme .action-row-below {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.parent-theme .action-btn {
+    width: 80px;
+    min-width: 0;
+    max-width: 100%;
+    padding: 4px 0;
+    height: 28px;
+    font-size: 0.92rem;
+    border-radius: 7px;
+    justify-content: center;
+}
+
+.parent-theme .action-buttons.icon-row {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
+.parent-theme .action-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    border: none;
+    box-shadow: 0 2px 8px rgba(56, 182, 255, 0.10);
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+    padding: 0;
+}
+
+.parent-theme .view-btn {
+    background: #1abcfe;
+    color: #fff;
+}
+
+.parent-theme .view-btn:hover {
+    background: #2563eb;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+.parent-theme .confirm-btn {
+    background: #2ecc71;
+    color: #fff;
+}
+
+.parent-theme .confirm-btn:hover {
+    background: #27ae60;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+.parent-theme .reject-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.parent-theme .reject-btn:hover {
+    background: #c0392b;
+    color: #fff;
+    transform: scale(1.08);
+}
+
+/* Modern form variables and layout for HealthDeclaration */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #f7fafc;
+    --border-color: #d1d5db;
+    --text-color: #111827;
+}
+
+.parent-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.2rem 2rem;
+}
+
+@media (max-width: 768px) {
+    .parent-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    padding-left: 2px;
+}
+
+.parent-input,
+.parent-form textarea,
+.parent-form select {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 15px;
+    background: #fff;
+    color: var(--text-color);
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+.parent-input:focus,
+.parent-form textarea:focus,
+.parent-form select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+    background: #f0f7ff;
+    transition: box-shadow 0.2s, background 0.2s;
+}
+
+.parent-btn,
+.parent-gradient-btn {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 12px rgba(56, 182, 255, 0.10);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.parent-btn:hover,
+.parent-gradient-btn:hover {
+    background: #1746b3;
+    color: #fff;
+    transform: scale(1.04);
+}
+
+.parent-card,
+.parent-form {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+    padding: 32px 28px 18px 28px;
+}
+
+/* Label nổi bật khi input focus */
+.form-group input:focus+label,
+.form-group textarea:focus+label,
+.form-group select:focus+label {
+    color: var(--primary-color);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: color 0.2s, font-weight 0.2s;
+}
+
+/* Header form nổi bật */
+.parent-form-header {
+    background: linear-gradient(90deg, #e6f7ff 0%, #f0f5ff 100%);
+    border-radius: 16px 16px 0 0;
+    padding: 24px 28px 12px 28px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.parent-form-header h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+.parent-form-header p {
+    color: #64748b;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* Nền mờ cho phần giới thiệu trường học */
+.school-intro-bg {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    min-height: 320px;
+    background: #fff;
+}
+
+.school-intro-bg>* {
+    position: relative;
+    z-index: 2;
+}
+
+/* Nền mờ với ảnh backgroundparent.png cho các trang parent */
+.parent-bg-img {
+    position: relative;
+    background: #f7fafc;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 100vh;
+}
+
+.parent-bg-img::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/src/assets/@backgroundparent.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.50;
+    z-index: 1;
+}
+
+.parent-bg-img>* {
+    position: relative;
+    z-index: 2;
+}
+
+/* Hiệu ứng hiện ra cho form */
+.fade-in-up {
+    animation: fadeInUp 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Hiệu ứng nền sao thị sai (parallax starfield) */
+#starfield-parallax {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#starfield-parallax .stars {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-repeat: repeat;
+    background-position: 0 0;
+    pointer-events: none;
+}
+
+#starfield-parallax .stars1 {
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1.2" fill="pink"/><circle cx="50" cy="30" r="1.5" fill="white"/><circle cx="80" cy="80" r="1.1" fill="white"/><circle cx="70" cy="60" r="0.8" fill="white"/></svg>');
+    animation: starMove1 120s linear infinite;
+    opacity: 0.5;
+}
+
+#starfield-parallax .stars2 {
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="80" r="1.7" fill="white"/><circle cx="60" cy="20" r="1.3" fill="white"/><circle cx="90" cy="40" r="1.1" fill="white"/><circle cx="30" cy="60" r="1.2" fill="white"/></svg>');
+    animation: starMove2 200s linear infinite;
+    opacity: 0.5;
+}
+
+#starfield-parallax .stars3 {
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="2.2" fill="white"/><circle cx="80" cy="10" r="1.8" fill="white"/><circle cx="10" cy="90" r="1.4" fill="white"/></svg>');
+    animation: starMove3 320s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes starMove1 {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 100vw 100vh;
+    }
+}
+
+@keyframes starMove2 {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 200vw 200vh;
+    }
+}
+
+@keyframes starMove3 {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 400vw 400vh;
+    }
+}
+
+/* Badge trạng thái hiện đại */
+.badge-status {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    margin-right: 8px;
+    background: #bdbdbd;
+    box-shadow: 0 2px 8px rgba(56, 182, 255, 0.10);
+    transition: background 0.2s;
+}
+
+.badge-status.completed {
+    background: linear-gradient(90deg, #16a34a 60%, #38d39f 100%);
+}
+
+.badge-status.active {
+    background: linear-gradient(90deg, #169aa3 60%, #2f87da 100%);
+}
+
+.badge-status.pending {
+    background: linear-gradient(90deg, #fbbf24 60%, #f59e42 100%);
+    color: #fff;
+}
+
+.badge-status.rejected {
+    background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+}
+
+.badge-status.healthy {
+    background: linear-gradient(90deg, #16a34a 60%, #38d39f 100%);
+}
+
+.badge-status.sick {
+    background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+}
+
+.badge-status.successful {
+    background: linear-gradient(90deg, #16a34a 60%, #38d39f 100%);
+}
+
+.badge-status.pending {
+    background: linear-gradient(90deg, #fbbf24 60%, #f59e42 100%);
+}
+
+.badge-status.rejected {
+    background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+}
+
+/* Chi tiết gửi thuốc - modal */
+.medicine-detail-card {
+    background: #eaf8ff;
+    border: 2px solid #cce6ff;
+    border-radius: 20px;
+    padding: 24px 30px;
+    margin-bottom: 18px;
+}
+
+.medicine-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 18px 12px;
+    align-items: center;
+}
+
+.medicine-detail-value {
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.medicine-status-cell {
+    grid-row: 1 / span 2;
+    grid-column: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.medicine-status-badge.completed {
+    background: linear-gradient(90deg, #27ae60 60%, #2ecc71 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 16px;
+    padding: 16px 32px;
+    display: inline-block;
+}
+
+.medicine-status-badge.active {
+    background: linear-gradient(90deg, #38b6ff 60%, #2980b9 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 16px;
+    padding: 16px 32px;
+    display: inline-block;
+}
+
+.medicine-status-badge.pending {
+    background: linear-gradient(90deg, #f7b731 60%, #f5cd79 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 16px;
+    padding: 16px 32px;
+    display: inline-block;
+}
+
+.medicine-status-badge.rejected {
+    background: linear-gradient(90deg, #e74c3c 60%, #ff7675 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border-radius: 16px;
+    padding: 16px 32px;
+    display: inline-block;
+}
+
+.medicine-detail-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 32px;
+    align-items: flex-start;
+}
+
+.medicine-label {
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.08rem;
+    margin-bottom: 2px;
+}
+
+.medicine-detail-value {
+    color: #222;
+    font-weight: 500;
+    font-size: 1.08rem;
+    margin-bottom: 8px;
+}

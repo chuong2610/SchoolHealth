@@ -16,7 +16,7 @@ namespace backend.Repositories
 
         public async Task<bool> AddAsync(Medication medication)
         {
-            _context.Medications.AddAsync(medication);
+            await _context.Medications.AddAsync(medication);
             var created = await _context.SaveChangesAsync();
             return created > 0;
         }
@@ -38,6 +38,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
@@ -48,6 +50,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Nurse.Id == id && m.Status == "Active")
                 .ToListAsync();
         }
@@ -60,6 +64,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Nurse.Id == id && m.Status == "Completed" && m.ReviceDate.HasValue && m.ReviceDate.Value.Date == today)
                 .ToListAsync();
         }
@@ -71,6 +77,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Status == "Pending")
                 .ToListAsync();
         }
@@ -97,6 +105,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Student.ParentId == parentId)
                 .ToListAsync();
         }
@@ -108,6 +118,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Status == "Active")
                 .ToListAsync();
         }
@@ -119,6 +131,8 @@ namespace backend.Repositories
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student)
                     .ThenInclude(s => s.Parent)
+                .Include(m => m.Student)
+                    .ThenInclude(s => s.Class)
                 .Where(m => m.Status == "Completed")
                 .ToListAsync();
         }

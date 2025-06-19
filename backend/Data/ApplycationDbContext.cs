@@ -105,6 +105,11 @@ namespace backend.Data
                 .HasForeignKey(s => s.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Medication>()
+                .HasMany(m => m.MedicationDeclares)
+                .WithOne(d => d.Medication)
+                .HasForeignKey(d => d.MedicationId);
+
             // Giữ Cascade cho Student (xóa học sinh thì xóa luôn health check)
             // modelBuilder.Entity<HealthCheck>()
             //     .HasOne(h => h.Student)

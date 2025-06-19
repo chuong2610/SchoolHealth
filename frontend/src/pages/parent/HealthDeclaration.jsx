@@ -1,5 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Spinner, Table, Badge } from "react-bootstrap";
+import styled, { keyframes } from "styled-components";
+import {
+  FaUser,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaHeartbeat,
+  FaPaperPlane,
+  FaEye,
+  FaCheck,
+  FaTimes,
+  FaIdCard,
+  FaGraduationCap,
+  FaPills,
+  FaStickyNote,
+} from "react-icons/fa";
+import "../../styles/parent-theme.css";
+import { toast } from "react-toastify";
 
 // Hàm lấy parentId từ token (thủ công)
 const getParentIdFromToken = (token) => {
@@ -13,6 +32,124 @@ const getParentIdFromToken = (token) => {
     return "3"; // Mặc định là 3 nếu lỗi
   }
 };
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const CardInfo = styled.div`
+  background: linear-gradient(120deg, #e6f7ff 60%, #f0f5ff 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(56, 182, 255, 0.12);
+  padding: 32px 28px 18px 28px;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.7s;
+  display: flex;
+  align-items: center;
+`;
+
+const Avatar = styled.div`
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38b6ff 60%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 28px;
+  box-shadow: 0 2px 12px rgba(56, 182, 255, 0.18);
+`;
+
+const InfoLabel = styled.div`
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+  display: flex;
+  align-items: center;
+`;
+
+const InfoValue = styled.div`
+  font-size: 1.08rem;
+  color: #1a365d;
+  margin-bottom: 10px;
+`;
+
+const StyledForm = styled.form`
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+  padding: 32px 28px 18px 28px;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.7s;
+`;
+
+const StyledInput = styled.input`
+  border-radius: 12px;
+  border: 2px solid #e6eaf0;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+  &:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
+    outline: none;
+  }
+`;
+
+const StyledSelect = styled.select`
+  border-radius: 12px;
+  border: 2px solid #e6eaf0;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+  &:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
+    outline: none;
+  }
+`;
+
+const StyledTextarea = styled.textarea`
+  border-radius: 12px;
+  border: 2px solid #e6eaf0;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+  &:focus {
+    border-color: #38b6ff;
+    box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.12);
+    outline: none;
+  }
+`;
+
+const GradientButton = styled.button`
+  background: linear-gradient(90deg, #2980b9 60%, #38b6ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  font-weight: 600;
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 12px rgba(56, 182, 255, 0.18);
+  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  &:hover {
+    background: linear-gradient(90deg, #38b6ff 0%, #2980b9 100%);
+    box-shadow: 0 6px 24px rgba(56, 182, 255, 0.22);
+    transform: scale(1.05);
+  }
+`;
 
 const HealthDeclaration = () => {
   const [formData, setFormData] = useState({
@@ -29,13 +166,31 @@ const HealthDeclaration = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [declarationHistory, setDeclarationHistory] = useState([]);
+
+  // Hàm fetch lịch sử khai báo y tế
+  const fetchDeclarationHistory = async (parentId, token) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5182/api/StudentProfile/by-parent/${parentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setDeclarationHistory(response.data.data || []);
+    } catch (err) {
+      setDeclarationHistory([]);
+    }
+  };
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchStudentsAndHistory = async () => {
       try {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
-        const parentId = getParentIdFromToken(token); // Lấy parentId từ token
+        const token = localStorage.token;
+        const parentId = localStorage.userId;
+        // Fetch students
         const response = await axios.get(
           `http://localhost:5182/api/Students/by-parent/${parentId}`,
           {
@@ -44,30 +199,21 @@ const HealthDeclaration = () => {
             },
           }
         );
-        console.log("API response.data:", response.data); // Log dữ liệu API
-        // Lấy mảng data từ response.data
-        setStudents(
-          Array.isArray(response.data.data) ? response.data.data : []
-        );
+        setStudents(Array.isArray(response.data.data) ? response.data.data : []);
         setLoading(false);
+        // Fetch declaration history
+        await fetchDeclarationHistory(parentId, token);
       } catch (err) {
-        console.error(
-          "Fetch students error:",
-          err.response ? err.response : err
-        );
         setError(
           err.response
-            ? `Lỗi ${err.response.status} : ${
-                err.response.data.message ||
-                "Không thể tải danh sách học sinh. "
-              }`
+            ? `Lỗi ${err.response.status} : ${err.response.data.message || "Không thể tải danh sách học sinh. "}`
             : "Không thể kết nối đến server."
         );
-        setStudents([]); // Đặt lại students là mảng rỗng nếu lỗi
+        setStudents([]);
         setLoading(false);
       }
     };
-    fetchStudents();
+    fetchStudentsAndHistory();
   }, []);
 
   // Xử lý khi chọn học sinh từ dropdown
@@ -106,10 +252,17 @@ const HealthDeclaration = () => {
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let hasError = false;
+    // Validation cho từng trường
     if (!selectedStudent) {
-      alert("Vui lòng chọn học sinh trước khi gửi.");
-      return;
+      toast.error("Vui lòng chọn học sinh.");
+      hasError = true;
     }
+    if (!formData.allergys && !formData.chronicIllnesss && !formData.longTermMedications && !formData.otherMedicalConditions) {
+      toast.error("Vui lòng nhập ít nhất một thông tin y tế.");
+      hasError = true;
+    }
+    if (hasError) return;
 
     const dataToSubmit = {
       studentId: parseInt(formData.studentId),
@@ -120,10 +273,9 @@ const HealthDeclaration = () => {
     };
 
     try {
-      // Sử dụng token trực tiếp
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MzY4MzAxLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.c2y0FVhuS5IYr71JC3F45O3F3pKfP896XnyNwNvyWBE";
-      const response = await axios.post(
+      const token = localStorage.token;
+      const parentId = localStorage.userId;
+      await axios.post(
         "http://localhost:5182/api/StudentProfile/declare",
         dataToSubmit,
         {
@@ -132,217 +284,171 @@ const HealthDeclaration = () => {
           },
         }
       );
-      console.log("API response:", response.data);
-      alert(response.data.message || "Khai báo y tế thành công!");
+      toast.success("Khai báo y tế thành công!");
       // Reset form sau khi submit thành công
       setFormData({
         studentId: "",
-        studentName: "",
-        class: "",
+
         allergys: "",
         chronicIllnesss: "",
         longTermMedications: "",
         otherMedicalConditions: "",
       });
       setSelectedStudent(null);
+      // Cập nhật lại lịch sử khai báo y tế
+      await fetchDeclarationHistory(parentId, token);
     } catch (err) {
-      console.error("Submit error:", err.response ? err.response : err);
-      alert(
+      toast.error(
         err.response
-          ? `Lỗi ${err.response.status}: ${
-              err.response.data.message || "Không thể gửi khai báo."
-            }`
+          ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể gửi khai báo."}`
           : "Không thể kết nối đến server."
       );
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Xử lý submit form
-  //   console.log("Form submitted:", formData);
-  // };
-
-  // const handleChange = (e) => {
-  //   const { name, value, type, checked } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: type === "checkbox" ? checked : value,
-  //   }));
-  // };
-
-  // const handleSymptomChange = (symptom) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     symptoms: prev.symptoms.includes(symptom)
-  //       ? prev.symptoms.filter((s) => s !== symptom)
-  //       : [...prev.symptoms, symptom],
-  //   }));
-  // };
-
-  // Log students khi nó thay đổi
-  useEffect(() => {
-    console.log("students state:", students);
-  }, [students]); // Chỉ log khi students thay đổi
-
   return (
-    <div className="container py-4">
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <h2 className="h4 mb-4">Khai báo y tế</h2>
-              {loading ? (
-                <p className="text-center">Đang tải danh sách học sinh...</p>
-              ) : error ? (
-                <p className="text-center text-danger">{error}</p>
-              ) : (
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3">
-                    <label htmlFor="studentSelect" className="form-label">
-                      Chọn học sinh
-                    </label>
-                    <select
-                      className="form-select"
-                      id="studentSelect"
-                      value={selectedStudent?.id || ""}
-                      onChange={handleStudentChange}
-                      required
-                    >
-                      <option value="">-- Chọn học sinh --</option>
-                      {Array.isArray(students) && students.length > 0 ? (
-                        students.map((student) => (
-                          <option key={student.id} value={student.id}>
-                            {student.studentName} (Mã: {student.id}, Lớp:{" "}
-                            {student.className})
+    <div className="parent-bg-img parent-theme parent-bg">
+      <div className="fade-in-up">
+        <div className="container py-4">
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+
+              <form className="parent-form" onSubmit={handleSubmit}>
+                <div className="parent-form-header">
+                  <h2>
+                    <FaHeartbeat style={{ color: "#38b6ff", marginRight: 12, fontSize: 32, verticalAlign: "middle" }} />
+                    Khai báo y tế
+                  </h2>
+                  <p>Vui lòng điền thông tin sức khỏe của học sinh để nhà trường hỗ trợ tốt nhất.</p>
+                </div>
+                {loading ? (
+                  <p className="text-center">Đang tải danh sách học sinh...</p>
+                ) : error ? (
+                  <p className="text-center text-danger">{error}</p>
+                ) : (
+                  <div className="parent-form-grid">
+                    <div className="form-group">
+                      <label htmlFor="studentSelect">Chọn học sinh</label>
+                      <select
+                        className="parent-input"
+                        id="studentSelect"
+                        value={selectedStudent?.id || ""}
+                        onChange={handleStudentChange}
+                        required
+                      >
+                        <option value="">-- Chọn học sinh --</option>
+                        {Array.isArray(students) && students.length > 0 ? (
+                          students.map((student) => (
+                            <option key={student.id} value={student.id}>
+                              {student.studentName} (Mã: {student.id}, Lớp: {student.className})
+                            </option>
+                          ))
+                        ) : (
+                          <option value="" disabled>
+                            Không có học sinh nào
                           </option>
-                        ))
-                      ) : (
-                        <option value="" disabled>
-                          Không có học sinh nào
-                        </option>
-                      )}
-                    </select>
+                        )}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="studentName">Họ và tên học sinh</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="studentName"
+                        name="studentName"
+                        value={formData.studentName}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="studentId">Mã học sinh</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="studentId"
+                        name="studentId"
+                        value={formData.studentId}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="class">Lớp</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="class"
+                        name="class"
+                        value={formData.class}
+                        onChange={handleChange}
+                        required
+                        disabled
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="allergys">Dị ứng</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="allergys"
+                        name="allergys"
+                        value={formData.allergys}
+                        onChange={handleChange}
+                        placeholder="Ví dụ: dị ứng hải sản"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="chronicIllnesss">Bệnh mãn tính</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="chronicIllnesss"
+                        name="chronicIllnesss"
+                        value={formData.chronicIllnesss}
+                        onChange={handleChange}
+                        placeholder="Ví dụ: hen suyễn"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="longTermMedications">Thuốc sử dụng lâu dài</label>
+                      <input
+                        type="text"
+                        className="parent-input"
+                        id="longTermMedications"
+                        name="longTermMedications"
+                        value={formData.longTermMedications}
+                        onChange={handleChange}
+                        placeholder="Ví dụ: none"
+                      />
+                    </div>
+                    <div className="form-group" style={{ gridColumn: "1/-1" }}>
+                      <label htmlFor="otherMedicalConditions">Tình trạng y tế khác</label>
+                      <textarea
+                        className="parent-input"
+                        id="otherMedicalConditions"
+                        name="otherMedicalConditions"
+                        rows="3"
+                        value={formData.otherMedicalConditions}
+                        onChange={handleChange}
+                        placeholder="Ví dụ: none"
+                      ></textarea>
+                    </div>
+                    <div className="d-grid" style={{ gridColumn: "1/-1" }}>
+                      <button
+                        type="submit"
+                        className="parent-btn parent-gradient-btn"
+                      >
+                        <FaPaperPlane /> Gửi khai báo
+                      </button>
+                    </div>
                   </div>
+                )}
+              </form>
 
-                  <div className="mb-3">
-                    <label htmlFor="studentName" className="form-label">
-                      Họ và tên học sinh
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="studentName"
-                      name="studentName"
-                      value={formData.studentName}
-                      onChange={handleChange}
-                      required
-                      disabled
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="studentId" className="form-label">
-                      Mã học sinh
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="studentId"
-                      name="studentId"
-                      value={formData.studentId}
-                      onChange={handleChange}
-                      required
-                      disabled
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="class" className="form-label">
-                      Lớp
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="class"
-                      name="class"
-                      value={formData.class}
-                      onChange={handleChange}
-                      required
-                      disabled
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="allergys" className="form-label">
-                      Dị ứng
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="allergys"
-                      name="allergys"
-                      value={formData.allergys}
-                      onChange={handleChange}
-                      placeholder="Ví dụ: dị ứng hải sản"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="chronicIllnesss" className="form-label">
-                      Bệnh mãn tính
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="chronicIllnesss"
-                      name="chronicIllnesss"
-                      value={formData.chronicIllnesss}
-                      onChange={handleChange}
-                      placeholder="Ví dụ: none"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label htmlFor="longTermMedications" className="form-label">
-                      Thuốc sử dụng lâu dài
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="longTermMedications"
-                      name="longTermMedications"
-                      value={formData.longTermMedications}
-                      onChange={handleChange}
-                      placeholder="Ví dụ: none"
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label
-                      htmlFor="otherMedicalConditions"
-                      className="form-label"
-                    >
-                      Tình trạng y tế khác
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="otherMedicalConditions"
-                      name="otherMedicalConditions"
-                      rows="3"
-                      value={formData.otherMedicalConditions}
-                      onChange={handleChange}
-                      placeholder="Ví dụ: none"
-                    ></textarea>
-                  </div>
-
-                  <div className="d-grid">
-                    <button type="submit" className="btn btn-primary">
-                      Gửi khai báo
-                    </button>
-                  </div>
-                </form>
-              )}
             </div>
           </div>
         </div>
