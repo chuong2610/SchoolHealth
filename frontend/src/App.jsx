@@ -1,6 +1,7 @@
 import React from "react";
 // import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import {
   Routes,
@@ -13,6 +14,7 @@ import MainLayout from "./layouts/MainLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import Login from "./pages/login/Login";
 import { useAuth } from "./context/AuthContext";
+import AuthCallback from "./pages/login/AuthCallback";
 
 
 // Admin Pages
@@ -92,10 +94,9 @@ const App = () => {
     <AuthProvider>
       <ToastContainer />
       <Routes>
-        {/* Public Routes */}
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/unauthorized" element={<Unauthorized />} /> */}
-
+        <Route path="/auth/google/callback" element={<AuthCallback />} />
+        {/* Public Routes */}
         <Route path="/" element={<MainLayout />} />
         <Route index element={<Navigate to="/login" replace />} />
 
