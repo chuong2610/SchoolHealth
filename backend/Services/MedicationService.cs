@@ -13,15 +13,13 @@ namespace backend.Services
     {
         private readonly IMedicationRepository _medicationRepository;
 
-        private readonly ApplicationDbContext _context;
-        private readonly IStudentService _studentService;
+        private readonly IStudentRepository _studentRepository;
 
         public MedicationService(
-            IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
+            IMedicationRepository medicationRepository, IStudentRepository studentRepository)
         {
             _medicationRepository = medicationRepository;
-            _context = context;
-            _studentService = studentService;
+            _studentRepository = studentRepository;
 
         }
 
@@ -40,7 +38,7 @@ namespace backend.Services
             }
 
             // 3. Kiểm tra student tồn tại
-            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            var student = await _studentRepository.GetByIdAsync(request.StudentId);
             if (student == null)
                 throw new Exception("Không tìm thấy học sinh.");
 

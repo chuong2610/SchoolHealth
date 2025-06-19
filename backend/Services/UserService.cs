@@ -138,34 +138,44 @@ namespace backend.Services
                 return false;
             }
 
-            // Update Name if not null
+            // Update Name
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
                 existingUserProfile.Name = request.Name;
             }
 
-            // Update Phone if not null
+            // Update Phone
             if (!string.IsNullOrWhiteSpace(request.Phone))
             {
                 existingUserProfile.Phone = request.Phone;
             }
-            // Update Address if not null
+
+            // Update Address
             if (!string.IsNullOrWhiteSpace(request.Address))
             {
                 existingUserProfile.Address = request.Address;
             }
-            // Update Gender if not null
+
+            // Update Gender
             if (!string.IsNullOrWhiteSpace(request.Gender))
             {
                 existingUserProfile.Gender = request.Gender;
             }
+
             // Update DateOfBirth if not null
-            if (request.DateOfBirth != null)
+            if (request.DateOfBirth.HasValue)
             {
-                existingUserProfile.DateOfBirth = request.DateOfBirth;
+                existingUserProfile.DateOfBirth = request.DateOfBirth.Value;
             }
 
+            // Update Image if uploaded
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
 
+                existingUserProfile.ImageUrl = request.ImageUrl;
+            }
+
+            // Save changes
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
             return updated;
         }
