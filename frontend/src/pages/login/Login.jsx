@@ -92,7 +92,7 @@ const Login = () => {
         try {
             const verificationStatus = await checkPhoneVerification(phoneNumber);
 
-            if (verificationStatus.success) {
+            if (verificationStatus.success && verificationStatus.data) {
                 // Nếu đã verify thì chuyển sang form đăng nhập
                 setStep('login');
             } else {
