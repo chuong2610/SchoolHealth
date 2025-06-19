@@ -1,32 +1,26 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ allowedRoles = ['admin'] }) => {
+const ProtectedRoute = () => {
     const { isAuthenticated, user } = useAuth();
 
-    console.log('ProtectedRoute:', {
-        isAuthenticated: isAuthenticated(),
-        user,
-        allowedRoles,
-        currentPath: window.location.pathname
-    });
-
     if (!isAuthenticated()) {
-        console.log('Not authenticated, redirecting to login');
         return <Navigate to="/login" replace />;
     }
 
     const userRole = user?.role?.toLowerCase();
-    const allowed = allowedRoles.map(r => r.toLowerCase());
+    const currentPath = window.location.pathname;
 
-    console.log('Role check:', {
-        userRole,
-        allowed,
-        isAllowed: allowed.includes(userRole)
-    });
+    // Kiểm tra quyền truy cập dựa trên role và path
+    if (currentPath.startsWith('/admin') && userRole !== 'admin') {
+        return <Navigate to="/unauthorized" replace />;
+    }
 
-    if (!allowed.includes(userRole)) {
-        console.log('Role not allowed, redirecting to unauthorized');
+    if (currentPath.startsWith('/nurse') && userRole !== 'nurse') {
+        return <Navigate to="/unauthorized" replace />;
+    }
+
+    if (currentPath.startsWith('/parent') && userRole !== 'parent') {
         return <Navigate to="/unauthorized" replace />;
     }
 

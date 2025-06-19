@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Form, Button, Alert, Card } from "react-bootstrap";
+import { FaCog } from 'react-icons/fa';
 
 const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -44,85 +46,81 @@ const Settings = () => {
   };
 
   return (
-    <div
-      style={{ background: "#f5f7fa", minHeight: "100vh", padding: "32px 0" }}
-    >
-      <div className="container" style={{ maxWidth: 600 }}>
-        <div
-          className="card shadow-sm border-0 rounded-4 p-4"
-          style={{ margin: "0 auto" }}
-        >
-          <h2 className="fw-bold mb-4" style={{ fontSize: 26 }}>
-            Cài đặt tài khoản
-          </h2>
-          <form
-            className="mb-4"
-            onSubmit={handleChangePassword}
-            autoComplete="off"
-          >
-            <label className="form-label fw-semibold">Đổi mật khẩu</label>
-            <div className="input-group mb-2">
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Mật khẩu hiện tại"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                autoComplete="current-password"
-              />
-            </div>
-            <div className="input-group mb-2">
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Mật khẩu mới"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                autoComplete="new-password"
-              />
-            </div>
-            <div className="input-group mb-2">
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Nhập lại mật khẩu mới"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
-              />
-            </div>
-            <button className="btn btn-primary mt-2" type="submit">
-              Đổi mật khẩu
-            </button>
-            {passwordMsg && (
-              <div
-                className={`alert alert-${passwordType} mt-3 py-2 px-3`}
-                role="alert"
-                style={{ fontSize: 15 }}
-              >
-                {passwordMsg}
+    <div className="container-fluid">
+      {/* Page Heading */}
+      <div className="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 className="h3 mb-0 text-gray-800">
+          <FaCog className="me-2" /> Cài đặt tài khoản
+        </h1>
+      </div>
+
+      <div className="row">
+        <div className="col-lg-6 offset-lg-3">
+          <Card className="shadow mb-4">
+            <Card.Header className="py-3">
+              <h6 className="m-0 font-weight-bold text-primary">Cài đặt tài khoản</h6>
+            </Card.Header>
+            <Card.Body>
+              <Form onSubmit={handleChangePassword} autoComplete="off">
+                <h5 className="mb-3 text-gray-800">Đổi mật khẩu</h5>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mật khẩu hiện tại</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Mật khẩu hiện tại"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mật khẩu mới</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Mật khẩu mới"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    autoComplete="new-password"
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nhập lại mật khẩu mới</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Nhập lại mật khẩu mới"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit" className="mt-2">
+                  Đổi mật khẩu
+                </Button>
+                {passwordMsg && (
+                  <Alert variant={passwordType} className="mt-3">
+                    {passwordMsg}
+                  </Alert>
+                )}
+              </Form>
+
+              <hr className="my-4" />
+
+              <h5 className="mb-3 text-gray-800">Cài đặt thông báo</h5>
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="switch"
+                  id="notifySwitch"
+                  label="Bật/tắt thông báo hệ thống"
+                  checked={notify}
+                  onChange={(e) => setNotify(e.target.checked)}
+                />
+              </Form.Group>
+
+              <div className="text-muted small mt-4">
+                * Đổi mật khẩu demo: mật khẩu hiện tại là <b>123456</b>.<br />* Các chức năng sẽ được cập nhật trong phiên bản tiếp theo.
               </div>
-            )}
-          </form>
-          <div className="mb-4">
-            <label className="form-label fw-semibold">Nhận thông báo</label>
-            <div className="form-check form-switch">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="notifySwitch"
-                checked={notify}
-                onChange={(e) => setNotify(e.target.checked)}
-              />
-              <label className="form-check-label" htmlFor="notifySwitch">
-                Bật/tắt thông báo hệ thống
-              </label>
-            </div>
-          </div>
-          <div className="text-muted small">
-            * Đổi mật khẩu demo: mật khẩu hiện tại là <b>123456</b>.<br />* Các
-            chức năng sẽ được cập nhật trong phiên bản tiếp theo.
-          </div>
+            </Card.Body>
+          </Card>
         </div>
       </div>
     </div>

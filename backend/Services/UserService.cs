@@ -29,6 +29,7 @@ namespace backend.Services
                 Address = userRequest.Address,
                 Phone = userRequest.Phone,
                 Gender = userRequest.Gender,
+                RoleId = userRequest.RoleId,
                 DateOfBirth = userRequest.DateOfBirth
             };
             // Check if the user already exists by email
@@ -88,7 +89,8 @@ namespace backend.Services
                 Email = user.Email,
                 Address = user.Address,
                 Phone = user.Phone,
-                Gender = user.Gender
+                Gender = user.Gender,
+                RoleName = user.Role.Name
             };
         }
 
@@ -208,6 +210,17 @@ namespace backend.Services
             });
 
             return result;
+        }
+        public async Task<bool> UpdatePasswordAsync(LoginRequest loginRequest)
+        {
+            var user = await _userRepository.GetUserByPhoneAsync(loginRequest.PhoneNumber);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Password = BCrypt.Net.BCrypt.HashPassword(loginRequest.Password);
+            var updated = await _userRepository.UpdateUserAsync(user);
+            return updated;
         }
     }
 }

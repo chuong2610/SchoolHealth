@@ -1,3 +1,7 @@
+
+
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.Models.Request
 {
     public class MedicationRequest

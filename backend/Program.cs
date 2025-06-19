@@ -54,22 +54,22 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = "http://localhost:5182"
     };
-})
-.AddCookie(options =>
-{
-    options.Cookie.Name = "SchooHealth.Cookie";
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-    options.SlidingExpiration = true;
-})
-.AddGoogle(options =>
-{
-    options.ClientId = builder.Configuration["Google:ClientId"];
-    options.ClientSecret = builder.Configuration["Google:ClientSecret"];
-    options.CallbackPath = "/signin-google";
 });
+// .AddCookie(options =>
+// {
+//     options.Cookie.Name = "SchooHealth.Cookie";
+//     options.Cookie.HttpOnly = true;
+//     options.Cookie.SameSite = SameSiteMode.None;
+//     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+//     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+//     options.SlidingExpiration = true;
+// })
+// .AddGoogle(options =>
+// {
+//     options.ClientId = builder.Configuration["Google:ClientId"];
+//     options.ClientSecret = builder.Configuration["Google:ClientSecret"];
+//     options.CallbackPath = "/signin-google";
+// });
 
 
 
@@ -145,6 +145,7 @@ builder.Services.AddSingleton(resolver =>
     resolver.GetRequiredService<IOptions<FileUploadSettings>>().Value);
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHealthCheckService, HealthCheckService>();
@@ -176,6 +177,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IRedisService, RedisService>();
 
 
 

@@ -205,8 +205,8 @@ const NotificationsManagement = () => {
     fileInputRef.current.click();
   };
 
-  const handleImport = async (e) => {
-    const notificationId = 1;
+  const handleImport = async (e, notificationId) => {
+    // const notificationId = 1;
     const file = e.target.files[0];
     try {
       await importExcelFile(notificationId, file);
@@ -218,8 +218,8 @@ const NotificationsManagement = () => {
     }
   };
 
-  const handleExport = async () => {
-    const notificationId = 2;
+  const handleExport = async (notificationId) => {
+    // const notificationId = 2;
     try {
       await exportExcelFile(notificationId);
       // toast.success("Lấy tệp mẫu thành công");
@@ -229,8 +229,7 @@ const NotificationsManagement = () => {
     }
   };
 
-  const fetchNotificationDetail = async () => {
-    const notificationId = 2;
+  const fetchNotificationDetail = async (notificationId) => {
     try {
       const res = await getNotificationDetail(notificationId);
       console.log("fetchNotificationDetail:", res);
@@ -247,8 +246,8 @@ const NotificationsManagement = () => {
     console.log(modalDetail);
   }, [modalDetail]);
 
-  const fetchHealthCheckResultDetail = async () => {
-    const healthCheckId = 5;
+  const fetchHealthCheckResultDetail = async (healthCheckId) => {
+    // const healthCheckId = 5;
     try {
       const res = await getHealthCheckResultDeltail(healthCheckId);
       if (res) {
@@ -268,8 +267,8 @@ const NotificationsManagement = () => {
     console.log(modalResultDetail);
   }, [modalResultDetail]);
 
-  const fetchVaccinationResultDetail = async () => {
-    const vaccinationId = 1;
+  const fetchVaccinationResultDetail = async (vaccinationId) => {
+    // const vaccinationId = 1;
     try {
       const res = await getVaccinationResultDeltail(vaccinationId);
       if (res) {
@@ -362,7 +361,9 @@ const NotificationsManagement = () => {
                         <td>
                           <Button
                             variant="outline-info"
-                            onClick={() => fetchNotificationDetail()}
+                            onClick={() =>
+                              fetchNotificationDetail(notification.id)
+                            }
                           >
                             <i className="fa-solid fa-eye"></i>
                           </Button>
@@ -748,31 +749,35 @@ const NotificationsManagement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentItems?.length == 0 ? (
+                      {modalDetail?.notificationDetail?.results?.length == 0 ? (
                         <tr>
                           <td colSpan={7} className="text-center">
                             Không có dữ liệu
                           </td>
                         </tr>
                       ) : (
-                        currentItems?.map((result, idx) => (
-                          <tr key={idx}>
-                            <td>{result.studentName}</td>
-                            <td>{result.height}</td>
-                            <td>{result.weight}</td>
-                            <td>{result.bmi}</td>
-                            <td>{result.conclusion}</td>
-                            <td>{result.nurseName}</td>
-                            <td>
-                              <Button
-                                variant="outline-info"
-                                onClick={() => fetchHealthCheckResultDetail()}
-                              >
-                                <i className="fa-solid fa-eye"></i>
-                              </Button>
-                            </td>
-                          </tr>
-                        ))
+                        modalDetail?.notificationDetail?.results?.map(
+                          (result, idx) => (
+                            <tr key={idx}>
+                              <td>{result.studentName}</td>
+                              <td>{result.height}</td>
+                              <td>{result.weight}</td>
+                              <td>{result.bmi}</td>
+                              <td>{result.conclusion}</td>
+                              <td>{result.nurseName}</td>
+                              <td>
+                                <Button
+                                  variant="outline-info"
+                                  onClick={() =>
+                                    fetchHealthCheckResultDetail(result.id)
+                                  }
+                                >
+                                  <i className="fa-solid fa-eye"></i>
+                                </Button>
+                              </td>
+                            </tr>
+                          )
+                        )
                       )}
                     </tbody>
                   </Table>
@@ -814,7 +819,9 @@ const NotificationsManagement = () => {
                             <td>
                               <Button
                                 variant="outline-info"
-                                onClick={() => fetchVaccinationResultDetail()}
+                                onClick={() =>
+                                  fetchVaccinationResultDetail(result.id)
+                                }
                               >
                                 <i className="fa-solid fa-eye"></i>
                               </Button>
@@ -836,7 +843,15 @@ const NotificationsManagement = () => {
             </Modal.Body>
             <Modal.Footer>
               <Row className="w-100">
-                <Col className="text-start">
+                <Col
+                  className="text-start"
+                  style={{
+                    display:
+                      modalDetail?.notificationDetail?.results?.length > 0
+                        ? "none"
+                        : "block",
+                  }}
+                >
                   <Button variant="info" onClick={() => handleClickImport()}>
                     <i className="fa-solid fa-upload"></i> Thêm tệp kết quả
                   </Button>
@@ -844,14 +859,18 @@ const NotificationsManagement = () => {
                     type="file"
                     accept=".xlsx"
                     ref={fileInputRef}
-                    onChange={(e) => handleImport(e)}
+                    onChange={(e) =>
+                      handleImport(e, modalDetail?.notificationDetail?.id)
+                    }
                     style={{ display: "none" }} // Ẩn input file
                   />
 
                   <Button
                     variant="success"
                     className="px-3 ms-2"
-                    onClick={() => handleExport()}
+                    onClick={() =>
+                      handleExport(modalDetail?.notificationDetail?.id)
+                    }
                   >
                     <i className="fa-solid fa-download"></i> Lấy tệp mẫu
                   </Button>
