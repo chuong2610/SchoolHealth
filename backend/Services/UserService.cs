@@ -175,9 +175,9 @@ namespace backend.Services
             }
 
             // Update DateOfBirth if not null
-            if (request.DateOfBirth != null)
+            if (request.DateOfBirth.HasValue)
             {
-                existingUserProfile.DateOfBirth = request.DateOfBirth;
+                existingUserProfile.DateOfBirth = request.DateOfBirth.Value;
             }
 
             // Update Image if uploaded
@@ -232,6 +232,17 @@ namespace backend.Services
             });
 
             return result;
+        }
+        public async Task<bool> UpdatePasswordAsync(LoginRequest loginRequest)
+        {
+            var user = await _userRepository.GetUserByPhoneAsync(loginRequest.PhoneNumber);
+            if (user == null)
+            {
+                return false;
+            }
+            user.Password = BCrypt.Net.BCrypt.HashPassword(loginRequest.Password);
+            var updated = await _userRepository.UpdateUserAsync(user);
+            return updated;
         }
     }
 }

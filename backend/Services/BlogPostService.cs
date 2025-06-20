@@ -109,7 +109,7 @@ namespace backend.Services
             };
 
             var created = await _repository.AddAsync(post);
-            return created != null;
+            return created;
         }
 
         public async Task<bool> UpdateBlogPostDetailAsync(int id, BlogPostDetailRequest request)

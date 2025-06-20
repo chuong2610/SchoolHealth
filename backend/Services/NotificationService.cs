@@ -38,7 +38,7 @@ namespace backend.Services
             {
                 foreach (var student in notification.NotificationStudents)
                 {
-                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
                 }
             }
 
@@ -53,28 +53,28 @@ namespace backend.Services
             };
         }
 
-        public async Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
+        public async Task<List<NotificationParentDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);
-            var result = new List<NotificationDTO>();
+            var result = new List<NotificationParentDTO>();
             foreach (var notification in notifications)
             {
                 foreach (var student in notification.NotificationStudents)
                 {
-                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
                 }
             }
             return result;
         }
-        public async Task<List<NotificationDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
+        public async Task<List<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId);
-            var result = new List<NotificationDTO>();
+            var result = new List<NotificationParentDTO>();
             foreach (var notification in notifications)
             {
                 foreach (var student in notification.NotificationStudents)
                 {
-                    result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
+                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
                 }
             }
             return result;
@@ -332,9 +332,9 @@ namespace backend.Services
             var deleted = await _notificationRepository.DeleteNotificationAsync(notification);
             return deleted;
         }
-        private NotificationDTO MapToListDTO(Notification notification, int studentId, string studentName)
+        private NotificationParentDTO MapToNotificationParentDTO(Notification notification, int studentId, string studentName)
         {
-            return new NotificationDTO
+            return new NotificationParentDTO
             {
                 Id = notification.Id,
                 Name = notification.Name ?? string.Empty,
@@ -344,6 +344,7 @@ namespace backend.Services
                 CreatedAt = notification.CreatedAt,
                 StudentId = studentId,
                 StudentName = studentName,
+                Status = notification.NotificationStudents.FirstOrDefault(ns => ns.StudentId == studentId)?.Status ?? string.Empty
 
             };
         }

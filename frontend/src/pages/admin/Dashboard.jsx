@@ -1,364 +1,641 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Bar } from "react-chartjs-2";
+import axios from "axios";
+import { Row, Col, Avatar } from "antd";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  BarChart,
+  Cell,
+  XAxis,
+  YAxis,
   Tooltip,
+  CartesianGrid,
+  LineChart,
+  Line,
+  Area,
+  AreaChart,
+  PieChart,
+  Pie,
+  ResponsiveContainer,
   Legend,
-} from "chart.js";
-import "../../styles/dashboard.css";
+  Bar,
+} from 'recharts';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { motion } from "framer-motion";
+import { FaHeartbeat, FaPills } from "react-icons/fa";
+import FaceKissSvg from "../../assets/face-kiss.svg";
+import Hc21SLm from "../../assets/Hc21SLm.png";
+import StudyStudentSvg from "../../assets/study-student-svgrepo-com.svg";
+import FamilyMotherSvg from "../../assets/family-mother-svgrepo-com.svg";
+import NurseSvg from "../../assets/a-woman-in-a-white-coat-pointing-a-finger-svgrepo-com.svg";
+import AdminSvg from "../../assets/administrator-work-svgrepo-com.svg";
+import AnhDaiDien from "../../assets/AnhDaiDien.jpg";
+
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0 },
+};
+const COLORS = ["#00c6fb", "#43e97b", "#7f53ac", "#647dee"];
+const PIE_COLORS = [
+  "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#FFD166", "#06D6A0", "#118AB2", "#EF476F"
+];
+function getRandomColor() {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
 
 const Dashboard = () => {
-  const [chartType, setChartType] = useState("week");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const eventStatsWeek = [
-    { label: "Tuần 1", value: 8 },
-    { label: "Tuần 2", value: 12 },
-    { label: "Tuần 3", value: 10 },
-    { label: "Tuần 4", value: 5 },
-  ];
-  const eventStatsMonth = [
-    { label: "Tháng 1", value: 25 },
-    { label: "Tháng 2", value: 16 },
-    { label: "Tháng 3", value: 35 },
-  ];
-  const medicineStats = [
-    {
-      type: "Thuốc",
-      name: "Paracetamol 500mg",
-      quantity: "100 viên",
-      date: "15/03/2024",
-      reason: "Sốt cao",
-      user: "Nguyễn Văn A",
-    },
-    {
-      type: "Vật tư",
-      name: "Băng y tế",
-      quantity: "50 cuộn",
-      date: "14/03/2024",
-      reason: "Té ngã",
-      user: "Trần Thị B",
-    },
-    {
-      type: "Thuốc",
-      name: "ORSol",
-      quantity: "200 gói",
-      date: "13/03/2024",
-      reason: "Tiêu chảy",
-      user: "Lã Văn C",
-    },
-    {
-      type: "Vật tư",
-      name: "Khẩu trang y tế",
-      quantity: "300 cái",
-      date: "12/03/2024",
-      reason: "Phòng dịch",
-      user: "Phạm Thị D",
-    },
-    {
-      type: "Thuốc",
-      name: "Vitamin C",
-      quantity: "150 viên",
-      date: "11/03/2024",
-      reason: "Tăng sức đề kháng",
-      user: "Hoàng Văn E",
-    },
-  ];
-
-  const chartData = chartType === "week" ? eventStatsWeek : eventStatsMonth;
-  const chartLabel =
-    chartType === "week"
-      ? "Thống kê sự kiện y tế theo tuần (Tháng 3)"
-      : "Thống kê sự kiện y tế theo tháng";
-  const tableTitle =
-    chartType === "week"
-      ? "Thống kê sự kiện y tế theo tuần"
-      : "Thống kê sự kiện y tế theo tháng";
-  const tableCol = chartType === "week" ? "Tuần" : "Tháng";
-
-  // Chart.js data & options
-  const barData = {
-    labels: chartData.map((item) => item.label),
-    datasets: [
-      {
-        label: "Số sự kiện",
-        data: chartData.map((item) => item.value),
-        backgroundColor: chartType === "month" ? "#0060EF" : "#22d3a5",
-        borderRadius: 8,
-        maxBarThickness: 120,
-        categoryPercentage: 0.6,
-        barPercentage: 1,
-      },
-    ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      title: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (context) => `Số sự kiện: ${context.parsed.y}`,
-        },
-      },
-    },
-    animation: {
-      duration: 800,
-      easing: "easeOutQuart",
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: chartType === "week" ? "Tuần" : "Tháng",
-          font: { size: 14, weight: "bold" },
-        },
-        grid: { display: false },
-        ticks: { font: { size: 14 } },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Số sự kiện",
-          font: { size: 14, weight: "bold" },
-        },
-        beginAtZero: true,
-        grid: { color: "#e3e3e3" },
-        ticks: { stepSize: 5, font: { size: 14 } },
-      },
-    },
-  };
+  const [dashboardData, setDashboardData] = useState({});
+  const [healthEventData, setHealthEventData] = useState([]);
+  const [medicineBarData, setMedicineBarData] = useState([]);
+  const [medicalSuppliesData, setMedicalSuppliesData] = useState([]);
+  const [medicationsData, setMedicationsData] = useState([]);
+  const [notificationsData, setNotificationsData] = useState([]);
 
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 300);
-    return () => clearTimeout(timer);
-  }, [chartType]);
+    axios.get("http://localhost:5182/api/Home/admin")
+      .then(response => {
+        const data = response.data.data;
+        setDashboardData({
+          numberOfStudents: data.numberOfStudents,
+          numberOfParents: data.numberOfParents,
+          numberOfNurses: data.numberOfNurses,
+          numberOfAdmins: 1, // nếu có field numberOfAdmins thì thay bằng data.numberOfAdmins
+        });
+
+
+
+        const medicineBarData = [
+          {
+            name: "Đang xử lý",
+            value: data.pendingMedicationsNumber,
+            gradient: "url(#blueGreen)",
+          },
+          {
+            name: "Đang sử dụng",
+            value: data.activeMedicationsNumber,
+            gradient: "url(#purpleBlue)",
+          },
+          {
+            name: "Hoàn thành",
+            value: data.completedMedicationsNumber,
+            gradient: "url(#orangeYellow)",
+          }
+        ];
+        setMedicineBarData(medicineBarData);
+
+        // Define all days of the week in order
+        const DAYS_OF_WEEK = [
+          "T2", "T3", "T4", "T5", "T6", "T7", "CN"
+        ];
+
+        // Define the corresponding API day names
+        const API_DAY_NAMES = [
+          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+        ];
+
+        // Create a mapping from API day names to chart day names
+        const dayApiToChartMap = {};
+        for (let i = 0; i < API_DAY_NAMES.length; i++) {
+          dayApiToChartMap[API_DAY_NAMES[i]] = DAYS_OF_WEEK[i];
+        }
+
+        // Initialize healthEventData with all days and 0 values
+        const initialHealthEventData = DAYS_OF_WEEK.map(day => ({
+          week: day,
+          value: 0
+        }));
+
+        // Populate with fetched data
+        if (data.weeklyMedicalEventCounts) {
+          Object.entries(data.weeklyMedicalEventCounts).forEach(([apiDayName, count]) => {
+            const chartDayName = dayApiToChartMap[apiDayName];
+            if (chartDayName) {
+              const index = initialHealthEventData.findIndex(item => item.week === chartDayName);
+              if (index !== -1) {
+                initialHealthEventData[index].value = Math.max(0, parseInt(count, 10));
+              }
+            }
+          });
+        }
+        setHealthEventData(initialHealthEventData);
+
+        // Process Medical Supplies data from API
+        if (data.medicalSupplies && Array.isArray(data.medicalSupplies)) {
+          // Sort by quantity desc
+          const sorted = [...data.medicalSupplies].sort((a, b) => b.quantity - a.quantity);
+          let topSupplies = sorted.slice(0, 6);
+          let otherSupplies = sorted.slice(6);
+          let chartData = topSupplies.map((supply, idx) => ({
+            name: supply.name,
+            value: supply.quantity,
+            fill: PIE_COLORS[idx] || getRandomColor()
+          }));
+          if (otherSupplies.length > 0) {
+            const otherTotal = otherSupplies.reduce((sum, s) => sum + s.quantity, 0);
+            chartData.push({
+              name: "Khác",
+              value: otherTotal,
+              fill: PIE_COLORS[chartData.length] || getRandomColor()
+            });
+          }
+          setMedicalSuppliesData(chartData);
+        }
+
+        // Process Medications data from API
+        if (data.medications && Array.isArray(data.medications)) {
+          // Filter only pending medications and sort by latest date
+          const pendingMedications = data.medications
+            .filter(med => med.status === 'Active' || med.status === 'Pending') // Filter only active/pending medications
+            .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate)); // Sort by latest date
+          setMedicationsData(pendingMedications);
+        }
+
+        // Process Notifications data from API
+        if (data.notifications && Array.isArray(data.notifications)) {
+          setNotificationsData(data.notifications);
+        }
+
+      })
+      .catch(error => {
+        console.error('Error fetching dashboard data:', error);
+        // Set default values if API fails
+        setMedicalSuppliesData([
+          { name: "Bandages", value: 100, fill: 'url(#gradient0)' },
+          { name: "Antiseptic Wipes", value: 50, fill: 'url(#gradient1)' },
+          { name: "Gauze Pads", value: 75, fill: 'url(#gradient2)' }
+        ]);
+      });
+
+
+  }, []);
 
   return (
-    <main className="container py-4" style={{ paddingTop: 80 }}>
-      <section className="section active dashboard-bg">
-        <div className="container-fluid">
-          <div className="dashboard-stats row g-4 mb-4">
-            <div className="col-12 col-md-4 col-lg-4 d-flex">
-              <div className="stat-card stat-blue d-flex align-items-center p-4 w-100">
-                <FontAwesomeIcon icon="syringe" className="stat-icon" />
-                <div>
-                  <div className="stat-value">
-                    1,250/<span style={{ fontSize: "1.2rem" }}>1,500</span>
-                  </div>
-                  <div className="stat-label">Đã tiêm chủng</div>
-                  <div className="stat-value">
-                    1,100/<span style={{ fontSize: "1.2rem" }}>1,500</span>
-                  </div>
-                  <div className="stat-label">Đã khám sức khỏe</div>
-                  <div className="text-muted small">
-                    81.3% | 73.3% hoàn thành
-                  </div>
-                  <div className="text-muted small mt-1">Cập nhật: Hôm qua</div>
-                </div>
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="dashboard-container"
+    >
+      {/* VÙNG 1: Admin Welcome Panel */}
+      <Row gutter={[24, 24]} className="mb-4">
+        <Col xs={24} md={24}>
+          <motion.div variants={itemVariants} className="welcome-section d-flex flex-column flex-md-row align-items-center justify-content-between p-4">
+            <div className="d-flex flex-column flex-md-row align-items-center mb-4 mb-md-0">
+              <Avatar
+                size={80}
+                src={AnhDaiDien} /* Using AnhDaiDien for the main profile picture */
+                className="me-4 welcome-avatar d-flex align-items-center justify-content-center"
+                style={{ border: '3px solid var(--accent-yellow)' }}
+              />
+              <div className="text-center text-md-start">
+                <h2 className="fw-bold mb-1">Welcome back, Nguyễn Thiên Ân!</h2>
+                <p className="mb-0 fs-6">Here's what's happening with your school today.</p>
+                <p className="mt-1 mb-0" style={{ fontSize: 16, color: 'var(--accent-yellow)', fontWeight: 800 }}>Quản trị viên</p>
               </div>
             </div>
-            <div className="col-12 col-md-4 col-lg-4 d-flex">
-              <div className="stat-card stat-green d-flex align-items-center p-4 w-100">
-                <FontAwesomeIcon
-                  icon="briefcase-medical"
-                  className="stat-icon"
-                />
-                <div>
-                  <div className="stat-value">35</div>
-                  <div className="stat-label">Tổng số sự kiện y tế</div>
-                  <div className="mt-2">
-                    <span className="badge bg-warning text-dark">
-                      Chờ duyệt (15)
-                    </span>
-                    <span className="badge bg-success">Đã duyệt (12)</span>
-                    <span className="badge bg-danger">Từ chối (8)</span>
-                  </div>
-                  <div className="text-muted small mt-1">Cập nhật: Hôm nay</div>
-                </div>
+            <img src={Hc21SLm} alt="Welcome" className="welcome-illustration ms-0 ms-md-4" style={{ maxWidth: '250px', height: 'auto' }} />
+          </motion.div>
+        </Col>
+      </Row>
+
+      {/* VÙNG 2: Chỉ số tổng quan (School Metrics) */}
+      <Row gutter={[24, 24]} className="mb-4">
+        <Col xs={24} sm={12} lg={6}>
+          <motion.div variants={itemVariants}>
+            <div className="student-card h-100 d-flex flex-column align-items-center justify-content-center text-center"
+              style={{ background: 'var(--student-bg)', border: '1px solid var(--student-border)' }}>
+              <div className="mb-2 rounded-circle p-3 d-flex align-items-center justify-content-center animated-icon">
+                <img src={StudyStudentSvg} alt="Student" style={{ width: 64, height: 64 }} />
               </div>
+              <div className="fw-bold fs-4">{dashboardData.numberOfStudents}</div>
+              <div className="fs-6">Học sinh</div>
             </div>
-            <div className="col-12 col-md-4 col-lg-4 d-flex">
-              <div className="stat-card stat-orange d-flex align-items-center p-4 w-100">
-                <FontAwesomeIcon icon="capsules" className="stat-icon" />
-                <div>
-                  <div className="stat-value">
-                    2,000 <span style={{ fontSize: "1.2rem" }}>viên</span>
-                  </div>
-                  <div className="stat-label">Thuốc đã sử dụng</div>
-                  <div className="stat-value">
-                    500 <span style={{ fontSize: "1.2rem" }}>đơn vị</span>
-                  </div>
-                  <div className="stat-label">Vật tư đã sử dụng</div>
-                  <div className="text-muted small">
-                    Tồn kho: 3,500 viên | 750 đơn vị
-                  </div>
-                  <div className="text-muted small mt-1">
-                    Cập nhật: 3 ngày trước
-                  </div>
-                </div>
+          </motion.div>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <motion.div variants={itemVariants}>
+            <div className="parent-card h-100 d-flex flex-column align-items-center justify-content-center text-center"
+              style={{ background: 'var(--parent-bg)', border: '1px solid var(--parent-border)' }}>
+              <div className="mb-2 rounded-circle p-3 d-flex align-items-center justify-content-center animated-icon">
+                <img src={FamilyMotherSvg} alt="Parent" style={{ width: 64, height: 64 }} />
               </div>
+              <div className="fw-bold fs-4">{dashboardData.numberOfParents}</div>
+              <div className="fs-6">Phụ huynh</div>
             </div>
-          </div>
-          <div className="row g-4 align-items-start mb-4">
-            <div className="col-12 col-lg-8">
-              <div className="card border-0 shadow-sm p-3 mb-2 chart-card w-100">
-                <div className="d-flex justify-content-end mb-2">
-                  <div className="btn-group" role="group">
-                    <button
-                      className={`btn btn-outline-primary btn-sm${
-                        chartType === "week" ? " active" : ""
-                      }`}
-                      onClick={() => setChartType("week")}
-                      disabled={isLoading}
-                    >
-                      Thống kê theo tuần
-                    </button>
-                    <button
-                      className={`btn btn-outline-primary btn-sm${
-                        chartType === "month" ? " active" : ""
-                      }`}
-                      onClick={() => setChartType("month")}
-                      disabled={isLoading}
-                    >
-                      Thống kê theo tháng
-                    </button>
-                  </div>
+          </motion.div>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <motion.div variants={itemVariants}>
+            <div className="nurse-card h-100 d-flex flex-column align-items-center justify-content-center text-center"
+              style={{ background: 'var(--nurse-bg)', border: '1px solid var(--nurse-border)' }}>
+              <div className="mb-2 rounded-circle p-3 d-flex align-items-center justify-content-center animated-icon">
+                <img src={NurseSvg} alt="Nurse" style={{ width: 64, height: 64 }} />
+              </div>
+              <div className="fw-bold fs-4">{dashboardData.numberOfNurses}</div>
+              <div className="fs-6">Y tá</div>
+            </div>
+          </motion.div>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <motion.div variants={itemVariants}>
+            <div className="admin-card h-100 d-flex flex-column align-items-center justify-content-center text-center"
+              style={{ background: 'var(--admin-bg)', border: '1px solid var(--admin-border)' }}>
+              <div className="mb-2 rounded-circle p-3 d-flex align-items-center justify-content-center animated-icon">
+                <img src={AdminSvg} alt="Admin" style={{ width: 64, height: 64 }} />
+              </div>
+              <div className="fw-bold fs-4">{dashboardData.numberOfAdmins}</div>
+              <div className="fs-6">Quản trị viên</div>
+            </div>
+          </motion.div>
+        </Col>
+      </Row>
+
+      {/* VÙNG 3: Dynamic Information */}
+      <Row gutter={[24, 24]} className="mb-4">
+        {/* Medical Supplies Chart */}
+        <Col xs={24} lg={8}>
+          <motion.div variants={itemVariants}>
+            <div className="notice-card h-100"
+              style={{ background: 'var(--notice-bg)', border: '1px solid var(--notice-border)' }}>
+              <div className="card-header bg-transparent border-0 d-flex flex-column align-items-center justify-content-start">
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', alignSelf: 'flex-start' }}>
+                  <FaHeartbeat style={{ marginRight: '8px', color: 'var(--primary-blue)' }} />
+                  <span className="fw-bold fs-5">🏥 Vật tư y tế</span>
                 </div>
-                <div className="dashboard-caption fw-bold mb-2">
-                  {chartLabel}
-                </div>
-                <div
-                  style={{
-                    width: "100%",
-                    minHeight: 340,
-                    height: 340,
-                    background: "#fff",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 12,
-                    borderRadius: 12,
-                    position: "relative",
-                    opacity: isLoading ? 0.5 : 1,
-                    transition: "opacity 0.3s",
-                  }}
-                >
-                  {isLoading ? (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                      }}
-                    >
-                      <div
-                        className="spinner-border text-primary"
-                        role="status"
+                <h6 className="text-center text-muted mb-3" style={{ fontSize: '0.9rem', alignSelf: 'flex-start', }}>Kiểm kê vật tư y tế</h6>
+              </div>
+              <div className="card-body d-flex justify-content-center align-items-center" style={{ height: 250, padding: '0 10px' }}>
+                <div style={{ width: '100%', maxWidth: 300 }}>
+                  <ResponsiveContainer width="100%" height={250} minWidth={250}>
+                    <PieChart>
+                      <defs>
+                        <linearGradient id="gradient0" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#FF6B6B" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#FF8E8E" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#FF5252" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#4ECDC4" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#6FE3DB" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#40C4FF" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#45B7D1" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#73C7E8" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#1DE9B6" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#96CEB4" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#B5DBC8" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#66BB6A" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#FFEAA7" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#FFF2C7" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#FFEB3B" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="gradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#DDA0DD" stopOpacity="1" />
+                          <stop offset="50%" stopColor="#E6B8E6" stopOpacity="1" />
+                          <stop offset="100%" stopColor="#BA68C8" stopOpacity="1" />
+                        </linearGradient>
+                      </defs>
+                      <Pie
+                        data={medicalSuppliesData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="value"
+                        label={({ value }) => `${value}`}
                       >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <Bar data={barData} options={barOptions} height={340} />
-                  )}
+                        {medicalSuppliesData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.fill}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'white',
+                          border: '1px solid #ccc',
+                          borderRadius: '8px',
+                          fontSize: '12px',
+                          padding: '8px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                        }}
+                        formatter={(value, name) => [`${value} items`, name]}
+                      />
+                      <Legend
+                        verticalAlign="bottom"
+                        height={36}
+                        formatter={(value) => <span style={{ color: 'var(--text-primary)', fontSize: '12px', fontWeight: '500' }}>{value}</span>}
+                        payload={medicalSuppliesData.map((entry, idx) => ({
+                          value: entry.name,
+                          type: "square",
+                          color: entry.fill
+                        }))}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
-            <div className="col-12 col-lg-4 dashboard-side-col">
-              <div className="card border-0 shadow-sm h-100 mb-3">
-                <div className="card-body">
-                  <h5 className="card-title">{tableTitle}</h5>
-                  <table className="table table-sm mb-0">
-                    <thead>
-                      <tr>
-                        <th>{tableCol}</th>
-                        <th>Số sự kiện</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {chartData.map((row, idx) => (
-                        <tr key={idx}>
-                          <td>{row.label}</td>
-                          <td>{row.value}</td>
+          </motion.div>
+        </Col>
+
+        {/* Weekly Health Events */}
+        <Col xs={24} lg={8}>
+          <motion.div variants={itemVariants}>
+            <div className="event-card h-100"
+              style={{ background: 'var(--event-bg)', border: '1px solid var(--event-border)' }}>
+              <div className="card-header bg-transparent border-0 d-flex flex-column align-items-center justify-content-start">
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', alignSelf: 'flex-start' }}>
+                  <FaHeartbeat style={{ marginRight: '8px', color: 'var(--primary-blue)' }} />
+                  <span className="fw-bold fs-5">📊 Sự kiện y tế</span>
+                </div>
+                <h6 className="text-center text-muted mb-3" style={{ fontSize: '0.9rem', alignSelf: 'flex-start' }}>Thống kê sự kiện y tế theo tuần</h6>
+              </div>
+              <div className="card-body w-100 d-flex justify-content-center align-items-center" style={{ height: 250, padding: '0 10px' }}>
+                <div style={{ width: '100%', maxWidth: 360 }}>
+                  <ResponsiveContainer width="100%" height={250} minWidth={280}>
+                    <LineChart data={healthEventData} margin={{ top: 10, right: 10, left: -35, bottom: 10 }}>
+                      <defs>
+                        <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%" stopColor="#baff39" />
+                          <stop offset="100%" stopColor="#00ffea" />
+                        </linearGradient>
+                        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#baff39" stopOpacity="0.5" />
+                          <stop offset="100%" stopColor="#00ffea" stopOpacity="0.05" />
+                        </linearGradient>
+                      </defs>
+
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="week"
+                        interval={0}
+                        tick={{
+                          fontWeight: 500,
+                          fontSize: '0.8rem',
+                          textAnchor: 'middle'
+                        }}
+                        axisLine={{ stroke: '#ccc' }}
+                        tickLine={{ stroke: '#ccc' }}
+                      />
+                      <YAxis
+                        tick={{
+                          fontWeight: 600,
+                          fontSize: '0.8rem'
+                        }}
+                        axisLine={{ stroke: '#ccc' }}
+                        tickLine={{ stroke: '#ccc' }}
+                        allowDecimals={false}
+                        tickFormatter={(value) => Math.floor(value)}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          fontSize: '0.8rem',
+                          padding: '8px 12px',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Area type="monotone" dataKey="value" fill="url(#areaGradient)" stroke="none" />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        stroke="url(#lineGradient)"
+                        strokeWidth={4}
+                        dot={{ r: 6, fill: '#fff', stroke: '#baff39', strokeWidth: 2 }}
+                        activeDot={{ r: 8, fill: '#00ffea', stroke: '#fff', strokeWidth: 2 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </Col>
+
+        {/* Medication Insights */}
+        <Col xs={24} lg={8}>
+          <motion.div variants={itemVariants}>
+            <div className="medication-card h-100"
+              style={{ background: 'var(--medication-bg)', border: '1px solid var(--medication-border)' }}>
+              <div className="card-header bg-transparent border-0 d-flex flex-column align-items-center justify-content-start">
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', alignSelf: 'flex-start' }}>
+                  <FaPills style={{ marginRight: '8px', color: 'var(--primary-blue)' }} />
+                  <span className="fw-bold fs-5">💊 Biểu đồ gửi thuốc</span>
+                </div>
+                <h6 className="text-center text-muted mb-3" style={{ fontSize: '0.9rem', alignSelf: 'flex-start' }}>Thống kê số lượng thuốc theo trạng thái</h6>
+              </div>
+              <div className="card-body w-100 d-flex justify-content-center align-items-center" style={{ height: 250, padding: '0 10px' }}>
+                <div style={{ width: '100%', maxWidth: 360 }}>
+                  <ResponsiveContainer width="100%" height={250} minWidth={280}>
+                    <BarChart
+                      data={medicineBarData}
+                      barCategoryGap="15%"
+                      margin={{ top: 10, right: 20, left: -25, bottom: 10 }}
+                    >
+                      <defs>
+                        <linearGradient id="blueGreen" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#00c6fb" />
+                          <stop offset="100%" stopColor="#43e97b" />
+                        </linearGradient>
+                        <linearGradient id="purpleBlue" x1="0" y1="0" x2="0" y2="1" >
+                          <stop offset="0%" stopColor="#7f53ac" />
+                          <stop offset="100%" stopColor="#647dee" />
+                        </linearGradient>
+                        <linearGradient id="orangeYellow" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#f7971e" />
+                          <stop offset="100%" stopColor="#ffd200" />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="name"
+                        interval={0}
+                        tick={{
+                          fontWeight: 600,
+                          fontSize: '0.8rem',
+                          textAnchor: 'middle'
+                        }}
+                        axisLine={{ stroke: '#ccc' }}
+                        tickLine={{ stroke: '#ccc' }}
+                      />
+                      <YAxis
+                        tick={{
+                          fontWeight: 600,
+                          fontSize: '0.8rem'
+                        }}
+                        axisLine={{ stroke: '#ccc' }}
+                        tickLine={{ stroke: '#ccc' }}
+                        allowDecimals={false}
+                        tickFormatter={(value) => Math.floor(value)}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          fontSize: '0.8rem',
+                          padding: '8px 12px',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Bar dataKey="value">
+                        {medicineBarData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.gradient} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </Col>
+      </Row>
+
+      {/* VÙNG 4: Data Tables */}
+      <Row gutter={[24, 24]} className="mb-4">
+        {/* Medications Table */}
+        <Col xs={24} lg={12}>
+          <motion.div variants={itemVariants}>
+            <div className="medication-card h-100"
+              style={{ background: 'var(--medication-bg)', border: '1px solid var(--medication-border)' }}>
+              <div className="card-header bg-transparent border-0 d-flex flex-column align-items-center justify-content-start">
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', alignSelf: 'flex-start' }}>
+                  <FaPills style={{ marginRight: '8px', color: 'var(--primary-blue)' }} />
+                  <span className="fw-bold fs-5">💊 Danh sách thuốc</span>
+                </div>
+                <h6 className="text-center text-muted mb-3" style={{ fontSize: '0.9rem', alignSelf: 'flex-start' }}>
+                  Thuốc chờ uống - Ngày gần nhất
+                </h6>
+              </div>
+              <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto', padding: '0 1rem' }}>
+                {medicationsData && medicationsData.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table dashboard-table table-sm table-hover align-middle mb-0">
+                      <thead style={{ position: 'sticky', top: 0, backgroundColor: 'var(--medication-bg)', zIndex: 1 }}>
+                        <tr>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>ID</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Học sinh</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Lớp</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Trạng thái</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Ngày tạo</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {medicationsData.slice(0, 10).map((medication) => (
+                          <tr key={medication.id}>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>{medication.id}</td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>{medication.studentName}</td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>{medication.studentClassName}</td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>
+                              <span
+                                className={`badge ${medication.status === 'Active' ? 'bg-warning' :
+                                  medication.status === 'Pending' ? 'bg-primary' :
+                                    medication.status === 'Completed' ? 'bg-success' :
+                                      medication.status === 'Rejected' ? 'bg-danger' : 'bg-secondary'
+                                  }`}
+                                style={{ fontSize: '10px' }}
+                              >
+                                {medication.status === 'Active' ? 'Chờ uống' :
+                                  medication.status === 'Pending' ? 'Chờ xử lý' :
+                                    medication.status === 'Completed' ? 'Hoàn thành' :
+                                      medication.status === 'Rejected' ? 'Từ chối' :
+                                        medication.status}
+                              </span>
+                            </td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>
+                              {new Date(medication.createdDate).toLocaleDateString('vi-VN')}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center justify-content-center" style={{ height: 200 }}>
+                    <p className="text-muted">No medications data available</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        </Col>
+
+        {/* Notifications Table */}
+        <Col xs={24} lg={12}>
+          <motion.div variants={itemVariants}>
+            <div className="notice-card h-100"
+              style={{ background: 'var(--notice-bg)', border: '1px solid var(--notice-border)' }}>
+              <div className="card-header bg-transparent border-0 d-flex flex-column align-items-center justify-content-start">
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', alignSelf: 'flex-start' }}>
+                  <FaHeartbeat style={{ marginRight: '8px', color: 'var(--primary-blue)' }} />
+                  <span className="fw-bold fs-5">📋 Thông báo</span>
                 </div>
+                <h6 className="text-center text-muted mb-3" style={{ fontSize: '0.9rem', alignSelf: 'flex-start' }}>
+                  Health notifications and announcements
+                </h6>
+              </div>
+              <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto', padding: '0 1rem' }}>
+                {notificationsData && notificationsData.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table dashboard-table table-sm table-hover align-middle mb-0">
+                      <thead style={{ position: 'sticky', top: 0, backgroundColor: 'var(--notice-bg)', zIndex: 1 }}>
+                        <tr>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Tiêu đề</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Ngày tạo</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Chờ</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Xác nhận</th>
+                          <th style={{ fontSize: '12px', padding: '8px' }}>Từ chối</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {notificationsData.map((notification, index) => (
+                          <tr key={index}>
+                            <td style={{ fontSize: '11px', padding: '6px 8px', fontWeight: '600' }}>
+                              {notification.title}
+                            </td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px' }}>
+                              {new Date(notification.createdDate).toLocaleDateString('vi-VN')}
+                            </td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px', textAlign: 'center' }}>
+                              <span className="badge bg-warning text-dark" style={{ fontSize: '10px', fontWeight: 'bold' }}>
+                                {notification.pendingCount || 0}
+                              </span>
+                            </td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px', textAlign: 'center' }}>
+                              <span className="badge bg-success" style={{ fontSize: '10px', fontWeight: 'bold' }}>
+                                {notification.confirmedCount || 0}
+                              </span>
+                            </td>
+                            <td style={{ fontSize: '11px', padding: '6px 8px', textAlign: 'center' }}>
+                              <span className="badge bg-danger" style={{ fontSize: '10px', fontWeight: 'bold' }}>
+                                {notification.rejectedCount || 0}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="d-flex align-items-center justify-content-center" style={{ height: 200 }}>
+                    <p className="text-muted">No notifications available</p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-          {/* Bảng thống kê thuốc & vật tư y tế đã chi ra */}
-          <div className="card border-0 shadow-sm mb-4">
-            <div className="card-body">
-              <div className="fw-bold mb-3" style={{ fontSize: "1.1rem" }}>
-                Thống kê thuốc & vật tư y tế đã chi ra
-              </div>
-              <div className="table-responsive">
-                <table
-                  className="table table-bordered align-middle mb-0"
-                  style={{ tableLayout: "auto" }}
-                >
-                  <thead className="table-light">
-                    <tr>
-                      <th style={{ width: "8%", minWidth: 80 }}>Loại</th>
-                      <th style={{ width: "20%", minWidth: 150 }}>Tên</th>
-                      <th style={{ width: "12%", minWidth: 100 }}>Số lượng</th>
-                      <th style={{ width: "15%", minWidth: 120 }}>
-                        Ngày sử dụng
-                      </th>
-                      <th style={{ width: "20%", minWidth: 120 }}>Lý do</th>
-                      <th style={{ width: "15%", minWidth: 130 }}>
-                        Người sử dụng
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {medicineStats.map((row, idx) => (
-                      <tr key={idx}>
-                        <td>
-                          <span
-                            className={`badge ${
-                              row.type === "Thuốc" ? "bg-primary" : "bg-success"
-                            }`}
-                          >
-                            {row.type}
-                          </span>
-                        </td>
-                        <td>{row.name}</td>
-                        <td>{row.quantity}</td>
-                        <td>{row.date}</td>
-                        <td>{row.reason}</td>
-                        <td>{row.user}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+          </motion.div>
+        </Col>
+      </Row>
+
+    </motion.div>
   );
 };
 

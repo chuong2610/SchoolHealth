@@ -37,14 +37,6 @@ const AdminHeader = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white py-1 shadow-sm sticky-top">
       <div className="container-fluid px-2 d-flex align-items-center justify-content-between position-relative">
-        <Link
-          className="navbar-brand fw-bold text-primary d-flex align-items-center gap-1 me-2 p-2 rounded hover-effect"
-          to="/admin"
-        >
-          <i className="fas fa-heartbeat text-primary fs-4"></i>
-          <span className="fs-5 d-none d-sm-inline">School Health</span>
-          <span className="fs-5 d-inline d-sm-none">SH</span>
-        </Link>
         <ul className="navbar-nav me-auto align-items-center compact-nav">
           {menu.map((item, idx) =>
             item.dropdown ? (
@@ -66,9 +58,8 @@ const AdminHeader = () => {
                   <i className="fas fa-chevron-down ms-1 small-icon"></i>
                 </Link>
                 <ul
-                  className={`dropdown-menu compact-dropdown${
-                    dropdownOpen ? " show" : ""
-                  }`}
+                  className={`dropdown-menu compact-dropdown${dropdownOpen ? " show" : ""
+                    }`}
                 >
                   {item.dropdown.map((sub, subIdx) => (
                     <li key={subIdx}>
@@ -83,9 +74,8 @@ const AdminHeader = () => {
             ) : (
               <li className="nav-item" key={idx}>
                 <Link
-                  className={`nav-link py-1 px-2${
-                    location.pathname === item.path ? " active" : ""
-                  }`}
+                  className={`nav-link py-1 px-2${location.pathname === item.path ? " active" : ""
+                    }`}
                   to={item.path}
                 >
                   <i className={item.icon}></i>

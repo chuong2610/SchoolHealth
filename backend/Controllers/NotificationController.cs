@@ -45,7 +45,7 @@ namespace backend.Controllers
             try
             {
                 var notifications = await _notificationService.GetHealthChecksNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationDTO>>(notifications, "Lấy danh sách thông báo kiểm tra sức khỏe thành công", true));
+                return Ok(new BaseResponse<List<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo kiểm tra sức khỏe thành công", true));
             }
             catch (Exception ex)
             {
@@ -60,7 +60,7 @@ namespace backend.Controllers
             try
             {
                 var notifications = await _notificationService.GetVaccinationsNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationDTO>>(notifications, "Lấy danh sách thông báo tiêm chủng thành công", true));
+                return Ok(new BaseResponse<List<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo tiêm chủng thành công", true));
             }
             catch (Exception ex)
             {

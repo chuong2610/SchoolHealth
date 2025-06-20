@@ -14,6 +14,7 @@ namespace backend.Models
         public string? ImageUrl { get; set; } = string.Empty;
         public DateOnly? DateOfBirth { get; set; }
         public bool IsActive { get; set; } = true;
+        public bool IsVerified { get; set; } = false;
         public List<BlogPost> BlogPosts { get; set; } = new List<BlogPost>();
         public List<MedicalEvent> MedicalEvents { get; set; } = new List<MedicalEvent>();
         public List<Medication> Medications { get; set; } = new List<Medication>();
@@ -22,7 +23,7 @@ namespace backend.Models
         public List<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
         public List<Notification> CreatedNotifications { get; set; } = new();
         public List<Notification> AssignedNotifications { get; set; } = new();
-        public int? RoleId { get; set; }
+        public int RoleId { get; set; }
         [ForeignKey("RoleId")]
         public Role Role { get; set; } = null!;
     }

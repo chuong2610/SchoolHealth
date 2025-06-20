@@ -1,5 +1,14 @@
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
+F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.sourcelink.json
 F:\dev\.net\swp\backend\bin\Debug\net8.0\appsettings.Development.json
 F:\dev\.net\swp\backend\bin\Debug\net8.0\appsettings.json
+F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
 F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.exe
 F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.deps.json
 F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.runtimeconfig.json
@@ -8,7 +17,14 @@ F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.pdb
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Azure.Core.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Azure.Identity.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\BCrypt.Net-Next.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\ClosedXML.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\ClosedXML.Parser.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\ExcelNumberFormat.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Humanizer.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\MailKit.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
@@ -47,7 +63,12 @@ F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.OpenApi.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\MimeKit.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Mono.TextTemplating.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\RBush.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\SixLabors.Fonts.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\StackExchange.Redis.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -63,9 +84,11 @@ F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Drawing.Common.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Formats.Asn1.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\System.IO.Packaging.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.IO.Pipelines.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Memory.Data.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Runtime.Caching.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Security.Permissions.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Text.Encodings.Web.dll
@@ -146,17 +169,10 @@ F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 F:\dev\.net\swp\backend\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.csproj.AssemblyReference.cache
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.GeneratedMSBuildEditorConfig.editorconfig
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.AssemblyInfoInputs.cache
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.AssemblyInfo.cs
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.csproj.CoreCompileInputs.cache
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cs
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.MvcApplicationPartsAssemblyInfo.cache
-F:\dev\.net\swp\backend\obj\Debug\net8.0\backend.sourcelink.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets.build.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets.development.json
 F:\dev\.net\swp\backend\obj\Debug\net8.0\staticwebassets\msbuild.backend.Microsoft.AspNetCore.StaticWebAssets.props
@@ -351,15 +367,6 @@ D:\SWP391\SWP391\SchoolHealth\backend\obj\Debug\net8.0\ref\backend.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
 =======
 >>>>>>> origin/main
-F:\dev\.net\swp\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
-F:\dev\.net\swp\backend\bin\Debug\net8.0\ClosedXML.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\ClosedXML.Parser.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\ExcelNumberFormat.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\RBush.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\SixLabors.Fonts.dll
-F:\dev\.net\swp\backend\bin\Debug\net8.0\System.IO.Packaging.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\ClosedXML.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\ClosedXML.Parser.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
@@ -368,3 +375,12 @@ D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\ExcelNumberFormat.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\RBush.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\SixLabors.Fonts.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.IO.Packaging.dll
+>>>>>>> b0a94bd5730761b856e134fdd933d3d2dcfd39a7
+>>>>>>> API/Blog
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\MailKit.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\MimeKit.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\StackExchange.Redis.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

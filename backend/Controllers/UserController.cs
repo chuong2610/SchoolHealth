@@ -169,5 +169,22 @@ namespace backend.Controllers
             var nurses = await _userService.GetAllNursesAsync();
             return Ok(nurses);
         }
+
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] LoginRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new BaseResponse<bool>(false, "Invalid request", false));
+            }
+
+            var result = await _userService.UpdatePasswordAsync(request);
+            if (!result)
+            {
+                return BadRequest(new BaseResponse<bool>(false, "Password update failed", false));
+            }
+
+            return Ok(new BaseResponse<bool>(true, "Password updated successfully", true));
+        }
     }
 }

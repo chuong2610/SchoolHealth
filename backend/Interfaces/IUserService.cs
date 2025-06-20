@@ -19,5 +19,6 @@ namespace backend.Interfaces
         Task<bool> ChangePasswordAsync(int userId, UserPasswordRequest request);
         Task<bool> UpdateUserProfileAsync(int id, UserProfileRequest request);
         Task<IEnumerable<NurseDTO>> GetAllNursesAsync();
+        Task<bool> UpdatePasswordAsync(LoginRequest loginRequest);
     }
 }

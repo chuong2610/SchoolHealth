@@ -1,100 +1,380 @@
 // Login.jsx - Đăng nhập cho người dùng
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import 'antd/dist/reset.css';
-import { Form, Input, Button, Alert, Typography, Spin, Card } from 'antd';
-import html2pdf from 'html2pdf.js';
 import { useAuth } from '../../context/AuthContext';
-const { Title } = Typography;
+import './Login.css';
+import loginBg from '../../assets/login-bg.png';
+import bagpackSvg from '../../assets/bagpack-svgrepo-com.svg';
+import eLearningSvg from '../../assets/e-learning-svgrepo-com.svg';
+import researchSvg from '../../assets/research-svgrepo-com.svg';
+import studentSvg from '../../assets/student-svgrepo-com.svg';
 
 const Login = () => {
-    // State lưu thông tin nhập vào form đăng nhập
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
-    // State lưu thông báo lỗi
-    const [error, setError] = useState('');
-    // State loading khi submit
     const [loading, setLoading] = useState(false);
-    // Hook điều hướng sau khi đăng nhập thành công
+    const [error, setError] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
+    const [step, setStep] = useState('phone'); // 'phone', 'otp', 'password-setup', 'login'
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [otp, setOtp] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
-    // Lấy hàm login từ context để lưu token, role, userId
-    const { login } = useAuth();
+    const { login, user } = useAuth();
 
-    // Xử lý thay đổi input form đăng nhập
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCredentials(prev => ({ ...prev, [name]: value }));
+    // Nếu đã đăng nhập thì tự động chuyển hướng về dashboard đúng role
+    useEffect(() => {
+        if (user && user.role) {
+            navigate(`/${user.role}/dashboard`, { replace: true });
+        }
+    }, [user, navigate]);
+
+    // Kiểm tra số điện thoại đã verify chưa
+    const checkPhoneVerification = async (phoneNumber) => {
+        try {
+            const response = await axios.get(`http://localhost:5182/api/auth/is-verified/${phoneNumber}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     };
 
-    // Xử lý submit form đăng nhập
-    const handleSubmit = async (values) => {
-        const email = values.email.trim();
-        const password = values.password.trim();
-        if (!email || !password) {
-            setError('Vui lòng nhập đầy đủ thông tin!');
+    // Gửi OTP
+    const sendOTP = async (phoneNumber) => {
+        try {
+            const response = await axios.post('http://localhost:5182/api/auth/send-otp', { phoneNumber });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Xác thực OTP
+    const verifyOTP = async (phoneNumber, otpCode) => {
+        try {
+            const response = await axios.post('http://localhost:5182/api/auth/verify-otp', { phoneNumber, otp: otpCode });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Cập nhật mật khẩu
+    const updatePassword = async (phoneNumber, newPassword) => {
+        try {
+            const response = await axios.post('http://localhost:5182/api/User/update-password', { phoneNumber, password: newPassword });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Validation chỉ nhận số cho số điện thoại
+    const handlePhoneInput = (e) => {
+        const value = e.target.value.replace(/[^0-9]/g, '');
+        setPhoneNumber(value);
+    };
+
+    // Xử lý submit số điện thoại
+    const handlePhoneSubmit = async (e) => {
+        e.preventDefault();
+        if (!phoneNumber) {
+            setError('Vui lòng nhập số điện thoại!');
             return;
         }
         setLoading(true);
+        setError('');
+        setSuccessMsg('');
         try {
-            // Gửi request đăng nhập tới backend
-            const response = await axios.post('http://localhost:5182/api/auth/login', { email, password });
-            const { success, data } = response.data;
-            if (!success || !data?.token || !data?.roleName) {
-                setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
-                setLoading(false);
-                return;
+            const verificationStatus = await checkPhoneVerification(phoneNumber);
+
+            if (verificationStatus.success && verificationStatus.data) {
+                // Nếu đã verify thì chuyển sang form đăng nhập
+                setStep('login');
+            } else {
+                await sendOTP(phoneNumber);
+                setStep('otp');
             }
-            // Sử dụng login từ AuthContext để lưu thông tin đăng nhập toàn cục
-            const { token, userId, roleName } = data;
-            if (!token || !roleName || typeof userId === 'undefined') {
-                setError('Đăng nhập thất bại hoặc thiếu thông tin userId!');
-                setLoading(false);
-                return;
-            }
-            await login(token, roleName, Number(userId));
         } catch (err) {
-            setError(err.response?.data?.message || 'Đăng nhập thất bại!');
+            setError(err.response?.data?.message || 'Có lỗi xảy ra! Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDownload = () => {
-        const element = document.getElementById('pdf-content');
-        html2pdf().from(element).save('ket-qua.pdf');
+    // Xử lý submit OTP
+    const handleOTPSubmit = async (e) => {
+        e.preventDefault();
+        if (!otp) {
+            setError('Vui lòng nhập mã OTP!');
+            return;
+        }
+        setLoading(true);
+        setError('');
+        setSuccessMsg('');
+        try {
+            const verificationResult = await verifyOTP(phoneNumber, otp);
+            if (verificationResult.success) {
+                setStep('password-setup');
+            } else {
+                setError('Mã OTP không chính xác!');
+            }
+        } catch (err) {
+            setError(err.response?.data?.message || 'Có lỗi xảy ra! Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Xử lý submit mật khẩu mới
+    const handlePasswordSetup = async (e) => {
+        e.preventDefault();
+        if (!password || !confirmPassword) {
+            setError('Vui lòng nhập đầy đủ mật khẩu!');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setError('Mật khẩu xác nhận không khớp!');
+            return;
+        }
+        setLoading(true);
+        setError('');
+        setSuccessMsg('');
+        try {
+            await updatePassword(phoneNumber, password);
+            setStep('login');
+            setPassword('');
+            setConfirmPassword('');
+            setSuccessMsg('Tạo mật khẩu thành công! Vui lòng đăng nhập.');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Có lỗi xảy ra! Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Xử lý đăng nhập
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        if (!password) {
+            setError('Vui lòng nhập mật khẩu!');
+            return;
+        }
+        setLoading(true);
+        setError('');
+        setSuccessMsg('');
+        try {
+            const response = await axios.post('http://localhost:5182/api/auth/login', { phoneNumber, password });
+            const { success, data } = response.data;
+            if (!success || !data?.token || !data?.roleName) {
+                setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
+                return;
+            }
+            const { token, userId, roleName } = data;
+            await login(token, roleName, Number(userId));
+            setSuccessMsg('Đăng nhập thành công! Đang chuyển hướng...');
+            setTimeout(() => navigate(`/${roleName.toLowerCase()}/dashboard`), 1000);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    const handlebacktoLogin = () => {
+        setStep('phone');
+        setError('');
+        setSuccessMsg('');
+        setOtp('');
+        setPassword('');
+        setConfirmPassword('');
+    };
+    const handleGoogleLogin = () => {
+        const clientId = '1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com';
+        const redirectUri = 'http://localhost:3000/auth/google/callback';
+        const scope = 'email profile';
+        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
+        window.location.href = googleAuthUrl;
+    };
+
+    const renderForm = () => {
+        switch (step) {
+            case 'phone':
+                return (
+                    <>
+                        <form onSubmit={handlePhoneSubmit} autoComplete="off">
+                            <div className="form-group">
+                                <div className="login-title">Đăng nhập để truy cập hệ thống</div>
+                                {/* <div className="login-subtitle">Đăng nhập để truy cập hệ thống</div> */}
+                                <input
+                                    type="tel"
+                                    className="form-input"
+                                    placeholder="Nhập số điện thoại"
+                                    value={phoneNumber}
+                                    onChange={handlePhoneInput}
+                                    required
+                                    pattern="[0-9]*"
+                                    inputMode="numeric"
+                                />
+                                <i className="fas fa-phone input-icon" style={{ marginTop: '25px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
+                            </div>
+                            <button type="submit" className="btn btn-primary" disabled={loading}>
+                                {loading ? <><span className="spinner"></span>Đang xử lý...</> : 'Tiếp tục'}
+                            </button>
+                        </form>
+                        <div className="divider"><span>Hoặc đăng nhập bằng</span></div>
+                        <button onClick={handleGoogleLogin} className="btn google-btn">
+                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
+                            Đăng nhập bằng Google
+                        </button>
+                    </>
+                );
+            case 'otp':
+                return (
+                    <form onSubmit={handleOTPSubmit} autoComplete="off">
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                className="form-input"
+                                placeholder="Nhập mã OTP"
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
+                                required
+                            />
+                            <i className="fas fa-key input-icon"></i>
+                        </div>
+                        <div className="btn-group">
+                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
+                                Quay lại
+                            </button>
+                            <button type="submit" className="btn btn-primary" disabled={loading}>
+                                {loading ? <><span className="spinner"></span>Đang xác thực...</> : 'Xác thực OTP'}
+                            </button>
+                        </div>
+                    </form>
+                );
+            case 'password-setup':
+                return (
+                    <form onSubmit={handlePasswordSetup} autoComplete="off">
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Nhập mật khẩu mới"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <i className="fas fa-lock input-icon"></i>
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Xác nhận mật khẩu mới"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            <i className="fas fa-lock input-icon"></i>
+                        </div>
+                        <div className="btn-group">
+                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
+                                Quay lại
+                            </button>
+                            <button type="submit" className="btn btn-primary" disabled={loading}>
+                                {loading ? <><span className="spinner"></span>Đang cập nhật...</> : 'Cập nhật mật khẩu'}
+                            </button>
+                        </div>
+                    </form>
+                );
+            case 'login':
+                return (
+                    <form onSubmit={handleLogin} autoComplete="off">
+                        <div className="form-group"><div className="login-title">Vui lòng nhập mật khẩu</div>
+                            <input
+                                type="tel"
+                                className="form-input"
+                                value={phoneNumber}
+                                disabled
+                            />
+                            <i className="fas fa-phone input-icon" style={{ marginTop: '25px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                className="form-input"
+                                placeholder="Nhập mật khẩu"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <i className="fas fa-lock input-icon" style={{ marginTop: '-7px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
+                        </div>
+                        <div className="btn-group">
+                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
+                                Quay lại
+                            </button>
+                            <button type="submit" className="btn btn-primary" disabled={loading}>
+                                {loading ? <><span className="spinner"></span>Đang đăng nhập...</> : 'Đăng nhập'}
+                            </button>
+                        </div>
+                    </form>
+                );
+        }
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: `url('/src/assets/login-bg.png') center/cover no-repeat, #f5f7fa`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        }}>
-            <Card style={{ maxWidth: 400, width: '100%', borderRadius: 16, boxShadow: '0 4px 32px rgba(0,0,0,0.10)', background: 'rgba(255,255,255,0.95)' }}>
-                <div style={{ textAlign: 'center', marginBottom: 24 }}>
-                    <Title level={2} style={{ marginBottom: 0 }}>
-                        <i className="fas fa-heartbeat" style={{ color: '#1890ff', marginRight: 8 }}></i>
-                        School Health
-                    </Title>
-                    <div style={{ color: '#888', fontSize: 18, marginTop: 8 }}>Đăng nhập hệ thống</div>
+        <div className="login-bg">
+            {/* SVG động nền ở 2 góc */}
+            <svg
+                className="corner-animated-bg top-left-bg"
+                viewBox="0 0 200 200"
+                preserveAspectRatio="none"
+            >
+                <circle cx="100" cy="100" r="80" fill="#fee440" opacity="0.6">
+                    <animate attributeName="cx" values="100;150;100" dur="8s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="100;50;100" dur="10s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="50" cy="150" r="60" fill="#3ddc97" opacity="0.5">
+                    <animate attributeName="cx" values="50;30;50" dur="7s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="150;120;150" dur="9s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+
+            <svg
+                className="corner-animated-bg bottom-right-bg"
+                viewBox="0 0 200 200"
+                preserveAspectRatio="none"
+            >
+                <circle cx="100" cy="100" r="70" fill="#4361ee" opacity="0.6">
+                    <animate attributeName="cx" values="100;50;100" dur="6s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="100;150;100" dur="8s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="150" cy="50" r="50" fill="#ff6b6b" opacity="0.5">
+                    <animate attributeName="cx" values="150;170;150" dur="5s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="50;80;50" dur="7s" repeatCount="indefinite" />
+                </circle>
+            </svg>
+
+            {/* SVG động các góc */}
+            <img src={bagpackSvg} alt="bagpack" className="corner-svg top-left-svg" />
+            <img src={eLearningSvg} alt="e-learning" className="corner-svg top-right-svg" />
+            <img src={researchSvg} alt="research" className="corner-svg bottom-left-svg" />
+            <img src={studentSvg} alt="student" className="corner-svg bottom-right-svg" />
+
+            <div className="login-container">
+                <div className="login-logo">
+                    <i className="fas fa-heartbeat"></i>
+                    <span>School Health</span>
                 </div>
-                {error && <Alert type="error" message={error} showIcon style={{ marginBottom: 16 }} />}
-                <Form layout="vertical" onFinish={handleSubmit} autoComplete="off">
-                    <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
-                        <Input type="email" placeholder="Nhập email" size="large" />
-                    </Form.Item>
-                    <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
-                        <Input.Password placeholder="Nhập mật khẩu" size="large" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block size="large" loading={loading}>
-                            Đăng nhập
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                <div className="login-title">Hệ thống sức khỏe học đường</div>
+
+                <div className="login-box">
+                    {error && <div className="alert alert-danger">{error}</div>}
+                    {successMsg && <div className="alert alert-success" style={{ background: '#E8F5E9', color: '#388E3C', border: '1px solid #C8E6C9' }}>{successMsg}</div>}
+                    {renderForm()}
+                </div>
+            </div>
         </div>
     );
 };
