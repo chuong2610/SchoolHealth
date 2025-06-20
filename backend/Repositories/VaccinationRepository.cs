@@ -26,13 +26,21 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public Task<List<Vaccination>> GetVaccinationByNotificationIdAsync(int notificationId)
+        public async Task<List<Vaccination>> GetVaccinationsByNotificationIdAsync(int notificationId, int pageNumber, int pageSize)
         {
-            return _context.Vaccinations
+            return await _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
                 .Where(v => v.NotificationId == notificationId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<int> CountVaccinationsByNotificationIdAsync(int notificationId)
+        {
+            return await _context.Vaccinations
+                .CountAsync(v => v.NotificationId == notificationId);
         }
 
         public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize)

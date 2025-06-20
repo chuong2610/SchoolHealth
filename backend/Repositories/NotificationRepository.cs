@@ -65,16 +65,25 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<Notification>> GetAllNotificationsAsync()
+        public async Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize)
         {
             return await _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
                         .ThenInclude(s => s.Class)
                 .Where(n => n.IsActive)
+                .OrderByDescending(n => n.Id) // Sắp xếp để kết quả ổn định
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
+        public async Task<int> CountNotificationsAsync()
+        {
+            return await _context.Notifications
+                .Where(n => n.IsActive)
+                .CountAsync();
+        }
 
         public async Task<bool> CreateNotificationAsync(Notification notification)
         {

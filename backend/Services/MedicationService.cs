@@ -66,22 +66,64 @@ namespace backend.Services
 
 
 
-        public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()
+        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int pageNumber, int pageSize)
         {
-            var medications = await _medicationRepository.GetMedicationsPendingAsync();
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountPendingMedicationsAsync();
+            var medications = await _medicationRepository
+                .GetMedicationsPendingAsync(pageNumber, pageSize);
+
+            var dtos = medications
+                .Select(m => MapToDTO(m))
+                .ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize)
         {
-            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id);
-            return medications.Select(m => MapToDTO(m)).ToList();
-        }
+            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id);
+            var medications = await _medicationRepository
+                .GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize);
 
-        public async Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id)
+            var dtos = medications
+                .Select(m => MapToDTO(m))
+                .ToList();
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                CurrentPage = pageNumber
+            };
+        }
+        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(
+    int id, int pageNumber, int pageSize)
         {
-            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id);
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id);
+
+            var medications = await _medicationRepository
+                .GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize);
+
+            var medicationDTOs = medications.Select(m => MapToDTO(m)).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = medicationDTOs,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
@@ -138,11 +180,28 @@ namespace backend.Services
 
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
-            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId);
+
+            var medications = await _medicationRepository
+                .GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize);
+
+            var dtos = medications
+                .Select(m => MapToDTO(m))
+                .ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<List<MedicationDTO>> GetMedicationsActiveAsync()
         {

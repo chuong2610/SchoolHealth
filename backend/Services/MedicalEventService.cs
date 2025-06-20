@@ -85,18 +85,31 @@ namespace backend.Services
                 }).ToList()
             };
         }
-        public async Task<List<MedicalEventDTO>> GetAllMedicalEventsAsync()
+        public async Task<PageResult<MedicalEventDTO>> GetAllMedicalEventsAsync(int pageNumber, int pageSize)
         {
-            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync();
-            return medicalEvents.Select(me => new MedicalEventDTO
+            var totalItems = await _medicalEventRepository.CountMedicalEventsAsync();
+
+            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync(pageNumber, pageSize);
+
+            var eventDTOs = medicalEvents.Select(me => new MedicalEventDTO
             {
                 Id = me.Id,
                 EventType = me.EventType,
                 Location = me.Location,
                 Date = me.Date,
-                StudentName = me.Student.Name, // Assuming Student has a Name property
-                NurseName = me.Nurse.Name // Assuming Nurse has a Name property
+                StudentName = me.Student?.Name,
+                NurseName = me.Nurse?.Name
             }).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicalEventDTO>
+            {
+                Items = eventDTOs,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
         }
         public async Task<List<MedicalEventDTO>> GetMedicalEventsTodayAsync()
         {
@@ -116,4 +129,4 @@ namespace backend.Services
             return await _medicalEventRepository.GetWeeklyMedicalEventCountsAsync();
         }
     }
-}    
+}

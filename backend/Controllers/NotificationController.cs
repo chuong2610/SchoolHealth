@@ -87,27 +87,50 @@ namespace backend.Controllers
             }
         }
         [HttpGet("admin/{id}")]
-        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id)
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id, int pageNumber, int pageSize)
         {
             try
             {
-                var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+                var notification = await _notificationService
+                    .GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize);
+
                 if (notification == null)
                 {
                     return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
                 }
-                return Ok(new BaseResponse<NotificationDetailAdminDTO>(notification, "Lấy thông tin chi tiết thông báo thành công", true));
+
+                return Ok(new BaseResponse<NotificationDetailAdminDTO>(
+                    notification,
+                    "Lấy thông tin chi tiết thông báo thành công",
+                    true));
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationClassDTO>>> GetAll()
+        public async Task<ActionResult<BaseResponse<PageResult<NotificationClassDTO>>>> GetAll(int pageNumber, int pageSize)
         {
-            var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
-            return Ok(notifications);
+            try
+            {
+                var notificationsPage = await _notificationService
+                    .GetAllNotificationAsync(pageNumber, pageSize);
+
+                return Ok(new BaseResponse<PageResult<NotificationClassDTO>>(
+                    notificationsPage,
+                    "Lấy danh sách thông báo thành công",
+                    true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false));
+            }
         }
 
 

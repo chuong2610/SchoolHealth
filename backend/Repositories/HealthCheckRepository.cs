@@ -48,14 +48,24 @@ namespace backend.Repositories
                 .CountAsync(h => h.Student.ParentId == parentId);
         }
 
-        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId)
+        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize)
         {
             return await _context.HealthChecks
                 .Include(h => h.Nurse)
                 .Include(h => h.Student)
                 .Where(h => h.NotificationId == notificationId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<int> CountHealthChecksByNotificationIdAsync(int notificationId)
+        {
+            return await _context.HealthChecks
+                .CountAsync(h => h.NotificationId == notificationId);
+        }
+
+
         public async Task<bool> CreateHealthCheckAsync(HealthCheck healthCheck)
         {
             _context.HealthChecks.Add(healthCheck);

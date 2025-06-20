@@ -8,7 +8,7 @@ namespace backend.Interfaces
         Task<List<HealthCheckDTO>> GetAllHealthChecksAsync();
         Task<HealthCheckDetailDTO?> GetHealthCheckByIdAsync(int id);
         Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize);
-        Task<List<HealthCheckDTO>> GetHealthChecksByNotificationIdAsync(int notificationId);
+        Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize);
         Task<bool> CreateHealthCheckAsync(HealthCheck healthCheck);
         // Task<HealthCheck> CreateHealthCheckAsync(HealthCheck healthCheck);
         // Task<HealthCheck> UpdateHealthCheckAsync(int id, HealthCheck healthCheck);

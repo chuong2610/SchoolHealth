@@ -12,13 +12,12 @@ namespace backend.Interfaces
                 Task<List<NotificationDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
                 Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
                 Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId);
-                Task<NotificationDetailAdminDTO> GetNotificationDetailAdminDTOAsync(int id);
+                Task<NotificationDetailAdminDTO?> GetNotificationDetailAdminDTOAsync(int id, int pageNumber, int pageSize);
                 Task<List<NotificationNurseDTO>> GetNotificationsByNurseIdAsync(int id);
                 Task<List<NotificationSummaryDTO>> Get5Notifications();
                 Task<bool> CreateAndSendNotificationAsync(NotificationRequest request, int createdById);
                 Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest);
                 Task<bool> DeleteNotificationAsync(int id);
-                Task<IEnumerable<NotificationClassDTO>> GetAllNotificationAsync();
-
+                Task<PageResult<NotificationClassDTO>> GetAllNotificationAsync(int pageNumber, int pageSize);
         }
 }

@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
 using Microsoft.AspNetCore.Mvc;
@@ -43,12 +44,12 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMedicalEvents()
+        public async Task<IActionResult> GetAllMedicalEvents(int pageNumber, int pageSize)
         {
             try
             {
-                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync();
-                return Ok(new BaseResponse<List<MedicalEventDTO>>(medicalEvents, "Medical events retrieved successfully", true));
+                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync(pageNumber, pageSize);
+                return Ok(new BaseResponse<PageResult<MedicalEventDTO>>(medicalEvents, "Medical events retrieved successfully", true));
             }
             catch (Exception ex)
             {
