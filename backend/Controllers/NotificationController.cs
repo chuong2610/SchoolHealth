@@ -20,12 +20,17 @@ namespace backend.Controllers
 
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetNotificationsByParentId(int parentId)
+        public async Task<IActionResult> GetNotificationsByParentId(int parentId, int pageNumber, int pageSize)
         {
             try
             {
-                var notifications = await _notificationService.GetNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationDTO>>(notifications, "Lấy danh sách thông báo thành công", true));
+                var notifications = await _notificationService
+                    .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize);
+
+                return Ok(new BaseResponse<PageResult<NotificationDTO>>(
+                    notifications,
+                    "Lấy danh sách thông báo thành công",
+                    true));
             }
             catch (Exception ex)
             {

@@ -14,15 +14,27 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<List<Notification>> GetNotificationsByParentIdAsync(int parentId)
+        public async Task<List<Notification>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
             return await _context.Notifications
-             .Include(n => n.NotificationStudents)
-            .ThenInclude(ns => ns.Student)
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
                 .Where(n => n.NotificationStudents
                     .Any(ns => ns.Student.ParentId == parentId))
+                .OrderByDescending(n => n.Id) // Sắp xếp để phân trang ổn định
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
+
+        public async Task<int> CountNotificationsByParentIdAsync(int parentId)
+        {
+            return await _context.Notifications
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
+                .CountAsync(n => n.NotificationStudents.Any(ns => ns.Student.ParentId == parentId));
+        }
+
 
         public async Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
         {

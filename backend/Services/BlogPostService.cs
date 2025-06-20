@@ -20,14 +20,11 @@ namespace backend.Services
         }
 
 
-        public async Task<IEnumerable<BlogPostDTO>> GetAllAsync(int pageNumber = 1, int pageSize = 3)
+        public async Task<PageResult<BlogPostDTO>> GetAllAsync(int pageNumber, int pageSize)
         {
-            var posts = await _repository.GetAllAsync();
-
+            var totalPosts = await _repository.CountAsync();
             // Phân trang dữ liệu
-            var pagedPosts = posts
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+            var pagedPosts = await _repository.GetAllAsync(pageNumber, pageSize);
 
             var postDtos = pagedPosts.Select(post =>
             {
@@ -58,10 +55,15 @@ namespace backend.Services
                 };
             }).ToList();
 
-            return postDtos;
+            int totalPages = (int)Math.Ceiling((double)totalPosts / pageSize);
+
+            return new PageResult<BlogPostDTO>
+            {
+                Items = postDtos,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
-
-
 
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
         {

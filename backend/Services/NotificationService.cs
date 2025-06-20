@@ -22,10 +22,18 @@ namespace backend.Services
             _classrRepository = classrRepository;
 
         }
-        public async Task<List<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId)
+        public async Task<PageResult<NotificationDTO>> GetNotificationsByParentIdAsync(
+    int parentId, int pageNumber, int pageSize)
         {
-            var notifications = await _notificationRepository.GetNotificationsByParentIdAsync(parentId);
+            // Đếm tổng số bản ghi
+            var totalCount = await _notificationRepository.CountNotificationsByParentIdAsync(parentId);
+
+            // Lấy danh sách đã phân trang
+            var notifications = await _notificationRepository
+                .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize);
+
             var result = new List<NotificationDTO>();
+
             foreach (var notification in notifications)
             {
                 foreach (var student in notification.NotificationStudents)
@@ -33,10 +41,18 @@ namespace backend.Services
                     result.Add(MapToListDTO(notification, student.Student.Id, student.Student.Name));
                 }
             }
-            return result;
-            // return notifications.Select(n => MapToDTO(n)).ToList();
 
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return new PageResult<NotificationDTO>
+            {
+                Items = result,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber,
+                TotalItems = totalCount
+            };
         }
+
         public async Task<List<NotificationDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
         {
             var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);

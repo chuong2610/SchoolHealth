@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("{id}")]
-        
+
         public async Task<IActionResult> GetHealthCheckById(int id)
         {
             try
@@ -48,12 +49,12 @@ namespace backend.Controllers
 
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetAllHealthChecksByParentId(int parentId)
+        public async Task<IActionResult> GetAllHealthChecksByParentId(int parentId, int pageNumber, int pageSize)
         {
             try
             {
-                var healthChecks = await _healthCheckService.GetAllHealthChecksByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<HealthCheckDTO>>(healthChecks, "Lấy danh sách kiểm tra sức khỏe theo phụ huynh thành công", true));
+                var healthChecks = await _healthCheckService.GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize);
+                return Ok(new BaseResponse<PageResult<HealthCheckDTO>>(healthChecks, "Lấy danh sách kiểm tra sức khỏe theo phụ huynh thành công", true));
             }
             catch (Exception ex)
             {
