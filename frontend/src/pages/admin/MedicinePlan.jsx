@@ -285,361 +285,211 @@ const MedicinePlan = () => {
   const priorityData = getPriorityData();
 
   return (
-    <div className="admin-theme">
+    <div className="admin-plans-container">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="admin-container"
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="accounts-header mb-4">
+        <motion.div variants={itemVariants} className="admin-plans-header">
           <Row className="align-items-center">
             <Col>
-              <h1 className="accounts-title mb-2">
+              <h1 className="admin-plans-title mb-2">
                 <FaCalendarAlt className="me-3" />
                 Kế hoạch thuốc
               </h1>
-              <p className="accounts-subtitle mb-0">
-                Lập và quản lý kế hoạch phân phối thuốc cho học sinh
+              <p className="admin-plans-subtitle mb-0">
+                Lập và quản lý kế hoạch phân phối thuốc cho học sinh với giao diện gradient cam tím
               </p>
             </Col>
             <Col xs="auto">
-              <Button
-                variant="primary"
-                className="btn-primary me-2"
-                onClick={() => handleShowModal("add")}
-              >
-                <FaPlus className="me-2" />
-                Tạo kế hoạch
-              </Button>
-              <Dropdown>
-                <Dropdown.Toggle variant="outline-primary">
+              <div className="d-flex gap-3">
+                <button
+                  className="admin-primary-btn"
+                  onClick={() => handleShowModal("add")}
+                >
+                  <FaPlus className="me-2" />
+                  Tạo kế hoạch
+                </button>
+                <button className="admin-secondary-btn">
                   <FaDownload className="me-2" />
                   Xuất báo cáo
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item>Xuất Excel</Dropdown.Item>
-                  <Dropdown.Item>Xuất PDF</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+                </button>
+              </div>
             </Col>
           </Row>
         </motion.div>
 
-        {/* Statistics Cards */}
-        <motion.div variants={itemVariants} className="row mb-4">
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-primary mb-2">
-                <FaCalendarAlt size={24} />
-              </div>
-              <div className="stat-value">{stats.total}</div>
-              <div className="stat-label">Tổng kế hoạch</div>
-            </div>
+        {/* Search Bar */}
+        <motion.div variants={itemVariants} className="admin-plans-search-bar">
+          <div style={{ flex: 1 }}>
+            <input
+              type="text"
+              placeholder="Tìm kiếm kế hoạch thuốc..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="admin-plans-search-input"
+            />
           </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-info mb-2">
-                <FaPlay size={24} />
-              </div>
-              <div className="stat-value">{stats.active}</div>
-              <div className="stat-label">Đang thực hiện</div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-success mb-2">
-                <FaCheckCircle size={24} />
-              </div>
-              <div className="stat-value">{stats.completed}</div>
-              <div className="stat-label">Hoàn thành</div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-warning mb-2">
-                <FaClock size={24} />
-              </div>
-              <div className="stat-value">{stats.pending}</div>
-              <div className="stat-label">Chờ duyệt</div>
-            </div>
-          </div>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="admin-plans-search-input"
+            style={{ flex: '0 0 200px' }}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Chờ duyệt">Chờ duyệt</option>
+            <option value="Đang thực hiện">Đang thực hiện</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+            <option value="Tạm dừng">Tạm dừng</option>
+          </select>
+          <select
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+            className="admin-plans-search-input"
+            style={{ flex: '0 0 200px' }}
+          >
+            <option value="all">Tất cả mức độ</option>
+            <option value="Khẩn cấp">Khẩn cấp</option>
+            <option value="Cao">Cao</option>
+            <option value="Trung bình">Trung bình</option>
+            <option value="Thấp">Thấp</option>
+          </select>
+          <button className="admin-medicine-filter-btn">
+            <FaFilter />
+            Lọc nâng cao
+          </button>
         </motion.div>
 
-        {/* Charts */}
-        <motion.div variants={itemVariants} className="row mb-4">
-          <div className="col-md-8">
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h5 className="mb-0">Tiến độ thực hiện kế hoạch</h5>
-              </Card.Header>
-              <Card.Body>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={progressData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="progress" fill="#2563eb" name="Tiến độ (%)" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </div>
-          <div className="col-md-4">
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h5 className="mb-0">Độ ưu tiên</h5>
-              </Card.Header>
-              <Card.Body>
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={priorityData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, value }) => `${name}: ${value}`}
-                    >
-                      {priorityData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={PRIORITY_COLORS[entry.name] || '#6c757d'} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </Card.Body>
-            </Card>
-          </div>
-        </motion.div>
-
-        {/* Tabs */}
-        <motion.div variants={itemVariants}>
-          <Tabs activeKey={activeTab} onSelect={setActiveTab} className="nav-pills mb-4">
-            <Tab eventKey="list" title={<><FaCalendarAlt className="me-2" />Danh sách</>}>
-              {/* Controls */}
-              <div className="search-filter-bar mb-4">
-                <Row className="align-items-center">
-                  <Col md={4}>
-                    <InputGroup>
-                      <InputGroup.Text>
-                        <FaSearch />
-                      </InputGroup.Text>
-                      <Form.Control
-                        type="text"
-                        placeholder="Tìm kiếm kế hoạch..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="search-input"
-                      />
-                    </InputGroup>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                    >
-                      <option value="all">Tất cả trạng thái</option>
-                      <option value="Chờ duyệt">Chờ duyệt</option>
-                      <option value="Đang thực hiện">Đang thực hiện</option>
-                      <option value="Hoàn thành">Hoàn thành</option>
-                      <option value="Tạm dừng">Tạm dừng</option>
-                    </Form.Select>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Select
-                      value={filterPriority}
-                      onChange={(e) => setFilterPriority(e.target.value)}
-                    >
-                      <option value="all">Tất cả mức độ</option>
-                      <option value="Khẩn cấp">Khẩn cấp</option>
-                      <option value="Cao">Cao</option>
-                      <option value="Trung bình">Trung bình</option>
-                      <option value="Thấp">Thấp</option>
-                    </Form.Select>
-                  </Col>
-                </Row>
-              </div>
-
-              {/* Plans Table */}
-              <div className="plan-table-wrapper">
-                <div className="plan-table-header">
-                  <div className="plan-table-row header-row">
-                    <div className="plan-cell title-cell">
-                      <span>Kế hoạch</span>
-                    </div>
-                    <div className="plan-cell period-cell">
-                      <span>Thời gian</span>
-                    </div>
-                    <div className="plan-cell progress-cell">
-                      <span>Tiến độ</span>
-                    </div>
-                    <div className="plan-cell students-cell">
-                      <span>Học sinh</span>
-                    </div>
-                    <div className="plan-cell medicines-cell">
-                      <span>Thuốc</span>
-                    </div>
-                    <div className="plan-cell priority-cell">
-                      <span>Ưu tiên</span>
-                    </div>
-                    <div className="plan-cell status-cell">
-                      <span>Trạng thái</span>
-                    </div>
-                    <div className="plan-cell action-cell">
-                      <span>Thao tác</span>
+        {/* Plans Grid */}
+        <motion.div variants={itemVariants} className="admin-plans-grid">
+          <AnimatePresence>
+            {filteredPlans.map((plan, index) => (
+              <motion.div
+                key={plan.id}
+                className="admin-plan-card"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="admin-plan-card-header">
+                  <div className="admin-plan-title">
+                    <FaCalendarAlt />
+                    {plan.title}
+                  </div>
+                  <div className="admin-plan-meta">
+                    <span>
+                      <FaUser className="me-1" />
+                      {plan.createdBy}
+                    </span>
+                    <div className="admin-plan-status">
+                      {plan.status === "Chờ duyệt" && <FaClock className="me-1" />}
+                      {plan.status === "Đang thực hiện" && <FaPlay className="me-1" />}
+                      {plan.status === "Hoàn thành" && <FaCheckCircle className="me-1" />}
+                      {plan.status === "Tạm dừng" && <FaPause className="me-1" />}
+                      {plan.status}
                     </div>
                   </div>
                 </div>
 
-                <div className="plan-table-body">
-                  <AnimatePresence>
-                    {filteredPlans.map((plan, index) => (
-                      <motion.div
-                        key={plan.id}
-                        className="plan-table-row data-row"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <div className="plan-cell title-cell">
-                          <div className="plan-info">
-                            <div className="plan-icon">
-                              <FaCalendarAlt />
-                            </div>
-                            <div className="plan-details">
-                              <div className="plan-title">{plan.title}</div>
-                              <div className="plan-description">{plan.description}</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="plan-cell period-cell">
-                          <div className="period-info">
-                            <div className="period-start">
-                              <FaCalendarWeek className="me-1" />
-                              {new Date(plan.startDate).toLocaleDateString('vi-VN')}
-                            </div>
-                            <div className="period-end">
-                              → {new Date(plan.endDate).toLocaleDateString('vi-VN')}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="plan-cell progress-cell">
-                          <div className="progress-info">
-                            <div className="progress-bar-wrapper">
-                              <div
-                                className={`progress-bar ${plan.progress === 100 ? 'success' : plan.progress > 50 ? 'primary' : 'warning'}`}
-                                style={{ width: `${plan.progress}%` }}
-                              ></div>
-                            </div>
-                            <div className="progress-text">{plan.progress}%</div>
-                          </div>
-                        </div>
-
-                        <div className="plan-cell students-cell">
-                          <div className="students-info">
-                            <div className="students-count">
-                              <FaGraduationCap className="me-1" />
-                              {plan.completedStudents}/{plan.totalStudents}
-                            </div>
-                            <div className="students-label">học sinh</div>
-                          </div>
-                        </div>
-
-                        <div className="plan-cell medicines-cell">
-                          <div className="medicines-info">
-                            <div className="medicines-count">
-                              <FaPills className="me-1" />
-                              {plan.medicines.length}
-                            </div>
-                            <div className="medicines-label">loại thuốc</div>
-                          </div>
-                        </div>
-
-                        <div className="plan-cell priority-cell">
-                          <span className={`priority-badge ${plan.priority.toLowerCase().replace(' ', '-')}`}>
-                            {plan.priority === "Khẩn cấp" && <FaExclamationTriangle />}
-                            {plan.priority}
-                          </span>
-                        </div>
-
-                        <div className="plan-cell status-cell">
-                          <span className={`status-badge ${plan.status.toLowerCase().replace(' ', '-')}`}>
-                            {plan.status === "Chờ duyệt" && <FaClock />}
-                            {plan.status === "Đang thực hiện" && <FaPlay />}
-                            {plan.status === "Hoàn thành" && <FaCheckCircle />}
-                            {plan.status === "Tạm dừng" && <FaPause />}
-                            {plan.status === "Hủy bỏ" && <FaStop />}
-                            {plan.status}
-                          </span>
-                        </div>
-
-                        <div className="plan-cell action-cell">
-                          <div className="action-buttons">
-                            <button className="action-btn view-btn" title="Xem chi tiết">
-                              <FaEye />
-                            </button>
-                            <button
-                              className="action-btn edit-btn"
-                              title="Chỉnh sửa"
-                              onClick={() => handleShowModal("edit", plan)}
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              className="action-btn delete-btn"
-                              title="Xóa"
-                              onClick={() => {
-                                setPlanToDelete(plan);
-                                setShowDeleteModal(true);
-                              }}
-                            >
-                              <FaTrash />
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  {filteredPlans.length === 0 && (
-                    <div className="empty-state">
-                      <FaCalendarAlt className="empty-icon" />
-                      <h5>Không tìm thấy kế hoạch nào</h5>
-                      <p>Thử thay đổi bộ lọc hoặc tạo kế hoạch mới</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Tab>
-
-            <Tab eventKey="calendar" title={<><FaCalendarWeek className="me-2" />Lịch</>}>
-              <Card className="chart-card">
-                <Card.Header>
-                  <h5 className="mb-0">Lịch thực hiện kế hoạch</h5>
-                </Card.Header>
-                <Card.Body>
-                  <div className="text-center py-5">
-                    <FaCalendarWeek size={48} className="text-muted mb-3" />
-                    <h5 className="text-muted">Tính năng lịch đang phát triển</h5>
-                    <p className="text-muted">Sẽ sớm có mặt trong phiên bản tiếp theo</p>
+                <div className="admin-plan-card-body">
+                  <div className="admin-plan-description">
+                    {plan.description}
                   </div>
-                </Card.Body>
-              </Card>
-            </Tab>
-          </Tabs>
+
+                  <div className="admin-plan-stats">
+                    <div className="admin-plan-stat">
+                      <div className="admin-plan-stat-value">{plan.totalStudents}</div>
+                      <div className="admin-plan-stat-label">Học sinh</div>
+                    </div>
+                    <div className="admin-plan-stat">
+                      <div className="admin-plan-stat-value">{plan.medicines.length}</div>
+                      <div className="admin-plan-stat-label">Loại thuốc</div>
+                    </div>
+                    <div className="admin-plan-stat">
+                      <div className="admin-plan-stat-value" style={{
+                        color: plan.priority === 'Khẩn cấp' ? '#F44336' :
+                          plan.priority === 'Cao' ? '#FF9800' :
+                            plan.priority === 'Trung bình' ? '#2196F3' : '#4CAF50'
+                      }}>
+                        {plan.priority === 'Khẩn cấp' ? '🔴' :
+                          plan.priority === 'Cao' ? '🟡' :
+                            plan.priority === 'Trung bình' ? '🔵' : '🟢'}
+                      </div>
+                      <div className="admin-plan-stat-label">{plan.priority}</div>
+                    </div>
+                  </div>
+
+                  <div className="admin-plan-progress">
+                    <div className="admin-plan-progress-label">
+                      <span>Tiến độ thực hiện</span>
+                      <span>{plan.progress}%</span>
+                    </div>
+                    <div className="admin-plan-progress-bar">
+                      <div
+                        className="admin-plan-progress-fill"
+                        style={{ width: `${plan.progress}%` }}
+                      ></div>
+                    </div>
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: '#757575',
+                      marginTop: '0.5rem',
+                      display: 'flex',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span>{plan.startDate}</span>
+                      <span>{plan.endDate}</span>
+                    </div>
+                  </div>
+
+                  <div className="admin-plan-actions">
+                    <button
+                      className="admin-plan-btn view"
+                      onClick={() => {/* View logic */ }}
+                    >
+                      <FaEye />
+                      Xem chi tiết
+                    </button>
+                    <button
+                      className="admin-plan-btn edit"
+                      onClick={() => handleShowModal("edit", plan)}
+                    >
+                      <FaEdit />
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      className="admin-plan-btn delete"
+                      onClick={() => {
+                        setPlanToDelete(plan);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      <FaTrash />
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {filteredPlans.length === 0 && search && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#757575' }}>
+              <FaCalendarAlt style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }} />
+              <h4>Không tìm thấy kế hoạch nào</h4>
+              <p>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Add/Edit Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" className="admin-categories-modal">
           <Modal.Header closeButton>
-            <Modal.Title>
+            <Modal.Title className="admin-categories-modal-title">
+              <FaCalendarAlt className="me-2" />
               {modalType === "add" ? "Tạo kế hoạch mới" : "Chỉnh sửa kế hoạch"}
             </Modal.Title>
           </Modal.Header>
@@ -647,109 +497,169 @@ const MedicinePlan = () => {
             <Form>
               <Row>
                 <Col md={8}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tiêu đề kế hoạch *</Form.Label>
-                    <Form.Control
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaEdit />
+                      Tiêu đề kế hoạch *
+                    </label>
+                    <input
                       type="text"
                       placeholder="Nhập tiêu đề kế hoạch"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="admin-categories-form-control"
                     />
-                  </Form.Group>
+                  </div>
                 </Col>
                 <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Độ ưu tiên</Form.Label>
-                    <Form.Select
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaExclamationTriangle />
+                      Độ ưu tiên
+                    </label>
+                    <select
                       value={formData.priority}
                       onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+                      className="admin-categories-form-control"
                     >
-                      <option value="Thấp">Thấp</option>
-                      <option value="Trung bình">Trung bình</option>
-                      <option value="Cao">Cao</option>
-                      <option value="Khẩn cấp">Khẩn cấp</option>
-                    </Form.Select>
-                  </Form.Group>
+                      <option value="Thấp">🟢 Thấp</option>
+                      <option value="Trung bình">🔵 Trung bình</option>
+                      <option value="Cao">🟡 Cao</option>
+                      <option value="Khẩn cấp">🔴 Khẩn cấp</option>
+                    </select>
+                  </div>
                 </Col>
               </Row>
-              <Form.Group className="mb-3">
-                <Form.Label>Mô tả</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Nhập mô tả kế hoạch"
+              <div className="admin-categories-form-group">
+                <label className="admin-categories-form-label">
+                  <FaEdit />
+                  Mô tả kế hoạch
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Nhập mô tả chi tiết kế hoạch..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="admin-categories-form-control"
+                  style={{ resize: 'vertical', minHeight: '100px' }}
                 />
-              </Form.Group>
+              </div>
               <Row>
                 <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Ngày bắt đầu</Form.Label>
-                    <Form.Control
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaCalendarAlt />
+                      Ngày bắt đầu
+                    </label>
+                    <input
                       type="date"
                       value={formData.startDate}
                       onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                      className="admin-categories-form-control"
                     />
-                  </Form.Group>
+                  </div>
                 </Col>
                 <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Ngày kết thúc</Form.Label>
-                    <Form.Control
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaCalendarAlt />
+                      Ngày kết thúc
+                    </label>
+                    <input
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                      className="admin-categories-form-control"
                     />
-                  </Form.Group>
+                  </div>
                 </Col>
                 <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Số học sinh</Form.Label>
-                    <Form.Control
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaGraduationCap />
+                      Số học sinh
+                    </label>
+                    <input
                       type="number"
                       placeholder="0"
                       value={formData.totalStudents}
                       onChange={(e) => setFormData({ ...formData, totalStudents: parseInt(e.target.value) || 0 })}
+                      className="admin-categories-form-control"
                     />
-                  </Form.Group>
+                  </div>
                 </Col>
               </Row>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
               Hủy
-            </Button>
-            <Button
-              variant="primary"
+            </button>
+            <button
+              className="admin-primary-btn"
               onClick={handleSavePlan}
               disabled={loading}
             >
-              {loading && <Spinner animation="border" size="sm" className="me-2" />}
+              {loading && <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>}
               {modalType === "add" ? "Tạo kế hoạch" : "Cập nhật"}
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
         {/* Delete Confirmation Modal */}
-        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="admin-categories-modal">
           <Modal.Header closeButton>
-            <Modal.Title>Xác nhận xóa</Modal.Title>
+            <Modal.Title className="admin-categories-modal-title">
+              <FaTrash className="me-2" />
+              Xác nhận xóa kế hoạch
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Bạn có chắc chắn muốn xóa kế hoạch <strong>{planToDelete?.title}</strong>?</p>
-            <Alert variant="warning">
-              <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị mất.
-            </Alert>
+            <div className="text-center py-4">
+              <div className="mb-4">
+                <FaCalendarAlt style={{ fontSize: '5rem', color: '#F44336', opacity: 0.7 }} />
+              </div>
+              <h4 className="mb-3">Bạn có chắc chắn muốn xóa kế hoạch</h4>
+              <h4 className="mb-4" style={{ color: '#FF9500', fontWeight: 'bold' }}>
+                "{planToDelete?.title}"?
+              </h4>
+              <div style={{
+                padding: '1.5rem',
+                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                border: '2px solid rgba(255, 152, 0, 0.3)',
+                borderRadius: '16px',
+                color: '#FF9800'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <FaExclamationTriangle style={{ marginRight: '0.75rem', fontSize: '1.25rem' }} />
+                  <strong>Cảnh báo quan trọng!</strong>
+                </div>
+                <p style={{ margin: 0, lineHeight: 1.6 }}>
+                  Thao tác này không thể hoàn tác. Tất cả dữ liệu liên quan đến kế hoạch
+                  phân phối thuốc cho <strong>{planToDelete?.totalStudents || 0} học sinh</strong> sẽ bị mất vĩnh viễn.
+                </p>
+              </div>
+            </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-              Hủy
-            </Button>
-            <Button variant="danger" onClick={handleDeletePlan}>
-              Xóa kế hoạch
-            </Button>
+            <button className="admin-secondary-btn" onClick={() => setShowDeleteModal(false)}>
+              Hủy bỏ
+            </button>
+            <button
+              className="admin-medicine-btn delete"
+              onClick={handleDeletePlan}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                width: 'auto',
+                height: 'auto',
+                fontSize: '0.95rem',
+                fontWeight: '600'
+              }}
+            >
+              <FaTrash className="me-2" />
+              Xóa vĩnh viễn
+            </button>
           </Modal.Footer>
         </Modal>
       </motion.div>

@@ -1,14 +1,21 @@
 // Login.jsx - Đăng nhập cho người dùng
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import axiosInstance from '../../api/axiosInstance';
+import axios from 'axios';
+import './Login.css';
 // Styles được import từ main.jsx
 import loginBg from '../../assets/login-bg.png';
 import bagpackSvg from '../../assets/bagpack-svgrepo-com.svg';
 import eLearningSvg from '../../assets/e-learning-svgrepo-com.svg';
 import researchSvg from '../../assets/research-svgrepo-com.svg';
 import studentSvg from '../../assets/student-svgrepo-com.svg';
+
+// API Configuration từ biến môi trường
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5182/api';
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com';
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -19,20 +26,35 @@ const Login = () => {
     const [otp, setOtp] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [countdown, setCountdown] = useState(0);
     const navigate = useNavigate();
-    const { login, user } = useAuth();
+    const { login, isAuthenticated } = useAuth();
 
     // Nếu đã đăng nhập thì tự động chuyển hướng về dashboard đúng role
     useEffect(() => {
-        if (user && user.role) {
-            navigate(`/${user.role}/dashboard`, { replace: true });
+        if (isAuthenticated()) {
+            const role = localStorage.getItem('role');
+            if (role) {
+                navigate(`/${role}`, { replace: true });
+            }
         }
-    }, [user, navigate]);
+    }, [isAuthenticated, navigate]);
+
+    // Countdown timer cho resend OTP
+    useEffect(() => {
+        let timer;
+        if (countdown > 0) {
+            timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        }
+        return () => clearTimeout(timer);
+    }, [countdown]);
 
     // Kiểm tra số điện thoại đã verify chưa
     const checkPhoneVerification = async (phoneNumber) => {
         try {
-            const response = await axios.get(`http://localhost:5182/api/auth/is-verified/${phoneNumber}`);
+            const response = await axios.get(`${API_BASE_URL}/auth/is-verified/${phoneNumber}`);
             return response.data;
         } catch (error) {
             throw error;
@@ -42,7 +64,7 @@ const Login = () => {
     // Gửi OTP
     const sendOTP = async (phoneNumber) => {
         try {
-            const response = await axios.post('http://localhost:5182/api/auth/send-otp', { phoneNumber });
+            const response = await axios.post(`${API_BASE_URL}/auth/send-otp`, { phoneNumber });
             return response.data;
         } catch (error) {
             throw error;
@@ -52,7 +74,7 @@ const Login = () => {
     // Xác thực OTP
     const verifyOTP = async (phoneNumber, otpCode) => {
         try {
-            const response = await axios.post('http://localhost:5182/api/auth/verify-otp', { phoneNumber, otp: otpCode });
+            const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, { phoneNumber, otp: otpCode });
             return response.data;
         } catch (error) {
             throw error;
@@ -62,7 +84,7 @@ const Login = () => {
     // Cập nhật mật khẩu
     const updatePassword = async (phoneNumber, newPassword) => {
         try {
-            const response = await axios.post('http://localhost:5182/api/User/update-password', { phoneNumber, password: newPassword });
+            const response = await axios.post(`${API_BASE_URL}/User/update-password`, { phoneNumber, password: newPassword });
             return response.data;
         } catch (error) {
             throw error;
@@ -164,7 +186,7 @@ const Login = () => {
         setError('');
         setSuccessMsg('');
         try {
-            const response = await axios.post('http://localhost:5182/api/auth/login', { phoneNumber, password });
+            const response = await axios.post(`${API_BASE_URL}/auth/login`, { phoneNumber, password });
             const { success, data } = response.data;
             if (!success || !data?.token || !data?.roleName) {
                 setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
@@ -173,13 +195,14 @@ const Login = () => {
             const { token, userId, roleName } = data;
             await login(token, roleName, Number(userId));
             setSuccessMsg('Đăng nhập thành công! Đang chuyển hướng...');
-            setTimeout(() => navigate(`/${roleName.toLowerCase()}/dashboard`), 1000);
+            setTimeout(() => navigate(`/${roleName.toLowerCase()}`), 1000);
         } catch (err) {
             setError(err.response?.data?.message || 'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.');
         } finally {
             setLoading(false);
         }
     };
+
     const handlebacktoLogin = () => {
         setStep('phone');
         setError('');
@@ -188,11 +211,14 @@ const Login = () => {
         setPassword('');
         setConfirmPassword('');
     };
+
     const handleGoogleLogin = () => {
-        const clientId = '1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com';
-        const redirectUri = 'http://localhost:3000/auth/google/callback';
+        console.log('🔗 Initiating Google login...');
+
         const scope = 'email profile';
-        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
+        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
+
+        console.log('🌐 Redirecting to Google Auth:', googleAuthUrl);
         window.location.href = googleAuthUrl;
     };
 

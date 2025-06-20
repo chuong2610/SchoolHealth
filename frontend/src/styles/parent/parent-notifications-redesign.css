@@ -1,0 +1,170 @@
+/* ==========================================
+   Parent Notifications Redesign - Purple to Blue Theme
+   ========================================== */
+
+/* Tab Navigation Enhancement */
+.nav-pills .nav-link {
+    background: transparent !important;
+    border: 2px solid rgba(107, 70, 193, 0.2) !important;
+    color: var(--parent-primary) !important;
+    font-weight: 600 !important;
+    border-radius: var(--parent-border-radius-lg) !important;
+    padding: 0.75rem 1.5rem !important;
+    transition: all var(--parent-transition-normal) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.nav-pills .nav-link:hover {
+    background: var(--parent-gradient-secondary) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--parent-shadow-md) !important;
+    border-color: transparent !important;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--parent-gradient-primary) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: var(--parent-shadow-lg) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Notification Table Enhancement */
+.notification-table-container {
+    background: white;
+    border-radius: var(--parent-border-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-lg);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+    position: relative;
+}
+
+.notification-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--parent-gradient-primary);
+}
+
+.notification-table tbody tr:hover {
+    background: linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--parent-shadow-sm) !important;
+}
+
+/* Status Badges Enhancement */
+.status-badge {
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--parent-border-radius-lg) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: var(--parent-shadow-sm) !important;
+    transition: all var(--parent-transition-normal) !important;
+}
+
+.status-badge:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: var(--parent-shadow-md) !important;
+}
+
+/* Loading State */
+.loading-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: var(--parent-border-radius-xl);
+    box-shadow: var(--parent-shadow-md);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: var(--parent-border-radius-xl);
+    box-shadow: var(--parent-shadow-md);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+}
+
+.empty-state h5 {
+    color: var(--parent-primary);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Modal Enhancement */
+.notification-modal .modal-info-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--parent-border-radius-lg);
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(107, 70, 193, 0.1);
+    box-shadow: var(--parent-shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-modal .modal-info-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--parent-gradient-primary);
+}
+
+/* Response Section */
+.response-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--parent-border-radius-lg);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+    box-shadow: var(--parent-shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.response-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--parent-gradient-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-table-container {
+        overflow-x: auto;
+    }
+
+    .nav-pills {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+}

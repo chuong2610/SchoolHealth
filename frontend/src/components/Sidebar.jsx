@@ -45,12 +45,12 @@ const Sidebar = (props) => {
             { path: '/admin/accounts', icon: <FaUserShield />, label: 'Quản lý tài khoản' },
             { path: '/admin/categories', icon: <FaList />, label: 'Danh mục' },
             { path: '/admin/medicines/inventory', icon: <FaBoxes />, label: 'Kho thuốc' },
-            { path: '/admin/medicines/plan', icon: <FaClipboardCheck />, label: 'Kế hoạch dùng thuốc' },
+            { path: '/admin/medicines/plan', icon: <FaClipboardCheck />, label: 'Kế hoạch thuốc' },
             { path: '/admin/medicines/requests', icon: <FaMedkit />, label: 'Yêu cầu cấp thuốc' },
             { path: '/admin/notification/management', icon: <FaBell />, label: 'Thông báo' },
             { path: '/admin/reports', icon: <FaFileAlt />, label: 'Báo cáo thống kê' },
             { path: '/admin/profile', icon: <FaUserCog />, label: 'Hồ sơ cá nhân' },
-            { path: '/admin/settings', icon: <FaCog />, label: 'Cài đặt' },
+            
         ];
     } else if (user.role === 'nurse') {
         menuItems = [
@@ -59,7 +59,7 @@ const Sidebar = (props) => {
             { path: '/nurse/receive-medicine', icon: <FaPills />, label: 'Nhận thuốc' },
             { path: '/nurse/health-events', icon: <FaCalendarAlt />, label: 'Sự kiện sức khỏe' },
             { path: '/nurse/profile', icon: <FaUserCog />, label: 'Hồ sơ cá nhân' },
-            { path: '/nurse/settings', icon: <FaCog />, label: 'Cài đặt' },
+            
         ];
     }
 

@@ -26,17 +26,55 @@ import {
   FaEye,
   FaSort,
   FaSortUp,
-  FaSortDown
+  FaSortDown,
+  FaFolder,
+  FaFolderOpen,
+  FaPills,
+  FaMedkit,
+  FaCapsules,
+  FaBandAid
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
 
 const Categories = () => {
   const [categories, setCategories] = useState([
-    { id: 1, name: "Thuốc kháng sinh", description: "Các loại thuốc kháng sinh", status: "Hoạt động", items: 15 },
-    { id: 2, name: "Thuốc giảm đau", description: "Thuốc giảm đau và hạ sốt", status: "Hoạt động", items: 8 },
-    { id: 3, name: "Vitamin", description: "Các loại vitamin và khoáng chất", status: "Hoạt động", items: 12 },
-    { id: 4, name: "Vật tư y tế", description: "Băng gạc, bông y tế", status: "Tạm ngưng", items: 5 }
+    {
+      id: 1,
+      name: "Thuốc kháng sinh",
+      description: "Các loại thuốc kháng sinh điều trị nhiễm khuẩn",
+      status: "Hoạt động",
+      items: 15,
+      icon: "FaPills",
+      color: "#FF5722"
+    },
+    {
+      id: 2,
+      name: "Thuốc giảm đau",
+      description: "Thuốc giảm đau và hạ sốt cho các bệnh lý thông thường",
+      status: "Hoạt động",
+      items: 8,
+      icon: "FaCapsules",
+      color: "#9C27B0"
+    },
+    {
+      id: 3,
+      name: "Vitamin",
+      description: "Các loại vitamin và khoáng chất bổ sung dinh dưỡng",
+      status: "Hoạt động",
+      items: 12,
+      icon: "FaMedkit",
+      color: "#4CAF50"
+    },
+    {
+      id: 4,
+      name: "Vật tư y tế",
+      description: "Băng gạc, bông y tế và các dụng cụ y tế khác",
+      status: "Tạm ngưng",
+      items: 5,
+      icon: "FaBandAid",
+      color: "#FF9500"
+    }
   ]);
 
   const [loading, setLoading] = useState(false);
@@ -53,7 +91,9 @@ const Categories = () => {
     id: null,
     name: "",
     description: "",
-    status: "Hoạt động"
+    status: "Hoạt động",
+    icon: "FaTag",
+    color: "#FF9500"
   });
 
   // Animation variants
@@ -75,6 +115,19 @@ const Categories = () => {
       y: 0,
       transition: { duration: 0.3 }
     },
+  };
+
+  // Helper functions
+  const getIconComponent = (iconName) => {
+    const iconMap = {
+      FaPills,
+      FaCapsules,
+      FaMedkit,
+      FaBandAid,
+      FaTag,
+      FaFolder
+    };
+    return iconMap[iconName] || FaTag;
   };
 
   // Filter và sort categories
@@ -103,14 +156,18 @@ const Categories = () => {
         id: category.id,
         name: category.name,
         description: category.description,
-        status: category.status
+        status: category.status,
+        icon: category.icon || "FaTag",
+        color: category.color || "#FF9500"
       });
     } else {
       setFormData({
         id: null,
         name: "",
         description: "",
-        status: "Hoạt động"
+        status: "Hoạt động",
+        icon: "FaTag",
+        color: "#FF9500"
       });
     }
     setShowModal(true);
@@ -176,240 +233,160 @@ const Categories = () => {
   };
 
   return (
-    <div className="admin-theme">
+    <div className="admin-categories-container">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="admin-container"
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="accounts-header mb-4">
+        <motion.div variants={itemVariants} className="admin-categories-header">
           <Row className="align-items-center">
             <Col>
-              <h1 className="accounts-title mb-2">
-                <FaList className="me-3" />
+              <h1 className="admin-categories-title mb-2">
+                <FaFolder className="me-3" />
                 Quản lý danh mục
               </h1>
-              <p className="accounts-subtitle mb-0">
-                Quản lý các danh mục thuốc và vật tư y tế trong hệ thống
+              <p className="admin-categories-subtitle mb-0">
+                Quản lý các danh mục thuốc và vật tư y tế với giao diện gradient cam tím hiện đại
               </p>
             </Col>
             <Col xs="auto">
-              <Button
-                variant="primary"
-                className="btn-primary"
-                onClick={() => handleShowModal("add")}
-              >
-                <FaPlus className="me-2" />
-                Thêm danh mục
-              </Button>
+              <div className="d-flex gap-3">
+                <button
+                  className="admin-primary-btn"
+                  onClick={() => handleShowModal("add")}
+                >
+                  <FaPlus className="me-2" />
+                  Thêm danh mục
+                </button>
+                <button className="admin-secondary-btn">
+                  <FaDownload className="me-2" />
+                  Xuất báo cáo
+                </button>
+              </div>
             </Col>
           </Row>
         </motion.div>
 
-        {/* Controls */}
-        <motion.div variants={itemVariants} className="search-filter-bar mb-4">
-          <Row className="align-items-center">
-            <Col md={6}>
-              <InputGroup>
-                <InputGroup.Text>
-                  <FaSearch />
-                </InputGroup.Text>
-                <Form.Control
-                  type="text"
-                  placeholder="Tìm kiếm danh mục..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="search-input"
-                />
-              </InputGroup>
-            </Col>
-            <Col md={3}>
-              <Form.Select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value="Hoạt động">Hoạt động</option>
-                <option value="Tạm ngưng">Tạm ngưng</option>
-                <option value="Ngưng hoạt động">Ngưng hoạt động</option>
-              </Form.Select>
-            </Col>
-            <Col md={3}>
-              <Dropdown>
-                <Dropdown.Toggle variant="outline-primary" className="w-100">
-                  <FaFilter className="me-2" />
-                  Tùy chọn
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item>
-                    <FaDownload className="me-2" />
-                    Xuất Excel
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <FaUpload className="me-2" />
-                    Nhập Excel
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </Col>
-          </Row>
+        {/* Search Bar */}
+        <motion.div variants={itemVariants} className="admin-categories-search-bar">
+          <div style={{ flex: 1 }}>
+            <input
+              type="text"
+              placeholder="Tìm kiếm danh mục..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="admin-categories-search-input"
+            />
+          </div>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="admin-categories-search-input"
+            style={{ flex: '0 0 200px' }}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Hoạt động">Hoạt động</option>
+            <option value="Tạm ngưng">Tạm ngưng</option>
+            <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+          </select>
+          <button className="admin-medicine-filter-btn">
+            <FaFilter />
+            Lọc nâng cao
+          </button>
         </motion.div>
 
-        {/* Statistics Cards */}
-        <motion.div variants={itemVariants} className="row mb-4">
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-primary mb-2">
-                <FaList size={24} />
-              </div>
-              <div className="stat-value">{categories.length}</div>
-              <div className="stat-label">Tổng danh mục</div>
+        {/* Categories Grid */}
+        <motion.div variants={itemVariants} className="admin-categories-grid">
+          {/* Add Category Card */}
+          <div className="admin-add-category-card" onClick={() => handleShowModal("add")}>
+            <div className="admin-add-category-icon">
+              <FaPlus />
             </div>
+            <div className="admin-add-category-text">Thêm danh mục mới</div>
+            <div className="admin-add-category-subtext">Tạo danh mục thuốc và vật tư y tế</div>
           </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-success mb-2">
-                <FaTag size={24} />
-              </div>
-              <div className="stat-value">
-                {categories.filter(c => c.status === "Hoạt động").length}
-              </div>
-              <div className="stat-label">Đang hoạt động</div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-warning mb-2">
-                <FaTag size={24} />
-              </div>
-              <div className="stat-value">
-                {categories.filter(c => c.status === "Tạm ngưng").length}
-              </div>
-              <div className="stat-label">Tạm ngưng</div>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="stat-card text-center">
-              <div className="stat-icon text-info mb-2">
-                <FaTag size={24} />
-              </div>
-              <div className="stat-value">
-                {categories.reduce((sum, c) => sum + c.items, 0)}
-              </div>
-              <div className="stat-label">Tổng sản phẩm</div>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Categories Table */}
-        <motion.div variants={itemVariants}>
-          <div className="category-table-wrapper">
-            <div className="category-table-header">
-              <div className="category-table-row header-row">
-                <div className="category-cell name-cell" onClick={() => handleSort('name')}>
-                  <span>Tên danh mục {getSortIcon('name')}</span>
-                </div>
-                <div className="category-cell description-cell">
-                  <span>Mô tả</span>
-                </div>
-                <div className="category-cell items-cell" onClick={() => handleSort('items')}>
-                  <span>Số sản phẩm {getSortIcon('items')}</span>
-                </div>
-                <div className="category-cell status-cell">
-                  <span>Trạng thái</span>
-                </div>
-                <div className="category-cell action-cell">
-                  <span>Thao tác</span>
-                </div>
-              </div>
-            </div>
+          {/* Category Cards */}
+          <AnimatePresence>
+            {filteredCategories.map((category, index) => {
+              const IconComponent = getIconComponent(category.icon);
+              return (
+                <motion.div
+                  key={category.id}
+                  className="admin-category-card"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="admin-category-icon-wrapper">
+                    <IconComponent className="admin-category-icon" />
+                  </div>
 
-            <div className="category-table-body">
-              <AnimatePresence>
-                {filteredCategories.map((category, index) => (
-                  <motion.div
-                    key={category.id}
-                    className="category-table-row data-row"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <div className="category-cell name-cell">
-                      <div className="category-info">
-                        <div className="category-icon">
-                          <FaTag />
-                        </div>
-                        <div className="category-details">
-                          <div className="category-name">{category.name}</div>
-                          <div className="category-id">ID: {category.id}</div>
-                        </div>
+                  <div className="admin-category-name">{category.name}</div>
+                  <div className="admin-category-description">{category.description}</div>
+
+                  <div className="admin-category-stats">
+                    <div className="admin-category-stat">
+                      <div className="admin-category-stat-value">{category.items}</div>
+                      <div className="admin-category-stat-label">Sản phẩm</div>
+                    </div>
+                    <div className="admin-category-stat">
+                      <div className="admin-category-stat-value" style={{
+                        color: category.status === 'Hoạt động' ? '#4CAF50' :
+                          category.status === 'Tạm ngưng' ? '#FF9800' : '#F44336'
+                      }}>
+                        {category.status === 'Hoạt động' ? '✓' :
+                          category.status === 'Tạm ngưng' ? '⏸' : '✗'}
                       </div>
+                      <div className="admin-category-stat-label">{category.status}</div>
                     </div>
+                  </div>
 
-                    <div className="category-cell description-cell">
-                      <div className="category-description">{category.description}</div>
-                    </div>
+                  <div className="admin-category-actions">
+                    <button
+                      className="admin-category-btn edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShowModal("edit", category);
+                      }}
+                    >
+                      <FaEdit />
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      className="admin-category-btn delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCategoryToDelete(category);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      <FaTrash />
+                      Xóa
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
 
-                    <div className="category-cell items-cell">
-                      <div className="items-info">
-                        <div className="items-count">{category.items}</div>
-                        <div className="items-label">sản phẩm</div>
-                      </div>
-                    </div>
-
-                    <div className="category-cell status-cell">
-                      <span className={`status-badge ${category.status.toLowerCase().replace(' ', '-')}`}>
-                        {category.status}
-                      </span>
-                    </div>
-
-                    <div className="category-cell action-cell">
-                      <div className="action-buttons">
-                        <button className="action-btn view-btn" title="Xem chi tiết">
-                          <FaEye />
-                        </button>
-                        <button
-                          className="action-btn edit-btn"
-                          title="Chỉnh sửa"
-                          onClick={() => handleShowModal("edit", category)}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="action-btn delete-btn"
-                          title="Xóa"
-                          onClick={() => {
-                            setCategoryToDelete(category);
-                            setShowDeleteModal(true);
-                          }}
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-
-              {filteredCategories.length === 0 && (
-                <div className="empty-state">
-                  <FaTag className="empty-icon" />
-                  <h5>Không tìm thấy danh mục nào</h5>
-                  <p>Thử thay đổi bộ lọc hoặc thêm danh mục mới</p>
-                </div>
-              )}
+          {filteredCategories.length === 0 && search && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: '#757575' }}>
+              <FaFolder style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }} />
+              <h4>Không tìm thấy danh mục nào</h4>
+              <p>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
             </div>
-          </div>
+          )}
         </motion.div>
 
         {/* Add/Edit Modal */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered className="admin-categories-modal">
           <Modal.Header closeButton>
-            <Modal.Title>
-              <FaTag className="me-2" />
+            <Modal.Title className="admin-categories-modal-title">
+              <FaFolder className="me-2" />
               {modalType === "add" ? "Thêm danh mục mới" : "Chỉnh sửa danh mục"}
             </Modal.Title>
           </Modal.Header>
@@ -417,85 +394,165 @@ const Categories = () => {
             <Form>
               <Row>
                 <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tên danh mục *</Form.Label>
-                    <Form.Control
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaTag />
+                      Tên danh mục *
+                    </label>
+                    <input
                       type="text"
                       placeholder="Nhập tên danh mục"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="admin-categories-form-control"
                     />
-                  </Form.Group>
+                  </div>
                 </Col>
                 <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Trạng thái</Form.Label>
-                    <Form.Select
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaList />
+                      Trạng thái
+                    </label>
+                    <select
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="admin-categories-form-control"
                     >
                       <option value="Hoạt động">Hoạt động</option>
                       <option value="Tạm ngưng">Tạm ngưng</option>
                       <option value="Ngưng hoạt động">Ngưng hoạt động</option>
-                    </Form.Select>
-                  </Form.Group>
+                    </select>
+                  </div>
                 </Col>
               </Row>
-              <Form.Group className="mb-3">
-                <Form.Label>Mô tả</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Nhập mô tả danh mục"
+              <Row>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaEye />
+                      Icon danh mục
+                    </label>
+                    <select
+                      value={formData.icon}
+                      onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                      className="admin-categories-form-control"
+                    >
+                      <option value="FaPills">💊 Thuốc viên</option>
+                      <option value="FaCapsules">💊 Thuốc nang</option>
+                      <option value="FaMedkit">🏥 Dụng cụ y tế</option>
+                      <option value="FaBandAid">🩹 Băng gạc</option>
+                      <option value="FaTag">🏷️ Thẻ gắn</option>
+                      <option value="FaFolder">📁 Thư mục</option>
+                    </select>
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaFilter />
+                      Màu chủ đạo
+                    </label>
+                    <select
+                      value={formData.color}
+                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      className="admin-categories-form-control"
+                    >
+                      <option value="#FF9500">🟠 Cam</option>
+                      <option value="#9C27B0">🟣 Tím</option>
+                      <option value="#4CAF50">🟢 Xanh lá</option>
+                      <option value="#2196F3">🔵 Xanh dương</option>
+                      <option value="#FF5722">🔴 Đỏ cam</option>
+                      <option value="#607D8B">⚫ Xám xanh</option>
+                    </select>
+                  </div>
+                </Col>
+              </Row>
+              <div className="admin-categories-form-group">
+                <label className="admin-categories-form-label">
+                  <FaEdit />
+                  Mô tả danh mục
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Nhập mô tả chi tiết cho danh mục..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="admin-categories-form-control"
+                  style={{ resize: 'vertical', minHeight: '100px' }}
                 />
-              </Form.Group>
+              </div>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowModal(false)}>
+            <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
               Hủy
-            </Button>
-            <Button
-              variant="primary"
+            </button>
+            <button
+              className="admin-primary-btn"
               onClick={handleSaveCategory}
               disabled={loading}
             >
-              {loading && <Spinner animation="border" size="sm" className="me-2" />}
+              {loading && <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>}
               {modalType === "add" ? "Thêm danh mục" : "Cập nhật"}
-            </Button>
+            </button>
           </Modal.Footer>
         </Modal>
 
         {/* Delete Confirmation Modal */}
-        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered className="admin-categories-modal">
           <Modal.Header closeButton>
-            <Modal.Title>
-              <FaTrash className="me-2 text-danger" />
-              Xác nhận xóa
+            <Modal.Title className="admin-categories-modal-title">
+              <FaTrash className="me-2" />
+              Xác nhận xóa danh mục
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="text-center py-3">
-              <div className="text-danger mb-3">
-                <FaTrash size={48} />
+            <div className="text-center py-4">
+              <div className="mb-4">
+                <FaFolder style={{ fontSize: '5rem', color: '#F44336', opacity: 0.7 }} />
               </div>
-              <h5>Bạn có chắc chắn muốn xóa danh mục</h5>
-              <h5 className="text-primary">"{categoryToDelete?.name}"?</h5>
-              <Alert variant="warning" className="mt-3">
-                <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tất cả sản phẩm trong danh mục này sẽ bị ảnh hưởng.
-              </Alert>
+              <h4 className="mb-3">Bạn có chắc chắn muốn xóa danh mục</h4>
+              <h4 className="mb-4" style={{ color: '#FF9500', fontWeight: 'bold' }}>
+                "{categoryToDelete?.name}"?
+              </h4>
+              <div style={{
+                padding: '1.5rem',
+                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                border: '2px solid rgba(255, 152, 0, 0.3)',
+                borderRadius: '16px',
+                color: '#FF9800'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <FaTrash style={{ marginRight: '0.75rem', fontSize: '1.25rem' }} />
+                  <strong>Cảnh báo quan trọng!</strong>
+                </div>
+                <p style={{ margin: 0, lineHeight: 1.6 }}>
+                  Thao tác này không thể hoàn tác. Tất cả <strong>{categoryToDelete?.items || 0} sản phẩm</strong> trong
+                  danh mục này sẽ bị ảnh hưởng và cần được phân loại lại.
+                </p>
+              </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-              Hủy
-            </Button>
-            <Button variant="danger" onClick={handleDeleteCategory}>
+            <button className="admin-secondary-btn" onClick={() => setShowDeleteModal(false)}>
+              Hủy bỏ
+            </button>
+            <button
+              className="admin-medicine-btn delete"
+              onClick={handleDeleteCategory}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                width: 'auto',
+                height: 'auto',
+                fontSize: '0.95rem',
+                fontWeight: '600'
+              }}
+            >
               <FaTrash className="me-2" />
-              Xóa danh mục
-            </Button>
+              Xóa vĩnh viễn
+            </button>
           </Modal.Footer>
         </Modal>
       </motion.div>

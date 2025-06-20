@@ -226,19 +226,19 @@ const HealthDeclaration = () => {
   };
 
   return (
-    <div className="parent-theme animate-fade-in-up">
-      <div className="parent-page-header">
-        <Container>
-          <div className="parent-header-content">
-            <h1 className="parent-page-title">
-              <FaClipboardList />
-              Khai báo y tế
-            </h1>
-            <p className="parent-page-subtitle">
-              Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm sóc tốt nhất
-            </p>
-          </div>
-        </Container>
+    <div className="parent-container">
+      {/* Page Header */}
+      <div className="parent-page-header parent-animate-fade-in">
+        <div className="parent-page-header-bg"></div>
+        <div className="parent-page-header-content">
+          <h1 className="parent-page-title">
+            <FaClipboardList />
+            Khai báo sức khỏe học sinh
+          </h1>
+          <p className="parent-page-subtitle">
+            Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm sóc tốt nhất
+          </p>
+        </div>
       </div>
 
       <Container>

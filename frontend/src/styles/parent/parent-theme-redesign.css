@@ -1,0 +1,834 @@
+/* ==========================================
+   Parent Theme Redesign - Purple to Blue Professional
+   ========================================== */
+
+:root {
+    /* Parent Color Palette - Purple to Blue Gradient */
+    --parent-primary: #6b46c1;
+    --parent-secondary: #8b5cf6;
+    --parent-accent: #3b82f6;
+    --parent-light: #f3f4f6;
+    --parent-dark: #1e1b4b;
+
+    /* Gradient System */
+    --parent-gradient-primary: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 50%, #3b82f6 100%);
+    --parent-gradient-header: linear-gradient(135deg, #6b46c1 0%, #8b5cf6 25%, #7c3aed 50%, #6366f1 75%, #3b82f6 100%);
+    --parent-gradient-card: linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%);
+    --parent-gradient-button: linear-gradient(135deg, #6b46c1 0%, #3b82f6 100%);
+    --parent-gradient-secondary: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+
+    /* Status Colors */
+    --parent-success: #10b981;
+    --parent-warning: #f59e0b;
+    --parent-danger: #ef4444;
+    --parent-info: #06b6d4;
+
+    /* Typography */
+    --parent-font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --parent-font-size-xs: 0.75rem;
+    --parent-font-size-sm: 0.875rem;
+    --parent-font-size-base: 1rem;
+    --parent-font-size-lg: 1.125rem;
+    --parent-font-size-xl: 1.25rem;
+    --parent-font-size-2xl: 1.5rem;
+    --parent-font-size-3xl: 1.875rem;
+
+    /* Spacing */
+    --parent-spacing-xs: 0.25rem;
+    --parent-spacing-sm: 0.5rem;
+    --parent-spacing-md: 1rem;
+    --parent-spacing-lg: 1.5rem;
+    --parent-spacing-xl: 2rem;
+    --parent-spacing-2xl: 3rem;
+
+    /* Border Radius */
+    --parent-border-radius-sm: 0.375rem;
+    --parent-border-radius-md: 0.5rem;
+    --parent-border-radius-lg: 0.75rem;
+    --parent-border-radius-xl: 1rem;
+    --parent-border-radius-2xl: 1.5rem;
+
+    /* Shadows */
+    --parent-shadow-sm: 0 1px 3px rgba(107, 70, 193, 0.1);
+    --parent-shadow-md: 0 4px 15px rgba(107, 70, 193, 0.15);
+    --parent-shadow-lg: 0 8px 32px rgba(107, 70, 193, 0.2);
+    --parent-shadow-xl: 0 16px 64px rgba(107, 70, 193, 0.25);
+
+    /* Transitions */
+    --parent-transition-fast: 0.15s ease-in-out;
+    --parent-transition-normal: 0.3s ease-in-out;
+    --parent-transition-slow: 0.5s ease-in-out;
+}
+
+/* ==========================================
+   Global Parent Styles
+   ========================================== */
+
+.parent-container {
+    font-family: var(--parent-font-family);
+    color: #2c3e50;
+    background: linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%);
+    min-height: 100vh;
+    padding: var(--parent-spacing-xl);
+}
+
+/* ==========================================
+   Page Headers
+   ========================================== */
+
+.parent-page-header {
+    position: relative;
+    margin: calc(-1 * var(--parent-spacing-xl)) calc(-1 * var(--parent-spacing-xl)) var(--parent-spacing-xl) calc(-1 * var(--parent-spacing-xl));
+    border-radius: 0 0 var(--parent-border-radius-2xl) var(--parent-border-radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-lg);
+}
+
+.parent-page-header-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--parent-gradient-header);
+    opacity: 0.95;
+}
+
+.parent-page-header-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="parentWaves" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M0 20 Q10 10 20 20 T40 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/><path d="M0 30 Q10 20 20 30 T40 30" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23parentWaves)"/></svg>');
+    opacity: 0.3;
+}
+
+.parent-page-header-content {
+    position: relative;
+    z-index: 2;
+    padding: var(--parent-spacing-2xl) var(--parent-spacing-xl);
+    text-align: center;
+}
+
+.parent-page-title {
+    font-size: var(--parent-font-size-3xl);
+    font-weight: 800;
+    margin: 0 0 var(--parent-spacing-sm) 0;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--parent-spacing-md);
+}
+
+.parent-page-subtitle {
+    font-size: var(--parent-font-size-lg);
+    opacity: 0.9;
+    margin: 0;
+    color: white;
+    font-weight: 400;
+}
+
+/* ==========================================
+   Cards and Containers
+   ========================================== */
+
+.parent-card {
+    background: var(--parent-gradient-card);
+    border-radius: var(--parent-border-radius-xl);
+    padding: var(--parent-spacing-xl);
+    box-shadow: var(--parent-shadow-md);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+    transition: all var(--parent-transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.parent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--parent-gradient-primary);
+}
+
+.parent-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--parent-shadow-lg);
+}
+
+.parent-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--parent-spacing-lg);
+    padding-bottom: var(--parent-spacing-md);
+    border-bottom: 2px solid rgba(107, 70, 193, 0.1);
+}
+
+.parent-card-title {
+    font-size: var(--parent-font-size-xl);
+    font-weight: 700;
+    color: var(--parent-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--parent-spacing-sm);
+}
+
+.parent-card-body {
+    color: #495057;
+    line-height: 1.6;
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+
+.parent-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--parent-spacing-md) var(--parent-spacing-lg);
+    border: none;
+    border-radius: var(--parent-border-radius-lg);
+    font-size: var(--parent-font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all var(--parent-transition-normal);
+    gap: var(--parent-spacing-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.parent-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--parent-transition-slow);
+}
+
+.parent-btn:hover::before {
+    left: 100%;
+}
+
+.parent-primary-btn {
+    background: var(--parent-gradient-button);
+    color: white;
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.parent-primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--parent-shadow-md);
+    color: white;
+}
+
+.parent-secondary-btn {
+    background: var(--parent-gradient-secondary);
+    color: white;
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.parent-secondary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--parent-shadow-md);
+    color: white;
+}
+
+.parent-outline-btn {
+    background: transparent;
+    color: var(--parent-primary);
+    border: 2px solid var(--parent-primary);
+}
+
+.parent-outline-btn:hover {
+    background: var(--parent-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   Form Elements
+   ========================================== */
+
+.parent-form-group {
+    margin-bottom: var(--parent-spacing-lg);
+}
+
+.parent-form-label {
+    display: block;
+    font-weight: 600;
+    color: var(--parent-primary);
+    margin-bottom: var(--parent-spacing-sm);
+    font-size: var(--parent-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.parent-form-control {
+    width: 100%;
+    padding: var(--parent-spacing-md);
+    border: 2px solid #e9ecef;
+    border-radius: var(--parent-border-radius-md);
+    font-size: var(--parent-font-size-base);
+    transition: all var(--parent-transition-normal);
+    background: white;
+}
+
+.parent-form-control:focus {
+    outline: none;
+    border-color: var(--parent-primary);
+    box-shadow: 0 0 0 0.2rem rgba(107, 70, 193, 0.25);
+    background: linear-gradient(135deg, #faf7ff 0%, #ffffff 100%);
+}
+
+.parent-form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* ==========================================
+   Stats and Metrics
+   ========================================== */
+
+.parent-stat-card {
+    background: var(--parent-gradient-card);
+    border-radius: var(--parent-border-radius-xl);
+    padding: var(--parent-spacing-xl);
+    box-shadow: var(--parent-shadow-md);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+    transition: all var(--parent-transition-normal);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.parent-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--parent-gradient-primary);
+}
+
+.parent-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--parent-shadow-lg);
+}
+
+.parent-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--parent-gradient-button);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--parent-spacing-md);
+    font-size: var(--parent-font-size-xl);
+    color: white;
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.parent-stat-value {
+    font-size: var(--parent-font-size-2xl);
+    font-weight: 800;
+    color: var(--parent-primary);
+    margin-bottom: var(--parent-spacing-xs);
+}
+
+.parent-stat-label {
+    font-size: var(--parent-font-size-sm);
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================
+   Navigation and Tabs
+   ========================================== */
+
+.parent-nav-tabs {
+    display: flex;
+    gap: var(--parent-spacing-sm);
+    margin-bottom: var(--parent-spacing-xl);
+    border-bottom: 2px solid rgba(107, 70, 193, 0.1);
+}
+
+.parent-nav-tab {
+    padding: var(--parent-spacing-md) var(--parent-spacing-lg);
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    font-weight: 500;
+    border-radius: var(--parent-border-radius-md) var(--parent-border-radius-md) 0 0;
+    cursor: pointer;
+    transition: all var(--parent-transition-normal);
+    position: relative;
+}
+
+.parent-nav-tab.active {
+    color: var(--parent-primary);
+    background: var(--parent-gradient-card);
+}
+
+.parent-nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--parent-gradient-primary);
+}
+
+.parent-nav-tab:hover:not(.active) {
+    color: var(--parent-primary);
+    background: rgba(107, 70, 193, 0.05);
+}
+
+/* ==========================================
+   Alerts and Notifications
+   ========================================== */
+
+.parent-alert {
+    padding: var(--parent-spacing-lg);
+    border-radius: var(--parent-border-radius-md);
+    margin-bottom: var(--parent-spacing-lg);
+    border-left: 4px solid;
+    background: white;
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.parent-alert-success {
+    border-left-color: var(--parent-success);
+    background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+    color: #065f46;
+}
+
+.parent-alert-warning {
+    border-left-color: var(--parent-warning);
+    background: linear-gradient(135deg, #fef3c7 0%, #ffffff 100%);
+    color: #92400e;
+}
+
+.parent-alert-danger {
+    border-left-color: var(--parent-danger);
+    background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);
+    color: #991b1b;
+}
+
+.parent-alert-info {
+    border-left-color: var(--parent-info);
+    background: linear-gradient(135deg, #cffafe 0%, #ffffff 100%);
+    color: #155e75;
+}
+
+/* ==========================================
+   Tables
+   ========================================== */
+
+.parent-table-container {
+    background: white;
+    border-radius: var(--parent-border-radius-xl);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-md);
+    border: 1px solid rgba(107, 70, 193, 0.1);
+}
+
+.parent-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.parent-table thead th {
+    background: var(--parent-gradient-primary);
+    color: white;
+    font-weight: 600;
+    padding: var(--parent-spacing-lg);
+    text-align: left;
+    border: none;
+    font-size: var(--parent-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.parent-table thead th:first-child {
+    border-top-left-radius: var(--parent-border-radius-xl);
+}
+
+.parent-table thead th:last-child {
+    border-top-right-radius: var(--parent-border-radius-xl);
+}
+
+.parent-table tbody td {
+    padding: var(--parent-spacing-lg);
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+    transition: all var(--parent-transition-normal);
+}
+
+.parent-table tbody tr:hover {
+    background: linear-gradient(135deg, #faf7ff 0%, #ffffff 100%);
+    transform: scale(1.01);
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.parent-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==========================================
+   Badges and Status
+   ========================================== */
+
+.parent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--parent-spacing-xs);
+    padding: var(--parent-spacing-xs) var(--parent-spacing-md);
+    border-radius: var(--parent-border-radius-lg);
+    font-size: var(--parent-font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.parent-badge-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+}
+
+.parent-badge-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+}
+
+.parent-badge-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+}
+
+.parent-badge-info {
+    background: linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%);
+    color: #155e75;
+}
+
+.parent-badge-primary {
+    background: var(--parent-gradient-button);
+    color: white;
+}
+
+/* ==========================================
+   Modals
+   ========================================== */
+
+.parent-modal .modal-content {
+    border: none;
+    border-radius: var(--parent-border-radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-xl);
+}
+
+.parent-modal .modal-header {
+    background: var(--parent-gradient-primary);
+    color: white;
+    border: none;
+    padding: var(--parent-spacing-xl);
+    position: relative;
+}
+
+.parent-modal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+}
+
+.parent-modal .modal-title {
+    font-weight: 700;
+    font-size: var(--parent-font-size-xl);
+    position: relative;
+    z-index: 1;
+}
+
+.parent-modal .btn-close {
+    filter: brightness(0) invert(1);
+    position: relative;
+    z-index: 1;
+}
+
+.parent-modal .modal-body {
+    padding: var(--parent-spacing-xl);
+    background: var(--parent-gradient-card);
+}
+
+.parent-modal .modal-footer {
+    background: var(--parent-gradient-card);
+    border: none;
+    padding: var(--parent-spacing-xl);
+}
+
+/* ==========================================
+   Loading and Progress
+   ========================================== */
+
+.parent-progress {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: var(--parent-border-radius-lg);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.parent-progress-bar {
+    height: 100%;
+    background: var(--parent-gradient-primary);
+    border-radius: var(--parent-border-radius-lg);
+    transition: width var(--parent-transition-slow);
+    position: relative;
+    overflow: hidden;
+}
+
+.parent-progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: parentProgressShine 2s infinite;
+}
+
+@keyframes parentProgressShine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.parent-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(107, 70, 193, 0.1);
+    border-left-color: var(--parent-primary);
+    border-radius: 50%;
+    animation: parentSpin 1s linear infinite;
+}
+
+@keyframes parentSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==========================================
+   Responsive Design
+   ========================================== */
+
+@media (max-width: 768px) {
+    .parent-container {
+        padding: var(--parent-spacing-md);
+    }
+
+    .parent-page-header {
+        margin: calc(-1 * var(--parent-spacing-md)) calc(-1 * var(--parent-spacing-md)) var(--parent-spacing-md) calc(-1 * var(--parent-spacing-md));
+    }
+
+    .parent-page-header-content {
+        padding: var(--parent-spacing-xl) var(--parent-spacing-md);
+    }
+
+    .parent-page-title {
+        font-size: var(--parent-font-size-2xl);
+        flex-direction: column;
+        gap: var(--parent-spacing-sm);
+    }
+
+    .parent-card {
+        padding: var(--parent-spacing-lg);
+    }
+
+    .parent-nav-tabs {
+        flex-wrap: wrap;
+    }
+
+    .parent-table-container {
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .parent-page-title {
+        font-size: var(--parent-font-size-xl);
+    }
+
+    .parent-card {
+        padding: var(--parent-spacing-md);
+    }
+
+    .parent-btn {
+        padding: var(--parent-spacing-sm) var(--parent-spacing-md);
+        font-size: var(--parent-font-size-sm);
+    }
+}
+
+/* ==========================================
+   Animations
+   ========================================== */
+
+@keyframes parentFadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes parentSlideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes parentScaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.parent-animate-fade-in {
+    animation: parentFadeInUp 0.6s ease-out;
+}
+
+.parent-animate-slide-in {
+    animation: parentSlideInLeft 0.6s ease-out;
+}
+
+.parent-animate-scale-in {
+    animation: parentScaleIn 0.6s ease-out;
+}
+
+/* Staggered animations */
+.parent-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.parent-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.parent-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.parent-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* ==========================================
+   Utilities
+   ========================================== */
+
+.parent-text-primary {
+    color: var(--parent-primary) !important;
+}
+
+.parent-text-secondary {
+    color: var(--parent-secondary) !important;
+}
+
+.parent-text-success {
+    color: var(--parent-success) !important;
+}
+
+.parent-text-warning {
+    color: var(--parent-warning) !important;
+}
+
+.parent-text-danger {
+    color: var(--parent-danger) !important;
+}
+
+.parent-text-info {
+    color: var(--parent-info) !important;
+}
+
+.parent-bg-primary {
+    background: var(--parent-gradient-primary) !important;
+}
+
+.parent-bg-secondary {
+    background: var(--parent-gradient-secondary) !important;
+}
+
+.parent-bg-light {
+    background: var(--parent-light) !important;
+}
+
+.parent-shadow-sm {
+    box-shadow: var(--parent-shadow-sm) !important;
+}
+
+.parent-shadow-md {
+    box-shadow: var(--parent-shadow-md) !important;
+}
+
+.parent-shadow-lg {
+    box-shadow: var(--parent-shadow-lg) !important;
+}
+
+.parent-rounded {
+    border-radius: var(--parent-border-radius-md) !important;
+}
+
+.parent-rounded-lg {
+    border-radius: var(--parent-border-radius-lg) !important;
+}
+
+.parent-rounded-xl {
+    border-radius: var(--parent-border-radius-xl) !important;
+}

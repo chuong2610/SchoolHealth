@@ -33,7 +33,8 @@ import {
     FaTimesCircle,
     FaWarehouse,
     FaCalendarAlt,
-    FaBarcode
+    FaBarcode,
+    FaChartLine
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
@@ -329,96 +330,85 @@ const MedicineInventory = () => {
     const stockLevelData = getStockLevelData().slice(0, 6);
 
     return (
-        <div className="admin-theme">
+        <div className="admin-medicine-container">
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="admin-container"
             >
                 {/* Header */}
-                <motion.div variants={itemVariants} className="accounts-header mb-4">
+                <motion.div variants={itemVariants} className="admin-medicine-header">
                     <Row className="align-items-center">
                         <Col>
-                            <h1 className="accounts-title mb-2">
+                            <h1 className="admin-medicine-title mb-2">
                                 <FaWarehouse className="me-3" />
                                 Quản lý kho thuốc
                             </h1>
-                            <p className="accounts-subtitle mb-0">
-                                Theo dõi và quản lý thuốc, vật tư y tế trong kho
+                            <p className="admin-medicine-subtitle mb-0">
+                                Theo dõi và quản lý thuốc, vật tư y tế trong kho với giao diện gradient cam tím đẹp mắt
                             </p>
                         </Col>
                         <Col xs="auto">
-                            <Button
-                                variant="primary"
-                                className="btn-primary me-2"
-                                onClick={() => handleShowModal("add")}
-                            >
-                                <FaPlus className="me-2" />
-                                Thêm thuốc
-                            </Button>
-                            <Dropdown>
-                                <Dropdown.Toggle variant="outline-primary">
+                            <div className="d-flex gap-3">
+                                <button
+                                    className="admin-primary-btn"
+                                    onClick={() => handleShowModal("add")}
+                                >
+                                    <FaPlus className="me-2" />
+                                    Thêm thuốc
+                                </button>
+                                <button className="admin-secondary-btn">
                                     <FaDownload className="me-2" />
                                     Xuất báo cáo
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item>Xuất Excel</Dropdown.Item>
-                                    <Dropdown.Item>Xuất PDF</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                                </button>
+                            </div>
                         </Col>
                     </Row>
                 </motion.div>
 
                 {/* Statistics Cards */}
-                <motion.div variants={itemVariants} className="row mb-4">
-                    <div className="col-md-3">
-                        <div className="stat-card text-center">
-                            <div className="stat-icon text-primary mb-2">
-                                <FaPills size={24} />
-                            </div>
-                            <div className="stat-value">{stats.total}</div>
-                            <div className="stat-label">Tổng thuốc</div>
+                <motion.div variants={itemVariants} className="admin-medicine-stats">
+                    <div className="admin-medicine-stat-card">
+                        <div className="admin-medicine-stat-icon">
+                            <FaPills />
                         </div>
+                        <div className="admin-medicine-stat-value">{stats.total}</div>
+                        <div className="admin-medicine-stat-label">Tổng thuốc</div>
                     </div>
-                    <div className="col-md-3">
-                        <div className="stat-card text-center">
-                            <div className="stat-icon text-success mb-2">
-                                <FaCheckCircle size={24} />
-                            </div>
-                            <div className="stat-value">{stats.inStock}</div>
-                            <div className="stat-label">Còn hàng</div>
+                    <div className="admin-medicine-stat-card">
+                        <div className="admin-medicine-stat-icon">
+                            <FaCheckCircle />
                         </div>
+                        <div className="admin-medicine-stat-value">{stats.inStock}</div>
+                        <div className="admin-medicine-stat-label">Còn hàng</div>
                     </div>
-                    <div className="col-md-3">
-                        <div className="stat-card text-center">
-                            <div className="stat-icon text-warning mb-2">
-                                <FaExclamationTriangle size={24} />
-                            </div>
-                            <div className="stat-value">{stats.lowStock}</div>
-                            <div className="stat-label">Gần hết</div>
+                    <div className="admin-medicine-stat-card">
+                        <div className="admin-medicine-stat-icon">
+                            <FaExclamationTriangle />
                         </div>
+                        <div className="admin-medicine-stat-value">{stats.lowStock}</div>
+                        <div className="admin-medicine-stat-label">Gần hết</div>
                     </div>
-                    <div className="col-md-3">
-                        <div className="stat-card text-center">
-                            <div className="stat-icon text-danger mb-2">
-                                <FaTimesCircle size={24} />
-                            </div>
-                            <div className="stat-value">{stats.outOfStock}</div>
-                            <div className="stat-label">Hết hàng</div>
+                    <div className="admin-medicine-stat-card">
+                        <div className="admin-medicine-stat-icon">
+                            <FaTimesCircle />
                         </div>
+                        <div className="admin-medicine-stat-value">{stats.outOfStock}</div>
+                        <div className="admin-medicine-stat-label">Hết hàng</div>
                     </div>
                 </motion.div>
 
                 {/* Charts */}
                 <motion.div variants={itemVariants} className="row mb-4">
                     <div className="col-md-6">
-                        <Card className="chart-card h-100">
-                            <Card.Header>
-                                <h5 className="mb-0">Phân bố theo danh mục</h5>
-                            </Card.Header>
-                            <Card.Body>
+                        <div className="admin-card">
+                            <div className="admin-card-header">
+                                <h4 className="admin-card-title">
+                                    <FaPills />
+                                    Phân bố theo danh mục
+                                </h4>
+                            </div>
+                            <div className="admin-card-body">
                                 <ResponsiveContainer width="100%" height={250}>
                                     <PieChart>
                                         <Pie
@@ -437,15 +427,18 @@ const MedicineInventory = () => {
                                         <Tooltip />
                                     </PieChart>
                                 </ResponsiveContainer>
-                            </Card.Body>
-                        </Card>
+                            </div>
+                        </div>
                     </div>
                     <div className="col-md-6">
-                        <Card className="chart-card h-100">
-                            <Card.Header>
-                                <h5 className="mb-0">Mức tồn kho</h5>
-                            </Card.Header>
-                            <Card.Body>
+                        <div className="admin-card">
+                            <div className="admin-card-header">
+                                <h4 className="admin-card-title">
+                                    <FaChartLine />
+                                    Mức tồn kho
+                                </h4>
+                            </div>
+                            <div className="admin-card-body">
                                 <ResponsiveContainer width="100%" height={250}>
                                     <BarChart data={stockLevelData}>
                                         <CartesianGrid strokeDasharray="3 3" />
@@ -453,209 +446,228 @@ const MedicineInventory = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="quantity" fill="#28a745" name="Hiện tại" />
-                                        <Bar dataKey="minStock" fill="#ffc107" name="Tối thiểu" />
+                                        <Bar dataKey="quantity" fill="#FF9500" name="Hiện tại" />
+                                        <Bar dataKey="minStock" fill="#9C27B0" name="Tối thiểu" />
                                     </BarChart>
                                 </ResponsiveContainer>
-                            </Card.Body>
-                        </Card>
+                            </div>
+                        </div>
                     </div>
                 </motion.div>
 
                 {/* Controls */}
-                <motion.div variants={itemVariants} className="search-filter-bar mb-4">
-                    <Row className="align-items-center">
-                        <Col md={4}>
-                            <InputGroup>
-                                <InputGroup.Text>
-                                    <FaSearch />
-                                </InputGroup.Text>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Tìm kiếm thuốc, mã vạch..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className="search-input"
-                                />
-                            </InputGroup>
-                        </Col>
-                        <Col md={2}>
-                            <Form.Select
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                            >
-                                <option value="all">Tất cả trạng thái</option>
-                                <option value="Còn hàng">Còn hàng</option>
-                                <option value="Gần hết">Gần hết</option>
-                                <option value="Hết hàng">Hết hàng</option>
-                            </Form.Select>
-                        </Col>
-                        <Col md={2}>
-                            <Form.Select
-                                value={filterCategory}
-                                onChange={(e) => setFilterCategory(e.target.value)}
-                            >
-                                <option value="all">Tất cả danh mục</option>
-                                <option value="Thuốc giảm đau">Thuốc giảm đau</option>
-                                <option value="Vitamin">Vitamin</option>
-                                <option value="Vật tư y tế">Vật tư y tế</option>
-                            </Form.Select>
-                        </Col>
-                        <Col md={4}>
-                            <div className="d-flex gap-2">
-                                <Button variant="outline-success" className="flex-fill">
-                                    <FaUpload className="me-1" />
-                                    Nhập kho
-                                </Button>
-                                <Button variant="outline-info" className="flex-fill">
-                                    <FaBarcode className="me-1" />
-                                    Quét mã
-                                </Button>
-                            </div>
-                        </Col>
-                    </Row>
+                <motion.div variants={itemVariants} className="admin-medicine-search-bar">
+                    <div style={{ flex: 1 }}>
+                        <input
+                            type="text"
+                            placeholder="Tìm kiếm thuốc, mã vạch..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="admin-medicine-search-input"
+                        />
+                    </div>
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="admin-medicine-search-input"
+                        style={{ flex: '0 0 200px' }}
+                    >
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="Còn hàng">Còn hàng</option>
+                        <option value="Gần hết">Gần hết</option>
+                        <option value="Hết hàng">Hết hàng</option>
+                    </select>
+                    <select
+                        value={filterCategory}
+                        onChange={(e) => setFilterCategory(e.target.value)}
+                        className="admin-medicine-search-input"
+                        style={{ flex: '0 0 200px' }}
+                    >
+                        <option value="all">Tất cả danh mục</option>
+                        <option value="Thuốc giảm đau">Thuốc giảm đau</option>
+                        <option value="Vitamin">Vitamin</option>
+                        <option value="Vật tư y tế">Vật tư y tế</option>
+                    </select>
+                    <button className="admin-medicine-filter-btn">
+                        <FaFilter />
+                        Lọc nâng cao
+                    </button>
                 </motion.div>
 
                 {/* Medicine Table */}
                 <motion.div variants={itemVariants}>
-                    <div className="medicine-table-wrapper">
-                        <div className="medicine-table-header">
-                            <div className="medicine-table-row header-row">
-                                <div className="medicine-cell name-cell" onClick={() => handleSort('name')}>
-                                    <span>Tên thuốc {getSortIcon('name')}</span>
-                                </div>
-                                <div className="medicine-cell category-cell">
-                                    <span>Danh mục</span>
-                                </div>
-                                <div className="medicine-cell quantity-cell" onClick={() => handleSort('quantity')}>
-                                    <span>Số lượng {getSortIcon('quantity')}</span>
-                                </div>
-                                <div className="medicine-cell stock-cell">
-                                    <span>Mức tồn kho</span>
-                                </div>
-                                <div className="medicine-cell price-cell">
-                                    <span>Giá</span>
-                                </div>
-                                <div className="medicine-cell location-cell">
-                                    <span>Vị trí</span>
-                                </div>
-                                <div className="medicine-cell status-cell">
-                                    <span>Trạng thái</span>
-                                </div>
-                                <div className="medicine-cell action-cell">
-                                    <span>Thao tác</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="medicine-table-body">
-                            <AnimatePresence>
-                                {filteredMedicines.map((medicine, index) => (
-                                    <motion.div
-                                        key={medicine.id}
-                                        className="medicine-table-row data-row"
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: 20 }}
-                                        transition={{ delay: index * 0.05 }}
-                                    >
-                                        <div className="medicine-cell name-cell">
-                                            <div className="medicine-info">
-                                                <div className="medicine-icon">
-                                                    <FaPills />
+                    <div className="admin-medicine-table-container">
+                        <table className="admin-medicine-table">
+                            <thead>
+                                <tr>
+                                    <th onClick={() => handleSort('name')} style={{ cursor: 'pointer' }}>
+                                        Tên thuốc {getSortIcon('name')}
+                                    </th>
+                                    <th>Danh mục</th>
+                                    <th onClick={() => handleSort('quantity')} style={{ cursor: 'pointer' }}>
+                                        Số lượng {getSortIcon('quantity')}
+                                    </th>
+                                    <th>Mức tồn kho</th>
+                                    <th>Giá</th>
+                                    <th>Vị trí</th>
+                                    <th>Trạng thái</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <AnimatePresence>
+                                    {filteredMedicines.map((medicine, index) => (
+                                        <motion.tr
+                                            key={medicine.id}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: 20 }}
+                                            transition={{ delay: index * 0.05 }}
+                                        >
+                                            <td>
+                                                <div className="admin-medicine-item">
+                                                    <div className="admin-medicine-image">
+                                                        {medicine.name?.charAt(0)?.toUpperCase() || 'M'}
+                                                    </div>
+                                                    <div className="admin-medicine-info">
+                                                        <div className="admin-medicine-name">{medicine.name}</div>
+                                                        <div className="admin-medicine-type">{medicine.barcode}</div>
+                                                    </div>
                                                 </div>
-                                                <div className="medicine-details">
-                                                    <div className="medicine-name">{medicine.name}</div>
-                                                    <div className="medicine-barcode">{medicine.barcode}</div>
+                                            </td>
+
+                                            <td>
+                                                <span style={{
+                                                    padding: '0.375rem 0.875rem',
+                                                    borderRadius: '20px',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: '600',
+                                                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                                                    color: 'white',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    {medicine.category}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <span style={{
+                                                    fontWeight: '600',
+                                                    color: medicine.quantity <= medicine.minStock ? '#F44336' : '#4CAF50'
+                                                }}>
+                                                    {medicine.quantity} {medicine.unit}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <div style={{ width: '100%', maxWidth: '120px' }}>
+                                                    <div style={{
+                                                        width: '100%',
+                                                        height: '8px',
+                                                        backgroundColor: '#E0E0E0',
+                                                        borderRadius: '4px',
+                                                        overflow: 'hidden',
+                                                        marginBottom: '0.25rem'
+                                                    }}>
+                                                        <div style={{
+                                                            width: `${Math.min((medicine.quantity / medicine.maxStock) * 100, 100)}%`,
+                                                            height: '100%',
+                                                            background: medicine.quantity === 0
+                                                                ? 'linear-gradient(135deg, #F44336, #EF5350)'
+                                                                : medicine.quantity <= medicine.minStock
+                                                                    ? 'linear-gradient(135deg, #FF9800, #FFB74D)'
+                                                                    : 'linear-gradient(135deg, #4CAF50, #66BB6A)',
+                                                            transition: 'width 0.3s ease'
+                                                        }}></div>
+                                                    </div>
+                                                    <small style={{ color: '#757575', fontSize: '0.75rem' }}>
+                                                        {medicine.quantity}/{medicine.maxStock}
+                                                    </small>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </td>
 
-                                        <div className="medicine-cell category-cell">
-                                            <span className="category-badge">{medicine.category}</span>
-                                        </div>
+                                            <td>
+                                                <span style={{ fontWeight: '600', color: '#424242' }}>
+                                                    {medicine.price.toLocaleString('vi-VN')} ₫
+                                                </span>
+                                            </td>
 
-                                        <div className="medicine-cell quantity-cell">
-                                            <span className={`quantity-value ${medicine.quantity <= medicine.minStock ? 'low-stock' : 'in-stock'}`}>
-                                                {medicine.quantity} {medicine.unit}
-                                            </span>
-                                        </div>
+                                            <td>
+                                                <span style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.375rem',
+                                                    padding: '0.375rem 0.75rem',
+                                                    borderRadius: '8px',
+                                                    backgroundColor: '#F5F5F5',
+                                                    color: '#757575',
+                                                    fontSize: '0.875rem'
+                                                }}>
+                                                    <FaBoxes />
+                                                    {medicine.location}
+                                                </span>
+                                            </td>
 
-                                        <div className="medicine-cell stock-cell">
-                                            <div className="stock-progress">
-                                                <div className="progress-bar-wrapper">
-                                                    <div
-                                                        className={`progress-bar ${medicine.quantity === 0 ? 'danger' : medicine.quantity <= medicine.minStock ? 'warning' : 'success'}`}
-                                                        style={{ width: `${Math.min((medicine.quantity / medicine.maxStock) * 100, 100)}%` }}
-                                                    ></div>
+                                            <td>
+                                                <span className={`admin-stock-badge ${medicine.status === 'Còn hàng' ? 'in-stock' :
+                                                    medicine.status === 'Gần hết' ? 'low-stock' : 'out-of-stock'
+                                                    }`}>
+                                                    {medicine.status === "Còn hàng" && <FaCheckCircle />}
+                                                    {medicine.status === "Gần hết" && <FaExclamationTriangle />}
+                                                    {medicine.status === "Hết hàng" && <FaTimesCircle />}
+                                                    {medicine.status}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <div className="admin-medicine-actions">
+                                                    <button className="admin-medicine-btn view" title="Xem chi tiết">
+                                                        <FaEye />
+                                                    </button>
+                                                    <button
+                                                        className="admin-medicine-btn edit"
+                                                        title="Chỉnh sửa"
+                                                        onClick={() => handleShowModal("edit", medicine)}
+                                                    >
+                                                        <FaEdit />
+                                                    </button>
+                                                    <button
+                                                        className="admin-medicine-btn delete"
+                                                        title="Xóa"
+                                                        onClick={() => {
+                                                            setMedicineToDelete(medicine);
+                                                            setShowDeleteModal(true);
+                                                        }}
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
                                                 </div>
-                                                <div className="stock-text">{medicine.quantity}/{medicine.maxStock}</div>
+                                            </td>
+                                        </motion.tr>
+                                    ))}
+                                </AnimatePresence>
+
+                                {filteredMedicines.length === 0 && (
+                                    <tr>
+                                        <td colSpan="8" className="text-center">
+                                            <div style={{ padding: '3rem', color: '#757575' }}>
+                                                <FaPills style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.3 }} />
+                                                <h5>Không tìm thấy thuốc nào</h5>
+                                                <p>Thử thay đổi bộ lọc hoặc thêm thuốc mới</p>
                                             </div>
-                                        </div>
-
-                                        <div className="medicine-cell price-cell">
-                                            <span className="price-value">{medicine.price.toLocaleString('vi-VN')} ₫</span>
-                                        </div>
-
-                                        <div className="medicine-cell location-cell">
-                                            <span className="location-badge">
-                                                <FaBoxes className="location-icon" />
-                                                {medicine.location}
-                                            </span>
-                                        </div>
-
-                                        <div className="medicine-cell status-cell">
-                                            <span className={`status-badge ${medicine.status.toLowerCase().replace(' ', '-')}`}>
-                                                {medicine.status === "Còn hàng" && <FaCheckCircle />}
-                                                {medicine.status === "Gần hết" && <FaExclamationTriangle />}
-                                                {medicine.status === "Hết hàng" && <FaTimesCircle />}
-                                                {medicine.status}
-                                            </span>
-                                        </div>
-
-                                        <div className="medicine-cell action-cell">
-                                            <div className="action-buttons">
-                                                <button className="action-btn view-btn" title="Xem chi tiết">
-                                                    <FaEye />
-                                                </button>
-                                                <button
-                                                    className="action-btn edit-btn"
-                                                    title="Chỉnh sửa"
-                                                    onClick={() => handleShowModal("edit", medicine)}
-                                                >
-                                                    <FaEdit />
-                                                </button>
-                                                <button
-                                                    className="action-btn delete-btn"
-                                                    title="Xóa"
-                                                    onClick={() => {
-                                                        setMedicineToDelete(medicine);
-                                                        setShowDeleteModal(true);
-                                                    }}
-                                                >
-                                                    <FaTrash />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
-
-                            {filteredMedicines.length === 0 && (
-                                <div className="empty-state">
-                                    <FaPills className="empty-icon" />
-                                    <h5>Không tìm thấy thuốc nào</h5>
-                                    <p>Thử thay đổi bộ lọc hoặc thêm thuốc mới</p>
-                                </div>
-                            )}
-                        </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </motion.div>
 
                 {/* Add/Edit Modal */}
-                <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+                <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" className="admin-medicine-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title>
+                        <Modal.Title className="admin-medicine-modal-title">
+                            <FaPills />
                             {modalType === "add" ? "Thêm thuốc mới" : "Chỉnh sửa thông tin thuốc"}
                         </Modal.Title>
                     </Modal.Header>
@@ -663,158 +675,183 @@ const MedicineInventory = () => {
                         <Form>
                             <Row>
                                 <Col md={6}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tên thuốc *</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Tên thuốc *</label>
+                                        <input
                                             type="text"
                                             placeholder="Nhập tên thuốc"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                                 <Col md={6}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Danh mục</Form.Label>
-                                        <Form.Select
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Danh mục</label>
+                                        <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            className="admin-medicine-form-control"
                                         >
                                             <option value="">Chọn danh mục</option>
                                             <option value="Thuốc giảm đau">Thuốc giảm đau</option>
                                             <option value="Vitamin">Vitamin</option>
                                             <option value="Vật tư y tế">Vật tư y tế</option>
-                                        </Form.Select>
-                                    </Form.Group>
+                                        </select>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col md={4}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Số lượng</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Số lượng</label>
+                                        <input
                                             type="number"
                                             placeholder="0"
                                             value={formData.quantity}
                                             onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 0 })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                                 <Col md={4}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tồn kho tối thiểu</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Tồn kho tối thiểu</label>
+                                        <input
                                             type="number"
                                             placeholder="0"
                                             value={formData.minStock}
                                             onChange={(e) => setFormData({ ...formData, minStock: parseInt(e.target.value) || 0 })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                                 <Col md={4}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Tồn kho tối đa</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Tồn kho tối đa</label>
+                                        <input
                                             type="number"
                                             placeholder="0"
                                             value={formData.maxStock}
                                             onChange={(e) => setFormData({ ...formData, maxStock: parseInt(e.target.value) || 0 })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Đơn vị</Form.Label>
-                                        <Form.Select
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Đơn vị</label>
+                                        <select
                                             value={formData.unit}
                                             onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                                            className="admin-medicine-form-control"
                                         >
                                             <option value="Viên">Viên</option>
                                             <option value="Gói">Gói</option>
                                             <option value="Lọ">Lọ</option>
                                             <option value="Hộp">Hộp</option>
-                                        </Form.Select>
-                                    </Form.Group>
+                                        </select>
+                                    </div>
                                 </Col>
                                 <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Giá (VND)</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Giá (VND)</label>
+                                        <input
                                             type="number"
                                             placeholder="0"
                                             value={formData.price}
                                             onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                                 <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Vị trí</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Vị trí</label>
+                                        <input
                                             type="text"
                                             placeholder="VD: Kệ A1"
                                             value={formData.location}
                                             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                                 <Col md={3}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Hạn sử dụng</Form.Label>
-                                        <Form.Control
+                                    <div className="admin-medicine-form-group">
+                                        <label className="admin-medicine-form-label">Hạn sử dụng</label>
+                                        <input
                                             type="date"
                                             value={formData.expiryDate}
                                             onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                                            className="admin-medicine-form-control"
                                         />
-                                    </Form.Group>
+                                    </div>
                                 </Col>
                             </Row>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Mã vạch</Form.Label>
-                                <Form.Control
+                            <div className="admin-medicine-form-group">
+                                <label className="admin-medicine-form-label">Mã vạch</label>
+                                <input
                                     type="text"
                                     placeholder="Nhập mã vạch"
                                     value={formData.barcode}
                                     onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
+                                    className="admin-medicine-form-control"
                                 />
-                            </Form.Group>
+                            </div>
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
                             Hủy
-                        </Button>
-                        <Button
-                            variant="primary"
+                        </button>
+                        <button
+                            className="admin-primary-btn"
                             onClick={handleSaveMedicine}
                             disabled={loading}
                         >
-                            {loading && <Spinner animation="border" size="sm" className="me-2" />}
+                            {loading && <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>}
                             {modalType === "add" ? "Thêm thuốc" : "Cập nhật"}
-                        </Button>
+                        </button>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Delete Confirmation Modal */}
-                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="admin-medicine-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title>Xác nhận xóa</Modal.Title>
+                        <Modal.Title className="admin-medicine-modal-title">
+                            <FaExclamationTriangle />
+                            Xác nhận xóa
+                        </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Bạn có chắc chắn muốn xóa thuốc <strong>{medicineToDelete?.name}</strong>?</p>
-                        <Alert variant="warning">
-                            <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị mất.
-                        </Alert>
+                        <div className="text-center p-4">
+                            <div className="mb-4">
+                                <FaTimesCircle style={{ fontSize: '4rem', color: '#F44336' }} />
+                            </div>
+                            <h5 className="mb-3">Bạn có chắc chắn muốn xóa thuốc <strong>{medicineToDelete?.name}</strong>?</h5>
+                            <div style={{
+                                padding: '1rem',
+                                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                                border: '1px solid rgba(255, 152, 0, 0.3)',
+                                borderRadius: '12px',
+                                color: '#FF9800'
+                            }}>
+                                <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị mất.
+                            </div>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        <button className="admin-secondary-btn" onClick={() => setShowDeleteModal(false)}>
                             Hủy
-                        </Button>
-                        <Button variant="danger" onClick={handleDeleteMedicine}>
+                        </button>
+                        <button className="admin-medicine-btn delete" onClick={handleDeleteMedicine} style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', width: 'auto', height: 'auto' }}>
+                            <FaTrash className="me-2" />
                             Xóa thuốc
-                        </Button>
+                        </button>
                     </Modal.Footer>
                 </Modal>
             </motion.div>

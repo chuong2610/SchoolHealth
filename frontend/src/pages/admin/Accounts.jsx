@@ -37,6 +37,7 @@ import {
   FaUserPlus,
   FaChevronLeft,
   FaChevronRight,
+  FaUser,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
@@ -149,19 +150,48 @@ const Accounts = () => {
   const [fabOpen, setFabOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  // Thêm state cho filter
+  const [filterGender, setFilterGender] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
   // Thêm state phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 6;
 
-  // Lọc danh sách theo tìm kiếm và vai trò
+  // Lọc danh sách theo tìm kiếm, giới tính và trạng thái
   const filteredUsers = users.filter((user) => {
-    if (!search.trim()) return true;
-    const searchLower = search.toLowerCase();
-    return (
-      user.name.toLowerCase().includes(searchLower) ||
-      user.email.toLowerCase().includes(searchLower)
-    );
+    // Search filter
+    if (search.trim()) {
+      const searchLower = search.toLowerCase();
+      const matchesSearch = user.name.toLowerCase().includes(searchLower) ||
+        user.email.toLowerCase().includes(searchLower);
+      if (!matchesSearch) return false;
+    }
+
+    // Gender filter
+    if (filterGender && filterGender !== "all") {
+      const userGender = user.gender?.toLowerCase();
+      if (filterGender === "male" && userGender !== "male") return false;
+      if (filterGender === "female" && userGender !== "female") return false;
+      if (filterGender === "other" && userGender !== "other") return false;
+    }
+
+    // Status filter (for future use)
+    if (filterStatus && filterStatus !== "all") {
+      // Add status logic when backend supports it
+    }
+
+    return true;
   });
+
+  // Reset filters
+  const handleResetFilters = () => {
+    setFilterGender("");
+    setFilterStatus("");
+    setSearch("");
+    setShowFilterDropdown(false);
+  };
 
   // Phân trang dựa trên kết quả đã lọc
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -221,9 +251,10 @@ const Accounts = () => {
     phone: "",
     address: "",
     gender: "",
+    role: "",
+    password: "",
+    confirmPassword: "",
   });
-
-
 
   const handleShowModal = (type, user = null) => {
     setModalType(type);
@@ -235,6 +266,9 @@ const Accounts = () => {
         phone: user.phone || "",
         address: user.address || "",
         gender: user.gender || "",
+        role: user.role || activeTab, // Use current tab as default role
+        password: "", // Don't populate password for edit
+        confirmPassword: "",
       });
     } else {
       setNewUser({
@@ -243,6 +277,9 @@ const Accounts = () => {
         phone: "",
         address: "",
         gender: "",
+        role: activeTab, // Default to current tab role
+        password: "",
+        confirmPassword: "",
       });
     }
     setShowModal(true);
@@ -274,6 +311,10 @@ const Accounts = () => {
       alert("Vui lòng nhập số điện thoại!");
       return;
     }
+    if (!newUser.role.trim()) {
+      alert("Vui lòng chọn vai trò!");
+      return;
+    }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -282,41 +323,28 @@ const Accounts = () => {
       return;
     }
 
-    // Skip date validation since we're not sending dateOfBirth
-    // if (newUser.birthday) {
-    //   const date = new Date(newUser.birthday);
-    //   if (isNaN(date.getTime())) {
-    //     alert("Ngày sinh không hợp lệ!");
-    //     return;
-    //   }
-    //   
-    //   // Check if date is not in the future
-    //   const today = new Date();
-    //   if (date > today) {
-    //     alert("Ngày sinh không thể là ngày trong tương lai!");
-    //     return;
-    //   }
-    //   
-    //   // Check if date is reasonable (not too old)
-    //   const hundredYearsAgo = new Date();
-    //   hundredYearsAgo.setFullYear(today.getFullYear() - 100);
-    //   if (date < hundredYearsAgo) {
-    //     alert("Ngày sinh không hợp lệ!");
-    //     return;
-    //   }
-    // }
+    // Password validation for add mode
+    if (modalType === "add") {
+      if (!newUser.password.trim()) {
+        alert("Vui lòng nhập mật khẩu!");
+        return;
+      }
+      if (newUser.password.length < 6) {
+        alert("Mật khẩu phải có ít nhất 6 ký tự!");
+        return;
+      }
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newUser.password)) {
+        alert("Mật khẩu phải bao gồm chữ hoa, chữ thường và số!");
+        return;
+      }
+      if (newUser.password !== newUser.confirmPassword) {
+        alert("Mật khẩu xác nhận không khớp!");
+        return;
+      }
+    }
 
     setSaving(true);
     try {
-      // Skip date formatting since we're not sending dateOfBirth
-      // let formattedDate = null;
-      // if (newUser.birthday) {
-      //   const date = new Date(newUser.birthday);
-      //   if (!isNaN(date.getTime())) {
-      //     formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD format
-      //   }
-      // }
-
       // Convert gender to English for API
       const convertGenderToEnglish = (gender) => {
         switch (gender) {
@@ -333,17 +361,20 @@ const Accounts = () => {
         address: newUser.address.trim() || "",
         phone: newUser.phone.trim(),
         gender: convertGenderToEnglish(newUser.gender) || "",
+        role: newUser.role.trim(),
       };
+
+      // Add password for new users
+      if (modalType === "add") {
+        userPayload.password = newUser.password;
+      }
 
       // Add ID for edit mode
       if (modalType === "edit") {
         userPayload.id = newUser.id;
       }
 
-      // Send payload directly with exact fields required
-      const payload = userPayload;
-
-      console.log("Sending payload:", JSON.stringify(payload, null, 2));
+      console.log("Sending payload:", JSON.stringify(userPayload, null, 2));
       console.log("API Endpoint:", `${API_BASE_URL}/api/User`);
       console.log("Method:", modalType === "add" ? "POST" : "PUT");
 
@@ -355,9 +386,9 @@ const Accounts = () => {
 
       let response;
       if (modalType === "add") {
-        response = await axios.post(`${API_BASE_URL}/api/User`, payload, config);
+        response = await axios.post(`${API_BASE_URL}/api/User`, userPayload, config);
       } else {
-        response = await axios.put(`${API_BASE_URL}/api/User`, payload, config);
+        response = await axios.put(`${API_BASE_URL}/api/User`, userPayload, config);
       }
 
       console.log("API Response:", response.data);
@@ -380,6 +411,9 @@ const Accounts = () => {
           phone: "",
           address: "",
           gender: "",
+          role: "",
+          password: "",
+          confirmPassword: "",
         });
       } else {
         if (typeof toast !== 'undefined') {
@@ -640,9 +674,9 @@ const Accounts = () => {
   );
 
   const renderAddUserModal = () => (
-    <Modal show={showModal} onHide={() => setShowModal(false)} className="accounts-modal">
+    <Modal show={showModal} onHide={() => setShowModal(false)} className="admin-modal">
       <Modal.Header closeButton>
-        <Modal.Title>
+        <Modal.Title className="admin-modal-title">
           {modalType === "add" ? (
             <>
               <FaUserPlus />
@@ -658,109 +692,222 @@ const Accounts = () => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Row className="mb-3">
-            <Col md={12}>
-              <Form.Group>
-                <Form.Label>
-                  <i className="fas fa-user"></i>
+          {/* Basic Info Section */}
+          <div className="row">
+            <div className="col-md-6">
+              <div className="admin-form-group">
+                <label className="admin-form-label">
+                  <FaUser />
                   Họ và tên
-                </Form.Label>
-                <Form.Control
+                </label>
+                <input
                   type="text"
                   placeholder="Nhập họ và tên"
                   value={newUser.name}
                   onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  className="admin-form-control"
                 />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={12}>
-              <Form.Group>
-                <Form.Label>
-                  <i className="fas fa-envelope"></i>
-                  Email
-                </Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Nhập email"
-                  value={newUser.email}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={6}>
-              <Form.Group>
-                <Form.Label>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="admin-form-group">
+                <label className="admin-form-label">
+                  <FaUserShield />
+                  Vai trò
+                </label>
+                <select
+                  value={newUser.role}
+                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                  className="admin-form-select"
+                >
+                  <option value="">Chọn vai trò</option>
+                  <option value="student">Học sinh</option>
+                  <option value="parent">Phụ huynh</option>
+                  <option value="nurse">Nhân viên y tế</option>
+                  <option value="admin">Quản trị viên</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">
+              <i className="fas fa-envelope"></i>
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="Nhập email"
+              value={newUser.email}
+              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+              className="admin-form-control"
+            />
+          </div>
+
+          <div className="row">
+            <div className="col-md-6">
+              <div className="admin-form-group">
+                <label className="admin-form-label">
                   <i className="fas fa-phone"></i>
                   Số điện thoại
-                </Form.Label>
-                <Form.Control
+                </label>
+                <input
                   type="tel"
                   placeholder="Nhập số điện thoại"
                   value={newUser.phone}
                   onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                  className="admin-form-control"
                 />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group>
-                <Form.Label>
-                  <i className="fas fa-venus-mars"></i>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="admin-form-group">
+                <label className="admin-form-label">
+                  <FaVenusMars />
                   Giới tính
-                </Form.Label>
-                <div className="gender-select-wrapper">
-                  <Form.Select
-                    value={newUser.gender}
-                    onChange={(e) => setNewUser({ ...newUser, gender: e.target.value })}
-                  >
-                    <option value="">Chọn giới tính</option>
-                    <option value="Male">Nam</option>
-                    <option value="Female">Nữ</option>
-                    <option value="Other">Khác</option>
-                  </Form.Select>
+                </label>
+                <select
+                  value={newUser.gender}
+                  onChange={(e) => setNewUser({ ...newUser, gender: e.target.value })}
+                  className="admin-form-select"
+                >
+                  <option value="">Chọn giới tính</option>
+                  <option value="Male">Nam</option>
+                  <option value="Female">Nữ</option>
+                  <option value="Other">Khác</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-form-group">
+            <label className="admin-form-label">
+              <FaMapMarkerAlt />
+              Địa chỉ
+            </label>
+            <input
+              type="text"
+              placeholder="Nhập địa chỉ"
+              value={newUser.address}
+              onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
+              className="admin-form-control"
+            />
+          </div>
+
+          {/* Password Section - Only for Add Mode */}
+          {modalType === "add" && (
+            <>
+              <div className="admin-form-section-divider" style={{
+                margin: '1.5rem 0',
+                padding: '0.75rem 0',
+                borderTop: '1px solid #E0E0E0',
+                position: 'relative'
+              }}>
+                <span style={{
+                  position: 'absolute',
+                  top: '-0.5rem',
+                  left: '1rem',
+                  background: 'white',
+                  padding: '0 0.5rem',
+                  color: '#757575',
+                  fontSize: '0.875rem',
+                  fontWeight: '600'
+                }}>
+                  <FaKey style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  Thông tin bảo mật
+                </span>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      <FaKey />
+                      Mật khẩu
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Nhập mật khẩu"
+                      value={newUser.password}
+                      onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                      className="admin-form-control"
+                    />
+                  </div>
                 </div>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row className="mb-3">
-            <Col md={12}>
-              <Form.Group>
-                <Form.Label>
-                  <i className="fas fa-map-marker-alt"></i>
-                  Địa chỉ
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Nhập địa chỉ"
-                  value={newUser.address}
-                  onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+                <div className="col-md-6">
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      <FaKey />
+                      Xác nhận mật khẩu
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="Nhập lại mật khẩu"
+                      value={newUser.confirmPassword}
+                      onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                      className="admin-form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Password Requirements */}
+              <div style={{
+                background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
+                border: '1px solid rgba(255, 149, 0, 0.2)',
+                borderRadius: '8px',
+                padding: '0.875rem',
+                fontSize: '0.8rem',
+                color: '#757575'
+              }}>
+                <div style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
+                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  Yêu cầu mật khẩu:
+                </div>
+                <ul style={{ margin: '0', paddingLeft: '1.25rem' }}>
+                  <li>Ít nhất 6 ký tự</li>
+                  <li>Bao gồm chữ hoa và chữ thường</li>
+                  <li>Ít nhất 1 số</li>
+                </ul>
+              </div>
+            </>
+          )}
+
+          {/* Password Change Option for Edit Mode */}
+          {modalType === "edit" && (
+            <div style={{
+              background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
+              border: '1px solid rgba(255, 149, 0, 0.2)',
+              borderRadius: '8px',
+              padding: '0.875rem',
+              fontSize: '0.875rem',
+              color: '#757575',
+              marginTop: '1rem'
+            }}>
+              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+              Để thay đổi mật khẩu, vui lòng sử dụng chức năng "Đặt lại mật khẩu" riêng biệt.
+            </div>
+          )}
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
+        <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
           Hủy
-        </Button>
-        <Button
-          variant="primary"
+        </button>
+        <button
+          className="admin-primary-btn"
           onClick={handleSaveUser}
           disabled={saving}
         >
           {saving ? (
             <>
-              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>
               Đang lưu...
             </>
           ) : (
             modalType === "add" ? "Thêm tài khoản" : "Cập nhật"
           )}
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );
@@ -770,31 +917,120 @@ const Accounts = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="accounts-container"
+      className="admin-accounts-container"
     >
-      <div className="accounts-header" style={{ background: '#f4f8fb', boxShadow: '0 4px 16px rgba(91,134,229,0.10)', borderRadius: 24, padding: '2.2rem 2rem 1.5rem 2rem', fontFamily: 'Inter,Poppins,sans-serif' }}>
+      <div className="admin-accounts-header">
         <div className="d-flex justify-content-between align-items-center">
           <div>
-            <h1 className="accounts-title" style={{ fontWeight: 800, fontSize: '2.2rem', color: '#222', letterSpacing: 0.5 }}>
-              <span role="img" aria-label="calendar">📆</span> Quản lý tài khoản
+            <h1 className="admin-accounts-title">
+              <FaUserShield className="me-3" />
+              Quản lý tài khoản
             </h1>
-            <p className="accounts-subtitle" style={{ fontSize: '1.05rem', color: '#8a99b3', marginTop: 4 }}>Quản lý và theo dõi tất cả tài khoản trong hệ thống</p>
+            <p className="admin-accounts-subtitle">Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt</p>
           </div>
-          <Button
-            variant="light"
-            className="d-flex align-items-center gap-2"
-            style={{ fontWeight: 600, borderRadius: 16, boxShadow: '0 2px 8px rgba(91,134,229,0.10)' }}
-            onClick={() => setShowStats(true)}
-          >
-            <FaChartBar style={{ color: '#5b86e5' }} />
-            Thống kê
-          </Button>
+          <div className="d-flex gap-3">
+            <button
+              className="admin-secondary-btn"
+              onClick={() => setShowStats(true)}
+            >
+              <FaChartBar />
+              Thống kê
+            </button>
+
+            {/* Add User Dropdown */}
+            <Dropdown>
+              <Dropdown.Toggle
+                className="admin-primary-btn"
+                style={{
+                  background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '0.75rem 1.5rem',
+                  color: 'white',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <FaPlus />
+                Thêm mới
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu
+                style={{
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 149, 0, 0.2)',
+                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
+                  padding: '0.5rem 0',
+                  minWidth: '200px'
+                }}
+              >
+                <Dropdown.Item
+                  onClick={() => handleShowModal('add')}
+                  style={{
+                    padding: '0.75rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem',
+                    borderBottom: '1px solid #F0F0F0'
+                  }}
+                  className="dropdown-item-hover"
+                >
+                  <FaUserPlus style={{ color: '#FF9500' }} />
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#424242' }}>Thêm tài khoản</div>
+                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tạo tài khoản mới thủ công</div>
+                  </div>
+                </Dropdown.Item>
+
+                <Dropdown.Item
+                  onClick={() => setShowImportModal(true)}
+                  style={{
+                    padding: '0.75rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem',
+                    borderBottom: '1px solid #F0F0F0'
+                  }}
+                  className="dropdown-item-hover"
+                >
+                  <FaFileUpload style={{ color: '#FF9500' }} />
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#424242' }}>Import từ Excel</div>
+                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Nhập nhiều tài khoản cùng lúc</div>
+                  </div>
+                </Dropdown.Item>
+
+                <Dropdown.Item
+                  onClick={handleDownloadTemplate}
+                  style={{
+                    padding: '0.75rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    fontSize: '0.875rem'
+                  }}
+                  className="dropdown-item-hover"
+                >
+                  <FaFileDownload style={{ color: '#FF9500' }} />
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#424242' }}>Tải file mẫu</div>
+                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tải về file Excel mẫu</div>
+                  </div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </div>
       </div>
 
       <div className="d-flex">
         <div className="flex-grow-1">
-          <Nav variant="pills" className="nav-pills mb-4">
+          <Nav variant="pills" className="admin-accounts-nav">
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "student"}
@@ -802,7 +1038,7 @@ const Accounts = () => {
                 data-role="student"
                 className={activeTab === "student" ? "active" : ""}
               >
-                <FaUserGraduate style={{ fontSize: 20, marginRight: 6 }} /> Học sinh
+                <FaUserGraduate /> Học sinh
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -812,7 +1048,7 @@ const Accounts = () => {
                 data-role="parent"
                 className={activeTab === "parent" ? "active" : ""}
               >
-                <FaUserFriends style={{ fontSize: 20, marginRight: 6 }} /> Phụ huynh
+                <FaUserFriends /> Phụ huynh
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -822,7 +1058,7 @@ const Accounts = () => {
                 data-role="nurse"
                 className={activeTab === "nurse" ? "active" : ""}
               >
-                <FaUserNurse style={{ fontSize: 20, marginRight: 6 }} /> Nhân viên y tế
+                <FaUserNurse /> Nhân viên y tế
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -832,153 +1068,301 @@ const Accounts = () => {
                 data-role="admin"
                 className={activeTab === "admin" ? "active" : ""}
               >
-                <FaUserShield style={{ fontSize: 20, marginRight: 6 }} /> Quản trị viên
+                <FaUserShield /> Quản trị viên
               </Nav.Link>
             </Nav.Item>
           </Nav>
 
-          <div className="search-filter-bar" style={{ background: '#fff', borderRadius: 32, boxShadow: '0 2px 8px rgba(91,134,229,0.10)', padding: '1.1rem 1.5rem', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16 }}>
+          <div className="admin-accounts-search-bar">
             <InputGroup style={{ flex: 1 }}>
-              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '32px 0 0 32px', border: '1.5px solid #e0e7ef', borderRight: 0 }}>
-                <FaSearch className="text-muted" style={{ fontSize: 18 }} />
+              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '12px 0 0 12px', border: '2px solid rgba(255, 149, 0, 0.2)', borderRight: 0 }}>
+                <FaSearch className="text-muted" />
               </InputGroup.Text>
               <Form.Control
                 type="text"
                 placeholder="Tìm kiếm theo tên, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="search-input border-start-0"
-                style={{ borderRadius: '0 32px 32px 0', border: '1.5px solid #e0e7ef', fontSize: '1.08rem', fontFamily: 'Inter,Poppins,sans-serif' }}
+                className="admin-search-input border-start-0"
+                style={{ borderRadius: '0 12px 12px 0' }}
               />
             </InputGroup>
-            <Button variant="outline-primary" style={{ borderRadius: 32, border: '1.5px solid #e0e7ef', marginLeft: 8, fontWeight: 600, fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 44, width: 44, boxShadow: 'none' }}>
-              <FaFilter />
-            </Button>
+
+            {/* Filter Dropdown */}
+            <Dropdown show={showFilterDropdown} onToggle={setShowFilterDropdown}>
+              <Dropdown.Toggle
+                className="admin-filter-btn"
+                style={{
+                  background: (filterGender || filterStatus) ?
+                    'linear-gradient(135deg, #FF9500, #9C27B0)' :
+                    'linear-gradient(135deg, #FF9500, #9C27B0)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '0.75rem 1.5rem',
+                  color: 'white',
+                  fontWeight: '600',
+                  fontSize: '0.95rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  position: 'relative'
+                }}
+              >
+                <FaFilter />
+                Lọc
+                {(filterGender || filterStatus) && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-6px',
+                      right: '-6px',
+                      width: '16px',
+                      height: '16px',
+                      background: '#F44336',
+                      borderRadius: '50%',
+                      fontSize: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    •
+                  </span>
+                )}
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu
+                style={{
+                  minWidth: '280px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 149, 0, 0.2)',
+                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
+                  padding: '1rem'
+                }}
+              >
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{
+                    display: 'block',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem',
+                    color: '#424242',
+                    fontSize: '0.875rem'
+                  }}>
+                    <FaVenusMars style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                    Lọc theo giới tính
+                  </label>
+                  <Form.Select
+                    value={filterGender}
+                    onChange={(e) => setFilterGender(e.target.value)}
+                    style={{
+                      border: '2px solid rgba(255, 149, 0, 0.2)',
+                      borderRadius: '8px',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    <option value="">Tất cả giới tính</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                    <option value="other">Khác</option>
+                  </Form.Select>
+                </div>
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{
+                    display: 'block',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem',
+                    color: '#424242',
+                    fontSize: '0.875rem'
+                  }}>
+                    <i className="fas fa-toggle-on" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                    Lọc theo trạng thái
+                  </label>
+                  <Form.Select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    style={{
+                      border: '2px solid rgba(255, 149, 0, 0.2)',
+                      borderRadius: '8px',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Đã khóa</option>
+                  </Form.Select>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  gap: '0.5rem',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid #E0E0E0'
+                }}>
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={handleResetFilters}
+                    style={{ flex: 1, fontSize: '0.875rem' }}
+                  >
+                    Xóa bộ lọc
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setShowFilterDropdown(false)}
+                    style={{
+                      flex: 1,
+                      background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                      border: 'none',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    Áp dụng
+                  </Button>
+                </div>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
 
           {/* Accounts Table */}
-          <div className="accounts-table-container">
-            {/* Table Header */}
-            <div className="accounts-table-header">
-              <div className="header-cell">ID</div>
-              <div className="header-cell">Tên</div>
-              <div className="header-cell">Email</div>
-              <div className="header-cell">Số điện thoại</div>
-              <div className="header-cell">
-                <FaMapMarkerAlt />
-                Địa chỉ
-              </div>
-              <div className="header-cell">
-                <FaVenusMars />
-                Giới tính
-              </div>
-              <div className="header-cell">Thao tác</div>
-            </div>
+          <div className="admin-accounts-table-container">
+            <table className="admin-accounts-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Người dùng</th>
+                  <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>
+                    <FaMapMarkerAlt className="me-2" />
+                    Địa chỉ
+                  </th>
+                  <th>
+                    <FaVenusMars className="me-2" />
+                    Giới tính
+                  </th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
 
-            {/* Table Body */}
-            <div className="accounts-table-body">
-              {loading ? (
-                <div className="accounts-loading-state">
-                  <div className="accounts-loading-spinner"></div>
-                  <h4>Đang tải dữ liệu...</h4>
-                </div>
-              ) : error ? (
-                <div className="accounts-error-state">
-                  <i className="fas fa-exclamation-triangle"></i>
-                  <h4>Có lỗi xảy ra</h4>
-                  <p>{error}</p>
-                </div>
-              ) : paginatedUsers.length === 0 ? (
-                <div className="accounts-empty-state">
-                  <i className="fas fa-users"></i>
-                  <h4>Chưa có dữ liệu</h4>
-                  <p>Chưa có tài khoản nào cho vai trò này.</p>
-                </div>
-              ) : (
-                paginatedUsers.map((user) => (
-                  <div key={user.id} className="accounts-table-row">
-                    <div className="accounts-table-cell accounts-id-cell">
-                      {user.id}
-                    </div>
-                    <div className="accounts-table-cell accounts-name-cell">
-                      {user.name}
-                    </div>
-                    <div className="accounts-table-cell accounts-email-cell">
-                      {user.email}
-                    </div>
-                    <div className="accounts-table-cell accounts-phone-cell">
-                      {user.phone}
-                    </div>
-                    <div className="accounts-table-cell accounts-address-cell" title={user.address}>
-                      <FaMapMarkerAlt style={{ marginRight: 4, color: '#5865f2' }} />
-                      {user.address}
-                    </div>
-                    <div className="accounts-table-cell accounts-gender-cell">
-                      <div className={`accounts-gender-badge ${(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ? 'male' :
-                        (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ? 'female' : 'other'
-                        }`}>
-                        {(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ?
-                          <FaMars /> :
-                          (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ?
-                            <FaVenus /> :
-                            <FaVenusMars />}
-                        {translateGender(user.gender)}
+                {loading ? (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      <div className="admin-loading">
+                        <div className="admin-loading-spinner"></div>
+                        Đang tải dữ liệu...
                       </div>
-                    </div>
-                    <div className="accounts-table-cell accounts-actions-cell">
-                      <OverlayTrigger placement="top" overlay={<Tooltip>Chỉnh sửa</Tooltip>}>
-                        <button
-                          className="accounts-action-btn edit"
-                          onClick={() => handleShowModal('edit', user)}
-                        >
-                          <FaEdit />
-                        </button>
-                      </OverlayTrigger>
-                      <OverlayTrigger placement="top" overlay={<Tooltip>Xóa</Tooltip>}>
-                        <button
-                          className="accounts-action-btn delete"
-                          onClick={() => { setUserToDelete(user); setShowDeleteModal(true); }}
-                        >
-                          <FaTrash />
-                        </button>
-                      </OverlayTrigger>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+                    </td>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      <div className="p-4 text-danger">
+                        <i className="fas fa-exclamation-triangle me-2"></i>
+                        {error}
+                      </div>
+                    </td>
+                  </tr>
+                ) : paginatedUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="text-center">
+                      <div className="p-4 text-muted">
+                        <i className="fas fa-users me-2"></i>
+                        Chưa có tài khoản nào cho vai trò này
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedUsers.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>
+                        <div className="admin-user-profile">
+                          <div className="admin-user-avatar">
+                            {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                          </div>
+                          <div className="admin-user-info">
+                            <div className="admin-user-name">{user.name}</div>
+                            <div className="admin-user-email">{user.email}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{user.email}</td>
+                      <td>{user.phone}</td>
+                      <td title={user.address}>
+                        <FaMapMarkerAlt className="me-2 text-muted" />
+                        {user.address}
+                      </td>
+                      <td>
+                        <div className={`admin-role-badge ${(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ? 'student' :
+                          (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ? 'parent' : 'nurse'
+                          }`}>
+                          {(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ?
+                            <FaMars /> :
+                            (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ?
+                              <FaVenus /> :
+                              <FaVenusMars />}
+                          {translateGender(user.gender)}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="admin-table-actions">
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Chỉnh sửa</Tooltip>}>
+                            <button
+                              className="admin-table-btn edit"
+                              onClick={() => handleShowModal('edit', user)}
+                            >
+                              <FaEdit />
+                            </button>
+                          </OverlayTrigger>
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Xóa</Tooltip>}>
+                            <button
+                              className="admin-table-btn delete"
+                              onClick={() => { setUserToDelete(user); setShowDeleteModal(true); }}
+                            >
+                              <FaTrash />
+                            </button>
+                          </OverlayTrigger>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination */}
-          <div className="accounts-pagination-wrapper">
-            <div className="accounts-pagination-info">
+          <div className="admin-pagination-container">
+            <div className="text-muted">
               Hiển thị {paginatedUsers.length} / {filteredUsers.length} kết quả
             </div>
-            <div className="accounts-pagination">
-              <button
-                className="accounts-pagination-btn"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            <Pagination className="admin-pagination">
+              <Pagination.Prev
                 disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               >
                 <FaChevronLeft />
-              </button>
+              </Pagination.Prev>
               {Array.from({ length: totalPages }, (_, i) => (
-                <button
+                <Pagination.Item
                   key={i + 1}
-                  className={`accounts-pagination-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                  active={currentPage === i + 1}
                   onClick={() => setCurrentPage(i + 1)}
                 >
                   {i + 1}
-                </button>
+                </Pagination.Item>
               ))}
-              <button
-                className="accounts-pagination-btn"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              <Pagination.Next
                 disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               >
                 <FaChevronRight />
-              </button>
-            </div>
+              </Pagination.Next>
+            </Pagination>
           </div>
         </div>
       </div>
@@ -1106,78 +1490,208 @@ const Accounts = () => {
       {renderStatsModal()}
 
       {/* Import User Modal */}
-      <Modal show={showImportModal} onHide={() => setShowImportModal(false)} className="accounts-import-modal" size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="fas fa-file-upload"></i>
+      <Modal show={showImportModal} onHide={() => setShowImportModal(false)} className="admin-modal" size="lg">
+        <Modal.Header closeButton style={{
+          background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+          color: 'white',
+          borderBottom: 'none',
+          padding: '2rem'
+        }}>
+          <Modal.Title style={{
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            margin: 0
+          }}>
+            <FaFileUpload />
             Nhập tài khoản từ Excel
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form.Group>
-            <Form.Label>
-              <i className="fas fa-file-excel"></i>
+        <Modal.Body style={{ padding: '2rem', background: 'white' }}>
+          <div className="admin-form-group">
+            <label className="admin-form-label">
+              <i className="fas fa-file-excel" style={{ color: '#FF9500' }}></i>
               Chọn file Excel
-            </Form.Label>
-            <div className="file-upload-area">
-              <i className="fas fa-cloud-upload-alt"></i>
-              <p>Kéo thả file hoặc click để chọn file Excel</p>
-              <Form.Control type="file" accept=".xlsx,.xls" onChange={handleImportExcel} />
+            </label>
+            <div style={{
+              border: '2px dashed rgba(255, 149, 0, 0.3)',
+              borderRadius: '12px',
+              padding: '2rem',
+              textAlign: 'center',
+              background: 'linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(156, 39, 176, 0.05))',
+              position: 'relative',
+              transition: 'all 0.3s ease',
+              cursor: 'pointer'
+            }}>
+              <div style={{
+                marginBottom: '1rem',
+                color: '#FF9500',
+                fontSize: '3rem'
+              }}>
+                <i className="fas fa-cloud-upload-alt"></i>
+              </div>
+              <h6 style={{
+                fontWeight: '600',
+                color: '#424242',
+                marginBottom: '0.5rem'
+              }}>
+                Kéo thả file hoặc click để chọn
+              </h6>
+              <p style={{
+                color: '#757575',
+                fontSize: '0.875rem',
+                marginBottom: '1rem'
+              }}>
+                Hỗ trợ file .xlsx, .xls (tối đa 10MB)
+              </p>
+              <Form.Control
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleImportExcel}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer'
+                }}
+              />
+              <div style={{
+                display: 'inline-block',
+                background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '600'
+              }}>
+                Chọn file
+              </div>
             </div>
-          </Form.Group>
-          {importError && <Alert variant="danger" className="mt-2">{importError}</Alert>}
+          </div>
+
+          {importError && (
+            <Alert variant="danger" style={{
+              borderRadius: '8px',
+              border: '1px solid #F44336',
+              background: 'linear-gradient(135deg, #FFEBEE, #FCE4EC)',
+              marginTop: '1rem'
+            }}>
+              <i className="fas fa-exclamation-triangle" style={{ marginRight: '0.5rem' }}></i>
+              {importError}
+            </Alert>
+          )}
+
           {importedUsers.length > 0 && (
-            <div className="preview-table-container">
-              <h6><strong>Xem trước dữ liệu sẽ import:</strong></h6>
-              <Table className="preview-table" striped bordered hover size="sm">
-                <thead>
-                  <tr>
-                    <th>StudentID</th>
-                    <th>Họ tên</th>
-                    <th>Giới tính</th>
-                    <th>Ngày sinh</th>
-                    <th>Lớp</th>
-                    <th>Tên phụ huynh</th>
-                    <th>Ngày sinh PH</th>
-                    <th>Giới tính PH</th>
-                    <th>SĐT PH</th>
-                    <th>Email PH</th>
-                    <th>Địa chỉ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {importedUsers.map((u, i) => (
-                    <tr key={i}>
-                      <td>{u.studentId}</td>
-                      <td>{u.name}</td>
-                      <td>{u.gender}</td>
-                      <td>{u.birthday}</td>
-                      <td>{u.grade}</td>
-                      <td>{u.parentName}</td>
-                      <td>{u.parentBirth}</td>
-                      <td>{u.parentGender}</td>
-                      <td>{u.parentPhone}</td>
-                      <td>{u.parentEmail}</td>
-                      <td>{u.address}</td>
+            <div style={{ marginTop: '1.5rem' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                marginBottom: '1rem',
+                padding: '0.75rem',
+                background: 'linear-gradient(135deg, #E8F5E8, #F3E5F5)',
+                borderRadius: '8px',
+                border: '1px solid rgba(76, 175, 80, 0.2)'
+              }}>
+                <i className="fas fa-check-circle" style={{ color: '#4CAF50', fontSize: '1.25rem' }}></i>
+                <div>
+                  <div style={{ fontWeight: '600', color: '#2E7D32' }}>
+                    Phát hiện {importedUsers.length} tài khoản
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: '#757575' }}>
+                    Xem trước dữ liệu trước khi import
+                  </div>
+                </div>
+              </div>
+
+              <div style={{
+                maxHeight: '300px',
+                overflowY: 'auto',
+                border: '1px solid rgba(255, 149, 0, 0.2)',
+                borderRadius: '8px'
+              }}>
+                <Table style={{ margin: 0, fontSize: '0.875rem' }}>
+                  <thead style={{
+                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                    color: 'white',
+                    position: 'sticky',
+                    top: 0
+                  }}>
+                    <tr>
+                      <th style={{ padding: '0.75rem' }}>STT</th>
+                      <th style={{ padding: '0.75rem' }}>Họ tên</th>
+                      <th style={{ padding: '0.75rem' }}>Email</th>
+                      <th style={{ padding: '0.75rem' }}>SĐT</th>
+                      <th style={{ padding: '0.75rem' }}>Vai trò</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {importedUsers.slice(0, 10).map((u, i) => (
+                      <tr key={i} style={{
+                        background: i % 2 === 0 ? '#FAFAFA' : 'white'
+                      }}>
+                        <td style={{ padding: '0.75rem' }}>{i + 1}</td>
+                        <td style={{ padding: '0.75rem', fontWeight: '500' }}>{u.name}</td>
+                        <td style={{ padding: '0.75rem' }}>{u.email}</td>
+                        <td style={{ padding: '0.75rem' }}>{u.phone}</td>
+                        <td style={{ padding: '0.75rem' }}>
+                          <span style={{
+                            background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                            color: 'white',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '4px',
+                            fontSize: '0.75rem'
+                          }}>
+                            {u.role || activeTab}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                    {importedUsers.length > 10 && (
+                      <tr>
+                        <td colSpan="5" style={{
+                          padding: '0.75rem',
+                          textAlign: 'center',
+                          fontStyle: 'italic',
+                          color: '#757575'
+                        }}>
+                          ... và {importedUsers.length - 10} tài khoản khác
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </div>
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowImportModal(false)}>
+        <Modal.Footer style={{
+          background: '#FAFAFA',
+          borderTop: '1px solid #E0E0E0',
+          padding: '1.5rem 2rem'
+        }}>
+          <button
+            className="admin-secondary-btn"
+            onClick={() => setShowImportModal(false)}
+          >
             Hủy
-          </Button>
-          <Button
-            variant="primary"
+          </button>
+          <button
+            className="admin-primary-btn"
             onClick={handleConfirmImport}
             disabled={importedUsers.length === 0}
+            style={{
+              opacity: importedUsers.length === 0 ? 0.5 : 1
+            }}
           >
-            <i className="fas fa-download"></i>
-            Nhập dữ liệu
-          </Button>
+            <FaFileUpload style={{ marginRight: '0.5rem' }} />
+            Nhập {importedUsers.length} tài khoản
+          </button>
         </Modal.Footer>
       </Modal>
 

@@ -30,7 +30,10 @@ import {
   FaCalendarAlt,
   FaBuilding,
   FaUser,
-  FaClipboardList
+  FaClipboardList,
+  FaFilter,
+  FaEye,
+  FaCheck
 } from "react-icons/fa";
 import { sendConsentApi } from "../../api/parent/sendConsentApi";
 import {
@@ -45,31 +48,34 @@ const tabList = [
     key: "all",
     label: (
       <>
-        <FaBell /> Tất cả
+        <FaBell className="me-2" /> Tất cả
       </>
     ),
+    color: "#6b46c1"
   },
   {
     key: "Vaccination",
     label: (
       <>
-        <FaSyringe /> Tiêm chủng
+        <FaSyringe className="me-2" /> Tiêm chủng
       </>
     ),
+    color: "#8b5cf6"
   },
   {
     key: "HealthCheck",
     label: (
       <>
-        <FaStethoscope /> Khám sức khỏe
+        <FaStethoscope className="me-2" /> Khám sức khỏe
       </>
     ),
+    color: "#3b82f6"
   },
 ];
 
 const icons = {
-  Vaccination: <FaSyringe style={{ color: "#2980B9" }} />,
-  HealthCheck: <FaStethoscope style={{ color: "#27AE60" }} />,
+  Vaccination: <FaSyringe style={{ color: "#6b46c1" }} />,
+  HealthCheck: <FaStethoscope style={{ color: "#3b82f6" }} />,
 };
 
 // Thêm hàm getStatusClass cho badge trạng thái
@@ -117,7 +123,6 @@ export default function Notifications() {
   }, []);
 
   // Filtered notifications
-  // Loại bỏ trùng lặp theo id
   const uniqueNotifications = Array.from(
     new Map(notifications.map(n => [n.id, n])).values()
   );
@@ -129,6 +134,14 @@ export default function Notifications() {
   );
   const totalPage = Math.ceil(filtered.length / pageSize);
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  // Statistics
+  const stats = {
+    total: uniqueNotifications.length,
+    pending: uniqueNotifications.filter(n => n.status === 'Pending').length,
+    confirmed: uniqueNotifications.filter(n => n.status === 'Confirmed').length,
+    rejected: uniqueNotifications.filter(n => n.status === 'Rejected').length,
+  };
 
   // Modal logic
   const openModal = async (notificationId, studentId) => {
@@ -153,494 +166,509 @@ export default function Notifications() {
   };
 
   return (
-    <div className="parent-theme">
-      {/* Professional CSS Override */}
-      <style>
-        {`
-          .notifications-page {
-            background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
-            min-height: 100vh !important;
-            padding: 2rem 0 !important;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-          }
-          
-          .notifications-header {
-            background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
-            color: white !important;
-            padding: 3rem 0 !important;
-            margin-bottom: 3rem !important;
-            border-radius: 0 0 30px 30px !important;
-            position: relative !important;
-            overflow: hidden !important;
-          }
-          
-          .notifications-header::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1.5" fill="white" opacity="0.08"/><circle cx="40" cy="80" r="2.5" fill="white" opacity="0.06"/></svg>') repeat !important;
-            pointer-events: none !important;
-          }
-          
-          .header-content {
-            position: relative !important;
-            z-index: 2 !important;
-            text-align: center !important;
-          }
-          
-          .page-title {
-            font-size: 2.5rem !important;
-            font-weight: 800 !important;
-            margin-bottom: 1rem !important;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2) !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 1rem !important;
-          }
-          
-          .page-subtitle {
-            font-size: 1.2rem !important;
-            opacity: 0.95 !important;
-            margin: 0 !important;
-            font-weight: 400 !important;
-          }
-          
-          .notifications-container {
-            margin: -2rem 1rem 0 1rem !important;
-            position: relative !important;
-            z-index: 10 !important;
-          }
-          
-          .notifications-card {
-            background: white !important;
-            border-radius: 25px !important;
-            box-shadow: 0 15px 50px rgba(37, 99, 235, 0.15) !important;
-            border: none !important;
-            overflow: hidden !important;
-          }
-          
-          .notifications-tabs {
-            background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
-            border-bottom: 3px solid #e5e7eb !important;
-            padding: 0 !important;
-          }
-          
-          .nav-pills .nav-link {
-            background: transparent !important;
-            border: 2px solid transparent !important;
-            border-radius: 12px !important;
-            margin: 0.5rem !important;
-            padding: 1rem 1.5rem !important;
-            color: #6b7280 !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.75rem !important;
-          }
-          
-          .nav-pills .nav-link:hover {
-            background: rgba(59, 130, 246, 0.1) !important;
-            border-color: #3b82f6 !important;
-            color: #3b82f6 !important;
-          }
-          
-          .nav-pills .nav-link.active {
-            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
-            border-color: transparent !important;
-            color: white !important;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
-          }
-          
-          .tab-content {
-            padding: 2rem !important;
-          }
-          
-          .search-section {
-            background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%) !important;
-            padding: 1.5rem !important;
-            border-radius: 16px !important;
-            border: 2px solid #e5e7eb !important;
-            margin-bottom: 2rem !important;
-          }
-          
-          .search-input {
-            border: 2px solid #e5e7eb !important;
-            border-radius: 12px !important;
-            padding: 0.75rem 1rem !important;
-            font-size: 1rem !important;
-            transition: all 0.3s ease !important;
-            background: white !important;
-            width: 100% !important;
-          }
-          
-          .search-input:focus {
-            border-color: #3b82f6 !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-            outline: none !important;
-          }
-          
-          .data-table {
-            background: white !important;
-            border-radius: 16px !important;
-            overflow: hidden !important;
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.1) !important;
-          }
-          
-          .table-header {
-            background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
-            color: white !important;
-            font-weight: 600 !important;
-          }
-          
-          .table tbody tr:hover {
-            background: #f8f9fa !important;
-          }
-          
-          .pagination-section {
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-            margin-top: 2rem !important;
-          }
-          
-          .page-btn {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
-            border: none !important;
-            color: white !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .page-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
-            transform: translateY(-2px) !important;
-          }
-          
-          .page-btn:disabled {
-            background: #d1d5db !important;
-            cursor: not-allowed !important;
-            transform: none !important;
-          }
-          
-          .action-btn {
-            background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
-            border: none !important;
-            color: white !important;
-            padding: 0.5rem 1rem !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-          }
-          
-          .action-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
-          }
-          
-          .empty-state {
-            text-align: center !important;
-            padding: 3rem 2rem !important;
-            color: #6b7280 !important;
-          }
-          
-          .empty-state-icon {
-            font-size: 4rem !important;
-            color: #d1d5db !important;
-            margin-bottom: 1rem !important;
-          }
-          
-          .status-badge {
-            padding: 0.5rem 1rem !important;
-            border-radius: 12px !important;
-            font-weight: 600 !important;
-            font-size: 0.875rem !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-          }
-          
-          .status-confirmed {
-            background: #dcfce7 !important;
-            color: #166534 !important;
-          }
-          
-          .status-pending {
-            background: #fef3c7 !important;
-            color: #92400e !important;
-          }
-          
-          .status-rejected {
-            background: #fee2e2 !important;
-            color: #991b1b !important;
-          }
-          
-          .modal-actions {
-            display: flex !important;
-            gap: 1rem !important;
-            justify-content: flex-end !important;
-            margin-top: 2rem !important;
-          }
-          
-          .btn-confirm {
-            background: linear-gradient(135deg, #10b981, #34d399) !important;
-            border: none !important;
-            color: white !important;
-          }
-          
-          .btn-reject {
-            background: linear-gradient(135deg, #ef4444, #f87171) !important;
-            border: none !important;
-            color: white !important;
-          }
-          
-          @media (max-width: 768px) {
-            .page-title {
-              font-size: 2rem !important;
-              flex-direction: column !important;
-              gap: 0.5rem !important;
-            }
-            
-            .notifications-container {
-              margin: -1rem 0.5rem 0 0.5rem !important;
-            }
-            
-            .nav-pills .nav-link {
-              margin: 0.25rem !important;
-              padding: 0.75rem 1rem !important;
-              font-size: 0.9rem !important;
-            }
-            
-            .tab-content {
-              padding: 1rem !important;
-            }
-          }
-        `}
-      </style>
-
-      <div className="notifications-page">
-        {/* Header */}
-        <div className="notifications-header">
-          <Container>
-            <div className="header-content">
-              <h1 className="page-title">
-                <FaBell />
-                Thông báo
-              </h1>
-              <p className="page-subtitle">
-                Theo dõi và phản hồi các thông báo từ nhà trường
-              </p>
-            </div>
-          </Container>
+    <div className="parent-container">
+      {/* Page Header */}
+      <div className="parent-page-header parent-animate-fade-in">
+        <div className="parent-page-header-bg"></div>
+        <div className="parent-page-header-content">
+          <h1 className="parent-page-title">
+            <FaBell />
+            Thông báo của tôi
+          </h1>
+          <p className="parent-page-subtitle">
+            Theo dõi và phản hồi các thông báo quan trọng từ nhà trường
+          </p>
         </div>
+      </div>
+
+      <Container>
+        {/* Statistics Cards */}
+        <Row className="mb-4 parent-animate-slide-in">
+          <Col md={3} className="mb-3">
+            <div className="parent-stat-card">
+              <div className="parent-stat-icon">
+                <FaBell />
+              </div>
+              <div className="parent-stat-value">{stats.total}</div>
+              <div className="parent-stat-label">Tổng thông báo</div>
+            </div>
+          </Col>
+          <Col md={3} className="mb-3">
+            <div className="parent-stat-card">
+              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
+                <FaExclamationCircle />
+              </div>
+              <div className="parent-stat-value">{stats.pending}</div>
+              <div className="parent-stat-label">Chờ phản hồi</div>
+            </div>
+          </Col>
+          <Col md={3} className="mb-3">
+            <div className="parent-stat-card">
+              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #34d399)' }}>
+                <FaCheckCircle />
+              </div>
+              <div className="parent-stat-value">{stats.confirmed}</div>
+              <div className="parent-stat-label">Đã xác nhận</div>
+            </div>
+          </Col>
+          <Col md={3} className="mb-3">
+            <div className="parent-stat-card">
+              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #ef4444, #f87171)' }}>
+                <FaTimesCircle />
+              </div>
+              <div className="parent-stat-value">{stats.rejected}</div>
+              <div className="parent-stat-label">Đã từ chối</div>
+            </div>
+          </Col>
+        </Row>
 
         {/* Main Content */}
-        <div className="notifications-container">
-          <Container>
-            <Card className="notifications-card">
-              <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
-                <Nav variant="pills" className="notifications-tabs justify-content-center">
+        <div className="parent-card parent-animate-scale-in">
+          <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
+            {/* Navigation Tabs */}
+            <div className="parent-card-header mb-4">
+              <div className="d-flex justify-content-between align-items-center flex-wrap">
+                <h3 className="parent-card-title">
+                  <FaFilter />
+                  Lọc thông báo
+                </h3>
+                <Nav variant="pills" className="d-flex">
                   {tabList.map((tab) => (
                     <Nav.Item key={tab.key}>
                       <Nav.Link
                         eventKey={tab.key}
+                        className="mx-1"
                         onClick={() => setPage(1)}
+                        style={{
+                          background: activeTab === tab.key ? 'var(--parent-gradient-primary)' : 'transparent',
+                          color: activeTab === tab.key ? 'white' : 'var(--parent-primary)',
+                          border: `2px solid ${activeTab === tab.key ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                          fontWeight: '600',
+                          borderRadius: 'var(--parent-border-radius-lg)',
+                          padding: '0.75rem 1.5rem',
+                          transition: 'all var(--parent-transition-normal)'
+                        }}
                       >
                         {tab.label}
                       </Nav.Link>
                     </Nav.Item>
                   ))}
                 </Nav>
+              </div>
+            </div>
 
-                <Tab.Content className="tab-content">
-                  {/* Search Section */}
-                  <div className="search-section">
+            <Tab.Content>
+              {/* Search Section */}
+              <div className="parent-card-body mb-4">
+                <Row>
+                  <Col md={8}>
                     <Form.Group>
-                      <Form.Label className="fw-bold text-primary">
+                      <Form.Label className="parent-form-label">
                         <FaSearch className="me-2" />
                         Tìm kiếm thông báo
                       </Form.Label>
-                      <Form.Control
-                        type="text"
-                        className="search-input"
-                        placeholder="Tìm theo tiêu đề, nội dung..."
-                        value={search}
-                        onChange={(e) => {
-                          setSearch(e.target.value);
-                          setPage(1);
-                        }}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <FaSearch
+                          style={{
+                            position: 'absolute',
+                            left: '1rem',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            color: 'var(--parent-primary)',
+                            zIndex: 2
+                          }}
+                        />
+                        <Form.Control
+                          type="text"
+                          className="parent-form-control"
+                          placeholder="Tìm theo tiêu đề, nội dung thông báo..."
+                          value={search}
+                          onChange={(e) => {
+                            setSearch(e.target.value);
+                            setPage(1);
+                          }}
+                          style={{ paddingLeft: '3rem' }}
+                        />
+                      </div>
                     </Form.Group>
+                  </Col>
+                  <Col md={4} className="d-flex align-items-end">
+                    <Button
+                      className="parent-secondary-btn w-100"
+                      onClick={() => {
+                        setSearch("");
+                        setActiveTab("all");
+                        setPage(1);
+                      }}
+                    >
+                      <FaTimes className="me-2" />
+                      Xóa bộ lọc
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+
+              {loading ? (
+                <div className="text-center py-5">
+                  <div className="parent-spinner mb-3"></div>
+                  <h5 style={{ color: 'var(--parent-primary)', fontWeight: '600' }}>
+                    Đang tải thông báo...
+                  </h5>
+                  <p className="text-muted">Vui lòng chờ trong giây lát</p>
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="text-center py-5">
+                  <div style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #e5e7eb, #f3f4f6)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1.5rem',
+                    fontSize: '2rem',
+                    color: '#9ca3af'
+                  }}>
+                    <FaClipboardList />
+                  </div>
+                  <h5 style={{ color: 'var(--parent-primary)', fontWeight: '700', marginBottom: '0.5rem' }}>
+                    Không có thông báo nào
+                  </h5>
+                  <p className="text-muted">
+                    {search ? 'Không tìm thấy thông báo phù hợp với từ khóa tìm kiếm' : 'Chưa có thông báo nào trong mục này'}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Notifications Table */}
+                  <div className="parent-table-container">
+                    <table className="parent-table">
+                      <thead>
+                        <tr>
+                          <th className="text-center" style={{ width: "80px" }}>
+                            <FaBell className="me-1" />
+                            Loại
+                          </th>
+                          <th>
+                            <FaInfoCircle className="me-2" />
+                            Tiêu đề & Nội dung
+                          </th>
+                          <th className="text-center">
+                            <FaCalendarAlt className="me-2" />
+                            Ngày tạo
+                          </th>
+                          <th className="text-center">
+                            <FaUser className="me-2" />
+                            Học sinh
+                          </th>
+                          <th className="text-center">
+                            <FaCheckCircle className="me-2" />
+                            Trạng thái
+                          </th>
+                          <th className="text-center">
+                            <FaEye className="me-2" />
+                            Thao tác
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paged.map((notification, idx) => (
+                          <tr key={notification.id}>
+                            <td className="text-center">
+                              <div style={{
+                                width: '45px',
+                                height: '45px',
+                                borderRadius: '50%',
+                                background: notification.type === 'Vaccination'
+                                  ? 'linear-gradient(135deg, #6b46c1, #8b5cf6)'
+                                  : notification.type === 'HealthCheck'
+                                    ? 'linear-gradient(135deg, #3b82f6, #60a5fa)'
+                                    : 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto',
+                                fontSize: '1.25rem',
+                                color: 'white',
+                                boxShadow: 'var(--parent-shadow-sm)'
+                              }}>
+                                {icons[notification.type] || <FaBell />}
+                              </div>
+                            </td>
+                            <td>
+                              <div>
+                                <div style={{
+                                  fontWeight: '700',
+                                  color: 'var(--parent-primary)',
+                                  marginBottom: '0.25rem',
+                                  fontSize: '1rem'
+                                }}>
+                                  {notification.title}
+                                </div>
+                                <div style={{
+                                  color: '#6b7280',
+                                  fontSize: '0.875rem',
+                                  lineHeight: '1.4'
+                                }}>
+                                  {notification.message?.length > 80
+                                    ? notification.message.substring(0, 80) + '...'
+                                    : notification.message || 'Không có nội dung'}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <div style={{ fontWeight: '500', color: '#374151' }}>
+                                {formatDateTime(notification.createdAt)}
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <div style={{
+                                fontWeight: '600',
+                                color: 'var(--parent-primary)',
+                                background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
+                                padding: '0.5rem',
+                                borderRadius: 'var(--parent-border-radius-md)',
+                                border: '1px solid rgba(107, 70, 193, 0.1)'
+                              }}>
+                                {notification.studentName || "---"}
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <Badge
+                                style={{
+                                  padding: '0.5rem 1rem',
+                                  borderRadius: 'var(--parent-border-radius-lg)',
+                                  fontWeight: '600',
+                                  fontSize: '0.875rem',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  background: notification.status === 'Confirmed'
+                                    ? 'linear-gradient(135deg, #10b981, #34d399)' :
+                                    notification.status === 'Rejected'
+                                      ? 'linear-gradient(135deg, #ef4444, #f87171)'
+                                      : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                                  color: 'white',
+                                  border: 'none',
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.5px',
+                                  boxShadow: 'var(--parent-shadow-sm)'
+                                }}
+                              >
+                                {notification.status === 'Confirmed' && <FaCheckCircle />}
+                                {notification.status === 'Rejected' && <FaTimesCircle />}
+                                {notification.status === 'Pending' && <FaExclamationCircle />}
+                                {notification.status === 'Confirmed' ? 'Đã xác nhận' :
+                                  notification.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
+                              </Badge>
+                            </td>
+                            <td className="text-center">
+                              <Button
+                                size="sm"
+                                className="parent-primary-btn"
+                                onClick={() => openModal(notification.id, notification.studentId)}
+                                title="Xem chi tiết và phản hồi"
+                              >
+                                <FaEye className="me-1" />
+                                Chi tiết
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
 
-                  {loading ? (
-                    <div className="empty-state">
-                      <Spinner animation="border" className="empty-state-icon" />
-                      <h5>Đang tải thông báo...</h5>
-                    </div>
-                  ) : filtered.length === 0 ? (
-                    <div className="empty-state">
-                      <FaClipboardList className="empty-state-icon" />
-                      <h5>Không có thông báo nào</h5>
-                      <p>Chưa có thông báo nào phù hợp với tìm kiếm của bạn</p>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Data Table */}
-                      <div className="data-table">
-                        <Table responsive className="mb-0">
-                          <thead className="table-header">
-                            <tr>
-                              <th className="text-center" style={{ width: "60px" }}>
-                                <FaBell className="me-1" />
-                                Loại
-                              </th>
-                              <th className="text-center">
-                                <FaInfoCircle className="me-2" />
-                                Tiêu đề
-                              </th>
-                              <th className="text-center">
-                                <FaCalendarAlt className="me-2" />
-                                Ngày
-                              </th>
-                              <th className="text-center">
-                                <FaUser className="me-2" />
-                                Học sinh
-                              </th>
-                              <th className="text-center">
-                                <FaCheckCircle className="me-2" />
-                                Trạng thái
-                              </th>
-                              <th className="text-center">Thao tác</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {paged.map((notification, idx) => (
-                              <tr key={notification.id}>
-                                <td className="text-center">
-                                  {icons[notification.type] || <FaBell />}
-                                </td>
-                                <td className="text-center">{notification.title}</td>
-                                <td className="text-center">{formatDateTime(notification.createdAt)}</td>
-                                <td className="text-center">{notification.studentName || "-"}</td>
-                                <td className="text-center">
-                                  <Badge
-                                    className={`status-badge ${notification.status === 'Confirmed' ? 'status-confirmed' :
-                                      notification.status === 'Rejected' ? 'status-rejected' : 'status-pending'
-                                      }`}
-                                  >
-                                    {notification.status === 'Confirmed' && <FaCheckCircle />}
-                                    {notification.status === 'Rejected' && <FaTimesCircle />}
-                                    {notification.status === 'Pending' && <FaExclamationCircle />}
-                                    {notification.status === 'Confirmed' ? 'Đã xác nhận' :
-                                      notification.status === 'Rejected' ? 'Đã từ chối' : 'Chờ xác nhận'}
-                                  </Badge>
-                                </td>
-                                <td className="text-center">
-                                  <Button
-                                    size="sm"
-                                    className="action-btn"
-                                    onClick={() => openModal(notification.id, notification.studentId)}
-                                    title="Xem chi tiết"
-                                  >
-                                    <FaInfoCircle /> Chi tiết
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
+                  {/* Pagination */}
+                  {totalPage > 1 && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      marginTop: '2rem',
+                      padding: '1rem',
+                      background: 'white',
+                      borderRadius: 'var(--parent-border-radius-xl)',
+                      boxShadow: 'var(--parent-shadow-md)',
+                      border: '1px solid rgba(107, 70, 193, 0.1)'
+                    }}>
+                      <Button
+                        className="parent-secondary-btn"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        size="sm"
+                        style={{ minWidth: '45px', height: '45px' }}
+                      >
+                        <FaChevronLeft />
+                      </Button>
+
+                      <div style={{
+                        color: 'var(--parent-primary)',
+                        fontWeight: '700',
+                        padding: '0.75rem 1.5rem',
+                        background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
+                        borderRadius: 'var(--parent-border-radius-lg)',
+                        border: '2px solid rgba(107, 70, 193, 0.1)'
+                      }}>
+                        Trang {page} / {totalPage}
                       </div>
 
-                      {/* Pagination */}
-                      {totalPage > 1 && (
-                        <div className="pagination-section">
-                          <Button
-                            className="page-btn"
-                            onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            disabled={page === 1}
-                          >
-                            <FaChevronLeft />
-                          </Button>
-
-                          <span className="mx-3">
-                            Trang {page} / {totalPage}
-                          </span>
-
-                          <Button
-                            className="page-btn"
-                            onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
-                            disabled={page === totalPage}
-                          >
-                            <FaChevronRight />
-                          </Button>
-                        </div>
-                      )}
-                    </>
+                      <Button
+                        className="parent-secondary-btn"
+                        onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
+                        disabled={page === totalPage}
+                        size="sm"
+                        style={{ minWidth: '45px', height: '45px' }}
+                      >
+                        <FaChevronRight />
+                      </Button>
+                    </div>
                   )}
-                </Tab.Content>
-              </Tab.Container>
-            </Card>
-          </Container>
+                </>
+              )}
+            </Tab.Content>
+          </Tab.Container>
         </div>
+      </Container>
 
-        {/* Detail Modal */}
-        <Modal show={modal.show} onHide={closeModal} size="lg" centered>
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <FaInfoCircle className="me-2" />
-              {modal.notification?.title}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {modal.notification && (
-              <div>
+      {/* Detail Modal */}
+      <Modal show={modal.show} onHide={closeModal} size="lg" centered className="parent-modal">
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <FaInfoCircle className="me-2" />
+            Chi tiết thông báo
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {modal.notification && (
+            <div>
+              {/* Notification Info */}
+              <div style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: 'var(--parent-border-radius-lg)',
+                marginBottom: '1.5rem',
+                border: '1px solid rgba(107, 70, 193, 0.1)',
+                boxShadow: 'var(--parent-shadow-sm)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'var(--parent-gradient-primary)'
+                }}></div>
+
+                <h5 style={{ color: 'var(--parent-primary)', marginBottom: '1rem', fontWeight: '700' }}>
+                  {modal.notification?.title}
+                </h5>
+
                 <Row>
                   <Col md={6}>
                     <div className="mb-3">
-                      <strong><FaCalendarAlt className="me-2" />Ngày:</strong><br />
-                      {modal.notification?.createdAt ?
-                        new Date(modal.notification.createdAt).toLocaleDateString("vi-VN") : ""}
+                      <strong style={{ color: 'var(--parent-primary)' }}>
+                        <FaCalendarAlt className="me-2" />
+                        Ngày tạo:
+                      </strong>
+                      <div style={{
+                        marginTop: '0.5rem',
+                        padding: '0.75rem',
+                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        borderRadius: 'var(--parent-border-radius-md)',
+                        border: '1px solid rgba(107, 70, 193, 0.1)'
+                      }}>
+                        {modal.notification?.createdAt ?
+                          new Date(modal.notification.createdAt).toLocaleDateString("vi-VN") : "---"}
+                      </div>
                     </div>
                     <div className="mb-3">
-                      <strong><FaUser className="me-2" />Học sinh:</strong><br />
-                      {modal.notification?.studentName || "---"}
+                      <strong style={{ color: 'var(--parent-primary)' }}>
+                        <FaUser className="me-2" />
+                        Học sinh:
+                      </strong>
+                      <div style={{
+                        marginTop: '0.5rem',
+                        padding: '0.75rem',
+                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        borderRadius: 'var(--parent-border-radius-md)',
+                        border: '1px solid rgba(107, 70, 193, 0.1)',
+                        fontWeight: '600'
+                      }}>
+                        {modal.notification?.studentName || "---"}
+                      </div>
                     </div>
                   </Col>
                   <Col md={6}>
                     <div className="mb-3">
-                      <strong><FaBuilding className="me-2" />Địa điểm:</strong><br />
-                      {modal.notification?.location || "---"}
+                      <strong style={{ color: 'var(--parent-primary)' }}>
+                        <FaBuilding className="me-2" />
+                        Địa điểm:
+                      </strong>
+                      <div style={{
+                        marginTop: '0.5rem',
+                        padding: '0.75rem',
+                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        borderRadius: 'var(--parent-border-radius-md)',
+                        border: '1px solid rgba(107, 70, 193, 0.1)'
+                      }}>
+                        {modal.notification?.location || "---"}
+                      </div>
                     </div>
                     <div className="mb-3">
-                      <strong><FaUserMd className="me-2" />Bác sĩ phụ trách:</strong><br />
-                      {modal.notification?.nurseName || "---"}
+                      <strong style={{ color: 'var(--parent-primary)' }}>
+                        <FaUserMd className="me-2" />
+                        Y tá phụ trách:
+                      </strong>
+                      <div style={{
+                        marginTop: '0.5rem',
+                        padding: '0.75rem',
+                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        borderRadius: 'var(--parent-border-radius-md)',
+                        border: '1px solid rgba(107, 70, 193, 0.1)',
+                        fontWeight: '600'
+                      }}>
+                        {modal.notification?.nurseName || "---"}
+                      </div>
                     </div>
                   </Col>
                 </Row>
 
                 <div className="mb-3">
-                  <strong><FaInfoCircle className="me-2" />Nội dung:</strong><br />
-                  <div className="p-3 bg-light rounded mt-2">
-                    {modal.notification?.message || ""}
+                  <strong style={{ color: 'var(--parent-primary)' }}>
+                    <FaInfoCircle className="me-2" />
+                    Nội dung thông báo:
+                  </strong>
+                  <div style={{
+                    marginTop: '0.5rem',
+                    padding: '1rem',
+                    background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                    borderRadius: 'var(--parent-border-radius-md)',
+                    lineHeight: '1.6',
+                    border: '1px solid rgba(107, 70, 193, 0.1)'
+                  }}>
+                    {modal.notification?.message || "Không có nội dung"}
                   </div>
                 </div>
 
                 {modal.notification?.note && (
                   <div className="mb-3">
-                    <strong><FaInfoCircle className="me-2" />Ghi chú:</strong><br />
-                    <div className="p-3 bg-light rounded mt-2">
+                    <strong style={{ color: 'var(--parent-primary)' }}>
+                      <FaInfoCircle className="me-2" />
+                      Ghi chú:
+                    </strong>
+                    <div style={{
+                      marginTop: '0.5rem',
+                      padding: '1rem',
+                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                      borderRadius: 'var(--parent-border-radius-md)',
+                      lineHeight: '1.6',
+                      border: '1px solid rgba(107, 70, 193, 0.1)'
+                    }}>
                       {modal.notification?.note}
                     </div>
                   </div>
@@ -648,59 +676,151 @@ export default function Notifications() {
 
                 <div className="text-center mb-3">
                   <Badge
-                    className={`status-badge ${modal.notification?.status === 'Confirmed' ? 'status-confirmed' :
-                      modal.notification?.status === 'Rejected' ? 'status-rejected' : 'status-pending'
-                      }`}
-                    style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}
+                    style={{
+                      fontSize: '1rem',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: 'var(--parent-border-radius-lg)',
+                      fontWeight: '600',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: modal.notification?.status === 'Confirmed'
+                        ? 'linear-gradient(135deg, #10b981, #34d399)' :
+                        modal.notification?.status === 'Rejected'
+                          ? 'linear-gradient(135deg, #ef4444, #f87171)'
+                          : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                      color: 'white',
+                      border: 'none',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      boxShadow: 'var(--parent-shadow-md)'
+                    }}
                   >
+                    {modal.notification?.status === 'Confirmed' && <FaCheckCircle />}
+                    {modal.notification?.status === 'Rejected' && <FaTimesCircle />}
+                    {modal.notification?.status === 'Pending' && <FaExclamationCircle />}
                     {modal.notification?.status === "Confirmed" ? "Đã xác nhận" :
                       modal.notification?.status === "Rejected" ? "Đã từ chối" : "Chờ xác nhận"}
                   </Badge>
                 </div>
+              </div>
 
-                {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
-                  <div className="mb-3">
-                    <Form.Label className="fw-bold">Ý kiến của bạn:</Form.Label>
+              {/* Response Section */}
+              {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
+                <div style={{
+                  background: 'white',
+                  padding: '1.5rem',
+                  borderRadius: 'var(--parent-border-radius-lg)',
+                  border: '1px solid rgba(107, 70, 193, 0.1)',
+                  boxShadow: 'var(--parent-shadow-sm)',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '3px',
+                    background: 'var(--parent-gradient-secondary)'
+                  }}></div>
+
+                  <h6 style={{
+                    color: 'var(--parent-primary)',
+                    marginBottom: '1rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <FaCheck />
+                    Phản hồi của bạn:
+                  </h6>
+                  <Form.Group>
+                    <Form.Label className="parent-form-label">
+                      Ý kiến của bạn (tùy chọn):
+                    </Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={3}
-                      placeholder="Nhập ý kiến của bạn (nếu có)"
+                      className="parent-form-control"
+                      placeholder="Nhập ý kiến của bạn về thông báo này..."
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
                     />
-                  </div>
-                )}
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="modal-actions w-100">
-              <Button variant="secondary" onClick={closeModal}>
-                <FaTimes className="me-1" />
-                Đóng
-              </Button>
-              {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
-                <>
-                  <Button
-                    className="btn-reject"
-                    onClick={() => handleSubmitConsent(false, "Rejected", reason)}
-                  >
-                    <FaTimesCircle className="me-1" />
-                    Từ chối
-                  </Button>
-                  <Button
-                    className="btn-confirm"
-                    onClick={() => handleSubmitConsent(true, "Confirmed")}
-                  >
-                    <FaCheckCircle className="me-1" />
-                    Đồng ý
-                  </Button>
-                </>
+                  </Form.Group>
+                </div>
               )}
             </div>
-          </Modal.Footer>
-        </Modal>
-      </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="d-flex gap-2 w-100 justify-content-end">
+            <Button
+              onClick={closeModal}
+              className="parent-secondary-btn"
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontWeight: '600',
+                borderRadius: 'var(--parent-border-radius-lg)'
+              }}
+            >
+              <FaTimes className="me-1" />
+              Đóng
+            </Button>
+            {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
+              <>
+                <Button
+                  style={{
+                    background: 'linear-gradient(135deg, #ef4444, #f87171)',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: '600',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: 'var(--parent-border-radius-lg)',
+                    transition: 'all var(--parent-transition-normal)'
+                  }}
+                  onClick={() => handleSubmitConsent(false, "Rejected", reason)}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = 'var(--parent-shadow-md)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  <FaTimesCircle className="me-1" />
+                  Từ chối
+                </Button>
+                <Button
+                  style={{
+                    background: 'linear-gradient(135deg, #10b981, #34d399)',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: '600',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: 'var(--parent-border-radius-lg)',
+                    transition: 'all var(--parent-transition-normal)'
+                  }}
+                  onClick={() => handleSubmitConsent(true, "Confirmed", reason)}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = 'var(--parent-shadow-md)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                >
+                  <FaCheckCircle className="me-1" />
+                  Xác nhận
+                </Button>
+              </>
+            )}
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

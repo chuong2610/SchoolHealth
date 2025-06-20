@@ -12,10 +12,10 @@
 frontend/src/styles/nurse/
 ├── index.css                    # Base imports
 ├── nurse-core.css              # Core variables & components (757 lines)
-├── nurse-modal-fix.css          # Modal styling fixes
 ├── nurse-dashboard.css          # Dashboard specific styling
 ├── nurse-health-events.css      # Health Events comprehensive design
-├── nurse-pages.css             # All other pages (Profile, Settings, etc.)
+├── nurse-receive-medicine.css   # Receive Medicine enhanced styling
+├── nurse-pages.css             # Other pages (Profile, Settings, etc.)
 └── NURSE_CSS_SUMMARY.md        # This summary file
 ```
 
@@ -54,26 +54,17 @@ frontend/src/styles/nurse/
 - **Status Badges**: Pending, approved, dispensed
 - **Enhanced Details**: Medicine information grid
 - **Interactive Elements**: Hover effects, action buttons
+- **Glass Morphism Design**: Modern backdrop blur effects
+- **Enhanced Modals**: Professional prescription details
 
 **Key CSS Classes:**
 - `.nurse-medicine-requests-enhanced`
 - `.nurse-medicine-card-enhanced`
 - `.nurse-medicine-status-enhanced`
 - `.nurse-medicine-details-enhanced`
+- `.container-fluid.nurse-theme.medicine-management`
 
-### ✅ **4. HEALTH DECLARATION**
-- **Student Selection**: Search and grid layout
-- **Health Metrics Forms**: Weight, height, BMI, temperature
-- **Step Indicator**: Multi-step form progress
-- **Enhanced UX**: Focus states, validation styling
-
-**Key CSS Classes:**
-- `.nurse-student-selection-enhanced`
-- `.nurse-health-metrics-enhanced`
-- `.nurse-metric-group-enhanced`
-- `.nurse-form-step-indicator`
-
-### ✅ **5. PROFILE MANAGEMENT**
+### ✅ **4. PROFILE MANAGEMENT**
 - **Two-Column Layout**: Sidebar + main content
 - **Avatar Upload**: Interactive profile picture
 - **Tabbed Interface**: Personal info, work schedule, certifications
@@ -85,7 +76,7 @@ frontend/src/styles/nurse/
 - `.nurse-profile-tabs-enhanced`
 - `.nurse-profile-form-grid`
 
-### ✅ **6. SETTINGS**
+### ✅ **5. SETTINGS**
 - **Sidebar Navigation**: Category-based settings
 - **Toggle Switches**: Custom styled switches
 - **Form Controls**: Enhanced inputs and validation
@@ -172,9 +163,11 @@ frontend/src/styles/nurse/
 - [x] Core CSS architecture
 - [x] Dashboard complete design
 - [x] Health Events comprehensive styling
-- [x] Medicine management interfaces
+- [x] Medicine management with glass morphism
+- [x] Enhanced receive medicine functionality
 - [x] Profile and settings pages
 - [x] Responsive design across all screens
+- [x] High-specificity CSS overrides for inline styles
 - [x] Accessibility considerations
 - [x] Performance optimizations
 
@@ -201,12 +194,13 @@ All CSS is production-ready and follows best practices for:
   </div>
 </div>
 
-// Health Events
-<div className="nurse-health-events">
-  <div className="nurse-events-timeline-enhanced">
-    <div className="nurse-timeline-item-enhanced">
-      {/* Event content */}
-    </div>
+// Health Events & Receive Medicine
+<div className="container-fluid nurse-theme medicine-management">
+  <div className="page-header">
+    {/* Enhanced header with gradient background */}
+  </div>
+  <div className="stats-dashboard">
+    {/* Floating stats cards with animations */}
   </div>
 </div>
 
@@ -224,9 +218,11 @@ All CSS is production-ready and follows best practices for:
 
 Đã tạo thành công một bộ CSS hoàn chỉnh cho **Nurse Role** với:
 - **Professional Pink Healthcare Theme**
-- **6 Major Functional Areas** fully styled
+- **5 Major Functional Areas** fully styled
 - **Modern, Responsive Design**
 - **Enhanced User Experience**
+- **Glass Morphism Effects**
+- **High-Specificity Override System**
 - **Production-Ready Quality**
 
 🎨 **Theme**: Pink Healthcare  

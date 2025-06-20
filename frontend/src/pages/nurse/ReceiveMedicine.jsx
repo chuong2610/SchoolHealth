@@ -443,48 +443,144 @@ const ReceiveMedicine = () => {
 
   // Render Action Buttons
   const renderActionButtons = (req, type) => (
-    <div className="medicine-action-buttons">
-      <Button
-        variant="info"
-        size="sm"
+    <div className="medicine-action-buttons" style={{
+      display: 'flex',
+      gap: '6px',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexWrap: 'wrap'
+    }}>
+      <button
         className="btn-action view"
         onClick={() => setModalDetail({ type, data: req })}
-      // title="Xem chi tiết"
+        title="Xem chi tiết"
+        style={{
+          background: 'linear-gradient(135deg, #F06292, #E91E63)',
+          border: '1px solid #F06292',
+          color: 'white',
+          width: '30px',
+          height: '30px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '12px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
+          outline: 'none'
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.background = 'linear-gradient(135deg, #E91E63, #C2185B)';
+          e.target.style.transform = 'scale(1.05)';
+          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.background = 'linear-gradient(135deg, #F06292, #E91E63)';
+          e.target.style.transform = 'scale(1)';
+          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
+        }}
       >
         <FaEye />
-      </Button>
+      </button>
       {type === "pending" && (
         <>
-          <Button
-            variant="success"
-            size="sm"
+          <button
             className="btn-action confirm"
             onClick={() => handleConfirm(req, "pending")}
-          // title="Xác nhận nhận thuốc"
+            title="Xác nhận nhận thuốc"
+            style={{
+              background: 'linear-gradient(135deg, #4CAF50, #388E3C)',
+              border: '1px solid #4CAF50',
+              color: 'white',
+              width: '30px',
+              height: '30px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 6px rgba(76, 175, 80, 0.25)',
+              outline: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = '0 3px 10px rgba(76, 175, 80, 0.35)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = '0 2px 6px rgba(76, 175, 80, 0.25)';
+            }}
           >
             <FaCheckCircle />
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
+          </button>
+          <button
             className="btn-action reject"
             onClick={() => handleReject(req)}
-          // title="Từ chối"
+            title="Từ chối"
+            style={{
+              background: 'linear-gradient(135deg, #FF5722, #D32F2F)',
+              border: '1px solid #FF5722',
+              color: 'white',
+              width: '30px',
+              height: '30px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 2px 6px rgba(255, 87, 34, 0.25)',
+              outline: 'none'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+              e.target.style.boxShadow = '0 3px 10px rgba(255, 87, 34, 0.35)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.boxShadow = '0 2px 6px rgba(255, 87, 34, 0.25)';
+            }}
           >
             <FaTimesCircle />
-          </Button>
+          </button>
         </>
       )}
       {type === "active" && (
-        <Button
-          variant="success"
-          size="sm"
+        <button
           className="btn-action complete"
           onClick={() => handleConfirm(req, "active")}
-        // title="Hoàn thành cho thuốc"
+          title="Hoàn thành cho thuốc"
+          style={{
+            background: 'linear-gradient(135deg, #FF9800, #F57C00)',
+            border: '1px solid #FF9800',
+            color: 'white',
+            width: '30px',
+            height: '30px',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '12px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 2px 6px rgba(255, 152, 0, 0.25)',
+            outline: 'none'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.boxShadow = '0 3px 10px rgba(255, 152, 0, 0.35)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'scale(1)';
+            e.target.style.boxShadow = '0 2px 6px rgba(255, 152, 0, 0.25)';
+          }}
         >
           <FaCheckDouble />
-        </Button>
+        </button>
       )}
     </div>
   );
@@ -789,6 +885,97 @@ const ReceiveMedicine = () => {
             border-radius: 12px 12px 0 0 !important;
           }
           
+          /* Medicine Action Buttons - Higher Specificity Override */
+          .medicine-action-buttons {
+            display: flex !important;
+            gap: 6px !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-wrap: wrap !important;
+          }
+          
+          .medicine-action-buttons .btn-action.btn.btn-sm {
+            width: 30px !important;
+            height: 30px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 8px !important;
+            border: 1px solid !important;
+            transition: all 0.2s ease !important;
+            font-size: 12px !important;
+            position: relative !important;
+            min-width: 30px !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+          }
+          
+          .medicine-action-buttons .btn-action.btn.btn-sm svg {
+            width: 12px !important;
+            height: 12px !important;
+          }
+          
+          .medicine-action-buttons .btn-action.view.btn.btn-info {
+            background: linear-gradient(135deg, #F06292, #E91E63) !important;
+            border-color: #F06292 !important;
+            color: white !important;
+            box-shadow: 0 2px 6px rgba(240, 98, 146, 0.25) !important;
+          }
+          
+          .medicine-action-buttons .btn-action.view.btn.btn-info:hover {
+            background: linear-gradient(135deg, #E91E63, #C2185B) !important;
+            border-color: #E91E63 !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 3px 10px rgba(240, 98, 146, 0.35) !important;
+            color: white !important;
+          }
+          
+          .medicine-action-buttons .btn-action.confirm.btn.btn-success {
+            background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
+            border-color: #4CAF50 !important;
+            color: white !important;
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.25) !important;
+          }
+          
+          .medicine-action-buttons .btn-action.confirm.btn.btn-success:hover {
+            background: linear-gradient(135deg, #388E3C, #2E7D32) !important;
+            border-color: #388E3C !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.35) !important;
+            color: white !important;
+          }
+          
+          .medicine-action-buttons .btn-action.reject.btn.btn-danger {
+            background: linear-gradient(135deg, #FF5722, #D32F2F) !important;
+            border-color: #FF5722 !important;
+            color: white !important;
+            box-shadow: 0 2px 6px rgba(255, 87, 34, 0.25) !important;
+          }
+          
+          .medicine-action-buttons .btn-action.reject.btn.btn-danger:hover {
+            background: linear-gradient(135deg, #D32F2F, #B71C1C) !important;
+            border-color: #D32F2F !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 3px 10px rgba(255, 87, 34, 0.35) !important;
+            color: white !important;
+          }
+          
+          .medicine-action-buttons .btn-action.complete.btn.btn-success {
+            background: linear-gradient(135deg, #FF9800, #F57C00) !important;
+            border-color: #FF9800 !important;
+            color: white !important;
+            box-shadow: 0 2px 6px rgba(255, 152, 0, 0.25) !important;
+          }
+          
+          .medicine-action-buttons .btn-action.complete.btn.btn-success:hover {
+            background: linear-gradient(135deg, #F57C00, #E65100) !important;
+            border-color: #F57C00 !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 3px 10px rgba(255, 152, 0, 0.35) !important;
+            color: white !important;
+          }
+          
           /* Enhanced Action Buttons */
           .btn-action {
             width: 32px !important;
@@ -999,7 +1186,7 @@ const ReceiveMedicine = () => {
           .prescription-left {
             background: white !important;
             padding: 2.5rem !important;
-            border-right: 3px solid #fce4ec !important;
+            border-right: 3px solid #f8bbd9 !important;
             position: relative !important;
           }
           
@@ -1030,14 +1217,13 @@ const ReceiveMedicine = () => {
           .section-title {
             display: flex !important;
             align-items: center !important;
-            gap: 1rem !important;
-            margin-bottom: 1.8rem !important;
-            font-size: 1.3rem !important;
+            gap: 0.75rem !important;
+            margin-bottom: 1.5rem !important;
+            font-size: 1.2rem !important;
             font-weight: 700 !important;
-            color: #E91E63 !important;
-            padding-bottom: 0.8rem !important;
-            border-bottom: 2px solid #fce4ec !important;
-            position: relative !important;
+            color: #333 !important;
+            padding-bottom: 0.75rem !important;
+            border-bottom: 2px solid #f8bbd9 !important;
           }
           
           .section-title::after {
@@ -1837,7 +2023,7 @@ const ReceiveMedicine = () => {
             }
             
             .prescription-header {
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+              background: linear-gradient(135deg, #F06292 0%, #E91E63 100%) !important;
               color: white !important;
               padding: 2rem !important;
               position: relative !important;
@@ -1908,11 +2094,11 @@ const ReceiveMedicine = () => {
             .prescription-left {
               background: white !important;
               padding: 2rem !important;
-              border-right: 3px solid #e3f2fd !important;
+              border-right: 3px solid #f8bbd9 !important;
             }
             
             .prescription-right {
-              background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
+              background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
               padding: 2rem !important;
             }
             
@@ -1929,13 +2115,13 @@ const ReceiveMedicine = () => {
               font-weight: 700 !important;
               color: #333 !important;
               padding-bottom: 0.75rem !important;
-              border-bottom: 2px solid #e3f2fd !important;
+              border-bottom: 2px solid #f8bbd9 !important;
             }
             
             .section-icon {
               width: 35px !important;
               height: 35px !important;
-              background: linear-gradient(135deg, #667eea, #764ba2) !important;
+              background: linear-gradient(135deg, #F06292, #E91E63) !important;
               color: white !important;
               border-radius: 10px !important;
               display: flex !important;
@@ -1951,7 +2137,7 @@ const ReceiveMedicine = () => {
             
             .info-item-enhanced {
               background: white !important;
-              border: 2px solid #e3f2fd !important;
+              border: 2px solid #fce4ec !important;
               border-radius: 12px !important;
               padding: 1rem !important;
               transition: all 0.3s ease !important;
@@ -1960,9 +2146,9 @@ const ReceiveMedicine = () => {
             }
             
             .info-item-enhanced:hover {
-              border-color: #667eea !important;
-              transform: translateY(-2px) !important;
-              box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15) !important;
+              border-color: #F06292 !important;
+              transform: translateY(-1px) !important;
+              box-shadow: 0 4px 15px rgba(240, 98, 146, 0.15) !important;
             }
             
             .info-item-enhanced::before {
@@ -1972,7 +2158,7 @@ const ReceiveMedicine = () => {
               left: 0 !important;
               width: 4px !important;
               height: 100% !important;
-              background: linear-gradient(135deg, #667eea, #764ba2) !important;
+              background: linear-gradient(135deg, #F06292, #E91E63) !important;
               opacity: 0 !important;
               transition: opacity 0.3s ease !important;
             }
@@ -1984,7 +2170,7 @@ const ReceiveMedicine = () => {
             .info-label-enhanced {
               font-size: 0.85rem !important;
               font-weight: 600 !important;
-              color: #667eea !important;
+              color: #F06292 !important;
               text-transform: uppercase !important;
               letter-spacing: 0.5px !important;
               margin-bottom: 0.5rem !important;
@@ -2001,8 +2187,8 @@ const ReceiveMedicine = () => {
             }
             
             .medication-card {
-              background: linear-gradient(135deg, #ffffff 0%, #f8f9fc 100%) !important;
-              border: 2px solid #e3f2fd !important;
+              background: linear-gradient(135deg, #ffffff 0%, #fce4ec 100%) !important;
+              border: 2px solid #f8bbd9 !important;
               border-radius: 16px !important;
               padding: 1.5rem !important;
               margin-bottom: 1rem !important;
@@ -2017,7 +2203,7 @@ const ReceiveMedicine = () => {
               left: 0 !important;
               right: 0 !important;
               height: 4px !important;
-              background: linear-gradient(90deg, #667eea, #764ba2, #f093fb) !important;
+              background: linear-gradient(90deg, #F06292, #E91E63, #C2185B) !important;
             }
             
             .medication-header {
@@ -2030,7 +2216,7 @@ const ReceiveMedicine = () => {
             .medication-icon {
               width: 45px !important;
               height: 45px !important;
-              background: linear-gradient(135deg, #667eea, #764ba2) !important;
+              background: linear-gradient(135deg, #F06292, #E91E63) !important;
               color: white !important;
               border-radius: 12px !important;
               display: flex !important;
@@ -2047,19 +2233,19 @@ const ReceiveMedicine = () => {
             }
             
             .dosage-highlight {
-              background: linear-gradient(135deg, #e6f7ff, #f0f5ff) !important;
-              border: 2px solid #38b6ff !important;
+              background: linear-gradient(135deg, #fce4ec, #f8bbd9) !important;
+              border: 2px solid #F06292 !important;
               border-radius: 10px !important;
               padding: 0.75rem 1rem !important;
               font-weight: 600 !important;
-              color: #1c4ed8 !important;
+              color: #C2185B !important;
               text-align: center !important;
               font-size: 1.1rem !important;
             }
             
             .notes-section {
-              background: linear-gradient(135deg, #fef7e6, #fdecd1) !important;
-              border: 2px solid #f59e0b !important;
+              background: linear-gradient(135deg, #fff3e0, #ffe0b2) !important;
+              border: 2px solid #ff9800 !important;
               border-radius: 12px !important;
               padding: 1rem !important;
               margin-top: 1rem !important;
@@ -2070,20 +2256,20 @@ const ReceiveMedicine = () => {
               align-items: center !important;
               gap: 0.5rem !important;
               font-weight: 700 !important;
-              color: #92400e !important;
+              color: #f57c00 !important;
               margin-bottom: 0.5rem !important;
             }
             
             .notes-content {
-              color: #78350f !important;
+              color: #e65100 !important;
               line-height: 1.5 !important;
               font-style: italic !important;
             }
             
             .prescription-footer {
-              background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
+              background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
               padding: 1.5rem 2rem !important;
-              border-top: 3px solid #e3f2fd !important;
+              border-top: 3px solid #f8bbd9 !important;
             }
             
             .footer-actions {
@@ -2094,17 +2280,21 @@ const ReceiveMedicine = () => {
             }
             
             .action-btn-enhanced {
-              padding: 0.75rem 2rem !important;
-              border-radius: 25px !important;
+              padding: 0.65rem 1.5rem !important;
+              border-radius: 20px !important;
               font-weight: 600 !important;
-              font-size: 0.95rem !important;
+              font-size: 0.9rem !important;
               display: flex !important;
               align-items: center !important;
-              gap: 0.5rem !important;
+              gap: 0.4rem !important;
               transition: all 0.3s ease !important;
               border: none !important;
               text-transform: uppercase !important;
               letter-spacing: 0.5px !important;
+            }
+            
+            .action-btn-enhanced svg {
+              font-size: 0.9rem !important;
             }
             
             .btn-close-enhanced {
@@ -2114,8 +2304,8 @@ const ReceiveMedicine = () => {
             
             .btn-close-enhanced:hover {
               background: linear-gradient(135deg, #495057, #343a40) !important;
-              transform: translateY(-2px) !important;
-              box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3) !important;
+              transform: translateY(-1px) !important;
+              box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2) !important;
             }
             
             .btn-confirm-enhanced {
@@ -2125,8 +2315,8 @@ const ReceiveMedicine = () => {
             
             .btn-confirm-enhanced:hover {
               background: linear-gradient(135deg, #20c997, #17a2b8) !important;
-              transform: translateY(-2px) !important;
-              box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3) !important;
+              transform: translateY(-1px) !important;
+              box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2) !important;
             }
             
             .btn-reject-enhanced {
@@ -2136,8 +2326,8 @@ const ReceiveMedicine = () => {
             
             .btn-reject-enhanced:hover {
               background: linear-gradient(135deg, #c82333, #a71e2a) !important;
-              transform: translateY(-2px) !important;
-              box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3) !important;
+              transform: translateY(-1px) !important;
+              box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2) !important;
             }
             
             .btn-complete-enhanced {
@@ -2147,8 +2337,8 @@ const ReceiveMedicine = () => {
             
             .btn-complete-enhanced:hover {
               background: linear-gradient(135deg, #138496, #0f6674) !important;
-              transform: translateY(-2px) !important;
-              box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3) !important;
+              transform: translateY(-1px) !important;
+              box-shadow: 0 4px 15px rgba(23, 162, 184, 0.2) !important;
             }
             
             .loading-enhanced {
@@ -2162,7 +2352,7 @@ const ReceiveMedicine = () => {
             
             .loading-icon-enhanced {
               font-size: 3rem !important;
-              color: #667eea !important;
+              color: #F06292 !important;
               margin-bottom: 1rem !important;
             }
             
@@ -2193,7 +2383,7 @@ const ReceiveMedicine = () => {
               
               .prescription-left {
                 border-right: none !important;
-                border-bottom: 3px solid #e3f2fd !important;
+                border-bottom: 3px solid #f8bbd9 !important;
               }
               
               .prescription-header {

@@ -1,0 +1,473 @@
+﻿/* ========================================
+   ADMIN ACCOUNTS REDESIGN - ORANGE TO PURPLE GRADIENT
+   ======================================== */
+
+/* Container and Header */
+.admin-accounts-container {
+  background: linear-gradient(135deg, #FFF3E0 0%, #F3E5F5 100%) !important;
+  min-height: 100vh !important;
+  padding: 2rem !important;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.admin-accounts-header {
+  background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+  color: white !important;
+  padding: 2.5rem 2rem !important;
+  border-radius: 0 0 24px 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+}
+
+/* Navigation Tabs */
+.admin-accounts-nav {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 1rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+}
+
+.admin-accounts-nav .nav-link {
+  background: transparent !important;
+  color: #757575 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 1rem 1.5rem !important;
+  margin: 0 0.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.admin-accounts-nav .nav-link:hover {
+  background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(156, 39, 176, 0.1)) !important;
+  color: #FF9500 !important;
+  transform: translateY(-2px) !important;
+}
+
+.admin-accounts-nav .nav-link.active {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.3) !important;
+}
+
+/* Tables */
+.admin-accounts-table-container {
+  background: white !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  margin-bottom: 2rem !important;
+}
+
+.admin-accounts-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+  background: white !important;
+}
+
+.admin-accounts-table thead th {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  padding: 1.25rem 1rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border: none !important;
+  text-align: left !important;
+}
+
+.admin-accounts-table tbody td {
+  padding: 1.25rem 1rem !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  vertical-align: middle !important;
+  background: white !important;
+  transition: all 0.3s ease !important;
+  font-size: 0.95rem !important;
+}
+
+.admin-accounts-table tbody tr:hover td {
+  background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
+  transform: scale(1.005) !important;
+}
+
+/* Action Buttons */
+.admin-table-actions {
+  display: flex !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.admin-table-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s ease !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.admin-table-btn.edit {
+  background: linear-gradient(135deg, #2196F3, #42A5F5) !important;
+}
+
+.admin-table-btn.permissions {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+}
+
+.admin-table-btn.delete {
+  background: linear-gradient(135deg, #F44336, #EF5350) !important;
+}
+
+.admin-table-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ========================================
+   ADMIN ADD/EDIT USER FORM STYLING  
+   ======================================== */
+
+/* Modal Container */
+.admin-modal .modal-content {
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+}
+
+/* Modal Header */
+.admin-modal .modal-header {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  border-bottom: none !important;
+  padding: 2rem !important;
+  position: relative !important;
+}
+
+.admin-modal-title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.admin-modal-title svg {
+  font-size: 1.75rem !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* Modal Body */
+.admin-modal .modal-body {
+  padding: 2rem !important;
+  background: white !important;
+}
+
+/* Form Groups */
+.admin-form-group {
+  margin-bottom: 1.5rem !important;
+  position: relative !important;
+}
+
+.admin-form-label {
+  font-weight: 600 !important;
+  color: #424242 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.95rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.admin-form-label svg,
+.admin-form-label i {
+  color: #FF9500 !important;
+  font-size: 1rem !important;
+  width: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Form Controls */
+.admin-form-control {
+  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 0.875rem 1rem !important;
+  font-size: 0.95rem !important;
+  background: #FAFAFA !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  width: 100% !important;
+}
+
+.admin-form-control:focus {
+  border-color: #FF9500 !important;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  background: white !important;
+  outline: none !important;
+  transform: translateY(-1px) !important;
+}
+
+.admin-form-control::placeholder {
+  color: #9E9E9E !important;
+  font-style: italic !important;
+}
+
+/* Select Styling */
+.admin-form-select {
+  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 0.875rem 1rem !important;
+  font-size: 0.95rem !important;
+  background: #FAFAFA !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  width: 100% !important;
+  appearance: none !important;
+}
+
+.admin-form-select:focus {
+  border-color: #FF9500 !important;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  background-color: white !important;
+  outline: none !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Password Requirements Box */
+.admin-password-requirements {
+  background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
+  border: 1px solid rgba(255, 149, 0, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  margin-top: 1rem !important;
+  position: relative !important;
+}
+
+.admin-password-requirements::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+}
+
+.admin-password-requirements ul {
+  margin: 0 !important;
+  padding-left: 1.25rem !important;
+  font-size: 0.8rem !important;
+  color: #757575 !important;
+  line-height: 1.5 !important;
+}
+
+.admin-password-requirements li::marker {
+  color: #FF9500 !important;
+}
+
+/* Modal Footer */
+.admin-modal .modal-footer {
+  background: #FAFAFA !important;
+  border-top: 1px solid #E0E0E0 !important;
+  padding: 1.5rem 2rem !important;
+  display: flex !important;
+  gap: 1rem !important;
+  justify-content: flex-end !important;
+}
+
+/* Buttons */
+.admin-primary-btn, .admin-secondary-btn {
+  padding: 0.875rem 1.5rem !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-width: 120px !important;
+}
+
+.admin-primary-btn {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3) !important;
+}
+
+.admin-primary-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.4) !important;
+  color: white !important;
+}
+
+.admin-secondary-btn {
+  background: #E0E0E0 !important;
+  color: #757575 !important;
+}
+
+.admin-secondary-btn:hover {
+  background: #D5D5D5 !important;
+  color: #424242 !important;
+  transform: translateY(-1px) !important;
+  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+}
+
+/* Loading Spinner */
+.admin-loading-spinner {
+  width: 16px !important;
+  height: 16px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-top: 2px solid white !important;
+  border-radius: 50% !important;
+  animation: admin-spin 1s linear infinite !important;
+}
+
+@keyframes admin-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Button States */
+.admin-primary-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(255, 149, 0, 0.2) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-modal .modal-header {
+    padding: 1.5rem !important;
+  }
+  
+  .admin-modal .modal-body {
+    padding: 1.5rem !important;
+  }
+  
+  .admin-modal .modal-footer {
+    padding: 1rem 1.5rem !important;
+    flex-direction: column !important;
+  }
+  
+  .admin-primary-btn, .admin-secondary-btn {
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .admin-modal-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .admin-form-control, .admin-form-select {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+}
+
+/* Focus Animation */
+.admin-modal.show .admin-form-control:first-of-type {
+  animation: admin-focus-hint 0.5s ease-in-out 1s !important;
+}
+
+@keyframes admin-focus-hint {
+  0%, 100% { border-color: rgba(255, 149, 0, 0.2); }
+  50% { border-color: #FF9500; box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1); }
+}
+
+/* Additional Form Styling */
+.admin-modal .row {
+  margin-left: -0.5rem !important;
+  margin-right: -0.5rem !important;
+}
+
+.admin-modal .row > [class*="col-"] {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+}
+
+/* Dropdown Hover Effects */
+.dropdown-item-hover {
+  transition: all 0.3s ease !important;
+  border-radius: 8px !important;
+  margin: 0.25rem 0 !important;
+}
+
+.dropdown-item-hover:hover {
+  background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(156, 39, 176, 0.1)) !important;
+  color: #424242 !important;
+  transform: translateX(4px) !important;
+}
+
+.dropdown-item-hover:active {
+  background: linear-gradient(135deg, rgba(255, 149, 0, 0.2), rgba(156, 39, 176, 0.2)) !important;
+  transform: translateX(2px) !important;
+}
+
+/* Enhanced Input Effects */
+.admin-form-control:hover {
+  border-color: rgba(255, 149, 0, 0.4) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.admin-form-select:hover {
+  border-color: rgba(255, 149, 0, 0.4) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Section Divider Enhancement */
+.admin-form-section-divider span svg {
+  animation: pulse-orange 2s ease-in-out infinite !important;
+}
+
+@keyframes pulse-orange {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Success State Animation */
+.admin-form-control.success {
+  border-color: #4CAF50 !important;
+  background: rgba(76, 175, 80, 0.05) !important;
+}
+
+.admin-form-control.error {
+  border-color: #F44336 !important;
+  background: rgba(244, 67, 54, 0.05) !important;
+}
+
+/* Modal Close Button Enhancement */
+.admin-modal .btn-close {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  opacity: 0.8 !important;
+  transition: all 0.3s ease !important;
+}
+
+.admin-modal .btn-close:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  opacity: 1 !important;
+  transform: scale(1.1) !important;
+}

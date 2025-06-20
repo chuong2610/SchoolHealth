@@ -26,7 +26,10 @@ import {
   FaHome,
   FaStar,
   FaGraduationCap,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaBell,
+  FaChartLine,
+  FaFileAlt
 } from 'react-icons/fa';
 // Styles được import từ main.jsx
 
@@ -75,599 +78,367 @@ const ParentDashboard = () => {
   };
 
   return (
-    <div
-      className="parent-theme parent-dashboard"
-      style={{
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        backgroundColor: "#f8f9fc",
-        minHeight: "100vh",
-        position: "relative"
-      }}
-    >
-      {/* CSS Override for Professional Design */}
-      <style>
-        {`
-          .parent-dashboard {
-            background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
-            min-height: 100vh !important;
-            padding: 0 !important;
-          }
-          
-          .dashboard-header {
-            background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
-            color: white !important;
-            padding: 3rem 0 4rem 0 !important;
-            margin-bottom: 2rem !important;
-            border-radius: 0 0 30px 30px !important;
-            position: relative !important;
-            overflow: hidden !important;
-          }
-          
-          .dashboard-header::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1.5" fill="white" opacity="0.08"/><circle cx="40" cy="80" r="2.5" fill="white" opacity="0.06"/></svg>') repeat !important;
-            pointer-events: none !important;
-          }
-          
-          .header-content {
-            position: relative !important;
-            z-index: 2 !important;
-            text-align: center !important;
-          }
-          
-          .welcome-title {
-            font-size: 3rem !important;
-            font-weight: 800 !important;
-            margin-bottom: 1rem !important;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2) !important;
-          }
-          
-          .welcome-subtitle {
-            font-size: 1.3rem !important;
-            opacity: 0.95 !important;
-            margin-bottom: 2rem !important;
-            font-weight: 400 !important;
-          }
-          
-          .stats-dashboard {
-            margin: -2rem 1rem 3rem 1rem !important;
-            position: relative !important;
-            z-index: 10 !important;
-          }
-          
-          .stats-card {
-            background: white !important;
-            border-radius: 20px !important;
-            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.15) !important;
-            border: none !important;
-            overflow: hidden !important;
-            transition: all 0.3s ease !important;
-            position: relative !important;
-          }
-          
-          .stats-card:hover {
-            transform: translateY(-8px) !important;
-            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2) !important;
-          }
-          
-          .stats-card::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: 5px !important;
-          }
-          
-          .stats-card.health::before {
-            background: linear-gradient(90deg, #10b981, #34d399) !important;
-          }
-          
-          .stats-card.medicine::before {
-            background: linear-gradient(90deg, #3b82f6, #60a5fa) !important;
-          }
-          
-          .stats-card.safety::before {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa) !important;
-          }
-          
-          .stats-card.support::before {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
-          }
-          
-          .stats-content {
-            padding: 2rem !important;
-            display: flex !important;
-            align-items: center !important;
-          }
-          
-          .stats-icon {
-            width: 70px !important;
-            height: 70px !important;
-            border-radius: 16px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            font-size: 2rem !important;
-            margin-right: 1.5rem !important;
-          }
-          
-          .stats-card.health .stats-icon {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1)) !important;
-            color: #10b981 !important;
-          }
-          
-          .stats-card.medicine .stats-icon {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1)) !important;
-            color: #3b82f6 !important;
-          }
-          
-          .stats-card.safety .stats-icon {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.1)) !important;
-            color: #8b5cf6 !important;
-          }
-          
-          .stats-card.support .stats-icon {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)) !important;
-            color: #f59e0b !important;
-          }
-          
-          .stats-info h3 {
-            font-size: 2.5rem !important;
-            font-weight: 800 !important;
-            margin: 0 0 0.5rem 0 !important;
-            color: #1f2937 !important;
-          }
-          
-          .stats-info p {
-            font-size: 1rem !important;
-            font-weight: 600 !important;
-            margin: 0 !important;
-            color: #6b7280 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-          }
-          
-          .feature-section {
-            margin: 3rem 1rem !important;
-          }
-          
-          .section-title {
-            text-align: center !important;
-            font-size: 2.5rem !important;
-            font-weight: 800 !important;
-            color: #1f2937 !important;
-            margin-bottom: 3rem !important;
-            position: relative !important;
-          }
-          
-          .section-title::after {
-            content: '' !important;
-            position: absolute !important;
-            bottom: -10px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 80px !important;
-            height: 4px !important;
-            background: linear-gradient(90deg, #2563eb, #38b6ff) !important;
-            border-radius: 2px !important;
-          }
-          
-          .feature-card {
-            background: white !important;
-            border-radius: 20px !important;
-            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.1) !important;
-            border: none !important;
-            overflow: hidden !important;
-            transition: all 0.3s ease !important;
-            height: 100% !important;
-          }
-          
-          .feature-card:hover {
-            transform: translateY(-8px) !important;
-            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15) !important;
-          }
-          
-          .feature-icon {
-            width: 80px !important;
-            height: 80px !important;
-            border-radius: 20px !important;
-            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
-            color: white !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            font-size: 2rem !important;
-            margin: 0 auto 1.5rem auto !important;
-          }
-          
-          .feature-title {
-            font-size: 1.5rem !important;
-            font-weight: 700 !important;
-            color: #1f2937 !important;
-            margin-bottom: 1rem !important;
-            text-align: center !important;
-          }
-          
-          .feature-description {
-            color: #6b7280 !important;
-            line-height: 1.6 !important;
-            text-align: center !important;
-            margin-bottom: 1.5rem !important;
-          }
-          
-          .feature-link {
-            text-align: center !important;
-          }
-          
-          .blog-section {
-            margin: 3rem 1rem !important;
-          }
-          
-          .blog-card {
-            background: white !important;
-            border-radius: 20px !important;
-            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.1) !important;
-            border: none !important;
-            overflow: hidden !important;
-            transition: all 0.3s ease !important;
-            height: 100% !important;
-          }
-          
-          .blog-card:hover {
-            transform: translateY(-8px) !important;
-            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15) !important;
-          }
-          
-          .blog-image {
-            width: 100% !important;
-            height: 200px !important;
-            object-fit: cover !important;
-            border-bottom: 3px solid #e5e7eb !important;
-          }
-          
-          .blog-content {
-            padding: 1.5rem !important;
-          }
-          
-          .blog-date {
-            color: #6b7280 !important;
-            font-size: 0.875rem !important;
-            font-weight: 600 !important;
-            display: flex !important;
-            align-items: center !important;
-            margin-bottom: 1rem !important;
-          }
-          
-          .blog-title {
-            font-size: 1.25rem !important;
-            font-weight: 700 !important;
-            color: #1f2937 !important;
-            margin-bottom: 1rem !important;
-            line-height: 1.4 !important;
-          }
-          
-          .blog-summary {
-            color: #6b7280 !important;
-            line-height: 1.6 !important;
-            margin-bottom: 1.5rem !important;
-          }
-          
-          .blog-link {
-            display: inline-flex !important;
-            align-items: center !important;
-            color: #2563eb !important;
-            font-weight: 600 !important;
-            text-decoration: none !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .blog-link:hover {
-            color: #1d4ed8 !important;
-            transform: translateX(4px) !important;
-          }
-          
-          .btn-primary-custom {
-            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
-            border: none !important;
-            border-radius: 25px !important;
-            padding: 12px 30px !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            transition: all 0.3s ease !important;
-            color: white !important;
-          }
-          
-          .btn-primary-custom:hover {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
-            color: white !important;
-          }
-          
-          .loading-container {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 4rem 2rem !important;
-            text-align: center !important;
-          }
-          
-          .loading-icon {
-            width: 60px !important;
-            height: 60px !important;
-            margin-bottom: 1rem !important;
-          }
-          
-          @media (max-width: 768px) {
-            .welcome-title {
-              font-size: 2rem !important;
-            }
-            
-            .welcome-subtitle {
-              font-size: 1.1rem !important;
-            }
-            
-            .stats-dashboard {
-              margin: -1rem 0.5rem 2rem 0.5rem !important;
-            }
-            
-            .stats-content {
-              padding: 1.5rem !important;
-              flex-direction: column !important;
-              text-align: center !important;
-            }
-            
-            .stats-icon {
-              margin: 0 0 1rem 0 !important;
-            }
-            
-            .feature-section,
-            .blog-section {
-              margin: 2rem 0.5rem !important;
-            }
-          }
-        `}
-      </style>
-
+    <div className="parent-container">
       {/* Dashboard Header */}
-      <div className="dashboard-header">
-        <Container>
-          <div className="header-content">
-            <h1 className="welcome-title">
-              <FaHeartbeat className="me-3" />
-              Chăm sóc sức khỏe học đường
-            </h1>
-            <p className="welcome-subtitle">
-              Đồng hành cùng phụ huynh trong việc chăm sóc và theo dõi sức khỏe học sinh
-            </p>
-            <Button
-              as={Link}
-              to="/parent/more-know"
-              className="btn-primary-custom"
-              size="lg"
-            >
-              <FaBookOpen className="me-2" />
-              Tìm hiểu thêm
-            </Button>
+      <div className="parent-page-header parent-animate-fade-in">
+        <div className="parent-page-header-bg"></div>
+        <div className="parent-page-header-content">
+          <h1 className="parent-page-title">
+            <FaHeartbeat />
+            Chăm sóc sức khỏe học đường
+          </h1>
+          <p className="parent-page-subtitle">
+            Đồng hành cùng phụ huynh trong việc chăm sóc và theo dõi sức khỏe học sinh
+          </p>
+          <Button
+            as={Link}
+            to="/parent/more-know"
+            className="parent-primary-btn mt-3"
+            size="lg"
+          >
+            <FaBookOpen className="me-2" />
+            Tìm hiểu thêm
+          </Button>
+        </div>
+      </div>
+
+      <Container>
+        {/* Welcome Section */}
+        <div className="parent-card parent-animate-fade-in mb-4">
+          <div className="parent-card-header">
+            <h2 className="parent-card-title">
+              <FaHome />
+              Chào mừng đến với hệ thống quản lý sức khỏe
+            </h2>
           </div>
-        </Container>
-      </div>
+          <div className="parent-card-body">
+            <Row className="align-items-center">
+              <Col md={8}>
+                <p className="mb-3" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+                  Hệ thống giúp phụ huynh theo dõi và quản lý sức khỏe của con em một cách chuyên nghiệp,
+                  đảm bảo an toàn và hiệu quả trong môi trường học đường.
+                </p>
+                <div className="d-flex gap-3 flex-wrap">
+                  <Badge bg="success" className="p-2">
+                    <FaShieldAlt className="me-2" />
+                    An toàn tuyệt đối
+                  </Badge>
+                  <Badge bg="primary" className="p-2">
+                    <FaUserMd className="me-2" />
+                    Đội ngũ chuyên nghiệp
+                  </Badge>
+                  <Badge bg="info" className="p-2">
+                    <FaClock className="me-2" />
+                    Hỗ trợ 24/7
+                  </Badge>
+                </div>
+              </Col>
+              <Col md={4} className="text-center">
+                <div className="parent-stat-icon" style={{ margin: '0 auto', transform: 'scale(1.2)' }}>
+                  <FaGraduationCap />
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </div>
 
-      {/* Statistics Dashboard */}
-      <div className="stats-dashboard">
-        <Container>
-          <Row className="g-4">
-            <Col lg={3} md={6}>
-              <Card className={`stats-card health ${animateStats ? 'animate-in' : ''}`}>
-                <div className="stats-content">
-                  <div className="stats-icon">
-                    <FaHeartbeat />
-                  </div>
-                  <div className="stats-info">
-                    <h3>24/7</h3>
-                    <p>Chăm sóc sức khỏe</p>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-            <Col lg={3} md={6}>
-              <Card className={`stats-card medicine ${animateStats ? 'animate-in' : ''}`}>
-                <div className="stats-content">
-                  <div className="stats-icon">
-                    <FaPills />
-                  </div>
-                  <div className="stats-info">
-                    <h3>100%</h3>
-                    <p>Quản lý thuốc</p>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-            <Col lg={3} md={6}>
-              <Card className={`stats-card safety ${animateStats ? 'animate-in' : ''}`}>
-                <div className="stats-content">
-                  <div className="stats-icon">
-                    <FaShieldAlt />
-                  </div>
-                  <div className="stats-info">
-                    <h3>Safe</h3>
-                    <p>An toàn tuyệt đối</p>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-            <Col lg={3} md={6}>
-              <Card className={`stats-card support ${animateStats ? 'animate-in' : ''}`}>
-                <div className="stats-content">
-                  <div className="stats-icon">
-                    <FaUserMd />
-                  </div>
-                  <div className="stats-info">
-                    <h3>Pro</h3>
-                    <p>Hỗ trợ chuyên nghiệp</p>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+        {/* Statistics Dashboard */}
+        <Row className="g-4 mb-5">
+          <Col lg={3} md={6}>
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
+              <div className="parent-stat-icon">
+                <FaHeartbeat />
+              </div>
+              <div className="parent-stat-value">24/7</div>
+              <div className="parent-stat-label">Chăm sóc sức khỏe</div>
+            </div>
+          </Col>
+          <Col lg={3} md={6}>
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
+              <div className="parent-stat-icon">
+                <FaPills />
+              </div>
+              <div className="parent-stat-value">100%</div>
+              <div className="parent-stat-label">Quản lý thuốc</div>
+            </div>
+          </Col>
+          <Col lg={3} md={6}>
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
+              <div className="parent-stat-icon">
+                <FaShieldAlt />
+              </div>
+              <div className="parent-stat-value">Safe</div>
+              <div className="parent-stat-label">An toàn tuyệt đối</div>
+            </div>
+          </Col>
+          <Col lg={3} md={6}>
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
+              <div className="parent-stat-icon">
+                <FaUserMd />
+              </div>
+              <div className="parent-stat-value">Pro</div>
+              <div className="parent-stat-label">Hỗ trợ chuyên nghiệp</div>
+            </div>
+          </Col>
+        </Row>
 
-      {/* Features Section */}
-      <div className="feature-section">
-        <Container>
-          <h2 className="section-title">Dịch vụ chăm sóc sức khỏe</h2>
-          <Row className="g-4">
-            <Col lg={4} md={6}>
-              <Card className="feature-card">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon">
-                    <FaClipboardList />
-                  </div>
-                  <h3 className="feature-title">Khai báo sức khỏe</h3>
-                  <p className="feature-description">
-                    Theo dõi và khai báo tình trạng sức khỏe hằng ngày của học sinh một cách dễ dàng và chính xác.
-                  </p>
-                  <div className="feature-link">
+        {/* Quick Actions */}
+        <div className="parent-card parent-animate-slide-in mb-5">
+          <div className="parent-card-header">
+            <h2 className="parent-card-title">
+              <FaChartLine />
+              Thao tác nhanh
+            </h2>
+          </div>
+          <div className="parent-card-body">
+            <Row className="g-3">
+              <Col lg={3} md={6}>
+                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
+                      <FaClipboardList />
+                    </div>
+                    <h6 className="fw-bold mb-2">Khai báo sức khỏe</h6>
+                    <p className="text-muted small mb-3">Khai báo tình trạng sức khỏe hằng ngày</p>
                     <Button
                       as={Link}
                       to="/parent/health-declaration"
-                      variant="outline-primary"
-                      className="rounded-pill"
+                      className="parent-primary-btn btn-sm"
                     >
-                      Khai báo ngay
+                      Khai báo
                     </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col lg={4} md={6}>
-              <Card className="feature-card">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon">
-                    <FaPills />
-                  </div>
-                  <h3 className="feature-title">Gửi thuốc</h3>
-                  <p className="feature-description">
-                    Gửi thông tin thuốc cần thiết cho học sinh với hướng dẫn chi tiết và theo dõi quá trình sử dụng.
-                  </p>
-                  <div className="feature-link">
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col lg={3} md={6}>
+                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
+                      <FaPills />
+                    </div>
+                    <h6 className="fw-bold mb-2">Gửi thuốc</h6>
+                    <p className="text-muted small mb-3">Gửi thông tin thuốc cho học sinh</p>
                     <Button
                       as={Link}
                       to="/parent/send-medicine"
-                      variant="outline-primary"
-                      className="rounded-pill"
+                      className="parent-primary-btn btn-sm"
                     >
                       Gửi thuốc
                     </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col lg={4} md={6}>
-              <Card className="feature-card">
-                <Card.Body className="text-center p-4">
-                  <div className="feature-icon">
-                    <FaStethoscope />
-                  </div>
-                  <h3 className="feature-title">Lịch sử sức khỏe</h3>
-                  <p className="feature-description">
-                    Xem lại toàn bộ lịch sử chăm sóc sức khỏe, khám bệnh và điều trị của học sinh tại trường.
-                  </p>
-                  <div className="feature-link">
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col lg={3} md={6}>
+                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
+                      <FaStethoscope />
+                    </div>
+                    <h6 className="fw-bold mb-2">Lịch sử sức khỏe</h6>
+                    <p className="text-muted small mb-3">Xem lại lịch sử chăm sóc sức khỏe</p>
                     <Button
                       as={Link}
                       to="/parent/health-history"
-                      variant="outline-primary"
-                      className="rounded-pill"
+                      className="parent-primary-btn btn-sm"
                     >
                       Xem lịch sử
                     </Button>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
-
-      {/* Blog Section */}
-      <div className="blog-section">
-        <Container>
-          <h2 className="section-title">
-            <FaBookOpen className="me-3" />
-            Blog sức khỏe học đường
-          </h2>
-          {loading ? (
-            <div className="loading-container">
-              <Spinner animation="border" variant="primary" className="loading-icon" />
-              <h5>Đang tải bài viết...</h5>
-            </div>
-          ) : error ? (
-            <div className="text-center text-danger p-4">
-              <FaExclamationTriangle className="mb-3" size={48} />
-              <p>{error}</p>
-            </div>
-          ) : (
-            <Row className="g-4">
-              {blogs.slice(0, 6).map((blog) => (
-                <Col lg={4} md={6} key={blog.id}>
-                  <Card className="blog-card">
-                    <img
-                      src={blog.imageUrl}
-                      alt={blog.title}
-                      className="blog-image"
-                      onError={(e) => {
-                        e.target.onError = null;
-                        e.target.src = "https://placehold.jp/400x200.png?text=No+Image";
-                      }}
-                    />
-                    <div className="blog-content">
-                      <div className="blog-date">
-                        <FaCalendarAlt className="me-2" />
-                        {formatDate(blog.createdAt)}
-                      </div>
-                      <h3 className="blog-title">{blog.title}</h3>
-                      <p className="blog-summary">
-                        {blog.contentSummary.length > 120
-                          ? blog.contentSummary.substring(0, 120) + "..."
-                          : blog.contentSummary}
-                      </p>
-                      <Link
-                        to={`/parent/blog/${blog.id}`}
-                        className="blog-link"
-                      >
-                        Đọc thêm <FaArrowRight className="ms-2" />
-                      </Link>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col lg={3} md={6}>
+                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
+                  <Card.Body className="text-center p-4">
+                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
+                      <FaBell />
                     </div>
-                  </Card>
-                </Col>
-              ))}
+                    <h6 className="fw-bold mb-2">Thông báo</h6>
+                    <p className="text-muted small mb-3">Xem các thông báo quan trọng</p>
+                    <Button
+                      as={Link}
+                      to="/parent/notifications"
+                      className="parent-primary-btn btn-sm"
+                    >
+                      Xem thông báo
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
             </Row>
-          )}
+          </div>
+        </div>
 
-          {blogs.length > 6 && (
-            <div className="text-center mt-4">
-              <Button
-                as={Link}
-                to="/parent/more-know"
-                className="btn-primary-custom"
-              >
-                <FaBookOpen className="me-2" />
-                Xem tất cả bài viết
-              </Button>
-            </div>
-          )}
-        </Container>
-      </div>
+        {/* Features Section */}
+        <div className="parent-card parent-animate-scale-in mb-5">
+          <div className="parent-card-header">
+            <h2 className="parent-card-title">
+              <FaStar />
+              Dịch vụ chăm sóc sức khỏe
+            </h2>
+          </div>
+          <div className="parent-card-body">
+            <Row className="g-4">
+              <Col lg={4} md={6}>
+                <div className="h-100 p-4 text-center" style={{ background: 'linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%)', borderRadius: '1rem', border: '1px solid rgba(30, 126, 156, 0.1)' }}>
+                  <div style={{ width: '70px', height: '70px', background: 'var(--parent-gradient-button)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'white', fontSize: '1.75rem' }}>
+                    <FaClipboardList />
+                  </div>
+                  <h4 className="fw-bold mb-3" style={{ color: 'var(--parent-primary)' }}>Khai báo sức khỏe</h4>
+                  <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
+                    Theo dõi và khai báo tình trạng sức khỏe hằng ngày của học sinh một cách dễ dàng và chính xác.
+                  </p>
+                  <Button
+                    as={Link}
+                    to="/parent/health-declaration"
+                    className="parent-secondary-btn"
+                  >
+                    Khai báo ngay
+                  </Button>
+                </div>
+              </Col>
+              <Col lg={4} md={6}>
+                <div className="h-100 p-4 text-center" style={{ background: 'linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%)', borderRadius: '1rem', border: '1px solid rgba(30, 126, 156, 0.1)' }}>
+                  <div style={{ width: '70px', height: '70px', background: 'var(--parent-gradient-button)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'white', fontSize: '1.75rem' }}>
+                    <FaPills />
+                  </div>
+                  <h4 className="fw-bold mb-3" style={{ color: 'var(--parent-primary)' }}>Gửi thuốc</h4>
+                  <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
+                    Gửi thông tin thuốc cần thiết cho học sinh với hướng dẫn chi tiết và theo dõi quá trình sử dụng.
+                  </p>
+                  <Button
+                    as={Link}
+                    to="/parent/send-medicine"
+                    className="parent-secondary-btn"
+                  >
+                    Gửi thuốc
+                  </Button>
+                </div>
+              </Col>
+              <Col lg={4} md={6}>
+                <div className="h-100 p-4 text-center" style={{ background: 'linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%)', borderRadius: '1rem', border: '1px solid rgba(30, 126, 156, 0.1)' }}>
+                  <div style={{ width: '70px', height: '70px', background: 'var(--parent-gradient-button)', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'white', fontSize: '1.75rem' }}>
+                    <FaStethoscope />
+                  </div>
+                  <h4 className="fw-bold mb-3" style={{ color: 'var(--parent-primary)' }}>Lịch sử sức khỏe</h4>
+                  <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
+                    Xem lại toàn bộ lịch sử chăm sóc sức khỏe, khám bệnh và điều trị của học sinh tại trường.
+                  </p>
+                  <Button
+                    as={Link}
+                    to="/parent/health-history"
+                    className="parent-secondary-btn"
+                  >
+                    Xem lịch sử
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </div>
+        </div>
+
+        {/* Blog Section */}
+        <div className="parent-card parent-animate-fade-in">
+          <div className="parent-card-header">
+            <h2 className="parent-card-title">
+              <FaBookOpen />
+              Blog sức khỏe học đường
+            </h2>
+            <Button
+              as={Link}
+              to="/parent/more-know"
+              className="parent-secondary-btn btn-sm"
+            >
+              <FaFileAlt className="me-2" />
+              Xem tất cả
+            </Button>
+          </div>
+          <div className="parent-card-body">
+            {loading ? (
+              <div className="text-center py-5">
+                <Spinner animation="border" style={{ color: 'var(--parent-primary)' }} className="mb-3" />
+                <h5 style={{ color: 'var(--parent-primary)' }}>Đang tải bài viết...</h5>
+              </div>
+            ) : error ? (
+              <div className="text-center text-danger py-5">
+                <FaExclamationTriangle className="mb-3" size={48} />
+                <p>{error}</p>
+              </div>
+            ) : (
+              <Row className="g-4">
+                {blogs.slice(0, 6).map((blog) => (
+                  <Col lg={4} md={6} key={blog.id}>
+                    <Card className="border-0 h-100 shadow-sm" style={{ borderRadius: '1rem', overflow: 'hidden', transition: 'all 0.3s ease' }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-8px)';
+                        e.currentTarget.style.boxShadow = '0 12px 40px rgba(30, 126, 156, 0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.12)';
+                      }}>
+                      <div style={{ position: 'relative', overflow: 'hidden' }}>
+                        <img
+                          src={blog.imageUrl}
+                          alt={blog.title}
+                          style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                          onError={(e) => {
+                            e.target.onError = null;
+                            e.target.src = "https://placehold.jp/400x200.png?text=No+Image";
+                          }}
+                        />
+                        <div style={{ position: 'absolute', top: '0', left: '0', right: '0', height: '4px', background: 'var(--parent-gradient-primary)' }}></div>
+                      </div>
+                      <Card.Body className="p-4">
+                        <div className="d-flex align-items-center mb-3" style={{ color: '#6c757d', fontSize: '0.875rem' }}>
+                          <FaCalendarAlt className="me-2" />
+                          {formatDate(blog.createdAt)}
+                        </div>
+                        <h5 className="fw-bold mb-3" style={{ color: 'var(--parent-primary)', lineHeight: '1.4' }}>
+                          {blog.title}
+                        </h5>
+                        <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
+                          {blog.contentSummary.length > 120
+                            ? blog.contentSummary.substring(0, 120) + "..."
+                            : blog.contentSummary}
+                        </p>
+                        <Link
+                          to={`/parent/blog/${blog.id}`}
+                          className="d-inline-flex align-items-center text-decoration-none fw-bold"
+                          style={{ color: 'var(--parent-primary)', transition: 'all 0.3s ease' }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'var(--parent-accent)';
+                            e.currentTarget.style.transform = 'translateX(4px)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--parent-primary)';
+                            e.currentTarget.style.transform = 'translateX(0)';
+                          }}
+                        >
+                          Đọc thêm <FaArrowRight className="ms-2" />
+                        </Link>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            )}
+
+            {blogs.length > 6 && !loading && (
+              <div className="text-center mt-4">
+                <Button
+                  as={Link}
+                  to="/parent/more-know"
+                  className="parent-primary-btn"
+                  size="lg"
+                >
+                  <FaBookOpen className="me-2" />
+                  Xem tất cả bài viết
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </Container>
     </div>
   );
 };

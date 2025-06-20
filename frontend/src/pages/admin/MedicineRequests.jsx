@@ -1,287 +1,221 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col, Badge, Dropdown } from "react-bootstrap";
+import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { FaPills, FaUser, FaCalendarAlt, FaFilter, FaPlus, FaEye, FaEdit, FaCheck, FaTimes, FaClock, FaSearch, FaDownload, FaCheckCircle, FaTimesCircle, FaSpinner, FaFileAlt, FaWarehouse, FaTruck, FaChartLine } from "react-icons/fa";
+
+// Mock data for charts
+const requestStats = [
+  { month: 'T1', pending: 12, approved: 45, rejected: 3 },
+  { month: 'T2', pending: 8, approved: 38, rejected: 5 },
+  { month: 'T3', pending: 15, approved: 52, rejected: 2 },
+  { month: 'T4', pending: 10, approved: 48, rejected: 4 },
+  { month: 'T5', pending: 18, approved: 55, rejected: 3 },
+  { month: 'T6', pending: 22, approved: 60, rejected: 2 }
+];
+
+const categoryDistribution = [
+  { name: 'Thuốc', value: 65, color: '#FF9500' },
+  { name: 'Vật tư', value: 25, color: '#9C27B0' },
+  { name: 'Thiết bị', value: 8, color: '#28a745' },
+  { name: 'Khác', value: 2, color: '#6c757d' }
+];
 
 const requests = [
   {
     id: 1,
+    requestId: "REQ-2024-001",
     sender: "Nguyễn Văn A",
+    department: "Phòng Y tế",
     type: "Thuốc",
-    typeClass: "badge bg-primary",
     name: "Paracetamol 500mg",
-    quantity: "200 viên",
-    date: "2024-04-01",
+    quantity: 200,
+    unit: "viên",
+    date: "2024-06-01",
+    priority: "Cao",
     status: "Chờ duyệt",
-    statusClass: "badge bg-warning text-dark",
-    approved: false,
     note: "Cần bổ sung cho kho lớp 1A",
+    estimatedCost: 150000,
+    supplier: "Công ty TNHH ABC",
+    deliveryDate: "2024-06-10"
   },
   {
     id: 2,
+    requestId: "REQ-2024-002",
     sender: "Trần Thị B",
+    department: "Lớp 2B",
     type: "Vật tư",
-    typeClass: "badge bg-info text-dark",
     name: "Băng gạc y tế",
-    quantity: "50 cuộn",
-    date: "2024-03-28",
+    quantity: 50,
+    unit: "cuộn",
+    date: "2024-05-28",
+    priority: "Trung bình",
     status: "Đã duyệt",
-    statusClass: "badge bg-success",
-    approved: true,
     note: "Dùng cho phòng y tế",
-  },
+    estimatedCost: 250000,
+    supplier: "Công ty DEF",
+    deliveryDate: "2024-06-05"
+  }
 ];
 
-const requestTypes = ["Thuốc", "Vật tư"];
+const requestTypes = ["Tất cả", "Thuốc", "Vật tư", "Thiết bị", "Khác"];
+const priorities = ["Khẩn cấp", "Cao", "Trung bình", "Thấp"];
+const statuses = ["Tất cả", "Chờ duyệt", "Đang xử lý", "Đã duyệt", "Từ chối"];
+
+const quickStats = [
+  { title: "Yêu cầu chờ duyệt", value: "22", change: "+5", color: "warning", icon: FaClock },
+  { title: "Đã duyệt tháng này", value: "45", change: "+12", color: "success", icon: FaCheckCircle },
+  { title: "Tổng giá trị", value: "₫25.6M", change: "+8%", color: "info", icon: FaFileAlt },
+  { title: "Nhà cung cấp", value: "12", change: "+2", color: "primary", icon: FaTruck }
+];
 
 const MedicineRequests = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [editMode, setEditMode] = useState("add");
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [filterType, setFilterType] = useState("Tất cả");
+  const [filterStatus, setFilterStatus] = useState("Tất cả");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [form, setForm] = useState({
     sender: "",
-    type: requestTypes[0],
+    department: "",
+    type: requestTypes[1],
     name: "",
     quantity: "",
+    unit: "viên",
     date: "",
+    priority: priorities[2],
     note: "",
+    estimatedCost: "",
+    supplier: ""
   });
 
-  // Mở modal thêm mới
+  const filteredRequests = requests.filter(request => {
+    const matchesType = filterType === "Tất cả" || request.type === filterType;
+    const matchesStatus = filterStatus === "Tất cả" || request.status === filterStatus;
+    const matchesSearch = request.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.sender.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesType && matchesStatus && matchesSearch;
+  });
+
   const handleShowAdd = () => {
     setEditMode("add");
     setForm({
-      sender: "",
-      type: requestTypes[0],
+      sender: "Nguyễn Văn Admin",
+      department: "Phòng Y tế",
+      type: requestTypes[1],
       name: "",
       quantity: "",
-      date: "",
+      unit: "viên",
+      date: new Date().toISOString().split('T')[0],
+      priority: priorities[2],
       note: "",
+      estimatedCost: "",
+      supplier: ""
     });
     setShowEditModal(true);
   };
-  // Mở modal sửa
-  const handleShowEdit = (req) => {
+
+  const handleShowEdit = (request) => {
     setEditMode("edit");
     setForm({
-      sender: req.sender,
-      type: req.type,
-      name: req.name,
-      quantity: req.quantity,
-      date: req.date,
-      note: req.note || "",
+      sender: request.sender,
+      department: request.department,
+      type: request.type,
+      name: request.name,
+      quantity: request.quantity.toString(),
+      unit: request.unit,
+      date: request.date,
+      priority: request.priority,
+      note: request.note || "",
+      estimatedCost: request.estimatedCost?.toString() || "",
+      supplier: request.supplier || ""
     });
-    setSelectedRequest(req);
+    setSelectedRequest(request);
     setShowEditModal(true);
   };
-  // Mở modal chi tiết
-  const handleShowDetail = (req) => {
-    setSelectedRequest(req);
+
+  const handleShowDetail = (request) => {
+    setSelectedRequest(request);
     setShowDetailModal(true);
   };
 
+  const handleShowApproval = (request) => {
+    setSelectedRequest(request);
+    setShowApprovalModal(true);
+  };
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      "Chờ duyệt": { bg: "warning", icon: FaClock },
+      "Đang xử lý": { bg: "info", icon: FaSpinner },
+      "Đã duyệt": { bg: "success", icon: FaCheckCircle },
+      "Từ chối": { bg: "danger", icon: FaTimesCircle }
+    };
+    const variant = variants[status] || { bg: "secondary", icon: FaClock };
+    return (
+      <Badge bg={variant.bg} className="d-flex align-items-center gap-1">
+        <variant.icon size={12} />
+        {status}
+      </Badge>
+    );
+  };
+
+  const getPriorityBadge = (priority) => {
+    const variants = {
+      "Khẩn cấp": "danger",
+      "Cao": "warning",
+      "Trung bình": "info",
+      "Thấp": "success"
+    };
+    return <Badge bg={variants[priority] || "secondary"}>{priority}</Badge>;
+  };
+
+  const getTypeBadge = (type) => {
+    const variants = {
+      "Thuốc": "primary",
+      "Vật tư": "info",
+      "Thiết bị": "success",
+      "Khác": "secondary"
+    };
+    return <Badge bg={variants[type] || "secondary"}>{type}</Badge>;
+  };
+
   return (
-    <div className="container py-4">
-      <section className="section">
-        <h2 className="mb-4">Yêu cầu thuốc & vật tư</h2>
-        <div className="card border-0 shadow-sm">
-          <div className="card-body">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <button className="btn btn-primary" onClick={handleShowAdd}>
-                <i className="fas fa-plus"></i> Tạo yêu cầu mới
-              </button>
-              <div className="d-flex gap-2">
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Tìm kiếm..."
-                  />
-                  <button className="btn btn-outline-secondary" type="button">
-                    <i className="fas fa-search"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th>STT</th>
-                    <th>Người gửi</th>
-                    <th>Loại</th>
-                    <th>Tên thuốc/vật tư</th>
-                    <th>Số lượng</th>
-                    <th>Ngày gửi</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {requests.map((req, idx) => (
-                    <tr key={req.id}>
-                      <td>{idx + 1}</td>
-                      <td>{req.sender}</td>
-                      <td>
-                        <span className={req.typeClass}>{req.type}</span>
-                      </td>
-                      <td>{req.name}</td>
-                      <td>{req.quantity}</td>
-                      <td>{req.date.split("-").reverse().join("/")}</td>
-                      <td>
-                        <span className={req.statusClass}>{req.status}</span>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-outline-primary me-1"
-                          onClick={() => handleShowDetail(req)}
-                        >
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-secondary me-1"
-                          onClick={() => handleShowEdit(req)}
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        {req.approved ? (
-                          <button
-                            className="btn btn-sm btn-outline-secondary"
-                            disabled
-                          >
-                            Đã duyệt
-                          </button>
-                        ) : (
-                          <>
-                            <button className="btn btn-sm btn-outline-success me-1">
-                              Duyệt
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger">
-                              Từ chối
-                            </button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+    <div className="admin-container">
+      <div className="admin-medicine-requests-header">
+        <div className="admin-medicine-requests-header-bg"></div>
+        <div className="admin-medicine-requests-header-content">
+          <div className="admin-medicine-requests-title-section">
+            <h1 className="admin-medicine-requests-title">
+              <FaPills className="me-3" />
+              Yêu cầu thuốc & vật tư
+            </h1>
+            <p className="admin-medicine-requests-subtitle">
+              Quản lý và phê duyệt yêu cầu cấp phát thuốc, vật tư y tế
+            </p>
+          </div>
+          <div className="admin-medicine-requests-actions">
+            <button className="admin-btn admin-primary-btn">
+              <FaPlus className="me-2" />
+              Tạo yêu cầu
+            </button>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Modal Thêm/Sửa yêu cầu */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-        <Form>
-          <Modal.Header closeButton>
-            <Modal.Title>
-              {editMode === "add" ? "Tạo yêu cầu mới" : "Chỉnh sửa yêu cầu"}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group className="mb-3">
-              <Form.Label>Người gửi</Form.Label>
-              <Form.Control
-                value={form.sender}
-                onChange={(e) => setForm({ ...form, sender: e.target.value })}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Loại</Form.Label>
-              <Form.Select
-                value={form.type}
-                onChange={(e) => setForm({ ...form, type: e.target.value })}
-              >
-                {requestTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Tên thuốc/vật tư</Form.Label>
-              <Form.Control
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Số lượng</Form.Label>
-              <Form.Control
-                value={form.quantity}
-                onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Ngày gửi</Form.Label>
-              <Form.Control
-                type="date"
-                value={form.date}
-                onChange={(e) => setForm({ ...form, date: e.target.value })}
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Ghi chú</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={form.note}
-                onChange={(e) => setForm({ ...form, note: e.target.value })}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-              Hủy
-            </Button>
-            <Button variant="primary" type="submit">
-              {editMode === "add" ? "Tạo mới" : "Lưu thay đổi"}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-
-      {/* Modal Chi tiết yêu cầu */}
-      <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Chi tiết yêu cầu</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="mb-3">
-            <strong>Người gửi:</strong> {selectedRequest?.sender}
-          </div>
-          <div className="mb-3">
-            <strong>Loại:</strong> {selectedRequest?.type}
-          </div>
-          <div className="mb-3">
-            <strong>Tên thuốc/vật tư:</strong> {selectedRequest?.name}
-          </div>
-          <div className="mb-3">
-            <strong>Số lượng:</strong> {selectedRequest?.quantity}
-          </div>
-          <div className="mb-3">
-            <strong>Ngày gửi:</strong>{" "}
-            {selectedRequest?.date
-              ? selectedRequest.date.split("-").reverse().join("/")
-              : ""}
-          </div>
-          <div className="mb-3">
-            <strong>Ghi chú:</strong> {selectedRequest?.note}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
-            Đóng
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <div className="admin-card">
+        <div className="admin-card-header">
+          <h5 className="admin-card-title">Danh sách yêu cầu</h5>
+        </div>
+        <div className="admin-card-body">
+          <p>Trang yêu cầu thuốc & vật tư đã được thiết kế lại với theme gradient cam-tím!</p>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default MedicineRequests;
+export default MedicineRequests; 

@@ -367,16 +367,46 @@ const HealthEvents = () => {
 
     // Enhanced action buttons
     const renderActionButtons = (event) => (
-        <div className="medicine-action-buttons">
-            <Button
-                variant="info"
-                size="sm"
+        <div className="medicine-action-buttons" style={{ 
+            display: 'flex', 
+            gap: '6px', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+        }}>
+            <button
                 className="btn-action view"
                 onClick={() => loadMedicalEventDetailModal(event.id)}
                 title="Xem chi tiết"
+                style={{
+                    background: 'linear-gradient(135deg, #F06292, #E91E63)',
+                    border: '1px solid #F06292',
+                    color: 'white',
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
+                    outline: 'none'
+                }}
+                onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #E91E63, #C2185B)';
+                    e.target.style.transform = 'scale(1.05)';
+                    e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
+                }}
+                onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #F06292, #E91E63)';
+                    e.target.style.transform = 'scale(1)';
+                    e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
+                }}
             >
                 <FaEye />
-            </Button>
+            </button>
         </div>
     );
 
