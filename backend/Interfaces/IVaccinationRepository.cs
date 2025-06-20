@@ -6,7 +6,8 @@ namespace backend.Repositories
     {
         Task<List<Vaccination>> GetAllVaccinationsAsync();
         Task<Vaccination?> GetVaccinationByIdAsync(int id);
-        Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId);
+        Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize);
+        Task<int> CountVaccinationsByParentIdAsync(int parentId);
         Task<List<Vaccination>> GetVaccinationByNotificationIdAsync(int notificationId);
         Task<bool> CreateVaccinationAsync(Vaccination vaccination);
 

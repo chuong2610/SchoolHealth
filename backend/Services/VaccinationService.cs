@@ -20,11 +20,25 @@ namespace backend.Services
             return vaccinations.Select(v => MapToDTO(v)).ToList();
         }
 
-        public async Task<List<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId)
+        public async Task<PageResult<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
-            var vaccinations = await _vaccinationRepository.GetVaccinationsByParentIdAsync(parentId);
-            return vaccinations.Select(v => MapToDTO(v)).ToList();
+            var totalCount = await _vaccinationRepository.CountVaccinationsByParentIdAsync(parentId);
+            var vaccinations = await _vaccinationRepository
+                .GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize);
+
+            var dtos = vaccinations.Select(v => MapToDTO(v)).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return new PageResult<VaccinationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalCount,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<VaccinationDetailDTO?> GetVaccinationByIdAsync(int id)
         {
@@ -68,6 +82,6 @@ namespace backend.Services
             };
         }
 
-        
+
     }
 }

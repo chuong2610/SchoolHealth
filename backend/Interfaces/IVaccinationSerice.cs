@@ -7,7 +7,7 @@ namespace backend.Interfaces
     {
         Task<List<VaccinationDTO>> GetAllVaccinationsAsync();
         Task<VaccinationDetailDTO?> GetVaccinationByIdAsync(int id);
-        Task<List<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId);
+        Task<PageResult<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize);
         Task<List<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId);
         Task<bool> CreateVaccinationAsync(Vaccination vaccination);
     }
