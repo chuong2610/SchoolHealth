@@ -1,24 +1,28 @@
 {
   "Files": [
     {
-      "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\5dd4be48-6afe-4dc1-b3ba-f9c7abc57ae4.png",
+      "Id": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\5dd4be48-6afe-4dc1-b3ba-f9c7abc57ae4.png",
       "PackagePath": "staticwebassets\\uploads\\5dd4be48-6afe-4dc1-b3ba-f9c7abc57ae4.png"
     },
     {
-      "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
+      "Id": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg",
       "PackagePath": "staticwebassets\\uploads\\7e55a074-334f-44be-b043-02bb9ebab768.jpg"
     },
     {
-      "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
+      "Id": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png",
       "PackagePath": "staticwebassets\\uploads\\c455a6ae-1f89-4385-822e-725c5ee997a2.png"
     },
     {
-      "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\default.jpg",
+      "Id": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\default.jpg",
       "PackagePath": "staticwebassets\\uploads\\default.jpg"
     },
     {
-      "Id": "F:\\dev\\.net\\swp\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
+      "Id": "D:\\SWP391\\SWP391\\SchoolHealth\\backend\\wwwroot\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg",
       "PackagePath": "staticwebassets\\uploads\\ea36b68c-fb2c-4503-9e4e-ee0762c8cb3b.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.backend.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.backend.Microsoft.AspNetCore.StaticWebAssets.props",

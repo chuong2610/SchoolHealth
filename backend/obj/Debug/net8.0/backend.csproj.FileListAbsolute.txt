@@ -384,3 +384,5 @@ D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\Pipelines.Sockets.Unoffic
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\StackExchange.Redis.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.Diagnostics.PerformanceCounter.dll
+D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\runtimes\win\lib\netcoreapp2.0\System.Diagnostics.PerformanceCounter.dll

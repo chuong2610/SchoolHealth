@@ -22,8 +22,7 @@ namespace backend.Services
             _classrRepository = classrRepository;
 
         }
-        public async Task<PageResult<NotificationDTO>> GetNotificationsByParentIdAsync(
-    int parentId, int pageNumber, int pageSize)
+        public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
             // Đếm tổng số bản ghi
             var totalCount = await _notificationRepository.CountNotificationsByParentIdAsync(parentId);
@@ -32,7 +31,7 @@ namespace backend.Services
             var notifications = await _notificationRepository
                 .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize);
 
-            var result = new List<NotificationDTO>();
+            var result = new List<NotificationParentDTO>();
 
             foreach (var notification in notifications)
             {
@@ -44,7 +43,7 @@ namespace backend.Services
 
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            return new PageResult<NotificationDTO>
+            return new PageResult<NotificationParentDTO>
             {
                 Items = result,
                 TotalPages = totalPages,

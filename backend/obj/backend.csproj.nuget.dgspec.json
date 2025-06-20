@@ -58,6 +58,10 @@
               "target": "Package",
               "version": "[0.105.0, )"
             },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.12.1, )"
+            },
             "Microsoft.AspNetCore.Authentication.Google": {
               "target": "Package",
               "version": "[8.0.5, )"
@@ -89,6 +93,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.5, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.6.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

@@ -27,7 +27,7 @@ namespace backend.Controllers
                 var notifications = await _notificationService
                     .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize);
 
-                return Ok(new BaseResponse<PageResult<NotificationDTO>>(
+                return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(
                     notifications,
                     "Lấy danh sách thông báo thành công",
                     true));

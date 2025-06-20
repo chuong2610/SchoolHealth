@@ -8,7 +8,7 @@ namespace backend.Interfaces
 {
         public interface INotificationService
         {
-                Task<PageResult<NotificationDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize);
+                Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize);
                 Task<List<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId);
                 Task<List<NotificationParentDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId);
                 Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId);

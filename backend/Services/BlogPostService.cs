@@ -61,7 +61,8 @@ namespace backend.Services
             {
                 Items = postDtos,
                 TotalPages = totalPages,
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber,
+                TotalItems = totalPosts
             };
         }
 
