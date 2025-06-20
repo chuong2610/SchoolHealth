@@ -1,49 +1,40 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
-import styled from "styled-components";
-
-// Hiệu ứng cho card/blog
-const BlogCard = styled.div`
-  border-radius: 1.25rem;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
-  background: #fff;
-  &:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
-    z-index: 2;
-  }
-`;
-
-const BlogTitle = styled.h2`
-  text-align: center;
-  margin-bottom: 2.5rem;
-  font-size: 2.2rem;
-  font-weight: 800;
-  background: linear-gradient(90deg, #2563eb, #38b6ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 8px rgba(56,182,255,0.08);
-`;
-
-const SectionTitle = styled.h2`
-  text-align: center;
-  margin-bottom: 2.5rem;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2563eb;
-  text-shadow: 1px 1px 6px rgba(37,99,235,0.08);
-`;
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Spinner,
+  Button,
+  Badge
+} from "react-bootstrap";
+import {
+  FaHeartbeat,
+  FaUser,
+  FaPills,
+  FaShieldAlt,
+  FaCalendarAlt,
+  FaBookOpen,
+  FaClock,
+  FaEye,
+  FaArrowRight,
+  FaStethoscope,
+  FaUserMd,
+  FaClipboardList,
+  FaHome,
+  FaStar,
+  FaGraduationCap,
+  FaExclamationTriangle
+} from 'react-icons/fa';
+// Styles được import từ main.jsx
 
 const ParentDashboard = () => {
-  {
-    /**Bắt đầu sử lí logic để nạp API */
-  }
-  const [blogs, setBlogs] = useState([]); //state để lưu danh sách blog
-  const [loading, setLoading] = useState(true); //state để hiển thị trạng thái loading
-  const [error, setError] = useState(null); //state để lưu lỗi nếu có
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [animateStats, setAnimateStats] = useState(false);
 
   // Gọi API khi component được mount
   useEffect(() => {
@@ -59,25 +50,22 @@ const ParentDashboard = () => {
             },
           }
         );
-        setBlogs(response.data); //lưu dữ liệu của blog vào state
-        setLoading(false); // tắt trạng thái loading
+        setBlogs(response.data);
+        setLoading(false);
+        setTimeout(() => setAnimateStats(true), 500);
       } catch (err) {
-        console.error("API error:", err.response ? err.response : err); // Log chi tiết lỗi
+        console.error("API error:", err.response ? err.response : err);
         setError(
           err.response
-            ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."
-            }`
+            ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."}`
             : "Không thể kết nối đến server."
         );
+        setLoading(false);
       }
     };
     fetchBlogs();
-  }, []); //dependancy array rỗng, chỉ chạy 1 lần khi component mount
-  {
-    /**Kết thúc sử lí logic để nạp API */
-  }
+  }, []);
 
-  //Bắt đầu hàm format ngày
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("vi-VN", {
       day: "2-digit",
@@ -85,252 +73,600 @@ const ParentDashboard = () => {
       year: "numeric",
     });
   };
-  //Kết thúc hàm format ngày
 
   return (
-    <div className="background-page" style={{ position: 'relative', overflow: 'hidden' }}>
-      <div id="starfield-parallax">
-        <div className="stars stars1"></div>
-        <div className="stars stars2"></div>
-        <div className="stars stars3"></div>
+    <div
+      className="parent-theme parent-dashboard"
+      style={{
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        backgroundColor: "#f8f9fc",
+        minHeight: "100vh",
+        position: "relative"
+      }}
+    >
+      {/* CSS Override for Professional Design */}
+      <style>
+        {`
+          .parent-dashboard {
+            background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
+            min-height: 100vh !important;
+            padding: 0 !important;
+          }
+          
+          .dashboard-header {
+            background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
+            color: white !important;
+            padding: 3rem 0 4rem 0 !important;
+            margin-bottom: 2rem !important;
+            border-radius: 0 0 30px 30px !important;
+            position: relative !important;
+            overflow: hidden !important;
+          }
+          
+          .dashboard-header::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="1.5" fill="white" opacity="0.08"/><circle cx="40" cy="80" r="2.5" fill="white" opacity="0.06"/></svg>') repeat !important;
+            pointer-events: none !important;
+          }
+          
+          .header-content {
+            position: relative !important;
+            z-index: 2 !important;
+            text-align: center !important;
+          }
+          
+          .welcome-title {
+            font-size: 3rem !important;
+            font-weight: 800 !important;
+            margin-bottom: 1rem !important;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2) !important;
+          }
+          
+          .welcome-subtitle {
+            font-size: 1.3rem !important;
+            opacity: 0.95 !important;
+            margin-bottom: 2rem !important;
+            font-weight: 400 !important;
+          }
+          
+          .stats-dashboard {
+            margin: -2rem 1rem 3rem 1rem !important;
+            position: relative !important;
+            z-index: 10 !important;
+          }
+          
+          .stats-card {
+            background: white !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.15) !important;
+            border: none !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+          }
+          
+          .stats-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2) !important;
+          }
+          
+          .stats-card::before {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 5px !important;
+          }
+          
+          .stats-card.health::before {
+            background: linear-gradient(90deg, #10b981, #34d399) !important;
+          }
+          
+          .stats-card.medicine::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa) !important;
+          }
+          
+          .stats-card.safety::before {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa) !important;
+          }
+          
+          .stats-card.support::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
+          }
+          
+          .stats-content {
+            padding: 2rem !important;
+            display: flex !important;
+            align-items: center !important;
+          }
+          
+          .stats-icon {
+            width: 70px !important;
+            height: 70px !important;
+            border-radius: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 2rem !important;
+            margin-right: 1.5rem !important;
+          }
+          
+          .stats-card.health .stats-icon {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1)) !important;
+            color: #10b981 !important;
+          }
+          
+          .stats-card.medicine .stats-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(96, 165, 250, 0.1)) !important;
+            color: #3b82f6 !important;
+          }
+          
+          .stats-card.safety .stats-icon {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.1)) !important;
+            color: #8b5cf6 !important;
+          }
+          
+          .stats-card.support .stats-icon {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)) !important;
+            color: #f59e0b !important;
+          }
+          
+          .stats-info h3 {
+            font-size: 2.5rem !important;
+            font-weight: 800 !important;
+            margin: 0 0 0.5rem 0 !important;
+            color: #1f2937 !important;
+          }
+          
+          .stats-info p {
+            font-size: 1rem !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+            color: #6b7280 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+          }
+          
+          .feature-section {
+            margin: 3rem 1rem !important;
+          }
+          
+          .section-title {
+            text-align: center !important;
+            font-size: 2.5rem !important;
+            font-weight: 800 !important;
+            color: #1f2937 !important;
+            margin-bottom: 3rem !important;
+            position: relative !important;
+          }
+          
+          .section-title::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: -10px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 80px !important;
+            height: 4px !important;
+            background: linear-gradient(90deg, #2563eb, #38b6ff) !important;
+            border-radius: 2px !important;
+          }
+          
+          .feature-card {
+            background: white !important;
+            border-radius: 20px !important;
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.1) !important;
+            border: none !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+            height: 100% !important;
+          }
+          
+          .feature-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15) !important;
+          }
+          
+          .feature-icon {
+            width: 80px !important;
+            height: 80px !important;
+            border-radius: 20px !important;
+            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
+            color: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 2rem !important;
+            margin: 0 auto 1.5rem auto !important;
+          }
+          
+          .feature-title {
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
+            color: #1f2937 !important;
+            margin-bottom: 1rem !important;
+            text-align: center !important;
+          }
+          
+          .feature-description {
+            color: #6b7280 !important;
+            line-height: 1.6 !important;
+            text-align: center !important;
+            margin-bottom: 1.5rem !important;
+          }
+          
+          .feature-link {
+            text-align: center !important;
+          }
+          
+          .blog-section {
+            margin: 3rem 1rem !important;
+          }
+          
+          .blog-card {
+            background: white !important;
+            border-radius: 20px !important;
+            box-shadow: 0 8px 30px rgba(37, 99, 235, 0.1) !important;
+            border: none !important;
+            overflow: hidden !important;
+            transition: all 0.3s ease !important;
+            height: 100% !important;
+          }
+          
+          .blog-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15) !important;
+          }
+          
+          .blog-image {
+            width: 100% !important;
+            height: 200px !important;
+            object-fit: cover !important;
+            border-bottom: 3px solid #e5e7eb !important;
+          }
+          
+          .blog-content {
+            padding: 1.5rem !important;
+          }
+          
+          .blog-date {
+            color: #6b7280 !important;
+            font-size: 0.875rem !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            align-items: center !important;
+            margin-bottom: 1rem !important;
+          }
+          
+          .blog-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            color: #1f2937 !important;
+            margin-bottom: 1rem !important;
+            line-height: 1.4 !important;
+          }
+          
+          .blog-summary {
+            color: #6b7280 !important;
+            line-height: 1.6 !important;
+            margin-bottom: 1.5rem !important;
+          }
+          
+          .blog-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            color: #2563eb !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+          }
+          
+          .blog-link:hover {
+            color: #1d4ed8 !important;
+            transform: translateX(4px) !important;
+          }
+          
+          .btn-primary-custom {
+            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 12px 30px !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            transition: all 0.3s ease !important;
+            color: white !important;
+          }
+          
+          .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
+            color: white !important;
+          }
+          
+          .loading-container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 4rem 2rem !important;
+            text-align: center !important;
+          }
+          
+          .loading-icon {
+            width: 60px !important;
+            height: 60px !important;
+            margin-bottom: 1rem !important;
+          }
+          
+          @media (max-width: 768px) {
+            .welcome-title {
+              font-size: 2rem !important;
+            }
+            
+            .welcome-subtitle {
+              font-size: 1.1rem !important;
+            }
+            
+            .stats-dashboard {
+              margin: -1rem 0.5rem 2rem 0.5rem !important;
+            }
+            
+            .stats-content {
+              padding: 1.5rem !important;
+              flex-direction: column !important;
+              text-align: center !important;
+            }
+            
+            .stats-icon {
+              margin: 0 0 1rem 0 !important;
+            }
+            
+            .feature-section,
+            .blog-section {
+              margin: 2rem 0.5rem !important;
+            }
+          }
+        `}
+      </style>
+
+      {/* Dashboard Header */}
+      <div className="dashboard-header">
+        <Container>
+          <div className="header-content">
+            <h1 className="welcome-title">
+              <FaHeartbeat className="me-3" />
+              Chăm sóc sức khỏe học đường
+            </h1>
+            <p className="welcome-subtitle">
+              Đồng hành cùng phụ huynh trong việc chăm sóc và theo dõi sức khỏe học sinh
+            </p>
+            <Button
+              as={Link}
+              to="/parent/more-know"
+              className="btn-primary-custom"
+              size="lg"
+            >
+              <FaBookOpen className="me-2" />
+              Tìm hiểu thêm
+            </Button>
+          </div>
+        </Container>
       </div>
-      <div className="container" style={{ maxWidth: 2400, margin: "0 auto", position: 'relative', zIndex: 2}}>
-        {/* Mở đầu Banner Section */}
-        <section className="banner position-relative">
-          <div className="container h-100">
-            <div className="row h-100 align-items-center">
-              <div className="col-lg-6">
-                <div className="banner-content text-white">
-                  <h1 className="display-4 fw-bold mb-4">
-                    Chăm sóc sức khỏe học đường
-                  </h1>
-                  <p className="lead mb-4">
-                    Đồng hành cùng phụ huynh trong việc chăm sóc sức khỏe cho học
-                    sinh
+
+      {/* Statistics Dashboard */}
+      <div className="stats-dashboard">
+        <Container>
+          <Row className="g-4">
+            <Col lg={3} md={6}>
+              <Card className={`stats-card health ${animateStats ? 'animate-in' : ''}`}>
+                <div className="stats-content">
+                  <div className="stats-icon">
+                    <FaHeartbeat />
+                  </div>
+                  <div className="stats-info">
+                    <h3>24/7</h3>
+                    <p>Chăm sóc sức khỏe</p>
+                  </div>
+                </div>
+              </Card>
+            </Col>
+            <Col lg={3} md={6}>
+              <Card className={`stats-card medicine ${animateStats ? 'animate-in' : ''}`}>
+                <div className="stats-content">
+                  <div className="stats-icon">
+                    <FaPills />
+                  </div>
+                  <div className="stats-info">
+                    <h3>100%</h3>
+                    <p>Quản lý thuốc</p>
+                  </div>
+                </div>
+              </Card>
+            </Col>
+            <Col lg={3} md={6}>
+              <Card className={`stats-card safety ${animateStats ? 'animate-in' : ''}`}>
+                <div className="stats-content">
+                  <div className="stats-icon">
+                    <FaShieldAlt />
+                  </div>
+                  <div className="stats-info">
+                    <h3>Safe</h3>
+                    <p>An toàn tuyệt đối</p>
+                  </div>
+                </div>
+              </Card>
+            </Col>
+            <Col lg={3} md={6}>
+              <Card className={`stats-card support ${animateStats ? 'animate-in' : ''}`}>
+                <div className="stats-content">
+                  <div className="stats-icon">
+                    <FaUserMd />
+                  </div>
+                  <div className="stats-info">
+                    <h3>Pro</h3>
+                    <p>Hỗ trợ chuyên nghiệp</p>
+                  </div>
+                </div>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+
+      {/* Features Section */}
+      <div className="feature-section">
+        <Container>
+          <h2 className="section-title">Dịch vụ chăm sóc sức khỏe</h2>
+          <Row className="g-4">
+            <Col lg={4} md={6}>
+              <Card className="feature-card">
+                <Card.Body className="text-center p-4">
+                  <div className="feature-icon">
+                    <FaClipboardList />
+                  </div>
+                  <h3 className="feature-title">Khai báo sức khỏe</h3>
+                  <p className="feature-description">
+                    Theo dõi và khai báo tình trạng sức khỏe hằng ngày của học sinh một cách dễ dàng và chính xác.
                   </p>
-                  <Link to="/parent/more-know" className="btn btn-primary btn-lg">
-                    Tìm hiểu thêm
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* Kết thúc Banner Section */}
+                  <div className="feature-link">
+                    <Button
+                      as={Link}
+                      to="/parent/health-declaration"
+                      variant="outline-primary"
+                      className="rounded-pill"
+                    >
+                      Khai báo ngay
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col lg={4} md={6}>
+              <Card className="feature-card">
+                <Card.Body className="text-center p-4">
+                  <div className="feature-icon">
+                    <FaPills />
+                  </div>
+                  <h3 className="feature-title">Gửi thuốc</h3>
+                  <p className="feature-description">
+                    Gửi thông tin thuốc cần thiết cho học sinh với hướng dẫn chi tiết và theo dõi quá trình sử dụng.
+                  </p>
+                  <div className="feature-link">
+                    <Button
+                      as={Link}
+                      to="/parent/send-medicine"
+                      variant="outline-primary"
+                      className="rounded-pill"
+                    >
+                      Gửi thuốc
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col lg={4} md={6}>
+              <Card className="feature-card">
+                <Card.Body className="text-center p-4">
+                  <div className="feature-icon">
+                    <FaStethoscope />
+                  </div>
+                  <h3 className="feature-title">Lịch sử sức khỏe</h3>
+                  <p className="feature-description">
+                    Xem lại toàn bộ lịch sử chăm sóc sức khỏe, khám bệnh và điều trị của học sinh tại trường.
+                  </p>
+                  <div className="feature-link">
+                    <Button
+                      as={Link}
+                      to="/parent/health-history"
+                      variant="outline-primary"
+                      className="rounded-pill"
+                    >
+                      Xem lịch sử
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </div>
 
-        {/* Mở đầu School Information Section */}
-        <section className="school-intro-bg py-5 bg-light" style={{ marginTop: "0.5cm" }}>
-          <div className="container">
-            <SectionTitle>Giới thiệu về trường học</SectionTitle>
-            <div className="row align-items-center">
-              <div className="col-lg-6 mb-4 mb-lg-0">
-                <img
-                  src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                  alt="School Building"
-                  className="img-fluid rounded shadow"
-                />
-              </div>
-              <div className="col-lg-6">
-                <p className="lead mb-4">
-                  Trường chúng tôi tự hào là một trong những cơ sở giáo dục hàng
-                  đầu với hệ thống y tế học đường hiện đại và chuyên nghiệp.
-                </p>
-                <p className="mb-4">
-                  Với đội ngũ nhân viên y tế giàu kinh nghiệm, chúng tôi cam kết
-                  mang đến dịch vụ chăm sóc sức khỏe tốt nhất cho học sinh.
-                </p>
-                <p>
-                  Phòng y tế được trang bị đầy đủ thiết bị y tế cần thiết và luôn
-                  sẵn sàng hỗ trợ học sinh trong mọi tình huống.
-                </p>
-              </div>
+      {/* Blog Section */}
+      <div className="blog-section">
+        <Container>
+          <h2 className="section-title">
+            <FaBookOpen className="me-3" />
+            Blog sức khỏe học đường
+          </h2>
+          {loading ? (
+            <div className="loading-container">
+              <Spinner animation="border" variant="primary" className="loading-icon" />
+              <h5>Đang tải bài viết...</h5>
             </div>
-          </div>
-        </section>
-        {/* Kết thúc School Information Section */}
-
-        {/* Mở đầu Health Blog Section */}
-        <section className="py-5">
-          <div className="container">
-            <BlogTitle>Blog sức khỏe học đường</BlogTitle>
-            {loading ? (
-              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 180 }}>
-                <Spinner animation="border" variant="primary" style={{ width: 60, height: 60 }} />
-              </div>
-            ) : error ? (
-              <p className="text-center text-danger">{error}</p>
-            ) : (
-              <div className="row g-4">
-                {blogs.map((blog) => (
-                  <div className="col-md-4" key={blog.id}>
-                    <BlogCard className="card h-100">
-                      <img
-                        src={blog.imageUrl}
-                        className="card-img-top"
-                        alt={blog.title}
-                        style={{
-                          width: "100%",
-                          height: 180,
-                          objectFit: "cover",
-                          borderTopLeftRadius: "1.25rem",
-                          borderTopRightRadius: "1.25rem",
-                        }}
-                        onError={(e) => {
-                          e.target.onError = null;
-                          e.target.src =
-                            "https://placehold.jp/800x180.png?text=No+Image";
-                        }}
-                      />
-                      <div className="card-body">
-                        <small className="text-muted">
-                          {formatDate(blog.createdAt)}
-                        </small>
-                        <h5 className="card-title mt-2 fw-bold" style={{ color: '#2563eb' }}>{blog.title}</h5>
-                        <p className="card-text">
-                          {blog.contentSummary.length > 100
-                            ? blog.contentSummary.substring(0, 100) + "..."
-                            : blog.contentSummary}
-                        </p>
-                        <Link
-                          to={`/parent/blog/${blog.id}`}
-                          className="btn btn-link text-primary p-0"
-                        >
-                          Đọc thêm →
-                        </Link>
+          ) : error ? (
+            <div className="text-center text-danger p-4">
+              <FaExclamationTriangle className="mb-3" size={48} />
+              <p>{error}</p>
+            </div>
+          ) : (
+            <Row className="g-4">
+              {blogs.slice(0, 6).map((blog) => (
+                <Col lg={4} md={6} key={blog.id}>
+                  <Card className="blog-card">
+                    <img
+                      src={blog.imageUrl}
+                      alt={blog.title}
+                      className="blog-image"
+                      onError={(e) => {
+                        e.target.onError = null;
+                        e.target.src = "https://placehold.jp/400x200.png?text=No+Image";
+                      }}
+                    />
+                    <div className="blog-content">
+                      <div className="blog-date">
+                        <FaCalendarAlt className="me-2" />
+                        {formatDate(blog.createdAt)}
                       </div>
-                    </BlogCard>
-                  </div>
-                ))}
-              </div>
-            )}
-            {/** */}
-
-            {false && ( // cái false ở đây để tắt đoạn code dưới này làm nó ko chạy được
-              <div className="row g-4">
-                {/* Mở đầu Blog Post 1 */}
-                <div className="col-md-4">
-                  <div className="card h-100 shadow-sm">
-                    <img
-                      src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                      className="card-img-top"
-                      alt="Phòng tránh cúm"
-                      style={{
-                        width: "100%",
-                        height: 180,
-                        objectFit: "cover",
-                        borderTopLeftRadius: "0.75rem",
-                        borderTopRightRadius: "0.75rem",
-                      }}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/800x180?text=No+Image";
-                      }}
-                    />
-                    <div className="card-body">
-                      <small className="text-muted">15/03/2024</small>
-                      <h5 className="card-title mt-2">
-                        Cách phòng tránh bệnh cúm mùa cho học sinh
-                      </h5>
-                      <p className="card-text">
-                        Những biện pháp phòng tránh bệnh cúm mùa hiệu quả cho học
-                        sinh trong môi trường học đường...
+                      <h3 className="blog-title">{blog.title}</h3>
+                      <p className="blog-summary">
+                        {blog.contentSummary.length > 120
+                          ? blog.contentSummary.substring(0, 120) + "..."
+                          : blog.contentSummary}
                       </p>
                       <Link
-                        to="/parent/blog/1"
-                        className="btn btn-link text-primary p-0"
+                        to={`/parent/blog/${blog.id}`}
+                        className="blog-link"
                       >
-                        Đọc thêm →
+                        Đọc thêm <FaArrowRight className="ms-2" />
                       </Link>
                     </div>
-                  </div>
-                </div>
-                {/* Kết thúc Blog Post 1 */}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
 
-                {/* Mở đầu Blog Post 2 */}
-                <div className="col-md-4">
-                  <div className="card h-100 shadow-sm">
-                    <img
-                      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                      className="card-img-top"
-                      alt="Dinh dưỡng học đường"
-                      style={{
-                        width: "100%",
-                        height: 180,
-                        objectFit: "cover",
-                        borderTopLeftRadius: "0.75rem",
-                        borderTopRightRadius: "0.75rem",
-                      }}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/800x180?text=No+Image";
-                      }}
-                    />
-                    <div className="card-body">
-                      <small className="text-muted">10/03/2024</small>
-                      <h5 className="card-title mt-2">
-                        Dinh dưỡng học đường: Xây dựng thực đơn lành mạnh
-                      </h5>
-                      <p className="card-text">
-                        Hướng dẫn xây dựng thực đơn dinh dưỡng cân bằng cho học
-                        sinh...
-                      </p>
-                      <Link
-                        to="/parent/blog/2"
-                        className="btn btn-link text-primary p-0"
-                      >
-                        Đọc thêm →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                {/* Kết thúc Blog Post 2 */}
-
-                {/* Mở đầu Blog Post 3 */}
-                <div className="col-md-4">
-                  <div className="card h-100 shadow-sm">
-                    <img
-                      src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                      className="card-img-top"
-                      alt="Rửa tay đúng cách"
-                      style={{
-                        width: "100%",
-                        height: 180,
-                        objectFit: "cover",
-                        borderTopLeftRadius: "0.75rem",
-                        borderTopRightRadius: "0.75rem",
-                      }}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://via.placeholder.com/800x180?text=No+Image";
-                      }}
-                    />
-                    <div className="card-body">
-                      <small className="text-muted">05/03/2024</small>
-                      <h5 className="card-title mt-2">
-                        Tầm quan trọng của việc rửa tay đúng cách
-                      </h5>
-                      <p className="card-text">
-                        Hướng dẫn chi tiết về quy trình rửa tay đúng cách để phòng
-                        tránh bệnh...
-                      </p>
-                      <Link
-                        to="/parent/blog/3"
-                        className="btn btn-link text-primary p-0"
-                      >
-                        Đọc thêm →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-                {/* Kết thúc Blog Post 3 */}
-              </div>
-            )}
-          </div>
-        </section>
-        {/* Kết thúc Health Blog Section */}
+          {blogs.length > 6 && (
+            <div className="text-center mt-4">
+              <Button
+                as={Link}
+                to="/parent/more-know"
+                className="btn-primary-custom"
+              >
+                <FaBookOpen className="me-2" />
+                Xem tất cả bài viết
+              </Button>
+            </div>
+          )}
+        </Container>
       </div>
     </div>
   );

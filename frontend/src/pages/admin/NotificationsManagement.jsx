@@ -13,6 +13,7 @@ import {
   formatDDMMYYYY,
   formatTime,
 } from "../../utils/dateFormatter";
+// Styles được import từ main.jsx
 import { exportExcelFile, importExcelFile } from "../../api/admin/excelApi";
 import { toast } from "react-toastify";
 import PaginationBar from "../../components/common/PaginationBar";
@@ -329,51 +330,95 @@ const NotificationsManagement = () => {
         </Row>
         <Row>
           <Col>
-            <div className="rounded-3 overflow-hidden border">
-              <Table hover size="sm" className="mb-0">
-                <thead>
-                  <tr>
-                    <th>Mã thông báo</th>
-                    <th>Tiêu đề</th>
-                    <th>Lớp</th>
-                    <th>Loại</th>
-                    <th>Ngày tạo</th>
-                    <th>Mô tả</th>
-                    <th>Chi tiết</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {notificationsCurrentItems?.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="text-center">
-                        Không có dữ liệu
-                      </td>
-                    </tr>
-                  ) : (
-                    notificationsCurrentItems?.map((notification, idx) => (
-                      <tr key={idx}>
-                        <td>{notification.id}</td>
-                        <td>{notification.title}</td>
-                        <td>{notification.className}</td>
-                        <td>{notification.type}</td>
-                        <td>{formatDateTime(notification.createdAt)}</td>
-                        <td>{notification.message}</td>
-                        <td>
-                          <Button
-                            variant="outline-info"
-                            onClick={() =>
-                              fetchNotificationDetail(notification.id)
-                            }
-                          >
-                            <i className="fa-solid fa-eye"></i>
-                          </Button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </Table>
-              <div className="d-flex justify-content-end mt-3 me-3">
+            <div className="notification-table-wrapper">
+              <div className="notification-table-header">
+                <div className="notification-table-row header-row">
+                  <div className="notification-cell id-cell">
+                    <span>Mã thông báo</span>
+                  </div>
+                  <div className="notification-cell title-cell">
+                    <span>Tiêu đề</span>
+                  </div>
+                  <div className="notification-cell class-cell">
+                    <span>Lớp</span>
+                  </div>
+                  <div className="notification-cell type-cell">
+                    <span>Loại</span>
+                  </div>
+                  <div className="notification-cell date-cell">
+                    <span>Ngày tạo</span>
+                  </div>
+                  <div className="notification-cell message-cell">
+                    <span>Mô tả</span>
+                  </div>
+                  <div className="notification-cell action-cell">
+                    <span>Chi tiết</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="notification-table-body">
+                {notificationsCurrentItems?.length === 0 ? (
+                  <div className="empty-state">
+                    <i className="fas fa-bell empty-icon"></i>
+                    <h5>Không có dữ liệu</h5>
+                    <p>Chưa có thông báo nào được tạo</p>
+                  </div>
+                ) : (
+                  notificationsCurrentItems?.map((notification, idx) => (
+                    <div key={idx} className="notification-table-row data-row">
+                      <div className="notification-cell id-cell">
+                        <div className="notification-id">
+                          <i className="fas fa-hashtag"></i>
+                          {notification.id}
+                        </div>
+                      </div>
+
+                      <div className="notification-cell title-cell">
+                        <div className="notification-title">{notification.title}</div>
+                      </div>
+
+                      <div className="notification-cell class-cell">
+                        <span className="class-badge">
+                          <i className="fas fa-graduation-cap"></i>
+                          {notification.className}
+                        </span>
+                      </div>
+
+                      <div className="notification-cell type-cell">
+                        <span className={`type-badge ${notification.type.toLowerCase()}`}>
+                          {notification.type === "Vaccination" && <i className="fas fa-syringe"></i>}
+                          {notification.type === "HealthCheck" && <i className="fas fa-stethoscope"></i>}
+                          {notification.type === "Vaccination" ? "Tiêm chủng" : "Kiểm tra sức khỏe"}
+                        </span>
+                      </div>
+
+                      <div className="notification-cell date-cell">
+                        <div className="notification-date">
+                          <i className="fas fa-calendar"></i>
+                          {formatDateTime(notification.createdAt)}
+                        </div>
+                      </div>
+
+                      <div className="notification-cell message-cell">
+                        <div className="notification-message">{notification.message}</div>
+                      </div>
+
+                      <div className="notification-cell action-cell">
+                        <button
+                          className="action-btn view-btn"
+                          onClick={() => fetchNotificationDetail(notification.id)}
+                          title="Xem chi tiết"
+                        >
+                          <i className="fas fa-eye"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="notification-table-footer">
                 <PaginationBar
                   currentPage={notificationCurrentPage}
                   totalPages={notificationTotalPages}
@@ -651,7 +696,7 @@ const NotificationsManagement = () => {
                 variant="success"
                 className="px-4"
                 type="submit"
-                // onClick={() => handleSubmitModalAdd()}
+              // onClick={() => handleSubmitModalAdd()}
               >
                 Tạo
               </Button>

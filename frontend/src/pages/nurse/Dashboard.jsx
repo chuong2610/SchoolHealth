@@ -4,8 +4,7 @@ import { FaPills, FaClock, FaCalendarAlt, FaUserCheck, FaCheckCircle, FaUserNurs
 import { PieChart, Pie as RePie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area, AreaChart } from 'recharts';
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/nurse-theme.css";
-import "../../styles/sidebar.css";
+// CSS được import tự động từ main.jsx
 import CustomTable from "../../components/CustomTable";
 import MedicalExaminationFemaleSvg from "../../assets/medical-examination-female-svgrepo-com.svg";
 

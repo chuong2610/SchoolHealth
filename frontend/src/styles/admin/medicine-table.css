@@ -1,0 +1,467 @@
+/* ======================================
+   MEDICINE TABLE - CUSTOM DESIGN
+   ====================================== */
+
+.medicine-table-wrapper {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+/* Header */
+.medicine-table-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 2px solid #667eea;
+}
+
+.header-row {
+    background: transparent !important;
+}
+
+.header-row .medicine-cell {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    padding: 1.25rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.header-row .medicine-cell:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.header-row .medicine-cell span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Table Structure */
+.medicine-table-row {
+    display: grid;
+    grid-template-columns:
+        2fr
+        /* Tên thuốc */
+        1.2fr
+        /* Danh mục */
+        1fr
+        /* Số lượng */
+        1.5fr
+        /* Mức tồn kho */
+        1.2fr
+        /* Giá */
+        1fr
+        /* Vị trí */
+        1fr
+        /* Trạng thái */
+        1fr;
+    /* Thao tác */
+    min-height: 80px;
+    align-items: center;
+}
+
+.medicine-cell {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    min-height: 80px;
+    border-right: 1px solid #f1f5f9;
+}
+
+.medicine-cell:last-child {
+    border-right: none;
+}
+
+/* Data Rows */
+.data-row {
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.data-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.data-row:hover {
+    background: #f8fafc;
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.data-row:hover::before {
+    background: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+}
+
+.data-row:last-child {
+    border-bottom: none;
+}
+
+/* Name Cell */
+.medicine-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.medicine-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.medicine-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.medicine-name {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.medicine-barcode {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-family: 'Courier New', monospace;
+}
+
+/* Category Cell */
+.category-badge {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+}
+
+/* Quantity Cell */
+.quantity-value {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.quantity-value.in-stock {
+    color: #059669;
+}
+
+.quantity-value.low-stock {
+    color: #dc2626;
+}
+
+/* Stock Progress Cell */
+.stock-progress {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.progress-bar-wrapper {
+    width: 100%;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+.progress-bar.success {
+    background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+}
+
+.progress-bar.warning {
+    background: linear-gradient(90deg, #d97706 0%, #f59e0b 100%);
+}
+
+.progress-bar.danger {
+    background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+}
+
+.stock-text {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+}
+
+/* Price Cell */
+.price-value {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.9rem;
+}
+
+/* Location Cell */
+.location-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.location-icon {
+    font-size: 0.7rem;
+}
+
+/* Status Cell */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.status-badge.còn-hàng {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.gần-hết {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.hết-hàng {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s;
+}
+
+.action-btn:hover::before {
+    left: 100%;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.view-btn {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.view-btn:hover {
+    background: #1e40af;
+    color: white;
+}
+
+.edit-btn {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.edit-btn:hover {
+    background: #92400e;
+    color: white;
+}
+
+.delete-btn {
+    background: #fecaca;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.delete-btn:hover {
+    background: #991b1b;
+    color: white;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #475569;
+}
+
+.empty-state p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .medicine-table-row {
+        grid-template-columns: 1.8fr 1fr 0.8fr 1.2fr 1fr 0.8fr 0.8fr 0.8fr;
+    }
+
+    .medicine-cell {
+        padding: 0.875rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .medicine-name {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .medicine-table-row {
+        grid-template-columns: 2fr 1fr 0.8fr 1fr 1fr 0.8fr 0.8fr 0.8fr;
+    }
+
+    .medicine-cell {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .medicine-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .medicine-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .medicine-table-row {
+        grid-template-columns: 200px 120px 100px 140px 120px 100px 100px 120px;
+        min-width: 1000px;
+    }
+
+    .medicine-cell {
+        padding: 0.625rem 0.5rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .name-cell {
+        position: sticky;
+        left: 0;
+        background: inherit;
+        z-index: 2;
+        box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .medicine-name {
+        font-size: 0.8rem;
+    }
+
+    .medicine-barcode {
+        font-size: 0.7rem;
+    }
+
+    .action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .medicine-table-row {
+        grid-template-columns: 180px 100px 80px 120px 100px 80px 80px 100px;
+        min-width: 840px;
+    }
+
+    .medicine-cell {
+        padding: 0.5rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .medicine-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .action-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
+    }
+
+    .action-buttons {
+        gap: 0.25rem;
+    }
+}

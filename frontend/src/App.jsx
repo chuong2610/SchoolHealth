@@ -27,10 +27,11 @@ import AdminMedicineRequests from "./pages/admin/MedicineRequests";
 import AdminReports from "./pages/admin/Reports";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
+import NotificationsManagement from "./pages/admin/NotificationsManagement";
 
 // Nurse Pages
 import NurseDashboard from "./pages/nurse/Dashboard";
-import NurseHealthDeclaration from "./pages/nurse/HealthDeclaration";
+
 import NurseReceiveMedicine from "./pages/nurse/ReceiveMedicine";
 import NurseHealthEvents from "./pages/nurse/HealthEvents";
 import NurseProfile from "./pages/nurse/Profile";
@@ -44,6 +45,9 @@ import ParentHealthHistory from "./pages/parent/HealthHistory";
 import ParentNotifications from "./pages/parent/Notifications";
 import ParentProfile from "./pages/parent/Profile";
 import ParentSettings from "./pages/parent/Settings";
+import BlogDetail from "./pages/parent/BlogDetail";
+import MoreKnow from "./pages/parent/MoreKnow";
+import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
 
 // Public Pages
 import About from "./pages/About";
@@ -52,28 +56,9 @@ import FAQ from "./pages/FAQ";
 import Privacy from "./pages/Privacy";
 import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Accounts from "./pages/admin/Accounts";
-import Categories from "./pages/admin/Categories";
-import MedicinePlan from "./pages/admin/MedicinePlan";
-import MedicineRequests from "./pages/admin/MedicineRequests";
-import MedicineInventory from "./pages/admin/MedicineInventory";
-import NotificationsManagement from "./pages/admin/NotificationsManagement";
-import Reports from "./pages/admin/Reports";
-import Notifications from "./pages/parent/Notifications";
-import HealthHistory from "./pages/parent/HealthHistory";
-import SendMedicine from "./pages/parent/SendMedicine";
-import Profile from "./pages/admin/Profile";
-import Settings from "./pages/admin/Settings";
-import BlogDetail from "./pages/parent/BlogDetail";
-import MoreKnow from "./pages/parent/MoreKnow";
-import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
-import HealthDeclaration from "./pages/parent/HealthDeclaration";
 
 // Styles
 import "react-toastify/dist/ReactToastify.css";
-import "./styles/main.css";
-import "./styles/dashboard.css";
-import "./styles/themes.css";
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
@@ -108,16 +93,13 @@ const App = () => {
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
             <Route path="admin">
               <Route index element={<AdminDashboard />} />
-              <Route path="accounts" element={<Accounts />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="medicines/plan" element={<MedicinePlan />} />
-              <Route path="medicines/requests" element={<MedicineRequests />} />
-              <Route
-                path="medicines/inventory"
-                element={<MedicineInventory />}
-              />
+              <Route path="accounts" element={<AdminAccounts />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="medicines/plan" element={<AdminMedicinePlan />} />
+              <Route path="medicines/requests" element={<AdminMedicineRequests />} />
+              <Route path="medicines/inventory" element={<AdminMedicineInventory />} />
               <Route path="notification/management" element={<NotificationsManagement />} />
-              <Route path="reports" element={<Reports />} />
+              <Route path="reports" element={<AdminReports />} />
               <Route path="profile" element={<AdminProfile />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
@@ -127,14 +109,8 @@ const App = () => {
           <Route element={<ProtectedRoute allowedRoles={["nurse"]} />}>
             <Route path="nurse">
               <Route index element={<NurseDashboard />} />
-              <Route
-                path="health-declaration"
-                element={<NurseHealthDeclaration />}
-              />
-              <Route
-                path="receive-medicine"
-                element={<NurseReceiveMedicine />}
-              />
+
+              <Route path="receive-medicine" element={<NurseReceiveMedicine />} />
               <Route path="health-events" element={<NurseHealthEvents />} />
               <Route path="profile" element={<NurseProfile />} />
               <Route path="settings" element={<NurseSettings />} />
@@ -145,41 +121,19 @@ const App = () => {
           <Route element={<ProtectedRoute allowedRoles={["parent"]} />}>
             <Route path="parent">
               <Route index element={<ParentDashboard />} />
-              <Route
-                path="health-declaration"
-                element={<HealthDeclaration />}
-              />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="health-history" element={<HealthHistory />} />
-              <Route path="send-medicine" element={<SendMedicine />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="settings" element={<Settings />} />
+              <Route path="health-declaration" element={<ParentHealthDeclaration />} />
+              <Route path="notifications" element={<ParentNotifications />} />
+              <Route path="health-history" element={<ParentHealthHistory />} />
+              <Route path="send-medicine" element={<ParentSendMedicine />} />
+              <Route path="profile" element={<ParentProfile />} />
+              <Route path="settings" element={<ParentSettings />} />
               <Route path="blog/:id" element={<BlogDetail />} />
               <Route path="more-know" element={<MoreKnow />} />
               <Route path="health-check" element={<StudentHealthCheck />} />
             </Route>
           </Route>
 
-          {/* Student Routes
-          <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-            <Route path="student">
-              <Route index element={<StudentDashboard />} />
-              <Route path="" element={<StudentHome />} />
-              <Route path="health-info" element={<HealthInfo />} />
-              <Route
-                path="vaccination-history"
-                element={<VaccinationHistory />}
-              />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="health-events" element={<HealthEvents />} />
-              <Route path="profile" element={<StudentProfile />} />
-              <Route path="settings" element={<StudentSettings />} />
-              <Route path="blog/:id" element={<StudentBlogDetail />} />
-            </Route>
-          </Route> */}
-
           {/* Common Routes */}
-          {/* <Route path="logout" element={<Logout />} /> */}
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="faq" element={<FAQ />} />

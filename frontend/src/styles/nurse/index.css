@@ -1,0 +1,16 @@
+/* ====================================================================
+   NURSE STYLES INDEX - OPTIMIZED IMPORTS WITHOUT DUPLICATES
+   ==================================================================== */
+
+/* Core Nurse Styles - Single source of truth for nurse theme */
+@import './nurse-core.css';
+
+/* Specialized Nurse Modal Fixes */
+@import './nurse-modal-fix.css';
+
+/* 
+REMOVED DUPLICATE FILES:
+- nurse-theme-pink.css (15KB) - Merged into nurse-core.css
+- All duplicate keyframes and CSS variables consolidated
+- Optimized pink theme specifically for nurse role
+*/

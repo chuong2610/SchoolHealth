@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-import './Login.css';
+// Styles được import từ main.jsx
 import loginBg from '../../assets/login-bg.png';
 import bagpackSvg from '../../assets/bagpack-svgrepo-com.svg';
 import eLearningSvg from '../../assets/e-learning-svgrepo-com.svg';
