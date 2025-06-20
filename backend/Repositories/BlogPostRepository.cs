@@ -23,6 +23,10 @@ namespace backend.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+        public async Task<int> CountAsync()
+        {
+            return await _context.BlogPosts.CountAsync();
+        }
 
         public async Task<BlogPost> GetByIdAsync(int id)
         {

@@ -7,8 +7,8 @@ namespace backend.Interfaces
     public interface IBlogPostService
     {
         // Lấy danh sách tất cả các bài đăng
-        Task<IEnumerable<BlogPostDTO>> GetAllAsync(int pageNumber = 1, int pageSize = 3);
 
+        Task<PageResult<BlogPostDTO>> GetAllAsync(int pageNumber, int pageSize);
         // Lấy chi tiết của 1 bài đăng
         Task<BlogPostDetailDTO> GetByIdAsync(int id);
         Task<bool> CreateBlogPostDetailAsync(BlogPostDetailRequest request);

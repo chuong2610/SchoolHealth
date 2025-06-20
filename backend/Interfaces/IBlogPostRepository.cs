@@ -11,5 +11,6 @@ namespace backend.Interfaces
         Task<bool> AddAsync(BlogPost post);
         Task<bool> UpdateAsync(BlogPost blogPost);
         Task<bool> DeleteAsync(BlogPost blogPostDetail);
+        Task<int> CountAsync();
     }
 }
