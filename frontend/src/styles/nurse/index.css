@@ -8,6 +8,9 @@
 /* Specialized Nurse Modal Fixes */
 @import './nurse-modal-fix.css';
 
+/* Simple Table Styling - No gradients for better readability */
+@import './nurse-table-simple.css';
+
 /* 
 REMOVED DUPLICATE FILES:
 - nurse-theme-pink.css (15KB) - Merged into nurse-core.css

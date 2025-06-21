@@ -1,0 +1,276 @@
+/* ====================================================================
+   NURSE TABLE SIMPLE STYLING - NO GRADIENTS FOR BETTER READABILITY
+   ==================================================================== */
+
+/* Table Header - Simple solid color instead of gradient */
+.medicine-table thead th,
+.container-fluid.nurse-theme.medicine-management .medicine-table thead th,
+.container-fluid.nurse-theme.health-events-management .medicine-table thead th,
+body .container-fluid.nurse-theme.medicine-management .medicine-table thead th,
+body .container-fluid.nurse-theme.health-events-management .medicine-table thead th {
+    background: #F8BBD9 !important;
+    background-image: none !important;
+    /* Override any gradients */
+    /* Light pink solid color */
+    color: #4a4a4a !important;
+    /* Darker text for better contrast */
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    padding: 1.5rem 1rem !important;
+    border: none !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    box-shadow: 0 2px 10px rgba(248, 187, 217, 0.3) !important;
+    text-align: center !important;
+}
+
+/* Table Body - Simplified hover effects */
+.medicine-table tbody tr:hover,
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover,
+.container-fluid.nurse-theme.health-events-management .medicine-table .table-row:hover,
+body .container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover,
+body .container-fluid.nurse-theme.health-events-management .medicine-table .table-row:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(248, 187, 217, 0.2) !important;
+    z-index: 2 !important;
+}
+
+.medicine-table tbody tr:hover td,
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover td,
+.container-fluid.nurse-theme.health-events-management .medicine-table .table-row:hover td,
+body .container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover td,
+body .container-fluid.nurse-theme.health-events-management .medicine-table .table-row:hover td {
+    background: #FCE4EC !important;
+    background-image: none !important;
+    /* Override any gradients */
+    /* Very light pink solid color */
+    color: #2c3e50 !important;
+    font-weight: 500 !important;
+}
+
+/* Action Buttons - Simple solid colors */
+.btn-action.view,
+.container-fluid.nurse-theme.medicine-management .btn-action.view,
+.container-fluid.nurse-theme.health-events-management .btn-action.view,
+body .container-fluid.nurse-theme.medicine-management .btn-action.view,
+body .container-fluid.nurse-theme.health-events-management .btn-action.view {
+    background: #E91E63 !important;
+    background-image: none !important;
+    /* Override any gradients */
+    /* Solid pink color */
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(233, 30, 99, 0.3) !important;
+}
+
+.btn-action.view:hover,
+.container-fluid.nurse-theme.medicine-management .btn-action.view:hover,
+.container-fluid.nurse-theme.health-events-management .btn-action.view:hover {
+    background: #C2185B !important;
+    /* Darker pink on hover */
+    transform: scale(1.15) rotate(5deg) !important;
+    box-shadow: 0 6px 20px rgba(194, 24, 91, 0.4) !important;
+}
+
+.btn-action.confirm,
+.container-fluid.nurse-theme.medicine-management .btn-action.confirm {
+    background: #4CAF50 !important;
+    /* Solid green */
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3) !important;
+}
+
+.btn-action.confirm:hover,
+.container-fluid.nurse-theme.medicine-management .btn-action.confirm:hover {
+    background: #388E3C !important;
+    /* Darker green on hover */
+    transform: scale(1.15) rotate(-5deg) !important;
+    box-shadow: 0 6px 20px rgba(56, 142, 60, 0.4) !important;
+}
+
+.btn-action.reject,
+.container-fluid.nurse-theme.medicine-management .btn-action.reject {
+    background: #FF5722 !important;
+    /* Solid orange-red */
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(255, 87, 34, 0.3) !important;
+}
+
+.btn-action.reject:hover,
+.container-fluid.nurse-theme.medicine-management .btn-action.reject:hover {
+    background: #D32F2F !important;
+    /* Darker red on hover */
+    transform: scale(1.15) rotate(5deg) !important;
+    box-shadow: 0 6px 20px rgba(211, 47, 47, 0.4) !important;
+}
+
+.btn-action.complete,
+.container-fluid.nurse-theme.medicine-management .btn-action.complete {
+    background: #FF9800 !important;
+    /* Solid orange */
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(255, 152, 0, 0.3) !important;
+}
+
+.btn-action.complete:hover,
+.container-fluid.nurse-theme.medicine-management .btn-action.complete:hover {
+    background: #F57C00 !important;
+    /* Darker orange on hover */
+    transform: scale(1.15) rotate(-5deg) !important;
+    box-shadow: 0 6px 20px rgba(245, 124, 0, 0.4) !important;
+}
+
+/* Filter and Export Buttons - Simple solid colors */
+.filter-btn,
+.container-fluid.nurse-theme.medicine-management .filter-btn,
+.container-fluid.nurse-theme.health-events-management .filter-btn {
+    background: #E91E63 !important;
+    /* Solid pink */
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3) !important;
+}
+
+.filter-btn:hover,
+.container-fluid.nurse-theme.medicine-management .filter-btn:hover,
+.container-fluid.nurse-theme.health-events-management .filter-btn:hover {
+    background: #C2185B !important;
+    /* Darker pink on hover */
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(194, 24, 91, 0.4) !important;
+}
+
+.export-btn,
+.container-fluid.nurse-theme.medicine-management .export-btn,
+.container-fluid.nurse-theme.health-events-management .export-btn {
+    background: #4CAF50 !important;
+    /* Solid green */
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
+}
+
+.export-btn:hover,
+.container-fluid.nurse-theme.medicine-management .export-btn:hover,
+.container-fluid.nurse-theme.health-events-management .export-btn:hover {
+    background: #388E3C !important;
+    /* Darker green on hover */
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(56, 142, 60, 0.4) !important;
+}
+
+/* Show More Button - Simple styling */
+.show-more-btn {
+    background: #F8BBD9 !important;
+    /* Light pink solid */
+    color: #4a4a4a !important;
+    border: 2px solid #F8BBD9 !important;
+    padding: 12px 24px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+.show-more-btn:hover {
+    background: #E91E63 !important;
+    /* Solid pink on hover */
+    border-color: #E91E63 !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.3) !important;
+    text-decoration: none !important;
+}
+
+/* Class Badge - Simple solid color */
+.class-badge {
+    background: #F8BBD9 !important;
+    /* Light pink solid */
+    color: #4a4a4a !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.class-badge:hover {
+    background: #E91E63 !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+}
+
+/* Tab Badge - Simple solid color */
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .tab-badge {
+    background: #E91E63 !important;
+    /* Solid pink */
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 0.2rem 0.6rem !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+}
+
+/* Table Container Top Border - Simple solid color */
+.medicine-table-container::before,
+.container-fluid.nurse-theme.medicine-management .medicine-table-container::before,
+.container-fluid.nurse-theme.health-events-management .medicine-table-container::before {
+    background: #F8BBD9 !important;
+    /* Light pink solid */
+}
+
+/* Modal Tables - Simple colors */
+.nurse-modal .table thead th {
+    background: #F8BBD9 !important;
+    /* Light pink solid */
+    color: #4a4a4a !important;
+    font-weight: 700 !important;
+    padding: 1rem !important;
+    border: none !important;
+    text-align: center !important;
+}
+
+.nurse-modal .table tbody tr:hover {
+    background: #FCE4EC !important;
+    /* Very light pink */
+}
+
+/* Status indicators - Simple colors */
+.nurse-event-status-redesigned {
+    padding: 6px 12px !important;
+    border-radius: 15px !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.3s ease !important;
+    display: inline-block !important;
+}
+
+.nurse-event-status-redesigned.completed {
+    background: #4CAF50 !important;
+    /* Solid green */
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.pending {
+    background: #FF9800 !important;
+    /* Solid orange */
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.cancelled {
+    background: #FF5722 !important;
+    /* Solid red */
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.in-progress {
+    background: #2196F3 !important;
+    /* Solid blue */
+    color: white !important;
+}

@@ -42,6 +42,7 @@ import './styles/nurse/nurse-health-events.css';
 import './styles/nurse/nurse-receive-medicine.css';
 import './styles/nurse/nurse-pages.css';
 import './styles/nurse/nurse-action-buttons-fix.css';
+import './styles/nurse/nurse-table-simple.css';
 
 // Parent styles - White to Sea Blue Professional Theme
 import './styles/parent/index.css';
