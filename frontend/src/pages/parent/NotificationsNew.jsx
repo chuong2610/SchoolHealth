@@ -79,10 +79,12 @@ export default function Notifications() {
     const [reason, setReason] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const pageSize = 8;
 
     // Fetch notifications based on active tab
     const fetchNotifications = async (tabType = activeTab) => {
+        console.log('Fetching notifications...');
         if (!user?.id) {
             setLoading(false);
             return;
@@ -93,31 +95,35 @@ export default function Notifications() {
             let res;
             switch (tabType) {
                 case "HealthCheck":
-                    res = await getHealthCheckNotifications(user.id);
+                    res = await getHealthCheckNotifications(user.id, page, pageSize, search);
                     break;
                 case "Vaccination":
-                    res = await getVaccinationNotifications(user.id);
+                    res = await getVaccinationNotifications(user.id, page, pageSize, search);
                     break;
-                case "all":
+                // case "all":
                 default:
-                    res = await getNotifications(user.id);
+                    res = await getNotifications(user.id, page, pageSize, search);
                     break;
             }
 
-            const sortedNotifications = res.sort(
+            const sortedNotifications = res.items.sort(
                 (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             );
             setNotifications(sortedNotifications);
+            setTotalPages(res.totalPages || 1);
+            console.log("totalPages", res.totalPages);
         } catch (error) {
             setNotifications([]);
+            console.error("Error fetching notifications:", error);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
+        console.log("Fetching notifications for tab:", activeTab);
         fetchNotifications(activeTab);
-    }, [user?.id, activeTab]);
+    }, [user?.id, activeTab, search, page]);
 
     // Filtered notifications (already filtered by backend, only need search filter)
     const uniqueNotifications = Array.from(

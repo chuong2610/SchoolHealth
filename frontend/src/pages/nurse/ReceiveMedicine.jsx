@@ -151,11 +151,14 @@ const ReceiveMedicine = () => {
     completed: true
   }); // Disable row animations
   const ROW_LIMIT = 5;
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [totalPages, setTotalPages] = useState(1); // Total pages for pagination
+  const pageSize = 3; // Default page size for API requests
 
   // Fetch danh sách đơn thuốc chờ xác nhận
   const fetchPending = async () => {
     try {
-      const res = await axiosInstance.get("/Medication/pending");
+      const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${searchPending ? `&search=${searchPending}` : ""}`);
       const data = res.data;
       setPendingRequests((data.data || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};

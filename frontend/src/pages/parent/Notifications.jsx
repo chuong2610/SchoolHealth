@@ -44,6 +44,7 @@ import {
   getVaccinationNotifications,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
+import PaginationBar from "../../components/common/PaginationBar";
 // Styles được import từ main.jsx
 
 const tabList = [
@@ -104,7 +105,8 @@ export default function Notifications() {
   const [reason, setReason] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const pageSize = 6;
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 1;
 
   // Fetch notifications based on active tab
   const fetchNotifications = async (tabType = activeTab) => {
@@ -118,23 +120,23 @@ export default function Notifications() {
       let res;
       switch (tabType) {
         case "HealthCheck":
-          res = await getHealthCheckNotifications(user.id);
+          res = await getHealthCheckNotifications(user.id, page, pageSize, search);
           break;
         case "Vaccination":
-          res = await getVaccinationNotifications(user.id);
+          res = await getVaccinationNotifications(user.id, page, pageSize, search);
           break;
         case "all":
         default:
-          res = await getNotifications(user.id);
+          res = await getNotifications(user.id, page, pageSize, search);
           break;
       }
 
       // Ensure res is an array and sort by creation date
-      const notifications = Array.isArray(res) ? res : [];
-      const sortedNotifications = notifications.sort(
+      const sortedNotifications = res.items.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       setNotifications(sortedNotifications);
+      setTotalPages(res.totalPages || 1);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       setNotifications([]);
@@ -145,26 +147,26 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications(activeTab);
-  }, [user?.id, activeTab]);
+  }, [user?.id, activeTab, page, search]);
+
+  const handleChangePage = (newPage) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setPage(newPage);
+  }
 
   // Filtered notifications (already filtered by backend, only need search filter)
-  const uniqueNotifications = Array.from(
-    new Map(notifications.map(n => [n.id, n])).values()
-  );
-  const filtered = uniqueNotifications.filter(
-    (n) =>
-      n.title?.toLowerCase().includes(search.toLowerCase()) ||
-      n.message?.toLowerCase().includes(search.toLowerCase())
-  );
-  const totalPage = Math.ceil(filtered.length / pageSize);
-  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+  // const uniqueNotifications = Array.from(
+  //   new Map(notifications.map(n => [n.id, n])).values()
+  // );
+  const filtered = notifications;
+  const paged = filtered;
 
   // Statistics
   const stats = {
-    total: uniqueNotifications.length,
-    pending: uniqueNotifications.filter(n => n.status === 'Pending').length,
-    confirmed: uniqueNotifications.filter(n => n.status === 'Confirmed').length,
-    rejected: uniqueNotifications.filter(n => n.status === 'Rejected').length,
+    total: notifications.length,
+    pending: notifications.filter(n => n.status === 'Pending').length,
+    confirmed: notifications.filter(n => n.status === 'Confirmed').length,
+    rejected: notifications.filter(n => n.status === 'Rejected').length,
   };
 
   // Modal logic
@@ -407,7 +409,7 @@ export default function Notifications() {
                       </thead>
                       <tbody>
                         {paged.map((notification, idx) => (
-                          <tr key={notification.id}>
+                          <tr key={idx}>
                             <td className="text-center">
                               <div style={{
                                 width: '45px',
@@ -514,50 +516,12 @@ export default function Notifications() {
                   </div>
 
                   {/* Pagination */}
-                  {totalPage > 1 && (
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '1rem',
-                      marginTop: '2rem',
-                      padding: '1rem',
-                      background: 'white',
-                      borderRadius: 'var(--parent-border-radius-xl)',
-                      boxShadow: 'var(--parent-shadow-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
-                    }}>
-                      <Button
-                        className="parent-secondary-btn"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        disabled={page === 1}
-                        size="sm"
-                        style={{ minWidth: '45px', height: '45px' }}
-                      >
-                        <FaChevronLeft />
-                      </Button>
-
-                      <div style={{
-                        color: 'var(--parent-primary)',
-                        fontWeight: '700',
-                        padding: '0.75rem 1.5rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        border: '2px solid rgba(107, 70, 193, 0.1)'
-                      }}>
-                        Trang {page} / {totalPage}
-                      </div>
-
-                      <Button
-                        className="parent-secondary-btn"
-                        onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
-                        disabled={page === totalPage}
-                        size="sm"
-                        style={{ minWidth: '45px', height: '45px' }}
-                      >
-                        <FaChevronRight />
-                      </Button>
-                    </div>
+                  {totalPages > 1 && (
+                    <PaginationBar 
+                      currentPage={page}
+                      totalPages={totalPages}
+                      onPageChange={handleChangePage}
+                    />
                   )}
                 </>
               )}
