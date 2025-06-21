@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container, Card, Button, Badge, Spinner, Alert } from "react-bootstrap";
 import { FaArrowLeft, FaCalendarAlt, FaUser, FaClock, FaTags, FaBookOpen } from "react-icons/fa";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 // Styles được import từ main.jsx
 
 const BlogDetail = () => {
@@ -15,21 +15,7 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
-        const response = await axios.get(
-          `http://localhost:5182/api/BlogPosts/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (typeof response.data.content === "string") {
-          response.data.content = JSON.parse(response.data.content);
-        }
-
+        const response = await axiosInstance.get(`/BlogPosts/${id}`);
         setBlog(response.data);
         setLoading(false);
       } catch (err) {
@@ -364,53 +350,15 @@ const BlogDetail = () => {
                 </div>
               </div>
 
-              {/* Render content from JSON */}
+              {/* Render content */}
               {blog.content && (
-                <>
-                  <div className="blog-content-section">
-                    <h2 className="section-title">Giới thiệu</h2>
-                    <p className="content-text">{blog.content.Introduction}</p>
-                  </div>
-
-                  <div className="blog-content-section">
-                    <h2 className="section-title">Các triệu chứng</h2>
-                    <ul className="content-list">
-                      {blog.content.symptoms?.map((symptom, index) => (
-                        <li key={index}>{symptom}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="blog-content-section">
-                    <h2 className="section-title">Cách phòng tránh</h2>
-
-                    <h3 className="subsection-title">Tiêm phòng</h3>
-                    <p className="content-text">{blog.content.prevention?.vaccination}</p>
-
-                    <h3 className="subsection-title">Vệ sinh cá nhân</h3>
-                    <ul className="content-list">
-                      {blog.content.prevention?.personalHygiene?.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-
-                    <h3 className="subsection-title">Tăng cường sức đề kháng</h3>
-                    <ul className="content-list">
-                      {blog.content.prevention?.immunityBoost?.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="blog-content-section">
-                    <h2 className="section-title">Khi nào cần gặp bác sĩ</h2>
-                    <ul className="content-list">
-                      {blog.content.whenToSeeDoctor?.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </>
+                <div className="blog-content-section">
+                  <h2 className="section-title">Nội dung</h2>
+                  <div
+                    className="content-text"
+                    dangerouslySetInnerHTML={{ __html: blog.content }}
+                  />
+                </div>
               )}
             </div>
 

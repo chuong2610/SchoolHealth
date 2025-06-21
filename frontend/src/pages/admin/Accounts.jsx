@@ -42,11 +42,9 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
 import * as XLSX from "xlsx";
-import axios from "axios";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
-
-const API_BASE_URL = "http://localhost:5182";
+import axiosInstance from "../../api/axiosInstance";
 
 // Animation variants for framer-motion
 const containerVariants = {
@@ -113,7 +111,7 @@ const Accounts = () => {
     }
 
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/User/role/${roleName}`);
+      const response = await axiosInstance.get(`/User/role/${roleName}`);
       if (response.data.success) {
         setUsers(response.data.data || []);
       } else {
@@ -374,9 +372,6 @@ const Accounts = () => {
         userPayload.id = newUser.id;
       }
 
-      console.log("Sending payload:", JSON.stringify(userPayload, null, 2));
-      console.log("API Endpoint:", `${API_BASE_URL}/api/User`);
-      console.log("Method:", modalType === "add" ? "POST" : "PUT");
 
       const config = {
         headers: {
@@ -386,12 +381,11 @@ const Accounts = () => {
 
       let response;
       if (modalType === "add") {
-        response = await axios.post(`${API_BASE_URL}/api/User`, userPayload, config);
+        response = await axiosInstance.post(`/User`, userPayload);
       } else {
-        response = await axios.put(`${API_BASE_URL}/api/User`, userPayload, config);
+        response = await axiosInstance.put(`/User`, userPayload);
       }
 
-      console.log("API Response:", response.data);
 
       if (response.data.success) {
         // Success notification
@@ -423,7 +417,6 @@ const Accounts = () => {
         }
       }
     } catch (err) {
-      console.error("Error saving user:", err);
 
       if (err.response?.status === 400) {
         // Handle validation errors
@@ -453,15 +446,15 @@ const Accounts = () => {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await axios.delete(`${API_BASE_URL}/api/User/${userToDelete?.id}`);
+      const response = await axiosInstance.delete(`/User/${userToDelete?.id}`);
       if (response.data.success) {
-        alert("User deleted successfully!");
+        toast.success("Xóa người dùng thành công!");
         fetchUsers(); // Refresh the user list
       } else {
-        alert("Failed to delete user: " + (response.data.message || "Unknown error"));
+        toast.error("Lỗi khi xóa người dùng: " + (response.data.message || "Lỗi không xác định"));
       }
     } catch (err) {
-      alert("Error deleting user: " + (err.response?.data?.message || err.message));
+      toast.error("Lỗi khi xóa người dùng: " + (err.response?.data?.message || err.message));
     }
     setShowDeleteModal(false);
   };
@@ -582,22 +575,22 @@ const Accounts = () => {
     const formData = new FormData();
     formData.append('file', importedFile);
     try {
-      const res = await axios.post(
-        'http://localhost:5182/api/Excel/import-students-and-parents',
+      const res = await axiosInstance.post(
+        '/Excel/import-students-and-parents',
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
       if (res.data && res.data.success) {
-        alert('Import thành công!');
-        // TODO: Gọi API lấy lại danh sách user mới nhất nếu có
+        toast.success('Import thành công!');
+        fetchUsers(); // Refresh user list
         setShowImportModal(false);
         setImportedUsers([]);
         setImportedFile(null);
       } else {
-        alert('Import thất bại: ' + (res.data.message || 'Lỗi không xác định'));
+        toast.error('Import thất bại: ' + (res.data.message || 'Lỗi không xác định'));
       }
     } catch (err) {
-      alert('Import thất bại!');
+      toast.error('Import thất bại: ' + (err.response?.data?.message || err.message));
     }
   };
 

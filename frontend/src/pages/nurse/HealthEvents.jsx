@@ -21,6 +21,7 @@ import {
     postMedicalEvent,
 } from "../../api/nurse/healthEventsApi";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 import {
     FaCalendarAlt,
     FaSearch,
@@ -60,6 +61,7 @@ import {
 const timestamp = Date.now();
 
 const HealthEvents = () => {
+    const { user } = useAuth();
     const formRef = useRef(null);
     const [events, setEvents] = useState([]);
     const [modalEvent, setModalEvent] = useState(false);
@@ -67,12 +69,11 @@ const HealthEvents = () => {
     const [modalAdd, setModalAdd] = useState(false);
     const [medicalSupplies, setMedicalSupplies] = useState([]);
     const [formAdd, setFormAdd] = useState({
-        name: "",
+        eventType: "",
         location: "",
         description: "",
-        note: "",
-        studentId: "",
-        itemNeeded: [{ medicalSupplyId: "", quantity: 1 }],
+        studentNumber: "",
+        medicalEventSupplys: [{ medicalSupplyId: "", quantity: 1 }],
     });
 
     // Professional state management
@@ -141,7 +142,6 @@ const HealthEvents = () => {
 
             showNotification("Xuất Excel thành công!", "success");
         } catch (error) {
-            console.error("Export error:", error);
             showNotification("Lỗi khi xuất Excel!", "error");
         }
     };
@@ -223,74 +223,54 @@ const HealthEvents = () => {
 
     // Original handlers with enhanced error handling
     const handleChangeSelect = (idx, value) => {
-        try {
-            const updateItemNeeded = [...formAdd.itemNeeded];
-            updateItemNeeded[idx] = {
-                quantity: 1,
-                medicalSupplyId: value,
-            };
-            setFormAdd((prev) => ({
-                ...prev,
-                itemNeeded: updateItemNeeded,
-            }));
-        } catch (error) {
-            console.error("Error in handleChangeSelect:", error);
-            showNotification("Lỗi khi chọn vật tư", "error");
-        }
+        const updatedSupplys = [...formAdd.medicalEventSupplys];
+        updatedSupplys[idx] = {
+            quantity: 1,
+            medicalSupplyId: value === "" ? "" : parseInt(value),
+        };
+        setFormAdd((prev) => ({
+            ...prev,
+            medicalEventSupplys: updatedSupplys,
+        }));
     };
 
     const handleChangeQuantity = (idx, value) => {
-        try {
-            const updateItemNeeded = [...formAdd.itemNeeded];
-            const selectedSupply = updateItemNeeded[idx];
+        const updatedSupplys = [...formAdd.medicalEventSupplys];
+        const selectedSupply = updatedSupplys[idx];
 
-            if (value === "") {
-                updateItemNeeded[idx] = {
-                    ...selectedSupply,
-                    quantity: "",
-                };
-            } else {
-                const maxQuantity =
-                    medicalSupplies.find(
-                        (m) => String(m.id) === String(selectedSupply.medicalSupplyId)
-                    )?.quantity || 1;
+        if (value === "" || isNaN(parseInt(value))) {
+            updatedSupplys[idx] = {
+                ...selectedSupply,
+                quantity: 1,
+            };
+        } else {
+            const maxQuantity =
+                medicalSupplies.find(
+                    (m) => String(m.id) === String(selectedSupply.medicalSupplyId)
+                )?.quantity || 999;
 
-                updateItemNeeded[idx] = {
-                    ...selectedSupply,
-                    quantity: Math.min(Math.max(1, value), maxQuantity),
-                };
-            }
-
-            setFormAdd((prev) => ({
-                ...prev,
-                itemNeeded: updateItemNeeded,
-            }));
-        } catch (error) {
-            console.error("Error in handleChangeQuantity:", error);
-            showNotification("Lỗi khi thay đổi số lượng", "error");
+            updatedSupplys[idx] = {
+                ...selectedSupply,
+                quantity: Math.min(Math.max(1, parseInt(value)), maxQuantity),
+            };
         }
+
+        setFormAdd((prev) => ({
+            ...prev,
+            medicalEventSupplys: updatedSupplys,
+        }));
     };
 
     const handleRemoveSupply = (idx) => {
-        try {
-            const updateItemNeeded = [...formAdd.itemNeeded].filter(
-                (_, i) => i !== idx
-            );
-            setFormAdd({ ...formAdd, itemNeeded: updateItemNeeded });
-        } catch (error) {
-            console.error("Error in handleRemoveSupply:", error);
-            showNotification("Lỗi khi xóa vật tư", "error");
-        }
+        const updatedSupplys = [...formAdd.medicalEventSupplys].filter(
+            (_, i) => i !== idx
+        );
+        setFormAdd({ ...formAdd, medicalEventSupplys: updatedSupplys });
     };
 
     const handleAddSupply = () => {
-        try {
-            const updateItemNeeded = [...formAdd.itemNeeded, { medicalSupplyId: "", quantity: 1 }];
-            setFormAdd({ ...formAdd, itemNeeded: updateItemNeeded });
-        } catch (error) {
-            console.error("Error in handleAddSupply:", error);
-            showNotification("Lỗi khi thêm vật tư", "error");
-        }
+        const updatedSupplys = [...formAdd.medicalEventSupplys, { medicalSupplyId: "", quantity: 1 }];
+        setFormAdd({ ...formAdd, medicalEventSupplys: updatedSupplys });
     };
 
     const handleSubmitForm = async (e) => {
@@ -304,15 +284,67 @@ const HealthEvents = () => {
         }
 
         try {
+            // Validate required fields according to API
+            if (!formAdd.eventType || formAdd.eventType.trim() === "") {
+                showNotification("Vui lòng chọn loại sự kiện!", "error");
+                return;
+            }
+
+            if (!formAdd.location || formAdd.location.trim() === "") {
+                showNotification("Vui lòng chọn địa điểm!", "error");
+                return;
+            }
+
+            if (!formAdd.description || formAdd.description.trim() === "") {
+                showNotification("Vui lòng nhập mô tả sự kiện!", "error");
+                return;
+            }
+
+            // Validate nurse ID
+            if (!user?.id || isNaN(parseInt(user.id))) {
+                showNotification("Không xác định được thông tin y tá!", "error");
+                return;
+            }
+
+            // Filter out empty medical supplies - keep only valid ones
+            const validSupplies = formAdd.medicalEventSupplys.filter(supply =>
+                supply.medicalSupplyId &&
+                supply.medicalSupplyId !== "" &&
+                !isNaN(parseInt(supply.medicalSupplyId)) &&
+                supply.quantity > 0 &&
+                !isNaN(parseInt(supply.quantity))
+            );
+
+            // No validation error for medical supplies - they're optional
+
+            // Check if studentNumber is provided and not empty
+            const hasStudentNumber = formAdd.studentNumber.trim() !== "";
+
+            // Prepare data exactly as API expects
             const data = {
-                eventType: formAdd.name,
+                eventType: formAdd.eventType,
                 location: formAdd.location,
                 description: formAdd.description,
                 date: new Date().toISOString(),
-                medicalEventSupplys: formAdd.itemNeeded,
-                studentNumber: formAdd.studentId,
-                nurseId: localStorage.userId,
+                medicalEventSupplys: validSupplies.length > 0 ? validSupplies.map(supply => ({
+                    medicalSupplyId: parseInt(supply.medicalSupplyId),
+                    quantity: parseInt(supply.quantity)
+                })) : [
+                    {
+                        medicalSupplyId: 0,
+                        quantity: 0
+                    }
+                ],
+                nurseId: parseInt(user.id)
             };
+
+            // Only include studentNumber if provided (backend might require existing student)
+            if (hasStudentNumber) {
+                data.studentNumber = formAdd.studentNumber.trim();
+            } else {
+                // Try empty string for general events
+                data.studentNumber = "";
+            }
 
             const res = await postMedicalEvent(data);
             showNotification("Thêm sự kiện thành công!", "success");
@@ -323,19 +355,33 @@ const HealthEvents = () => {
             const updatedEvents = await getMedicalEvents();
             setEvents(updatedEvents);
         } catch (error) {
-            console.error("Error in handleSubmitForm:", error);
-            showNotification("Lỗi khi thêm sự kiện!", "error");
+
+            // More detailed error handling
+            let errorMessage = "Lỗi khi thêm sự kiện!";
+
+            if (error.response?.status === 500) {
+                if (hasStudentNumber) {
+                    errorMessage = `❌ Lỗi: Mã học sinh "${formAdd.studentNumber.trim()}" không tồn tại trong hệ thống!`;
+                } else {
+                    errorMessage = "❌ Lỗi: Không thể tạo sự kiện chung. Vui lòng thử với mã học sinh hợp lệ.";
+                }
+            } else if (error.response?.data?.message) {
+                errorMessage = `❌ Lỗi: ${error.response.data.message}`;
+            } else if (error.message) {
+                errorMessage = `❌ Lỗi: ${error.message}`;
+            }
+
+            showNotification(errorMessage, "error");
         }
     };
 
     const resetFormAdd = () => {
         setFormAdd({
-            name: "",
+            eventType: "",
             location: "",
             description: "",
-            note: "",
-            studentId: "",
-            itemNeeded: [{ medicalSupplyId: "", quantity: 1 }],
+            studentNumber: "",
+            medicalEventSupplys: [{ medicalSupplyId: "", quantity: 1 }],
         });
         setValidated(false);
     };
@@ -346,7 +392,6 @@ const HealthEvents = () => {
             setMedicalSupplies(res || []);
             setModalAdd(true);
         } catch (error) {
-            console.error("Error fetching medical supplies:", error);
             showNotification("Lỗi khi tải danh sách vật tư!", "error");
         }
     };
@@ -358,7 +403,6 @@ const HealthEvents = () => {
             setModalEventDetail(res || {});
             setModalEvent(true);
         } catch (error) {
-            console.error("Error loading event detail:", error);
             showNotification("Lỗi khi tải chi tiết sự kiện!", "error");
         } finally {
             setDetailLoading(false);
@@ -367,10 +411,10 @@ const HealthEvents = () => {
 
     // Enhanced action buttons
     const renderActionButtons = (event) => (
-        <div className="medicine-action-buttons" style={{ 
-            display: 'flex', 
-            gap: '6px', 
-            alignItems: 'center', 
+        <div className="medicine-action-buttons" style={{
+            display: 'flex',
+            gap: '6px',
+            alignItems: 'center',
             justifyContent: 'center',
             flexWrap: 'wrap'
         }}>
@@ -542,7 +586,6 @@ const HealthEvents = () => {
                 // Trigger animations
                 setTimeout(() => setAnimateStats(true), 100);
             } catch (error) {
-                console.error("Error fetching medical events:", error);
                 showNotification("Lỗi khi tải dữ liệu!", "error");
             } finally {
                 setLoading(false);
@@ -1143,7 +1186,7 @@ const HealthEvents = () => {
                         </div>
                     </div>
 
-                    <div className="col-xl-3 col-md-6 mb-4">
+                    {/* <div className="col-xl-3 col-md-6 mb-4">
                         <div className={`stats-card completed ${animateStats ? 'animate-in' : ''}`}
                             style={{ animationDelay: '0.4s' }}>
                             <div className="card-body">
@@ -1162,7 +1205,7 @@ const HealthEvents = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 
@@ -1404,28 +1447,30 @@ const HealthEvents = () => {
                                         <div className="form-group-enhanced">
                                             <Form.Group className="mb-4" controlId="eventType">
                                                 <Form.Label className="form-label-enhanced">
-                                                    <FaStickyNote className="me-2" />
-                                                    Tên sự kiện <span className="required">*</span>
+                                                    <FaHeartbeat className="me-2" />
+                                                    Loại sự kiện <span className="required">*</span>
                                                 </Form.Label>
                                                 <div className="input-wrapper">
-                                                    <Form.Control
-                                                        type="text"
-                                                        placeholder="VD: Khám sức khỏe định kỳ, Cấp cứu, Tiêm phòng..."
-                                                        value={formAdd.name}
-                                                        onChange={(e) => setFormAdd({ ...formAdd, name: e.target.value })}
+                                                    <Form.Select
+                                                        value={formAdd.eventType}
+                                                        onChange={(e) => setFormAdd({ ...formAdd, eventType: e.target.value })}
                                                         className="form-control-enhanced"
                                                         required
-                                                    />
+                                                    >
+                                                        <option value="">Chọn loại sự kiện...</option>
+                                                        <option value="health_check">Khám sức khỏe</option>
+                                                        <option value="vaccination">Tiêm phòng</option>
+                                                    </Form.Select>
                                                     <div className="input-icon">
-                                                        <FaStickyNote />
+                                                        <FaHeartbeat />
                                                     </div>
                                                 </div>
                                                 <Form.Control.Feedback type="invalid">
                                                     <FaExclamationTriangle className="me-1" />
-                                                    Vui lòng nhập tên sự kiện
+                                                    Vui lòng chọn loại sự kiện
                                                 </Form.Control.Feedback>
                                                 <div className="form-help">
-                                                    Nhập tên mô tả ngắn gọn về sự kiện y tế
+                                                    Chọn loại sự kiện y tế phù hợp
                                                 </div>
                                             </Form.Group>
 
@@ -1461,7 +1506,7 @@ const HealthEvents = () => {
                                                 </Form.Control.Feedback>
                                             </Form.Group>
 
-                                            <Form.Group className="mb-4" controlId="studentId">
+                                            <Form.Group className="mb-4" controlId="studentNumber">
                                                 <Form.Label className="form-label-enhanced">
                                                     <FaUser className="me-2" />
                                                     Mã học sinh liên quan
@@ -1469,9 +1514,9 @@ const HealthEvents = () => {
                                                 <div className="input-wrapper">
                                                     <Form.Control
                                                         type="text"
-                                                        placeholder="VD: HS001, HS123... (để trống nếu không có)"
-                                                        value={formAdd.studentId}
-                                                        onChange={(e) => setFormAdd({ ...formAdd, studentId: e.target.value })}
+                                                        placeholder="VD: HS001, ST2024001... (để trống cho sự kiện chung)"
+                                                        value={formAdd.studentNumber}
+                                                        onChange={(e) => setFormAdd({ ...formAdd, studentNumber: e.target.value })}
                                                         className="form-control-enhanced"
                                                     />
                                                     <div className="input-icon">
@@ -1479,11 +1524,11 @@ const HealthEvents = () => {
                                                     </div>
                                                 </div>
                                                 <div className="form-help">
-                                                    Chỉ nhập nếu sự kiện liên quan đến học sinh cụ thể
+                                                    <strong>⚠️ Lưu ý:</strong> Chỉ nhập mã học sinh đã tồn tại trong hệ thống. Để trống để tạo sự kiện chung.
                                                 </div>
                                             </Form.Group>
 
-                                            <Form.Group className="mb-4" controlId="eventPriority">
+                                            {/* <Form.Group className="mb-4" controlId="eventPriority">
                                                 <Form.Label className="form-label-enhanced">
                                                     <FaExclamationTriangle className="me-2" />
                                                     Mức độ ưu tiên
@@ -1505,16 +1550,16 @@ const HealthEvents = () => {
                                                         <FaClock className="me-1" />
                                                         Khẩn
                                                     </Button>
-                                                    <Button
+                                                    {/* <Button
                                                         variant="outline-danger"
                                                         className="priority-btn"
                                                         onClick={() => setFormAdd({ ...formAdd, priority: 'emergency' })}
                                                     >
                                                         <FaAmbulance className="me-1" />
                                                         Cấp cứu
-                                                    </Button>
-                                                </div>
-                                            </Form.Group>
+                                                    </Button> */}
+                                            {/* </div>
+                                            </Form.Group> */}
                                         </div>
                                     </div>
                                 </Col>
@@ -1556,11 +1601,11 @@ const HealthEvents = () => {
                                         </div>
 
                                         <div className="supplies-section">
-                                            {formAdd.itemNeeded.map((item, idx) => (
+                                            {formAdd.medicalEventSupplys.map((item, idx) => (
                                                 <div key={idx} className="supply-item-wrapper">
                                                     <div className="supply-item-header">
                                                         <span className="supply-number">#{idx + 1}</span>
-                                                        {formAdd.itemNeeded.length > 1 && (
+                                                        {formAdd.medicalEventSupplys.length > 1 && (
                                                             <Button
                                                                 variant="outline-danger"
                                                                 size="sm"
@@ -1583,7 +1628,6 @@ const HealthEvents = () => {
                                                                 value={item.medicalSupplyId}
                                                                 onChange={(e) => handleChangeSelect(idx, e.target.value)}
                                                                 className="form-control-enhanced"
-                                                                required
                                                             >
                                                                 <option value="">-- Chọn vật tư y tế --</option>
                                                                 {medicalSupplies.map((supply) => (
@@ -1610,7 +1654,6 @@ const HealthEvents = () => {
                                                                     min="1"
                                                                     max={medicalSupplies.find(s => String(s.id) === String(item.medicalSupplyId))?.quantity || 999}
                                                                     className="form-control-enhanced quantity-input"
-                                                                    required
                                                                 />
                                                                 {item.medicalSupplyId && (
                                                                     <small className="quantity-max">

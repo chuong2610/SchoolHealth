@@ -193,7 +193,7 @@ const Login = () => {
                 return;
             }
             const { token, userId, roleName } = data;
-            await login(token, roleName, Number(userId));
+            await login(token, roleName, Number(userId), '');
             setSuccessMsg('Đăng nhập thành công! Đang chuyển hướng...');
             setTimeout(() => navigate(`/${roleName.toLowerCase()}`), 1000);
         } catch (err) {
@@ -213,12 +213,9 @@ const Login = () => {
     };
 
     const handleGoogleLogin = () => {
-        console.log('🔗 Initiating Google login...');
-
         const scope = 'email profile';
         const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
 
-        console.log('🌐 Redirecting to Google Auth:', googleAuthUrl);
         window.location.href = googleAuthUrl;
     };
 

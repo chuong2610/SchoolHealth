@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Container,
   Row,
@@ -30,9 +29,12 @@ import {
   FaTimesCircle
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
+import axiosInstance from "../../api/axiosInstance";
 import "../../styles/parent/parent-healthdeclaration-redesign.css";
 
 const HealthDeclaration = () => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     studentId: "",
     studentName: "",
@@ -54,52 +56,46 @@ const HealthDeclaration = () => {
   const [selectedDeclaration, setSelectedDeclaration] = useState(null);
 
   // Hàm fetch lịch sử khai báo y tế
-  const fetchDeclarationHistory = async (parentId, token) => {
+  const fetchDeclarationHistory = async (parentId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5182/api/StudentProfile/by-parent/${parentId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setDeclarationHistory(response.data.data || []);
+      // TODO: Backend endpoint not implemented yet
+      // const response = await axiosInstance.get(`/api/StudentProfile/by-parent/${parentId}`);
+      // setDeclarationHistory(response.data.data || []);
+
+      // Temporarily set empty array until backend endpoint is implemented
+      setDeclarationHistory([]);
+      // Declaration history feature is temporarily disabled - backend endpoint not implemented
     } catch (err) {
+      console.error("Error fetching declaration history:", err);
       setDeclarationHistory([]);
     }
   };
 
   useEffect(() => {
     const fetchStudentsAndHistory = async () => {
+      if (!user?.id) return;
+
       try {
-        const token = localStorage.token;
-        const parentId = localStorage.userId;
+        const parentId = user.id;
         // Fetch students
-        const response = await axios.get(
-          `http://localhost:5182/api/Students/by-parent/${parentId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axiosInstance.get(`/Students/by-parent/${parentId}`);
         setStudents(Array.isArray(response.data.data) ? response.data.data : []);
         setLoading(false);
-        // Fetch declaration history
-        await fetchDeclarationHistory(parentId, token);
+        // Fetch declaration history (temporarily disabled - backend endpoint not implemented)
+        await fetchDeclarationHistory(parentId);
       } catch (err) {
+        console.error("Error fetching students and history:", err);
         setError(
-          err.response
-            ? `Lỗi ${err.response.status} : ${err.response.data.message || "Không thể tải danh sách học sinh. "}`
-            : "Không thể kết nối đến server."
+          err.response?.data?.message ||
+          err.response?.statusText ||
+          "Không thể tải danh sách học sinh. Vui lòng thử lại sau."
         );
         setStudents([]);
         setLoading(false);
       }
     };
     fetchStudentsAndHistory();
-  }, []);
+  }, [user?.id]);
 
   // Xử lý khi chọn học sinh từ dropdown
   const handleStudentChange = (e) => {
@@ -161,41 +157,37 @@ const HealthDeclaration = () => {
     };
 
     try {
-      const token = localStorage.token;
-      const parentId = localStorage.userId;
-      await axios.post(
-        "http://localhost:5182/api/StudentProfile/declare",
-        dataToSubmit,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success("Khai báo y tế thành công!");
+      const response = await axiosInstance.post("/StudentProfile/declare", dataToSubmit);
 
-      // Reset form
-      setFormData({
-        studentId: "",
-        studentName: "",
-        class: "",
-        allergys: "",
-        chronicIllnesss: "",
-        longTermMedications: "",
-        otherMedicalConditions: "",
-      });
-      setSelectedStudent(null);
+      if (response.data.success) {
+        toast.success("Khai báo y tế thành công!");
 
-      // Cập nhật lại lịch sử
-      await fetchDeclarationHistory(parentId, token);
+        // Reset form
+        setFormData({
+          studentId: "",
+          studentName: "",
+          class: "",
+          allergys: "",
+          chronicIllnesss: "",
+          longTermMedications: "",
+          otherMedicalConditions: "",
+        });
+        setSelectedStudent(null);
 
-      // Chuyển sang tab lịch sử
-      setActiveTab('history');
+        // Cập nhật lại lịch sử
+        await fetchDeclarationHistory(user.id);
+
+        // Chuyển sang tab lịch sử
+        setActiveTab('history');
+      } else {
+        toast.error(response.data.message || "Không thể gửi khai báo.");
+      }
     } catch (err) {
+      console.error("Error submitting health declaration:", err);
       toast.error(
-        err.response
-          ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể gửi khai báo."}`
-          : "Không thể kết nối đến server."
+        err.response?.data?.message ||
+        err.response?.statusText ||
+        "Không thể kết nối đến server."
       );
     } finally {
       setSubmitLoading(false);
@@ -430,9 +422,9 @@ const HealthDeclaration = () => {
                     {declarationHistory.length === 0 ? (
                       <div className="health-empty-state animate-fade-in-up">
                         <FaClipboardList size={64} className="health-empty-icon animate-bounce" />
-                        <h4 className="health-empty-title animate-fade-in-up delay-200">Chưa có lịch sử khai báo</h4>
+                        <h4 className="health-empty-title animate-fade-in-up delay-200">Tính năng đang phát triển</h4>
                         <p className="health-empty-description animate-fade-in-up delay-300">
-                          Bạn chưa thực hiện khai báo y tế nào. Hãy chuyển sang tab "Khai báo mới" để bắt đầu.
+                          Tính năng xem lịch sử khai báo y tế hiện đang được phát triển. Vui lòng quay lại sau hoặc liên hệ với nhà trường để được hỗ trợ.
                         </p>
                       </div>
                     ) : (

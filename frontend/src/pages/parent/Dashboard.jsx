@@ -57,7 +57,6 @@ const ParentDashboard = () => {
         setLoading(false);
         setTimeout(() => setAnimateStats(true), 500);
       } catch (err) {
-        console.error("API error:", err.response ? err.response : err);
         setError(
           err.response
             ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."}`

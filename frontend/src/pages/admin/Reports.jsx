@@ -133,7 +133,6 @@ const Reports = () => {
   };
 
   const handleSave = () => {
-    console.log("Saving report:", form);
     setShowEditModal(false);
   };
 

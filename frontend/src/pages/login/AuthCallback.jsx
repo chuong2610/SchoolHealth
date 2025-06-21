@@ -14,8 +14,6 @@ function AuthCallback() {
 
     useEffect(() => {
         const handleGoogleCallback = async () => {
-            console.log('🔗 Handling Google OAuth callback...');
-
             const params = new URLSearchParams(window.location.search);
             const code = params.get('code');
             const error_param = params.get('error');
@@ -36,8 +34,6 @@ function AuthCallback() {
             }
 
             try {
-                console.log('🔐 Exchanging code for token...');
-
                 const response = await axiosInstance.post('/auth/login-google', {
                     code: code,
                     redirectUri: GOOGLE_REDIRECT_URI
@@ -49,17 +45,11 @@ function AuthCallback() {
                     throw new Error(message || 'Đăng nhập thất bại!');
                 }
 
-                console.log('✅ Google login successful:', {
-                    userId: data.userId,
-                    role: data.roleName
-                });
-
                 // Đăng nhập với token nhận được
-                await login(data.token, data.roleName, Number(data.userId));
+                await login(data.token, data.roleName, Number(data.userId), data.email || '');
 
                 // Redirect đến dashboard của role tương ứng
                 const targetPath = `/${data.roleName.toLowerCase()}`;
-                console.log('🎯 Redirecting to:', targetPath);
                 navigate(targetPath, { replace: true });
 
             } catch (err) {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import axiosInstance from "../../api/axiosInstance";
 import { Modal, Button, Form, Table, Badge, Alert, Tabs, Tab } from "react-bootstrap";
 import {
   FaCheckCircle,
@@ -154,11 +155,8 @@ const ReceiveMedicine = () => {
   // Fetch danh sách đơn thuốc chờ xác nhận
   const fetchPending = async () => {
     try {
-      const res = await fetch("http://localhost:5182/api/Medication/pending");
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
+      const res = await axiosInstance.get("/Medication/pending");
+      const data = res.data;
       setPendingRequests((data.data || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
@@ -174,8 +172,7 @@ const ReceiveMedicine = () => {
         };
       }));
     } catch (error) {
-      console.error("Error fetching pending requests:", error);
-      showNotification("Không thể tải đơn thuốc chờ xác nhận!", "error");
+      showNotification("Failed to load pending medication requests!", "error");
     }
   };
 
@@ -183,11 +180,8 @@ const ReceiveMedicine = () => {
   const fetchActive = async () => {
     if (!nurseId) return;
     try {
-      const res = await fetch(`http://localhost:5182/api/Medication/nurse/${nurseId}/Active`);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
+      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Active`);
+      const data = res.data;
       setActiveRequests((data.data || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
@@ -201,8 +195,7 @@ const ReceiveMedicine = () => {
         };
       }));
     } catch (error) {
-      console.error("Error fetching active requests:", error);
-      showNotification("Không thể tải đơn thuốc đang sử dụng!", "error");
+      showNotification("Failed to load active medication requests!", "error");
     }
   };
 
@@ -210,11 +203,8 @@ const ReceiveMedicine = () => {
   const fetchCompleted = async () => {
     if (!nurseId) return;
     try {
-      const res = await fetch(`http://localhost:5182/api/Medication/nurse/${nurseId}/Completed`);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
+      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Completed`);
+      const data = res.data;
       setCompletedRequests((data.data || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
@@ -228,8 +218,7 @@ const ReceiveMedicine = () => {
         };
       }));
     } catch (error) {
-      console.error("Error fetching completed requests:", error);
-      showNotification("Không thể tải đơn thuốc đã hoàn thành!", "error");
+      showNotification("Failed to load completed medication requests!", "error");
     }
   };
 
@@ -239,7 +228,6 @@ const ReceiveMedicine = () => {
       try {
         await Promise.all([fetchPending(), fetchActive(), fetchCompleted()]);
       } catch (error) {
-        console.error("Error loading data:", error);
         showNotification("Có lỗi khi tải dữ liệu!", "error");
       } finally {
         setLoading(false);
@@ -335,12 +323,7 @@ const ReceiveMedicine = () => {
       body = { ...body, status: nextStatus, completedDate: now };
     }
     try {
-      const response = await fetch("http://localhost:5182/api/Medication", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) throw new Error("Cập nhật trạng thái thất bại!");
+      const response = await axiosInstance.patch("/Medication", body);
 
       await fetchPending();
       await fetchActive();
@@ -348,12 +331,12 @@ const ReceiveMedicine = () => {
 
       showNotification(
         type === "pending"
-          ? "Đã xác nhận nhận thuốc thành công!"
-          : "Đã hoàn thành việc cho thuốc thành công!",
+          ? "Successfully confirmed medication receipt!"
+          : "Successfully completed medication administration!",
         "success"
       );
     } catch (error) {
-      showNotification(error.message || "Có lỗi xảy ra khi xác nhận!", "error");
+      showNotification(error.message || "An error occurred during confirmation!", "error");
     }
   };
 
@@ -370,7 +353,6 @@ const ReceiveMedicine = () => {
       setPendingRequests((prev) => prev.filter((r) => r.id !== req.id));
       showNotification("Đã từ chối đơn thuốc!", "warning");
     } catch (error) {
-      console.error("Error rejecting medication:", error);
       showNotification("Có lỗi khi từ chối đơn thuốc!", "error");
     }
   };
@@ -412,16 +394,11 @@ const ReceiveMedicine = () => {
     setDetailLoading(true);
     setDetailData(null);
     try {
-      const res = await fetch(`http://localhost:5182/api/Medication/${id}`);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
-      setDetailData(data.data);
+      const res = await axiosInstance.get(`/Medication/${id}`);
+      setDetailData(res.data.data);
     } catch (error) {
-      console.error("Error fetching medication detail:", error);
       setDetailData(null);
-      showNotification("Không thể tải chi tiết đơn thuốc!", "error");
+      showNotification("Failed to load medication details!", "error");
     } finally {
       setDetailLoading(false);
     }

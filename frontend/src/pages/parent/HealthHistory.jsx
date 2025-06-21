@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import axiosInstance from "../../api/axiosInstance";
 import {
   Container,
   Row,
@@ -77,24 +77,21 @@ const HealthHistory = () => {
     setError("");
     let url = "";
     if (activeTab === "checkup" || activeTab === "chart") {
-      url = `http://localhost:5182/api/HealthCheck/parent/${parentId}`;
+      url = `/HealthCheck/parent/${parentId}`;
     } else if (activeTab === "vaccination") {
-      url = `http://localhost:5182/api/Vaccination/parent/${parentId}`;
+      url = `/Vaccination/parent/${parentId}`;
     } else if (activeTab === "medication") {
-      url = `http://localhost:5182/api/Medication/parent/${parentId}`;
+      url = `/Medication/parent/${parentId}`;
     }
 
     if (!url) return;
 
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axiosInstance.get(url);
         setData(response.data.data || []);
       } catch (err) {
-        setError("Không thể tải dữ liệu!");
+        setError("Failed to load data!");
       } finally {
         setLoading(false);
       }
@@ -110,22 +107,19 @@ const HealthHistory = () => {
     setDetail(null);
 
     let url = "";
-    if (type === "checkup") url = `http://localhost:5182/api/HealthCheck/${id}`;
-    else if (type === "vaccination") url = `http://localhost:5182/api/Vaccination/${id}`;
-    else if (type === "medicine") url = `http://localhost:5182/api/MedicineUsage/${id}`;
+    if (type === "checkup") url = `/HealthCheck/${id}`;
+    else if (type === "vaccination") url = `/Vaccination/${id}`;
+    else if (type === "medicine") url = `/Medication/${id}`;
 
     try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axiosInstance.get(url);
       if (res.data.success) {
         setDetail(res.data.data);
       } else {
-        setErrorDetail("Không lấy được chi tiết");
+        setErrorDetail("Could not get details");
       }
     } catch (err) {
-      setErrorDetail("Lỗi khi lấy chi tiết");
+      setErrorDetail("Error fetching details");
     } finally {
       setLoadingDetail(false);
     }
@@ -137,9 +131,8 @@ const HealthHistory = () => {
     setLoadingMedicationDetail(true);
     setMedicationDetail(null);
     try {
-      const res = await fetch(`http://localhost:5182/api/Medication/${id}`);
-      const data = await res.json();
-      setMedicationDetail(data.data);
+      const res = await axiosInstance.get(`/Medication/${id}`);
+      setMedicationDetail(res.data.data);
     } catch (e) {
       setMedicationDetail(null);
     } finally {
@@ -179,13 +172,31 @@ const HealthHistory = () => {
   const filteredData = data.filter(item => {
     if (!searchTerm) return true;
     const searchLower = searchTerm.toLowerCase();
-    return (
-      item.studentName?.toLowerCase().includes(searchLower) ||
-      item.nurseName?.toLowerCase().includes(searchLower) ||
-      item.conclusion?.toLowerCase().includes(searchLower) ||
-      item.vaccineName?.toLowerCase().includes(searchLower) ||
-      item.location?.toLowerCase().includes(searchLower)
-    );
+
+    // Common fields
+    if (item.studentName?.toLowerCase().includes(searchLower) ||
+      item.nurseName?.toLowerCase().includes(searchLower)) {
+      return true;
+    }
+
+    // Tab-specific fields
+    if (activeTab === "checkup" || activeTab === "chart") {
+      return item.conclusion?.toLowerCase().includes(searchLower);
+    } else if (activeTab === "vaccination") {
+      return (
+        item.vaccineName?.toLowerCase().includes(searchLower) ||
+        item.location?.toLowerCase().includes(searchLower)
+      );
+    } else if (activeTab === "medication") {
+      return (
+        item.status?.toLowerCase().includes(searchLower) ||
+        item.medications?.some(med =>
+          med.medicationName?.toLowerCase().includes(searchLower)
+        )
+      );
+    }
+
+    return false;
   });
 
   const totalPages = Math.ceil(filteredData.length / pageSize);
@@ -236,11 +247,11 @@ const HealthHistory = () => {
               <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #34d399)' }}>
                 <FaPills />
               </div>
-              <div className="parent-stat-value">{data.filter(item => item.medications).length}</div>
+              <div className="parent-stat-value">{data.filter(item => item.medications && item.medications.length > 0).length}</div>
               <div className="parent-stat-label">Lượt gửi thuốc</div>
             </div>
           </Col>
-          <Col md={3} className="mb-3">
+          {/* <Col md={3} className="mb-3">
             <div className="parent-stat-card">
               <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
                 <FaChartBar />
@@ -248,7 +259,7 @@ const HealthHistory = () => {
               <div className="parent-stat-value">{filteredData.length}</div>
               <div className="parent-stat-label">Kết quả lọc</div>
             </div>
-          </Col>
+          </Col> */}
         </Row>
 
         {/* Main Content */}
@@ -423,7 +434,11 @@ const HealthHistory = () => {
                         <div>
                           {data.length > 0 ? (
                             <Bar
-                              data={data}
+                              data={data.map(item => ({
+                                ...item,
+                                date: new Date(item.date).toLocaleDateString("vi-VN"),
+                                height: Number(item.height)
+                              }))}
                               xField="date"
                               yField="height"
                               seriesField="studentName"
@@ -633,7 +648,9 @@ const HealthHistory = () => {
 
                                 {activeTab === "vaccination" && (
                                   <>
-                                    <td className="text-center">{item.date}</td>
+                                    <td className="text-center">
+                                      {item.date ? new Date(item.date).toLocaleDateString("vi-VN") : "-"}
+                                    </td>
                                     <td className="text-center">{item.studentName}</td>
                                     <td className="text-center">{item.vaccineName}</td>
                                     <td className="text-center">{item.location}</td>
@@ -673,7 +690,7 @@ const HealthHistory = () => {
                                       ))}
                                     </td>
                                     <td className="text-center">
-                                      {item.createdDate ? item.createdDate.split("T")[0] : "-"}
+                                      {item.createdDate ? new Date(item.createdDate).toLocaleDateString("vi-VN") : "-"}
                                     </td>
                                     <td className="text-center">
                                       <Badge className={getStatusClass(item.status)}>

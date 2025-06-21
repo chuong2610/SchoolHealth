@@ -52,12 +52,10 @@ const Profile = () => {
   };
 
   const handleSaveProfile = () => {
-    console.log("Saving profile:", formData);
     setShowEditModal(false);
   };
 
   const handleChangePassword = () => {
-    console.log("Changing password");
     setShowPasswordModal(false);
   };
 

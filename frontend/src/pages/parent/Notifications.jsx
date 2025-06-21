@@ -35,10 +35,13 @@ import {
   FaEye,
   FaCheck
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 import { sendConsentApi } from "../../api/parent/sendConsentApi";
 import {
   getNotificationDetailById,
   getNotifications,
+  getHealthCheckNotifications,
+  getVaccinationNotifications,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
 // Styles được import từ main.jsx
@@ -89,6 +92,7 @@ function getStatusClass(status) {
 }
 
 export default function Notifications() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,16 +106,37 @@ export default function Notifications() {
   const [page, setPage] = useState(1);
   const pageSize = 6;
 
-  // Fetch notifications
-  const fetchNotifications = async () => {
+  // Fetch notifications based on active tab
+  const fetchNotifications = async (tabType = activeTab) => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await getNotifications();
-      const sortedNotifications = res.sort(
+      let res;
+      switch (tabType) {
+        case "HealthCheck":
+          res = await getHealthCheckNotifications(user.id);
+          break;
+        case "Vaccination":
+          res = await getVaccinationNotifications(user.id);
+          break;
+        case "all":
+        default:
+          res = await getNotifications(user.id);
+          break;
+      }
+
+      // Ensure res is an array and sort by creation date
+      const notifications = Array.isArray(res) ? res : [];
+      const sortedNotifications = notifications.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       setNotifications(sortedNotifications);
     } catch (error) {
+      console.error("Error fetching notifications:", error);
       setNotifications([]);
     } finally {
       setLoading(false);
@@ -119,18 +144,17 @@ export default function Notifications() {
   };
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications(activeTab);
+  }, [user?.id, activeTab]);
 
-  // Filtered notifications
+  // Filtered notifications (already filtered by backend, only need search filter)
   const uniqueNotifications = Array.from(
     new Map(notifications.map(n => [n.id, n])).values()
   );
   const filtered = uniqueNotifications.filter(
     (n) =>
-      (activeTab === "all" || n.type === activeTab) &&
-      (n.title?.toLowerCase().includes(search.toLowerCase()) ||
-        n.message?.toLowerCase().includes(search.toLowerCase()))
+      n.title?.toLowerCase().includes(search.toLowerCase()) ||
+      n.message?.toLowerCase().includes(search.toLowerCase())
   );
   const totalPage = Math.ceil(filtered.length / pageSize);
   const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -145,12 +169,19 @@ export default function Notifications() {
 
   // Modal logic
   const openModal = async (notificationId, studentId) => {
-    const data = { notificationId, studentId };
-    const detail = await getNotificationDetailById(data);
-    setReason("");
-    setModal({ show: true, notification: { ...detail }, consent: false });
+    try {
+      const data = { notificationId, studentId };
+      const detail = await getNotificationDetailById(data);
+      setReason("");
+      setModal({ show: true, notification: { ...detail }, consent: false });
+    } catch (error) {
+      console.error("Error fetching notification detail:", error);
+      setModal({ show: false, notification: null, consent: false });
+    }
   };
+
   const closeModal = () => setModal({ ...modal, show: false });
+
   const handleSubmitConsent = async (consent, status, reason) => {
     const data = {
       notificationId: modal.notification.id,
@@ -160,9 +191,11 @@ export default function Notifications() {
     };
     try {
       await sendConsentApi(data);
-      fetchNotifications();
+      await fetchNotifications(); // Refresh notifications after consent
       closeModal();
-    } catch (error) { }
+    } catch (error) {
+      console.error("Error sending consent:", error);
+    }
   };
 
   return (

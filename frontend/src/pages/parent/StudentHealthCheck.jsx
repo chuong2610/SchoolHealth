@@ -1,7 +1,7 @@
 // StudentHealthCheck.jsx - Lịch sử khám sức khỏe của học sinh
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import axiosInstance from "../../api/axiosInstance";
 import { Table, Card, Alert, Spin, Button, Badge, Space, Typography } from "antd";
 import { FaEye, FaStethoscope, FaSyringe, FaPills, FaHeartbeat, FaUserMd } from "react-icons/fa";
 import { Container, Row, Col } from 'react-bootstrap';
@@ -27,19 +27,16 @@ const StudentHealthCheck = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const token = localStorage.getItem('token');
                 if (!parentId) throw new Error('Không tìm thấy parentId');
                 // Gửi request GET tới API lấy lịch sử khám sức khỏe của học sinh
-                const res = await axios.get(`http://localhost:5182/api/HealthCheck/parent/${parentId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const res = await axiosInstance.get(`/api/HealthCheck/parent/${parentId}`);
                 if (res.data.success) {
                     setData(res.data.data); // Lưu dữ liệu vào state
                 } else {
                     setError("Không lấy được dữ liệu");
                 }
             } catch (err) {
-                setError("Lỗi khi lấy dữ liệu");
+                setError("Failed to fetch health check data");
             } finally {
                 setLoading(false);
             }

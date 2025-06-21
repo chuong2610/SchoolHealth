@@ -10,6 +10,7 @@ import {
   Spinner
 } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 import {
   getStudentListByParentId,
   sendMedicineApi,
@@ -38,6 +39,7 @@ const defaultMedicine = {
 };
 
 const SendMedicine = () => {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
   const [medicines, setMedicines] = useState([{ ...defaultMedicine }]);
   const [validated, setValidated] = useState(false);
@@ -104,7 +106,6 @@ const SendMedicine = () => {
       };
 
       const res = await sendMedicineApi(data);
-      console.log("Server response: ", res);
 
       toast.success("Gửi thuốc thành công! Y tá sẽ xem xét và phản hồi sớm nhất.");
 
@@ -117,7 +118,6 @@ const SendMedicine = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       toast.error("Đã xảy ra lỗi khi gửi thuốc. Vui lòng thử lại!");
-      console.error("Gửi thuốc thất bại:", error);
     } finally {
       setSubmitLoading(false);
     }
@@ -126,19 +126,22 @@ const SendMedicine = () => {
   // Fetch student list when component mounts
   useEffect(() => {
     const fetchStudentList = async () => {
+      if (!user?.id) {
+        return;
+      }
+
       setLoading(true);
       try {
-        const res = await getStudentListByParentId();
+        const res = await getStudentListByParentId(user.id);
         setStudents(res || []);
       } catch (error) {
-        console.log("Lỗi fetchStudentList:", error);
         toast.error("Không thể tải danh sách học sinh!");
       } finally {
         setLoading(false);
       }
     };
     fetchStudentList();
-  }, []);
+  }, [user?.id]);
 
   const selectedStudent = students.find(student => student.id.toString() === selectedStudentId);
 

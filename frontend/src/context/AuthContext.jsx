@@ -12,50 +12,6 @@ export const AuthProvider = ({ children }) => {
     const location = useLocation();
 
     /**
-     * Hàm decode JWT token để lấy thông tin user
-     * @param {string} token
-     * @returns {Object|null}
-     */
-    const decodeToken = useCallback((token) => {
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            console.log('🔓 Decoded token payload:', payload);
-
-            return {
-                id: payload.sub,
-                email: payload.email,
-                role: payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]?.toLowerCase(),
-                exp: payload.exp // Token expiration time
-            };
-        } catch (e) {
-            console.error('❌ Failed to decode token:', e);
-            return null;
-        }
-    }, []);
-
-    /**
-     * Hàm kiểm tra token có còn hợp lệ không (chưa expired)
-     * @param {string} token
-     * @returns {boolean}
-     */
-    const isTokenValid = useCallback((token) => {
-        if (!token) return false;
-
-        const decoded = decodeToken(token);
-        if (!decoded) return false;
-
-        // Kiểm tra token có expired chưa (thêm buffer 30 giây)
-        const currentTime = Math.floor(Date.now() / 1000);
-        const isValid = decoded.exp > (currentTime + 30);
-
-        if (!isValid) {
-            console.warn('⏰ Token has expired');
-        }
-
-        return isValid;
-    }, [decodeToken]);
-
-    /**
      * Hàm chuyển hướng dựa vào role
      * @param {string} role
      */
@@ -64,8 +20,6 @@ export const AuthProvider = ({ children }) => {
 
         const normalizedRole = role.toLowerCase();
         const currentPath = location.pathname;
-
-        console.log('🔄 Redirecting based on role:', { role: normalizedRole, currentPath });
 
         // Chỉ redirect nếu đang ở /, /login, /unauthorized hoặc không đúng role path
         const shouldRedirect =
@@ -76,7 +30,6 @@ export const AuthProvider = ({ children }) => {
 
         if (shouldRedirect) {
             const targetPath = `/${normalizedRole}`;
-            console.log('🎯 Redirecting to:', targetPath);
             navigate(targetPath, { replace: true });
         }
     }, [navigate, location.pathname]);
@@ -86,48 +39,24 @@ export const AuthProvider = ({ children }) => {
      */
     useEffect(() => {
         const initializeAuth = async () => {
-            console.log('🔄 Initializing authentication...');
-
             try {
                 const token = localStorage.getItem('token');
                 const role = localStorage.getItem('role');
                 const userId = localStorage.getItem('userId');
+                const userEmail = localStorage.getItem('userEmail');
 
-                if (!token) {
-                    console.log('📝 No token found, user not authenticated');
+                if (!token || !hasValidToken()) {
                     setUser(null);
                     setLoading(false);
                     return;
                 }
 
-                // Kiểm tra token có hợp lệ không
-                if (!isTokenValid(token)) {
-                    console.warn('⚠️ Token is invalid or expired, clearing auth data');
-                    clearAuthToken();
-                    setUser(null);
-                    setLoading(false);
-                    return;
-                }
-
-                // Decode token để lấy thông tin user
-                const decodedUser = decodeToken(token);
-                if (!decodedUser) {
-                    console.error('❌ Failed to decode token, clearing auth data');
-                    clearAuthToken();
-                    setUser(null);
-                    setLoading(false);
-                    return;
-                }
-
-                // Tạo user object từ token và localStorage
+                // Tạo user object từ localStorage
                 const userData = {
-                    id: decodedUser.id || userId,
-                    email: decodedUser.email,
-                    role: decodedUser.role || role?.toLowerCase(),
-                    exp: decodedUser.exp
+                    id: userId,
+                    email: userEmail,
+                    role: role?.toLowerCase()
                 };
-
-                console.log('✅ Auth initialized successfully:', userData);
 
                 // Set auth token vào axios instance
                 setAuthToken(token);
@@ -149,47 +78,33 @@ export const AuthProvider = ({ children }) => {
     }, []); // Empty dependency array - chỉ chạy 1 lần khi mount
 
     /**
-     * Hàm đăng nhập: lưu token, decode user info và chuyển hướng
+     * Hàm đăng nhập: lưu token và user info
      * @param {string} token
      * @param {string} role
      * @param {number} userId
+     * @param {string} userEmail
      */
-    const login = useCallback(async (token, role, userId) => {
-        console.log('🔐 Logging in with:', { role, userId });
-
+    const login = useCallback(async (token, role, userId, userEmail = '') => {
         try {
-            // Validate token
-            if (!isTokenValid(token)) {
-                throw new Error('Invalid or expired token');
-            }
-
-            // Decode token
-            const decodedUser = decodeToken(token);
-            if (!decodedUser) {
-                throw new Error('Failed to decode token');
-            }
-
             const normalizedRole = role.toLowerCase();
 
             // Lưu vào localStorage
             localStorage.setItem('token', token);
             localStorage.setItem('role', normalizedRole);
             localStorage.setItem('userId', userId.toString());
+            localStorage.setItem('userEmail', userEmail);
 
             // Set token vào axios instance
             setAuthToken(token);
 
             // Create user object
             const userData = {
-                id: decodedUser.id || userId,
-                email: decodedUser.email,
-                role: normalizedRole,
-                exp: decodedUser.exp
+                id: userId,
+                email: userEmail,
+                role: normalizedRole
             };
 
             setUser(userData);
-
-            console.log('✅ Login successful:', userData);
 
             // Redirect based on role
             redirectBasedOnRole(normalizedRole);
@@ -200,22 +115,19 @@ export const AuthProvider = ({ children }) => {
             setUser(null);
             throw error;
         }
-    }, [isTokenValid, decodeToken, redirectBasedOnRole]);
+    }, [redirectBasedOnRole]);
 
     /**
      * Hàm đăng xuất: xóa tất cả auth data và chuyển về login
      */
     const logout = useCallback(() => {
-        console.log('🚪 Logging out...');
-
         // Clear all auth data
         clearAuthToken();
+        localStorage.removeItem('userEmail');
         setUser(null);
 
         // Redirect to login
         navigate('/login', { replace: true });
-
-        console.log('✅ Logout successful');
     }, [navigate]);
 
     /**
@@ -223,15 +135,8 @@ export const AuthProvider = ({ children }) => {
      * @returns {boolean}
      */
     const isAuthenticated = useCallback(() => {
-        const result = !!user && hasValidToken() && isTokenValid(localStorage.getItem('token'));
-        console.log('🔍 Checking authentication:', {
-            hasUser: !!user,
-            hasToken: hasValidToken(),
-            tokenValid: isTokenValid(localStorage.getItem('token')),
-            result
-        });
-        return result;
-    }, [user, isTokenValid]);
+        return !!user && hasValidToken();
+    }, [user]);
 
     /**
      * Lấy role của user hiện tại

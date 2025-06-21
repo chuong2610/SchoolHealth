@@ -99,7 +99,6 @@ const ParentDemo = () => {
     };
 
     const handleSaveForm = () => {
-        console.log('Saving form data:', formData);
         setShowModal(false);
         // Reset form
         setFormData({

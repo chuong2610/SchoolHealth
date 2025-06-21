@@ -19,15 +19,7 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Log request for debugging (chỉ trong development)
-    if (import.meta.env.VITE_DEBUG_MODE === 'true') {
-      console.log('🚀 API Request:', {
-        url: config.url,
-        method: config.method?.toUpperCase(),
-        headers: config.headers,
-        data: config.data
-      });
-    }
+    // Request logging disabled for security
 
     return config;
   },
@@ -40,15 +32,7 @@ axiosInstance.interceptors.request.use(
 // Response interceptor - Handle responses và errors
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Log successful response for debugging
-    if (import.meta.env.VITE_DEBUG_MODE === 'true') {
-      console.log('✅ API Response:', {
-        url: response.config.url,
-        status: response.status,
-        data: response.data
-      });
-    }
-
+    // Response logging disabled for security
     return response;
   },
   (error) => {

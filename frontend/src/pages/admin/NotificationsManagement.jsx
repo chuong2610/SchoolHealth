@@ -144,7 +144,6 @@ const NotificationsManagement = () => {
         setClassList([...res]);
       }
     } catch (error) {
-      console.log("Loi fetchClassList:", error);
       throw error;
     }
   };
@@ -156,13 +155,11 @@ const NotificationsManagement = () => {
         setNurseList([...res]);
       }
     } catch (error) {
-      console.log("Loi fetchNurseList:", error);
       throw error;
     }
   };
 
   useEffect(() => {
-    console.log(classList);
   }, [classList]);
 
   const handleSubmitModalAdd = async (e) => {
@@ -174,7 +171,6 @@ const NotificationsManagement = () => {
       return; // Dừng nếu form không hợp lệ
     }
     const notificationData = { ...modalAdd?.notification };
-    console.log(notificationData);
     try {
       const res = await postNotification(notificationData);
       toast.success("Tạo và gửi thông báo thành công");
@@ -196,7 +192,6 @@ const NotificationsManagement = () => {
       setValidated(false); // Reset validated state
     } catch (error) {
       toast.error("Tạo và gửi thông báo thất bại");
-      console.log("Loi handleSubmitModalAdd:", error);
       throw error;
     }
   };
@@ -214,7 +209,6 @@ const NotificationsManagement = () => {
       toast.success("Thêm tệp kết quả thành công");
       fetchNotificationDetail();
     } catch (error) {
-      console.log("Loi handleImport");
       toast.error("Thêm tệp kết quả thất bại");
     }
   };
@@ -225,7 +219,6 @@ const NotificationsManagement = () => {
       await exportExcelFile(notificationId);
       // toast.success("Lấy tệp mẫu thành công");
     } catch (error) {
-      console.log("Loi handleExport");
       toast.error("Lấy tệp mẫu thất bại");
     }
   };
@@ -233,18 +226,15 @@ const NotificationsManagement = () => {
   const fetchNotificationDetail = async (notificationId) => {
     try {
       const res = await getNotificationDetail(notificationId);
-      console.log("fetchNotificationDetail:", res);
 
       if (res) {
         setModalDetail({ notificationDetail: { ...res }, status: true });
       }
     } catch (error) {
-      console.log("Loi fetchNotificationDetail");
     }
   };
 
   useEffect(() => {
-    console.log(modalDetail);
   }, [modalDetail]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
@@ -260,12 +250,10 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      console.log("Loi fetchHealthCheckResultDetail:", error);
       throw error;
     }
   };
   useEffect(() => {
-    console.log(modalResultDetail);
   }, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
@@ -281,12 +269,10 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      console.log("Loi fetchVaccinationResultDetail:", error);
       throw error;
     }
   };
   useEffect(() => {
-    console.log(modalResultDetail);
   }, [modalResultDetail]);
 
   useEffect(() => {
@@ -297,7 +283,6 @@ const NotificationsManagement = () => {
           setNotifications([...res]);
         }
       } catch (error) {
-        console.log("Loi fetchNotification:", error);
         throw error;
       }
     };
@@ -305,7 +290,6 @@ const NotificationsManagement = () => {
     fetchNotification();
   }, [reload]);
   useEffect(() => {
-    console.log(notifications);
   }, [notifications]);
 
   return (

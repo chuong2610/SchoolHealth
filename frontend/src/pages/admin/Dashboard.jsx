@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../api/axiosInstance';
 import {
   FaUsers,
   FaUserGraduate,
@@ -17,7 +18,8 @@ import {
   FaCalendarAlt,
   FaChartBar,
   FaShieldAlt,
-  FaCog
+  FaCog,
+  FaSpinner
 } from 'react-icons/fa';
 import {
   LineChart,
@@ -42,120 +44,151 @@ import {
 const AdminDashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('7days');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState(null);
+
+  // Fetch admin dashboard data
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axiosInstance.get('/Home/admin');
+      setDashboardData(response.data.data);
+    } catch (err) {
+      setError('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Trigger load state
+    fetchDashboardData();
+    // Trigger load animation
     const timer = setTimeout(() => {
       setIsLoaded(true);
     }, 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Enhanced stats data with better structure
-  const statsData = [
+  // Enhanced stats data with real data from API
+  const statsData = dashboardData ? [
     {
       id: 1,
       title: 'Tổng số học sinh',
-      value: '2,847',
+      value: dashboardData.numberOfStudents?.toLocaleString() || '0',
       change: '+12.5%',
       isPositive: true,
       icon: FaUserGraduate,
       color: 'primary',
       description: 'Học sinh đang học',
-      trend: [2400, 2500, 2650, 2750, 2847]
+      trend: [2400, 2500, 2650, 2750, dashboardData.numberOfStudents || 0]
     },
     {
       id: 2,
       title: 'Tổng số phụ huynh',
-      value: '2,234',
+      value: dashboardData.numberOfParents?.toLocaleString() || '0',
       change: '+8.2%',
       isPositive: true,
       icon: FaUsers,
       color: 'success',
       description: 'Phụ huynh đã đăng ký',
-      trend: [2100, 2150, 2180, 2200, 2234]
+      trend: [2100, 2150, 2180, 2200, dashboardData.numberOfParents || 0]
     },
     {
       id: 3,
       title: 'Tổng số y tá',
-      value: '87',
+      value: dashboardData.numberOfNurses?.toLocaleString() || '0',
       change: '+2.1%',
       isPositive: true,
       icon: FaUserMd,
       color: 'info',
       description: 'Y tá đã đăng ký',
-      trend: [82, 84, 85, 86, 87]
+      trend: [82, 84, 85, 86, dashboardData.numberOfNurses || 0]
     },
     {
       id: 4,
-        title: 'Tổng số học sinh bị bệnh',
-      value: '143',
+      title: 'Đơn thuốc chờ xử lý',
+      value: dashboardData.pendingMedicationsNumber?.toLocaleString() || '0',
       change: '-5.2%',
       isPositive: false,
-      icon: FaShieldAlt,
+      icon: FaPills,
       color: 'warning',
-      description: 'Học sinh đang bị bệnh',
-      trend: [180, 165, 155, 150, 143]
+      description: 'Đơn thuốc chờ xác nhận',
+      trend: [180, 165, 155, 150, dashboardData.pendingMedicationsNumber || 0]
     }
-  ];
+  ] : [];
 
-  const chartData = [
-    { month: 'Tháng 1', students: 2400, health_checks: 890, medicines: 245 },
-    { month: 'Tháng 2', students: 2210, health_checks: 920, medicines: 280 },
-    { month: 'Tháng 3', students: 2290, health_checks: 1100, medicines: 320 },
-    { month: 'Tháng 4', students: 2000, health_checks: 980, medicines: 290 },
-    { month: 'Tháng 5', students: 2181, health_checks: 1200, medicines: 350 },
-    { month: 'Tháng 6', students: 2500, health_checks: 1350, medicines: 380 },
-    { month: 'Tháng 7', students: 2847, health_checks: 1580, medicines: 420 }
-  ];
+  // Convert weekly medical event counts to chart data
+  const chartData = dashboardData?.weeklyMedicalEventCounts
+    ? Object.entries(dashboardData.weeklyMedicalEventCounts).map(([day, count]) => ({
+      day,
+      medical_events: count,
+      medicines: dashboardData.activeMedicationsNumber || 0,
+      health_checks: Math.floor(count * 1.5) // Estimated based on medical events
+    }))
+    : [
+      { day: 'Monday', medical_events: 45, medicines: 12, health_checks: 67 },
+      { day: 'Tuesday', medical_events: 52, medicines: 18, health_checks: 78 },
+      { day: 'Wednesday', medical_events: 38, medicines: 15, health_checks: 57 },
+      { day: 'Thursday', medical_events: 61, medicines: 22, health_checks: 91 },
+      { day: 'Friday', medical_events: 49, medicines: 16, health_checks: 73 },
+      { day: 'Saturday', medical_events: 23, medicines: 8, health_checks: 34 },
+      { day: 'Sunday', medical_events: 18, medicines: 5, health_checks: 27 }
+    ];
 
-  const healthStatusData = [
-    { name: 'Khỏe mạnh', value: 2156, color: '#4CAF50', percentage: 75.7 },
-    { name: 'Vắng mặt', value: 521, color: '#FF9800', percentage: 18.3 },
-    { name: 'Đang điều trị', value: 143, color: '#F44336', percentage: 5.0 },
-    { name: 'Nghi ngờ', value: 27, color: '#9C27B0', percentage: 1.0 }
-  ];
-
-  const recentActivities = [
+  // Calculate medication status data from real API data
+  const medicationStatusData = dashboardData ? [
     {
-      id: 1,
-      title: 'Kiểm tra sức khỏe hoàn thành',
-      description: 'Lớp 10A - 28 học sinh đã được kiểm tra',
-      time: '2 minutes ago',
+      name: 'Chờ xử lý',
+      value: dashboardData.pendingMedicationsNumber || 0,
+      color: '#FF9800',
+      percentage: dashboardData.pendingMedicationsNumber ? ((dashboardData.pendingMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
+    },
+    {
+      name: 'Đang xử lý',
+      value: dashboardData.activeMedicationsNumber || 0,
+      color: '#2196F3',
+      percentage: dashboardData.activeMedicationsNumber ? ((dashboardData.activeMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
+    },
+    {
+      name: 'Hoàn thành',
+      value: dashboardData.completedMedicationsNumber || 0,
+      color: '#4CAF50',
+      percentage: dashboardData.completedMedicationsNumber ? ((dashboardData.completedMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
+    }
+  ] : [
+    { name: 'Chờ xử lý', value: 0, color: '#FF9800', percentage: 0 },
+    { name: 'Đang xử lý', value: 0, color: '#2196F3', percentage: 0 },
+    { name: 'Hoàn thành', value: 0, color: '#4CAF50', percentage: 0 }
+  ];
+
+  // Generate recent activities from real data
+  const recentActivities = dashboardData ? [
+    ...dashboardData.medicalEvents?.slice(0, 3).map((event, index) => ({
+      id: index + 1,
+      title: 'Sự kiện y tế mới',
+      description: event.description || `Sự kiện y tế cho ${event.studentName || 'học sinh'}`,
+      time: new Date(event.eventDate).toLocaleDateString('vi-VN'),
       icon: FaHeartbeat,
       type: 'success'
-    },
-    {
-      id: 2,
-      title: 'Yêu cầu thuốc được phê duyệt',
-      description: 'Paracetamol cho Nguyễn Văn A',
-      time: '5 minutes ago',
+    })) || [],
+    ...dashboardData.medications?.slice(0, 2).map((medication, index) => ({
+      id: index + 4,
+      title: 'Đơn thuốc mới',
+      description: `${medication.medicationName || 'Thuốc'} - ${medication.status || 'Chờ xử lý'}`,
+      time: new Date(medication.createdDate).toLocaleDateString('vi-VN'),
       icon: FaPills,
       type: 'info'
-    },
+    })) || []
+  ].slice(0, 5) : [
     {
-      id: 3,
-      title: 'Đăng ký phụ huynh mới',
-      description: 'Bà Trần Thị B đã đăng ký thành công',
-      time: '12 minutes ago',
-      icon: FaUsers,
-      type: 'primary'
-    },
-    {
-      id: 4,
-      title: 'Cảnh báo hệ thống',
-      description: 'Tồn kho thuốc thấp đã được phát hiện',
-      time: '30 minutes ago',
-      icon: FaBell,
-      type: 'warning'
-    },
-    {
-      id: 5,
-      title: 'Báo cáo tháng được tạo',
-      description: 'Thống kê sức khỏe cho tháng 6 2024',
-      time: '1 hour ago',
-      icon: FaFileAlt,
-      type: 'success'
+      id: 1,
+      title: 'Đang tải dữ liệu...',
+      description: 'Vui lòng chờ trong giây lát',
+      time: 'Just now',
+      icon: FaSpinner,
+      type: 'info'
     }
   ];
 
@@ -234,6 +267,48 @@ const AdminDashboard = () => {
     return colors[color] || colors.blue;
   };
 
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="admin-container">
+        <div className="admin-page-header">
+          <div className="row align-items-center">
+            <div className="col-lg-12 text-center">
+              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+                <div className="text-center">
+                  <FaSpinner className="fa-spin mb-3" size={48} style={{ color: '#FF9500' }} />
+                  <h4>Đang tải dữ liệu dashboard...</h4>
+                  <p className="text-muted">Vui lòng chờ trong giây lát</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="admin-container">
+        <div className="admin-page-header">
+          <div className="row align-items-center">
+            <div className="col-lg-12 text-center">
+              <div className="alert alert-danger">
+                <h4>Lỗi tải dữ liệu</h4>
+                <p>{error}</p>
+                <button className="btn btn-primary" onClick={fetchDashboardData}>
+                  Thử lại
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="admin-container">
       {/* Enhanced Header */}
@@ -265,7 +340,7 @@ const AdminDashboard = () => {
                 <option value="90days">3 tháng qua</option>
                 <option value="year">Năm nay</option>
               </select>
-              
+
             </div>
           </div>
         </div>
@@ -331,8 +406,8 @@ const AdminDashboard = () => {
               <div className="admin-card-body">
                 <div className="mb-3">
                   <div className="btn-group" role="group">
-                    <input type="radio" className="btn-check" name="chartType" id="students" defaultChecked />
-                    <label className="btn btn-outline-primary btn-sm" htmlFor="students">Học sinh</label>
+                    <input type="radio" className="btn-check" name="chartType" id="medical_events" defaultChecked />
+                    <label className="btn btn-outline-primary btn-sm" htmlFor="medical_events">Sự kiện y tế</label>
 
                     <input type="radio" className="btn-check" name="chartType" id="health" />
                     <label className="btn btn-outline-primary btn-sm" htmlFor="health">Kiểm tra sức khỏe</label>
@@ -345,7 +420,7 @@ const AdminDashboard = () => {
                 <ResponsiveContainer width="100%" height={350}>
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="studentsGradient" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="medicalEventsGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#FF9500" stopOpacity={0.3} />
                         <stop offset="95%" stopColor="#FF9500" stopOpacity={0} />
                       </linearGradient>
@@ -359,7 +434,7 @@ const AdminDashboard = () => {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                    <XAxis dataKey="month" stroke="#757575" fontSize={12} />
+                    <XAxis dataKey="day" stroke="#757575" fontSize={12} />
                     <YAxis stroke="#757575" fontSize={12} />
                     <Tooltip
                       contentStyle={{
@@ -372,11 +447,12 @@ const AdminDashboard = () => {
                     />
                     <Area
                       type="monotone"
-                      dataKey="students"
+                      dataKey="medical_events"
                       stroke="#FF9500"
                       strokeWidth={3}
                       fillOpacity={1}
-                      fill="url(#studentsGradient)"
+                      fill="url(#medicalEventsGradient)"
+                      name="Sự kiện y tế"
                     />
                     <Area
                       type="monotone"
@@ -385,6 +461,7 @@ const AdminDashboard = () => {
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#healthGradient)"
+                      name="Kiểm tra sức khỏe"
                     />
                     <Area
                       type="monotone"
@@ -393,6 +470,7 @@ const AdminDashboard = () => {
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#medicinesGradient)"
+                      name="Thuốc"
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -400,20 +478,20 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Health Status Pie Chart */}
+          {/* Medication Status Pie Chart */}
           <div className="col-lg-4">
             <div className="admin-card">
               <div className="admin-card-header">
                 <h4 className="admin-card-title">
-                  <FaHeartbeat />
-                  Tình trạng sức khỏe học sinh
+                  <FaPills />
+                  Trạng thái đơn thuốc
                 </h4>
               </div>
               <div className="admin-card-body">
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
                     <Pie
-                      data={healthStatusData}
+                      data={medicationStatusData}
                       cx="50%"
                       cy="50%"
                       innerRadius={40}
@@ -421,7 +499,7 @@ const AdminDashboard = () => {
                       paddingAngle={5}
                       dataKey="value"
                     >
-                      {healthStatusData.map((entry, index) => (
+                      {medicationStatusData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
@@ -438,7 +516,7 @@ const AdminDashboard = () => {
                 </ResponsiveContainer>
 
                 <div className="mt-3">
-                  {healthStatusData.map((item, index) => (
+                  {medicationStatusData.map((item, index) => (
                     <div key={index} className="d-flex justify-content-between align-items-center mb-2">
                       <div className="d-flex align-items-center">
                         <div

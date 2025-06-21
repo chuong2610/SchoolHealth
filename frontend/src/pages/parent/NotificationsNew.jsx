@@ -33,10 +33,13 @@ import {
     FaClipboardList,
     FaFilter
 } from "react-icons/fa";
+import { useAuth } from "../../context/AuthContext";
 import { sendConsentApi } from "../../api/parent/sendConsentApi";
 import {
     getNotificationDetailById,
     getNotifications,
+    getHealthCheckNotifications,
+    getVaccinationNotifications,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
 
@@ -64,6 +67,7 @@ const icons = {
 };
 
 export default function Notifications() {
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState("all");
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -77,11 +81,29 @@ export default function Notifications() {
     const [page, setPage] = useState(1);
     const pageSize = 8;
 
-    // Fetch notifications
-    const fetchNotifications = async () => {
+    // Fetch notifications based on active tab
+    const fetchNotifications = async (tabType = activeTab) => {
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         try {
-            const res = await getNotifications();
+            let res;
+            switch (tabType) {
+                case "HealthCheck":
+                    res = await getHealthCheckNotifications(user.id);
+                    break;
+                case "Vaccination":
+                    res = await getVaccinationNotifications(user.id);
+                    break;
+                case "all":
+                default:
+                    res = await getNotifications(user.id);
+                    break;
+            }
+
             const sortedNotifications = res.sort(
                 (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             );
@@ -94,18 +116,17 @@ export default function Notifications() {
     };
 
     useEffect(() => {
-        fetchNotifications();
-    }, []);
+        fetchNotifications(activeTab);
+    }, [user?.id, activeTab]);
 
-    // Filtered notifications
+    // Filtered notifications (already filtered by backend, only need search filter)
     const uniqueNotifications = Array.from(
         new Map(notifications.map(n => [n.id, n])).values()
     );
     const filtered = uniqueNotifications.filter(
         (n) =>
-            (activeTab === "all" || n.type === activeTab) &&
-            (n.title?.toLowerCase().includes(search.toLowerCase()) ||
-                n.message?.toLowerCase().includes(search.toLowerCase()))
+            n.title?.toLowerCase().includes(search.toLowerCase()) ||
+            n.message?.toLowerCase().includes(search.toLowerCase())
     );
     const totalPage = Math.ceil(filtered.length / pageSize);
     const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -132,7 +153,6 @@ export default function Notifications() {
             fetchNotifications();
             closeModal();
         } catch (error) {
-            console.error('Error submitting consent:', error);
         }
     };
 
