@@ -1,5 +1,5 @@
 import React from "react";
-import "./CustomTable.css";
+// Styles được import từ main.jsx
 
 const CustomTable = ({ columns, data }) => (
     <div className="custom-table-wrapper">

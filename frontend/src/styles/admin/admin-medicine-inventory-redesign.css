@@ -1,0 +1,538 @@
+﻿/* ========================================
+   ADMIN MEDICINE INVENTORY REDESIGN - ORANGE TO PURPLE GRADIENT
+   ======================================== */
+
+/* Container and Header */
+.admin-medicine-container {
+  background: linear-gradient(135deg, #FFF3E0 0%, #F3E5F5 100%) !important;
+  min-height: 100vh !important;
+  padding: 2rem !important;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.admin-medicine-header {
+  background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+  color: white !important;
+  padding: 2.5rem 2rem !important;
+  border-radius: 0 0 24px 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+}
+
+/* Stats Cards */
+.admin-medicine-stats {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 1.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.admin-medicine-stat-card {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 2rem !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+}
+
+.admin-medicine-stat-card::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+}
+
+.admin-medicine-stat-icon {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2) !important;
+}
+
+/* Medicine Table */
+.admin-medicine-table-container {
+  background: white !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  margin-bottom: 2rem !important;
+}
+
+.admin-medicine-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+  background: white !important;
+}
+
+.admin-medicine-table thead th {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  padding: 1.25rem 1rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border: none !important;
+  text-align: left !important;
+}
+
+.admin-medicine-table tbody td {
+  padding: 1.25rem 1rem !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  vertical-align: middle !important;
+  background: white !important;
+  transition: all 0.3s ease !important;
+  font-size: 0.95rem !important;
+}
+
+.admin-medicine-table tbody tr:hover td {
+  background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
+  transform: scale(1.005) !important;
+}
+
+/* Action Buttons */
+.admin-medicine-actions {
+  display: flex !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.admin-medicine-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s ease !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.admin-medicine-btn.view {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+}
+
+.admin-medicine-btn.edit {
+  background: linear-gradient(135deg, #2196F3, #42A5F5) !important;
+}
+
+.admin-medicine-btn.delete {
+  background: linear-gradient(135deg, #F44336, #EF5350) !important;
+}
+
+.admin-medicine-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Medicine Table Redesign */
+.medicine-table-wrapper {
+  background: white !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  margin-bottom: 2rem !important;
+}
+
+.medicine-table-header {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+}
+
+.medicine-table-row.header-row {
+  display: grid !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr 1fr 1fr 1fr !important;
+  padding: 1.25rem 1rem !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.medicine-table-body {
+  background: white !important;
+}
+
+.medicine-table-row.data-row {
+  display: grid !important;
+  grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr 1fr 1fr 1fr !important;
+  padding: 1.25rem 1rem !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  transition: all 0.3s ease !important;
+  align-items: center !important;
+}
+
+.medicine-table-row.data-row:hover {
+  background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
+  transform: scale(1.005) !important;
+}
+
+.medicine-info {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+.medicine-icon {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-size: 1.25rem !important;
+}
+
+.medicine-name {
+  font-weight: 600 !important;
+  color: #424242 !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.medicine-barcode {
+  color: #757575 !important;
+  font-size: 0.85rem !important;
+}
+
+.action-buttons {
+  display: flex !important;
+  gap: 0.5rem !important;
+  justify-content: center !important;
+}
+
+.action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.875rem !important;
+  transition: all 0.3s ease !important;
+  color: white !important;
+}
+
+.action-btn.view-btn {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+}
+
+.action-btn.edit-btn {
+  background: linear-gradient(135deg, #2196F3, #42A5F5) !important;
+}
+
+.action-btn.delete-btn {
+  background: linear-gradient(135deg, #F44336, #EF5350) !important;
+}
+
+.action-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Title and Search Components */
+.admin-medicine-title {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 0.5rem 0 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.admin-medicine-subtitle {
+  font-size: 1.1rem !important;
+  opacity: 0.9 !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* Stat Cards */
+.admin-medicine-stat-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+}
+
+.admin-medicine-stat-value {
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  color: #424242 !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.admin-medicine-stat-label {
+  font-size: 1rem !important;
+  color: #757575 !important;
+  margin: 0.5rem 0 0 0 !important;
+  font-weight: 500 !important;
+}
+
+/* Medicine Item Details */
+.admin-medicine-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+.admin-medicine-image {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2) !important;
+}
+
+.admin-medicine-info {
+  flex: 1 !important;
+}
+
+.admin-medicine-name {
+  font-weight: 600 !important;
+  color: #424242 !important;
+  margin: 0 0 0.25rem 0 !important;
+  font-size: 0.95rem !important;
+}
+
+.admin-medicine-type {
+  color: #757575 !important;
+  margin: 0 !important;
+  font-size: 0.85rem !important;
+}
+
+/* Stock Status Badges */
+.admin-stock-badge {
+  padding: 0.5rem 1rem !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+}
+
+.admin-stock-badge.in-stock {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3) !important;
+}
+
+.admin-stock-badge.low-stock {
+  background: linear-gradient(135deg, #FF9800, #FFB74D) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3) !important;
+}
+
+.admin-stock-badge.out-of-stock {
+  background: linear-gradient(135deg, #F44336, #EF5350) !important;
+  color: white !important;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* Search and Filter */
+.admin-medicine-search-bar {
+  background: white !important;
+  border-radius: 16px !important;
+  padding: 1.5rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
+  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  display: flex !important;
+  gap: 1rem !important;
+  align-items: center !important;
+}
+
+.admin-medicine-search-input {
+  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.95rem !important;
+  background: #FAFAFA !important;
+  transition: all 0.3s ease !important;
+  flex: 1 !important;
+}
+
+.admin-medicine-search-input:focus {
+  border-color: #FF9500 !important;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  background: white !important;
+  outline: none !important;
+}
+
+.admin-medicine-filter-btn {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  cursor: pointer !important;
+}
+
+.admin-medicine-filter-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.3) !important;
+  color: white !important;
+}
+
+/* Modal Styles */
+.admin-medicine-modal .modal-content {
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden !important;
+}
+
+.admin-medicine-modal .modal-header {
+  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  color: white !important;
+  border-bottom: none !important;
+  padding: 2rem !important;
+}
+
+.admin-medicine-modal .modal-title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.admin-medicine-modal .modal-body {
+  padding: 2rem !important;
+  background: white !important;
+}
+
+.admin-medicine-modal .modal-footer {
+  background: #FAFAFA !important;
+  border-top: 1px solid #E0E0E0 !important;
+  padding: 1.5rem 2rem !important;
+}
+
+/* Form Elements */
+.admin-medicine-form-group {
+  margin-bottom: 1.5rem !important;
+}
+
+.admin-medicine-form-label {
+  font-weight: 600 !important;
+  color: #424242 !important;
+  margin-bottom: 0.5rem !important;
+  font-size: 0.95rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.admin-medicine-form-control {
+  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 0.875rem 1rem !important;
+  font-size: 0.95rem !important;
+  background: #FAFAFA !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+}
+
+.admin-medicine-form-control:focus {
+  border-color: #FF9500 !important;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  background: white !important;
+  outline: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-medicine-container {
+    padding: 1rem !important;
+  }
+  
+  .admin-medicine-header {
+    padding: 2rem 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .admin-medicine-title {
+    font-size: 1.75rem !important;
+  }
+  
+  .admin-medicine-stats {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .admin-medicine-search-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .admin-medicine-actions {
+    flex-wrap: wrap !important;
+    gap: 0.375rem !important;
+  }
+  
+  .admin-medicine-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-medicine-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .admin-medicine-subtitle {
+    font-size: 1rem !important;
+  }
+  
+  .admin-medicine-stat-card {
+    padding: 1.5rem !important;
+  }
+  
+  .admin-medicine-table thead th,
+  .admin-medicine-table tbody td {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+}

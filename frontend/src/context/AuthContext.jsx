@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { setAuthToken, clearAuthToken, hasValidToken } from '../api/axiosInstance';
 
 const AuthContext = createContext(null);
 
@@ -11,118 +12,121 @@ export const AuthProvider = ({ children }) => {
     const location = useLocation();
 
     /**
-     * Hàm kiểm tra token hợp lệ (tạm thời chỉ kiểm tra tồn tại)
-     * @param {string} token
-     * @returns {Promise<boolean>}
-     */
-    const validateToken = useCallback(async (token) => {
-        console.log('Validating token:', token);
-        // TODO: Thay thế bằng gọi API thực sự nếu cần
-        return !!token;
-    }, []);
-
-    /**
      * Hàm chuyển hướng dựa vào role
      * @param {string} role
      */
     const redirectBasedOnRole = useCallback((role) => {
         if (!role) return;
+
         const normalizedRole = role.toLowerCase();
         const currentPath = location.pathname;
 
-        // Chỉ redirect nếu đang ở / hoặc /login hoặc /unauthorized
-        if (
+        // Chỉ redirect nếu đang ở /, /login, /unauthorized hoặc không đúng role path
+        const shouldRedirect =
             currentPath === '/' ||
             currentPath === '/login' ||
-            currentPath === '/unauthorized'
-        ) {
+            currentPath === '/unauthorized' ||
+            !currentPath.startsWith(`/${normalizedRole}`);
+
+        if (shouldRedirect) {
             const targetPath = `/${normalizedRole}`;
             navigate(targetPath, { replace: true });
         }
     }, [navigate, location.pathname]);
 
-
     /**
-     * useEffect tự động đăng nhập lại nếu đã có token và role trong localStorage
+     * useEffect tự động khôi phục session nếu có token hợp lệ
      */
     useEffect(() => {
         const initializeAuth = async () => {
             try {
                 const token = localStorage.getItem('token');
-                let role = localStorage.getItem('role');
-                let userId = localStorage.getItem('userId');
-                let user = null;
-                if (token) {
-                    try {
-                        const payload = JSON.parse(atob(token.split('.')[1]));
-                        console.log('Decoded token payload:', payload);
-                        user = {
-                            id: payload.sub,
-                            email: payload.email,
-                            role: payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]?.toLowerCase() || role,
-                        };
-                    } catch (e) {
-                        console.warn('Failed to decode token payload:', e);
-                    }
-                }
-                if (!user?.id && userId) user = { ...(user || {}), id: Number(userId), role };
-                if (user && user.id && user.role) {
-                    setUser(user);
-                    redirectBasedOnRole(user.role);
-                } else {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('role');
-                    localStorage.removeItem('userId');
+                const role = localStorage.getItem('role');
+                const userId = localStorage.getItem('userId');
+                const userEmail = localStorage.getItem('userEmail');
+
+                if (!token || !hasValidToken()) {
                     setUser(null);
+                    setLoading(false);
+                    return;
                 }
+
+                // Tạo user object từ localStorage
+                const userData = {
+                    id: userId,
+                    email: userEmail,
+                    role: role?.toLowerCase()
+                };
+
+                // Set auth token vào axios instance
+                setAuthToken(token);
+                setUser(userData);
+
+                // Redirect based on role
+                redirectBasedOnRole(userData.role);
+
             } catch (error) {
-                console.error('Auth initialization failed:', error);
-                localStorage.removeItem('token');
-                localStorage.removeItem('role');
-                localStorage.removeItem('userId');
+                console.error('❌ Auth initialization failed:', error);
+                clearAuthToken();
                 setUser(null);
             } finally {
                 setLoading(false);
             }
         };
+
         initializeAuth();
-    }, [validateToken, redirectBasedOnRole]);
+    }, []); // Empty dependency array - chỉ chạy 1 lần khi mount
 
     /**
-     * Hàm đăng nhập: lưu token, role (đã normalize), set user và chuyển hướng
+     * Hàm đăng nhập: lưu token và user info
      * @param {string} token
      * @param {string} role
+     * @param {number} userId
+     * @param {string} userEmail
      */
-    const login = useCallback(async (token, role, userId) => {
+    const login = useCallback(async (token, role, userId, userEmail = '') => {
         try {
-            const isValid = await validateToken(token);
             const normalizedRole = role.toLowerCase();
 
-            if (isValid) {
-                localStorage.setItem('token', token);
-                localStorage.setItem('role', normalizedRole);
-                localStorage.setItem('userId', userId); // 👈 Thêm dòng này
-                setUser({ role: normalizedRole, userId }); // 👈 Thêm userId vào user
-                redirectBasedOnRole(normalizedRole);
-            } else {
-                throw new Error('Invalid token');
-            }
+            // Lưu vào localStorage
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', normalizedRole);
+            localStorage.setItem('userId', userId.toString());
+            localStorage.setItem('userEmail', userEmail);
+
+            // Set token vào axios instance
+            setAuthToken(token);
+
+            // Create user object
+            const userData = {
+                id: userId,
+                email: userEmail,
+                role: normalizedRole
+            };
+
+            setUser(userData);
+
+            // Redirect based on role
+            redirectBasedOnRole(normalizedRole);
+
         } catch (error) {
-            console.error('Login failed:', error);
+            console.error('❌ Login failed:', error);
+            clearAuthToken();
+            setUser(null);
             throw error;
         }
-    }, [validateToken, redirectBasedOnRole]);
-
+    }, [redirectBasedOnRole]);
 
     /**
-     * Hàm đăng xuất: xóa token, role và chuyển về trang login
+     * Hàm đăng xuất: xóa tất cả auth data và chuyển về login
      */
     const logout = useCallback(() => {
-        console.log('Logging out');
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('userId');
+        // Clear all auth data
+        clearAuthToken();
+        localStorage.removeItem('userEmail');
         setUser(null);
+
+        // Redirect to login
         navigate('/login', { replace: true });
     }, [navigate]);
 
@@ -131,38 +135,52 @@ export const AuthProvider = ({ children }) => {
      * @returns {boolean}
      */
     const isAuthenticated = useCallback(() => {
-        const result = !!user;
-        console.log('Checking authentication:', { user, result });
-        return result;
+        return !!user && hasValidToken();
     }, [user]);
 
     /**
-     * Kiểm tra user có đúng role không
+     * Lấy role của user hiện tại
+     * @returns {string|null}
+     */
+    const getUserRole = useCallback(() => {
+        return user?.role || null;
+    }, [user]);
+
+    /**
+     * Lấy ID của user hiện tại
+     * @returns {string|number|null}
+     */
+    const getUserId = useCallback(() => {
+        return user?.id || null;
+    }, [user]);
+
+    /**
+     * Kiểm tra user có role cụ thể không
      * @param {string} role
      * @returns {boolean}
      */
     const hasRole = useCallback((role) => {
-        const result = user?.role === role.toLowerCase();
-        console.log('Checking role:', { userRole: user?.role, requestedRole: role, result });
-        return result;
+        return user?.role?.toLowerCase() === role.toLowerCase();
     }, [user]);
 
-    // Loading UI khi đang kiểm tra đăng nhập lại
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const contextValue = {
+        user,
+        loading,
+        login,
+        logout,
+        isAuthenticated,
+        getUserRole,
+        getUserId,
+        hasRole
+    };
 
-    // Cung cấp context cho toàn bộ app
     return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated, hasRole }}>
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-/**
- * Custom hook để sử dụng AuthContext
- */
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
