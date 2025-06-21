@@ -71,6 +71,11 @@ const Accounts = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Thêm state phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 2;
+  const [search, setSearch] = useState("");
 
   // Helper function để chuyển đổi giới tính từ tiếng Anh sang tiếng Việt
   const translateGender = (gender) => {
@@ -94,16 +99,16 @@ const Accounts = () => {
     let roleName = "";
     switch (activeTab) {
       case "student":
-        roleName = "student";
+        roleName = "Student";
         break;
       case "parent":
-        roleName = "parent";
+        roleName = "Parent";
         break;
       case "nurse":
-        roleName = "nurse";
+        roleName = "Nurse";
         break;
       case "admin":
-        roleName = "admin";
+        roleName = "Admin";
         break;
       default:
         roleName = "All";
@@ -111,9 +116,10 @@ const Accounts = () => {
     }
 
     try {
-      const response = await axiosInstance.get(`/User/role/${roleName}`);
+      const response = await axiosInstance.get(`/User/role/${roleName}?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`);
       if (response.data.success) {
-        setUsers(response.data.data || []);
+        setUsers(response.data.data.items || []);
+        setTotalPages(response.data.data.totalPages || 1);
       } else {
         setError(response.data.message || "Failed to fetch users.");
         setUsers([]);
@@ -128,9 +134,9 @@ const Accounts = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [activeTab]);
+  }, [activeTab, currentPage, search]);
 
-  const [search, setSearch] = useState("");
+  
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -153,9 +159,7 @@ const Accounts = () => {
   const [filterStatus, setFilterStatus] = useState("");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
-  // Thêm state phân trang
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 6;
+  
 
   // Lọc danh sách theo tìm kiếm, giới tính và trạng thái
   const filteredUsers = users.filter((user) => {
@@ -192,8 +196,8 @@ const Accounts = () => {
   };
 
   // Phân trang dựa trên kết quả đã lọc
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
+
+  const paginatedUsers = filteredUsers;
 
   // Reset trang về 1 khi search thay đổi
   useEffect(() => {
@@ -1027,7 +1031,9 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "student"}
-                onClick={() => setActiveTab("student")}
+                onClick={() => {setActiveTab("student");
+                  setCurrentPage(1);
+                }}
                 data-role="student"
                 className={activeTab === "student" ? "active" : ""}
               >
@@ -1037,7 +1043,9 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "parent"}
-                onClick={() => setActiveTab("parent")}
+                onClick={() => {setActiveTab("parent");
+                  setCurrentPage(1);
+                }}
                 data-role="parent"
                 className={activeTab === "parent" ? "active" : ""}
               >
@@ -1047,7 +1055,9 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "nurse"}
-                onClick={() => setActiveTab("nurse")}
+                onClick={() => {setActiveTab("nurse");
+                  setCurrentPage(1);
+                }}
                 data-role="nurse"
                 className={activeTab === "nurse" ? "active" : ""}
               >
@@ -1057,7 +1067,9 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "admin"}
-                onClick={() => setActiveTab("admin")}
+                onClick={() => {setActiveTab("admin");
+                  setCurrentPage(1);
+                }}
                 data-role="admin"
                 className={activeTab === "admin" ? "active" : ""}
               >

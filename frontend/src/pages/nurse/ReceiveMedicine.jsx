@@ -30,6 +30,7 @@ import {
   FaTimes,
   FaUserGraduate
 } from 'react-icons/fa';
+import PaginationBar from "../../components/common/PaginationBar";
 // CSS được import tự động từ main.jsx
 
 // Add pink modal header override styles
@@ -159,8 +160,12 @@ const ReceiveMedicine = () => {
   const fetchPending = async () => {
     try {
       const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${searchPending ? `&search=${searchPending}` : ""}`);
-      const data = res.data;
-      setPendingRequests((data.data || []).map((item) => {
+      const data = res.data.data;
+      if (data.totalPages) {
+        setTotalPages(data.totalPages); // Set total pages for pagination
+      }
+      console.log("totalPages", data.totalPages);
+      setPendingRequests((data.items || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
           id: item.id || item.medicationId || "",
@@ -183,9 +188,12 @@ const ReceiveMedicine = () => {
   const fetchActive = async () => {
     if (!nurseId) return;
     try {
-      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Active`);
-      const data = res.data;
-      setActiveRequests((data.data || []).map((item) => {
+      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` + `${searchActive ? `&search=${searchActive}` : ""}`);
+      const data = res.data.data;
+      if (data.totalPages) {
+        setTotalPages(data.totalPages);
+      }
+      setActiveRequests((data.items || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
           id: item.id || "",
@@ -206,9 +214,12 @@ const ReceiveMedicine = () => {
   const fetchCompleted = async () => {
     if (!nurseId) return;
     try {
-      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Completed`);
-      const data = res.data;
-      setCompletedRequests((data.data || []).map((item) => {
+      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` + `${searchCompleted ? `&search=${searchCompleted}` : ""}`);
+      const data = res.data.data;
+      if (data.totalPages) {
+        setTotalPages(data.totalPages);
+      }
+      setCompletedRequests((data.items || []).map((item) => {
         const med = item.medications && item.medications[0] ? item.medications[0] : {};
         return {
           id: item.id || "",
@@ -228,8 +239,16 @@ const ReceiveMedicine = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+      
       try {
-        await Promise.all([fetchPending(), fetchActive(), fetchCompleted()]);
+        // await Promise.all([fetchPending(), fetchActive(), fetchCompleted()]);
+        if (activeTab === "pending") {
+          await fetchPending();
+        } else if (activeTab === "active") {
+          await fetchActive();
+        } else if (activeTab === "completed") {
+          await fetchCompleted();
+        }
       } catch (error) {
         showNotification("Có lỗi khi tải dữ liệu!", "error");
       } finally {
@@ -237,7 +256,13 @@ const ReceiveMedicine = () => {
       }
     };
     loadData();
-  }, [nurseId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nurseId, currentPage, activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handlePageChange = (page) => {
+  if (page < 1 || page > totalPages) return; // Prevent invalid page numbers
+    setCurrentPage(page);
+  }
+
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -1909,7 +1934,10 @@ const ReceiveMedicine = () => {
         ) : (
           <Tabs
             activeKey={activeTab}
-            onSelect={setActiveTab}
+            onSelect={(key) => {
+    setActiveTab(key);
+      setCurrentPage(1);
+        }}
             className="medicine-tabs"
           >
             <Tab
@@ -1978,7 +2006,13 @@ const ReceiveMedicine = () => {
               </div>
             </Tab>
           </Tabs>
-        )}
+
+      )}
+          <PaginationBar 
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
       </div>
 
       {/* Professional Medicine Detail Modal */}

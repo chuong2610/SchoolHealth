@@ -1,9 +1,9 @@
 import { ExportToExcel } from "../../utils/excelUtils";
 import axiosInstance from "../axiosInstance";
 
-export const getMedicalEvents = async () => {
+export const getMedicalEvents = async (pageNumber = 1, pageSize = 5, search) => {
   try {
-    const res = await axiosInstance.get("/MedicalEvent");
+    const res = await axiosInstance.get(`/MedicalEvent?pageNumber=${pageNumber}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`);
     if (res.data.success === true) {
       return res.data.data;
     } else {
@@ -42,7 +42,7 @@ export const postMedicalEvent = async (data) => {
 
 export const getMedicalSupply = async () => {
   try {
-    const res = await axiosInstance.get("/MedicalSupply");
+    const res = await axiosInstance.get("/MedicalSupply?pageNumber=1&pageSize=1000");
     if (res.data.success === true) {
       return res.data.data;
     } else {
