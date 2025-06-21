@@ -4,11 +4,9 @@ import {
   Container,
   Row,
   Col,
-  Card,
   Form,
   Button,
   Table,
-  Badge,
   Spinner,
   Alert,
   Modal,
@@ -17,15 +15,11 @@ import {
 } from "react-bootstrap";
 import {
   FaUser,
-  FaCalendarAlt,
   FaCheckCircle,
   FaExclamationCircle,
   FaHeartbeat,
   FaPaperPlane,
   FaEye,
-  FaCheck,
-  FaTimes,
-  FaIdCard,
   FaGraduationCap,
   FaPills,
   FaStickyNote,
@@ -33,12 +27,10 @@ import {
   FaHistory,
   FaClipboardList,
   FaUserMd,
-  FaShieldAlt,
-  FaTimesCircle,
-  FaInfoCircle
+  FaTimesCircle
 } from "react-icons/fa";
-// Styles được import từ main.jsx
 import { toast } from "react-toastify";
+import "../../styles/parent/parent-healthdeclaration-redesign.css";
 
 const HealthDeclaration = () => {
   const [formData, setFormData] = useState({
@@ -226,204 +218,226 @@ const HealthDeclaration = () => {
   };
 
   return (
-    <div className="parent-container">
-      {/* Page Header */}
-      <div className="parent-page-header parent-animate-fade-in">
-        <div className="parent-page-header-bg"></div>
-        <div className="parent-page-header-content">
-          <h1 className="parent-page-title">
-            <FaClipboardList />
-            Khai báo sức khỏe học sinh
-          </h1>
-          <p className="parent-page-subtitle">
-            Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm sóc tốt nhất
-          </p>
-        </div>
+    <div className="health-declaration-page animate-fade-in">
+      {/* Hero Header */}
+      <div className="health-hero-header animate-slide-in-down">
+        <Container>
+          <div className="health-hero-content">
+            <h1 className="health-hero-title animate-fade-in-up delay-200">
+              <div className="hero-medical-icon animate-float">
+                <FaClipboardList />
+              </div>
+              Khai báo sức khỏe học sinh
+            </h1>
+            <p className="health-hero-subtitle animate-fade-in-up delay-300">
+              Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm sóc và hỗ trợ tốt nhất cho con bạn
+            </p>
+          </div>
+        </Container>
       </div>
 
-      <Container>
+      {/* Main Content */}
+      <Container className="health-main-container">
         <Row className="justify-content-center">
           <Col lg={10}>
-            <Card className="parent-card">
-              <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
-                <Nav variant="pills" className="parent-nav-tabs justify-content-center">
-                  <Nav.Item>
-                    <Nav.Link eventKey="declare">
-                      <FaHeartbeat />
+            <div className="health-form-wrapper animate-scale-in-center delay-500 animate-card">
+              {/* Tab Navigation */}
+              <div className="health-tab-navigation">
+                <div className="health-nav-pills">
+                  <div className="health-nav-item animate-fade-in-up delay-700">
+                    <button
+                      className={`health-nav-link animate-button-hover ${activeTab === 'declare' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('declare')}
+                    >
+                      <div className="nav-icon animate-scale-hover">
+                        <FaHeartbeat />
+                      </div>
                       Khai báo mới
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link eventKey="history">
-                      <FaHistory />
+                    </button>
+                  </div>
+                  <div className="health-nav-item animate-fade-in-up delay-1000">
+                    <button
+                      className={`health-nav-link animate-button-hover ${activeTab === 'history' ? 'active' : ''}`}
+                      onClick={() => setActiveTab('history')}
+                    >
+                      <div className="nav-icon animate-scale-hover">
+                        <FaHistory />
+                      </div>
                       Lịch sử khai báo
-                    </Nav.Link>
-                  </Nav.Item>
-                </Nav>
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-                <Tab.Content className="parent-card-body">
-                  <Tab.Pane eventKey="declare">
-                    <Form onSubmit={handleSubmit}>
-                      {/* Student Selection Section */}
-                      <div className="parent-form-section">
-                        <h3 className="parent-section-title">
-                          <div className="parent-section-icon">
-                            <FaUser />
-                          </div>
-                          Chọn học sinh
-                        </h3>
-
-                        <div className="parent-form-group">
-                          <Form.Label className="parent-form-label">
-                            <FaGraduationCap />
-                            Học sinh
-                          </Form.Label>
-                          <Form.Select
-                            className="parent-form-control"
-                            value={formData.studentId}
-                            onChange={handleStudentChange}
-                            required
-                          >
-                            <option value="">-- Chọn học sinh --</option>
-                            {students.map((student) => (
-                              <option key={student.id} value={student.id}>
-                                {student.studentName} - {student.className}
-                              </option>
-                            ))}
-                          </Form.Select>
+              {/* Tab Content */}
+              <div className="health-tab-content">
+                {activeTab === 'declare' && (
+                  <Form onSubmit={handleSubmit}>
+                    {/* Student Selection Section */}
+                    <div className="health-form-section animate-fade-in-up delay-700">
+                      <div className="health-section-header">
+                        <div className="health-section-icon animate-scale-hover">
+                          <FaUser />
                         </div>
+                        <h3 className="health-section-title">Chọn học sinh</h3>
+                      </div>
 
-                        {selectedStudent && (
-                          <div className="parent-student-card">
-                            <div className="parent-student-name">
+                      <div className="health-form-group">
+                        <Form.Label className="health-form-label">
+                          <FaGraduationCap className="label-medical-icon" />
+                          Học sinh cần khai báo
+                        </Form.Label>
+                        <Form.Select
+                          className="health-form-control animate-input"
+                          value={formData.studentId}
+                          onChange={handleStudentChange}
+                          required
+                        >
+                          <option value="">-- Chọn học sinh --</option>
+                          {students.map((student) => (
+                            <option key={student.id} value={student.id}>
+                              {student.studentName} - {student.className}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+
+                      {selectedStudent && (
+                        <div className="health-student-card animate-scale-in-center delay-200">
+                          <div className="health-student-info">
+                            <div className="health-student-name">
                               <FaUser />
                               {selectedStudent.studentName}
                             </div>
-                            <div className="parent-student-class">
+                            <div className="health-student-class">
                               <FaGraduationCap />
                               Lớp: {selectedStudent.className}
                             </div>
                           </div>
-                        )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Medical Information Section */}
+                    <div className="health-form-section animate-fade-in-up delay-1000">
+                      <div className="health-section-header">
+                        <div className="health-section-icon animate-scale-hover">
+                          <FaStethoscope />
+                        </div>
+                        <h3 className="health-section-title">Thông tin y tế</h3>
                       </div>
 
-                      {/* Medical Information Section */}
-                      <div className="parent-form-section">
-                        <h3 className="parent-section-title">
-                          <div className="parent-section-icon">
-                            <FaStethoscope />
+                      <div className="health-medical-grid">
+                        <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                          <div className="health-form-group">
+                            <Form.Label className="health-form-label">
+                              <FaExclamationCircle className="label-medical-icon" />
+                              Dị ứng
+                            </Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={4}
+                              className="health-form-control animate-input"
+                              name="allergys"
+                              value={formData.allergys}
+                              onChange={handleChange}
+                              placeholder="Mô tả các loại dị ứng của học sinh (nếu có)..."
+                            />
                           </div>
-                          Thông tin y tế
-                        </h3>
+                        </div>
 
-                        <Row>
-                          <Col md={6}>
-                            <div className="parent-form-group">
-                              <Form.Label className="parent-form-label">
-                                <FaExclamationCircle />
-                                Dị ứng
-                              </Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                className="parent-form-control"
-                                name="allergys"
-                                value={formData.allergys}
-                                onChange={handleChange}
-                                placeholder="Mô tả các loại dị ứng (nếu có)..."
-                              />
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="parent-form-group">
-                              <Form.Label className="parent-form-label">
-                                <FaUserMd />
-                                Bệnh mãn tính
-                              </Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                className="parent-form-control"
-                                name="chronicIllnesss"
-                                value={formData.chronicIllnesss}
-                                onChange={handleChange}
-                                placeholder="Các bệnh mãn tính đang điều trị (nếu có)..."
-                              />
-                            </div>
-                          </Col>
-                        </Row>
+                        <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                          <div className="health-form-group">
+                            <Form.Label className="health-form-label">
+                              <FaUserMd className="label-medical-icon" />
+                              Bệnh mãn tính
+                            </Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={4}
+                              className="health-form-control animate-input"
+                              name="chronicIllnesss"
+                              value={formData.chronicIllnesss}
+                              onChange={handleChange}
+                              placeholder="Các bệnh mãn tính đang điều trị (nếu có)..."
+                            />
+                          </div>
+                        </div>
 
-                        <Row>
-                          <Col md={6}>
-                            <div className="parent-form-group">
-                              <Form.Label className="parent-form-label">
-                                <FaPills />
-                                Thuốc dài hạn
-                              </Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                className="parent-form-control"
-                                name="longTermMedications"
-                                value={formData.longTermMedications}
-                                onChange={handleChange}
-                                placeholder="Các loại thuốc sử dụng thường xuyên (nếu có)..."
-                              />
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="parent-form-group">
-                              <Form.Label className="parent-form-label">
-                                <FaStickyNote />
-                                Tình trạng khác
-                              </Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                className="parent-form-control"
-                                name="otherMedicalConditions"
-                                value={formData.otherMedicalConditions}
-                                onChange={handleChange}
-                                placeholder="Các tình trạng sức khỏe khác cần lưu ý..."
-                              />
-                            </div>
-                          </Col>
-                        </Row>
+                        <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                          <div className="health-form-group">
+                            <Form.Label className="health-form-label">
+                              <FaPills className="label-medical-icon" />
+                              Thuốc dài hạn
+                            </Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={4}
+                              className="health-form-control animate-input"
+                              name="longTermMedications"
+                              value={formData.longTermMedications}
+                              onChange={handleChange}
+                              placeholder="Các loại thuốc sử dụng thường xuyên (nếu có)..."
+                            />
+                          </div>
+                        </div>
+
+                        <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                          <div className="health-form-group">
+                            <Form.Label className="health-form-label">
+                              <FaStickyNote className="label-medical-icon" />
+                              Tình trạng khác
+                            </Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={4}
+                              className="health-form-control animate-input"
+                              name="otherMedicalConditions"
+                              value={formData.otherMedicalConditions}
+                              onChange={handleChange}
+                              placeholder="Các tình trạng sức khỏe khác cần lưu ý..."
+                            />
+                          </div>
+                        </div>
                       </div>
+                    </div>
 
-                      {/* Submit Section */}
-                      <div className="text-center mt-4">
-                        <Button
-                          type="submit"
-                          className="parent-btn parent-btn-primary parent-btn-lg"
-                          disabled={submitLoading}
-                        >
-                          {submitLoading ? (
-                            <>
-                              <Spinner animation="border" size="sm" />
-                              Đang gửi...
-                            </>
-                          ) : (
-                            <>
-                              <FaPaperPlane />
-                              Gửi khai báo
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </Form>
-                  </Tab.Pane>
+                    {/* Submit Section */}
+                    <div className="health-submit-area">
+                      <button
+                        type="submit"
+                        className="health-submit-button animate-button-hover animate-scale-hover"
+                        disabled={submitLoading}
+                      >
+                        {submitLoading ? (
+                          <>
+                            <Spinner animation="border" size="sm" className="animate-spin" />
+                            Đang gửi...
+                          </>
+                        ) : (
+                          <>
+                            <FaPaperPlane />
+                            Gửi khai báo
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </Form>
+                )}
 
-                  <Tab.Pane eventKey="history">
+                {activeTab === 'history' && (
+                  <>
                     {declarationHistory.length === 0 ? (
-                      <div className="text-center py-5">
-                        <FaClipboardList size={64} className="text-muted mb-3" />
-                        <h4 className="text-muted">Chưa có lịch sử khai báo</h4>
-                        <p className="text-muted">Bạn chưa thực hiện khai báo y tế nào.</p>
+                      <div className="health-empty-state animate-fade-in-up">
+                        <FaClipboardList size={64} className="health-empty-icon animate-bounce" />
+                        <h4 className="health-empty-title animate-fade-in-up delay-200">Chưa có lịch sử khai báo</h4>
+                        <p className="health-empty-description animate-fade-in-up delay-300">
+                          Bạn chưa thực hiện khai báo y tế nào. Hãy chuyển sang tab "Khai báo mới" để bắt đầu.
+                        </p>
                       </div>
                     ) : (
-                      <div className="parent-table-container">
-                        <Table responsive className="parent-table">
+                      <div className="health-table-container animate-fade-in-up animate-lift">
+                        <Table responsive className="health-table">
                           <thead>
                             <tr>
                               <th>STT</th>
@@ -436,26 +450,25 @@ const HealthDeclaration = () => {
                           </thead>
                           <tbody>
                             {declarationHistory.map((item, index) => (
-                              <tr key={item.id}>
+                              <tr key={item.id} className="animate-stagger-fade-in">
                                 <td>{index + 1}</td>
                                 <td>{item.studentName}</td>
                                 <td>{item.className}</td>
                                 <td>{formatDate(item.createdAt)}</td>
                                 <td>
-                                  <Badge className="parent-status-badge completed">
+                                  <div className="health-status-badge animate-pulse">
                                     <FaCheckCircle />
                                     Đã nộp
-                                  </Badge>
+                                  </div>
                                 </td>
                                 <td>
-                                  <Button
-                                    size="sm"
-                                    className="parent-btn parent-btn-primary parent-btn-sm"
+                                  <button
+                                    className="health-view-button animate-button-hover animate-scale-hover"
                                     onClick={() => handleViewDetail(item)}
                                   >
                                     <FaEye />
                                     Xem chi tiết
-                                  </Button>
+                                  </button>
                                 </td>
                               </tr>
                             ))}
@@ -463,10 +476,10 @@ const HealthDeclaration = () => {
                         </Table>
                       </div>
                     )}
-                  </Tab.Pane>
-                </Tab.Content>
-              </Tab.Container>
-            </Card>
+                  </>
+                )}
+              </div>
+            </div>
           </Col>
         </Row>
       </Container>
@@ -476,66 +489,91 @@ const HealthDeclaration = () => {
         show={showDetailModal}
         onHide={() => setShowDetailModal(false)}
         size="lg"
-        className="parent-modal"
+        className="health-modal"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <FaStethoscope />
-            Chi tiết khai báo y tế
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedDeclaration && (
-            <>
-              <div className="parent-form-section">
-                <h5 className="parent-section-title">
-                  <div className="parent-section-icon">
-                    <FaUser />
+        <div className={showDetailModal ? 'animate-modal-enter' : 'animate-modal-exit'}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <FaStethoscope className="animate-pulse" />
+              Chi tiết khai báo y tế
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedDeclaration && (
+              <>
+                <div className="health-form-section animate-fade-in-up delay-200">
+                  <div className="health-section-header">
+                    <div className="health-section-icon animate-scale-hover">
+                      <FaUser />
+                    </div>
+                    <h5 className="health-section-title">Thông tin học sinh</h5>
                   </div>
-                  Thông tin học sinh
-                </h5>
-                <Row>
-                  <Col md={6}>
-                    <p><strong>Họ tên:</strong> {selectedDeclaration.studentName}</p>
-                  </Col>
-                  <Col md={6}>
-                    <p><strong>Lớp:</strong> {selectedDeclaration.className}</p>
-                  </Col>
-                </Row>
-                <p><strong>Ngày khai báo:</strong> {formatDate(selectedDeclaration.createdAt)}</p>
-              </div>
+                  <div className="health-info-grid">
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Họ tên:</div>
+                      <div className="health-info-value">{selectedDeclaration.studentName}</div>
+                    </div>
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Lớp:</div>
+                      <div className="health-info-value">{selectedDeclaration.className}</div>
+                    </div>
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Ngày khai báo:</div>
+                      <div className="health-info-value">{formatDate(selectedDeclaration.createdAt)}</div>
+                    </div>
+                  </div>
+                </div>
 
-              <div className="parent-form-section">
-                <h5 className="parent-section-title">
-                  <div className="parent-section-icon">
-                    <FaStethoscope />
+                <div className="health-form-section animate-fade-in-up delay-500">
+                  <div className="health-section-header">
+                    <div className="health-section-icon animate-scale-hover">
+                      <FaStethoscope />
+                    </div>
+                    <h5 className="health-section-title">Thông tin y tế</h5>
                   </div>
-                  Thông tin y tế
-                </h5>
-                <Row>
-                  <Col md={6}>
-                    <p><strong>Dị ứng:</strong> {selectedDeclaration.allergys || 'Không có'}</p>
-                    <p><strong>Bệnh mãn tính:</strong> {selectedDeclaration.chronicIllnesss || 'Không có'}</p>
-                  </Col>
-                  <Col md={6}>
-                    <p><strong>Thuốc dài hạn:</strong> {selectedDeclaration.longTermMedications || 'Không có'}</p>
-                    <p><strong>Tình trạng khác:</strong> {selectedDeclaration.otherMedicalConditions || 'Không có'}</p>
-                  </Col>
-                </Row>
-              </div>
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            className="parent-btn parent-btn-secondary"
-            onClick={() => setShowDetailModal(false)}
-          >
-            <FaTimesCircle />
-            Đóng
-          </Button>
-        </Modal.Footer>
+                  <div className="health-info-grid">
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Dị ứng:</div>
+                      <div className="health-info-value">{selectedDeclaration.allergys || 'Không có'}</div>
+                    </div>
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Bệnh mãn tính:</div>
+                      <div className="health-info-value">{selectedDeclaration.chronicIllnesss || 'Không có'}</div>
+                    </div>
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Thuốc dài hạn:</div>
+                      <div className="health-info-value">{selectedDeclaration.longTermMedications || 'Không có'}</div>
+                    </div>
+                    <div className="health-info-item animate-stagger-fade-in">
+                      <div className="health-info-label">Tình trạng khác:</div>
+                      <div className="health-info-value">{selectedDeclaration.otherMedicalConditions || 'Không có'}</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="health-modal-button animate-button-hover"
+              onClick={() => setShowDetailModal(false)}
+            >
+              <FaTimesCircle />
+              Đóng
+            </button>
+          </Modal.Footer>
+        </div>
       </Modal>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="health-loading-overlay animate-backdrop-enter">
+          <div className="health-loading-card animate-scale-in-center">
+            <Spinner animation="border" className="health-loading-spinner animate-spin" />
+            <h5 className="health-loading-text animate-fade-in-up delay-300">Đang tải danh sách học sinh...</h5>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

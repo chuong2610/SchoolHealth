@@ -12,6 +12,7 @@ import './styles/common/themes.css';
 import './styles/common/sidebar.css';
 import './styles/common/header.css';
 import './styles/common/layout-fix.css';
+import './styles/common/animations.css';
 
 // Admin styles
 import './styles/admin/index.css';
@@ -55,6 +56,9 @@ import './pages/login/Login.css';
 import './components/CustomTable.css';
 
 import './fontawesome.js';
+
+// Animation utilities
+import './utils/animationUtils.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <StrictMode>
