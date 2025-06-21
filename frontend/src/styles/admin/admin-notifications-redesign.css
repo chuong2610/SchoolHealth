@@ -1,4 +1,4 @@
-﻿/* ========================================
+/* ========================================
    ADMIN NOTIFICATIONS MANAGEMENT REDESIGN - ORANGE TO PURPLE GRADIENT
    ======================================== */
 
@@ -11,14 +11,14 @@
 }
 
 .admin-notifications-header {
-  background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+  background: linear-gradient(135deg, #4ECDC4 0%, #1DD1A1 50%, #26D0CE 100%) !important;
   color: white !important;
   padding: 2.5rem 2rem !important;
   border-radius: 0 0 24px 24px !important;
   position: relative !important;
   overflow: hidden !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Notification Cards */
@@ -33,19 +33,19 @@
   background: white !important;
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   transition: all 0.3s ease !important;
   position: relative !important;
 }
 
 .admin-notification-card:hover {
   transform: translateY(-4px) !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.2) !important;
 }
 
 .admin-notification-card.unread {
-  border-left: 4px solid #FF9500 !important;
+  border-left: 4px solid #4ECDC4 !important;
   background: linear-gradient(135deg, #FFF8F3, white) !important;
 }
 
@@ -84,7 +84,7 @@
   color: white !important;
   font-size: 1.25rem !important;
   flex-shrink: 0 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.15) !important;
 }
 
 .admin-notification-icon.success {
@@ -104,7 +104,7 @@
 }
 
 .admin-notification-icon.primary {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .admin-notification-content {
@@ -150,7 +150,7 @@
 }
 
 .admin-notification-status.unread {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
 }
 
@@ -193,14 +193,14 @@
 }
 
 .admin-notification-btn.view {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
-  box-shadow: 0 2px 8px rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3) !important;
 }
 
 .admin-notification-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Quick Actions */
@@ -209,8 +209,8 @@
   border-radius: 16px !important;
   padding: 1.5rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   display: flex !important;
   gap: 1rem !important;
   align-items: center !important;
@@ -219,7 +219,7 @@
 
 .admin-notifications-quick-btn {
   padding: 0.75rem 1.5rem !important;
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   background: #FAFAFA !important;
   color: #424242 !important;
@@ -233,14 +233,14 @@
 }
 
 .admin-notifications-quick-btn:hover {
-  border-color: #FF9500 !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  border-color: #4ECDC4 !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   transform: translateY(-2px) !important;
 }
 
 .admin-notifications-quick-btn.active {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   border-color: transparent !important;
 }
@@ -251,15 +251,15 @@
   border-radius: 16px !important;
   padding: 1.5rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   display: flex !important;
   gap: 1rem !important;
   align-items: center !important;
 }
 
 .admin-notifications-search-input {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.75rem 1rem !important;
   font-size: 0.95rem !important;
@@ -269,8 +269,8 @@
 }
 
 .admin-notifications-search-input:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
 }
@@ -287,8 +287,8 @@
   background: white !important;
   border-radius: 16px !important;
   padding: 1.5rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   position: relative !important;
   overflow: hidden !important;
   transition: all 0.3s ease !important;
@@ -301,26 +301,26 @@
   left: 0 !important;
   right: 0 !important;
   height: 4px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .admin-notification-stat-card:hover {
   transform: translateY(-4px) !important;
-  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.2) !important;
 }
 
 .admin-notification-stat-icon {
   width: 48px !important;
   height: 48px !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   font-size: 1.25rem !important;
   margin-bottom: 1rem !important;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2) !important;
 }
 
 .admin-notification-stat-value {
@@ -343,25 +343,25 @@
   .admin-notifications-container {
     padding: 1rem !important;
   }
-  
+
   .admin-notifications-header {
     padding: 2rem 1rem !important;
   }
-  
+
   .admin-notifications-title {
     font-size: 1.75rem !important;
   }
-  
+
   .admin-notifications-grid {
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
   }
-  
+
   .admin-notifications-quick-actions {
     flex-direction: column !important;
     align-items: stretch !important;
   }
-  
+
   .admin-notifications-search-bar {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -372,15 +372,15 @@
   .admin-notifications-title {
     font-size: 1.5rem !important;
   }
-  
+
   .admin-notifications-subtitle {
     font-size: 1rem !important;
   }
-  
+
   .admin-notification-card {
     margin-bottom: 1rem !important;
   }
-  
+
   .admin-notification-actions {
     flex-direction: column !important;
   }
@@ -399,7 +399,7 @@
 }
 
 .admin-modal-notification .modal-header {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   border-bottom: none !important;
   padding: 2rem !important;
@@ -450,7 +450,7 @@
   margin-right: -0.5rem !important;
 }
 
-.admin-modal-notification .row > [class*="col-"] {
+.admin-modal-notification .row>[class*="col-"] {
   padding-left: 0.5rem !important;
   padding-right: 0.5rem !important;
 }
@@ -470,7 +470,7 @@
 .admin-modal-notification .form-label h6::before {
   width: 4px !important;
   height: 4px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   border-radius: 50% !important;
   content: "" !important;
   flex-shrink: 0 !important;
@@ -478,7 +478,7 @@
 
 /* Form Controls */
 .admin-modal-notification .form-control {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.875rem 1rem !important;
   font-size: 0.95rem !important;
@@ -487,15 +487,15 @@
 }
 
 .admin-modal-notification .form-control:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
   transform: translateY(-1px) !important;
 }
 
 .admin-modal-notification .form-control:hover:not(:focus) {
-  border-color: rgba(255, 149, 0, 0.4) !important;
+  border-color: rgba(78, 205, 196, 0.4) !important;
   background: rgba(255, 255, 255, 0.8) !important;
 }
 
@@ -507,7 +507,7 @@
 
 /* Form Select */
 .admin-modal-notification .form-select {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.875rem 1rem !important;
   font-size: 0.95rem !important;
@@ -521,15 +521,15 @@
 }
 
 .admin-modal-notification .form-select:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background-color: white !important;
   outline: none !important;
   transform: translateY(-1px) !important;
 }
 
 .admin-modal-notification .form-select:hover:not(:focus) {
-  border-color: rgba(255, 149, 0, 0.4) !important;
+  border-color: rgba(78, 205, 196, 0.4) !important;
   background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
@@ -690,14 +690,14 @@
 }
 
 .admin-modal-notification .btn-success {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3) !important;
 }
 
 .admin-modal-notification .btn-success:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.4) !important;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.4) !important;
   color: white !important;
 }
 
@@ -710,7 +710,7 @@
   background: #D5D5D5 !important;
   color: #424242 !important;
   transform: translateY(-1px) !important;
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Form Field Animations */
@@ -735,15 +735,17 @@
 @keyframes admin-notification-focus-glow {
   0% {
     border-color: transparent;
-    box-shadow: 0 0 0 0 rgba(255, 149, 0, 0);
+    box-shadow: 0 0 0 0 rgba(78, 205, 196, 0);
   }
+
   50% {
-    border-color: rgba(255, 149, 0, 0.5);
-    box-shadow: 0 0 0 6px rgba(255, 149, 0, 0.2);
+    border-color: rgba(78, 205, 196, 0.5);
+    box-shadow: 0 0 0 6px rgba(78, 205, 196, 0.2);
   }
+
   100% {
     border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1);
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
   }
 }
 
@@ -752,28 +754,29 @@
   .admin-modal-notification .modal-header {
     padding: 1.5rem !important;
   }
-  
+
   .admin-modal-notification .modal-body {
     padding: 1.5rem !important;
   }
-  
+
   .admin-modal-notification .modal-footer {
     padding: 1rem 1.5rem !important;
     flex-direction: column !important;
   }
-  
+
   .admin-modal-notification .btn {
     width: 100% !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   .admin-modal-notification .modal-title {
     font-size: 1.25rem !important;
   }
-  
+
   .admin-modal-notification .form-control,
   .admin-modal-notification .form-select {
-    font-size: 16px !important; /* Prevent zoom on iOS */
+    font-size: 16px !important;
+    /* Prevent zoom on iOS */
   }
 }
 
@@ -782,7 +785,7 @@
   opacity: 0.6 !important;
   cursor: not-allowed !important;
   transform: none !important;
-  box-shadow: 0 2px 8px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Form Validation Enhancement */

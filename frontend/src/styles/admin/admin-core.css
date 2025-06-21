@@ -5,21 +5,21 @@
 /* ===== CSS VARIABLES ===== */
 :root {
     /* Admin Colors */
-    --admin-primary: #2E6EF7;
-    --admin-primary-light: #4F9DFF;
-    --admin-primary-dark: #1E3A8A;
-    --admin-primary-gradient: linear-gradient(135deg, #2E6EF7 0%, #4F9DFF 50%, #00D4FF 100%);
+    --admin-primary: #4ECDC4;
+    --admin-primary-light: #6CDDD4;
+    --admin-primary-dark: #2A9D8F;
+    --admin-primary-gradient: linear-gradient(135deg, #4ECDC4 0%, #26D0CE 50%, #1DD1A1 100%);
 
-    --admin-secondary: #64748B;
-    --admin-success: #10B981;
-    --admin-warning: #F59E0B;
-    --admin-danger: #EF4444;
-    --admin-info: #3B82F6;
+    --admin-secondary: #5A9B93;
+    --admin-success: #00C896;
+    --admin-warning: #FFA62B;
+    --admin-danger: #FF6B6B;
+    --admin-info: #4ECDC4;
 
     /* Backgrounds */
-    --admin-bg-primary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    --admin-bg-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
-    --admin-bg-hover: rgba(46, 110, 247, 0.05);
+    --admin-bg-primary: linear-gradient(135deg, #E0F8F7 0%, #C5F0ED 100%);
+    --admin-bg-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 255, 254, 0.85) 100%);
+    --admin-bg-hover: rgba(78, 205, 196, 0.05);
 
     /* Text Colors */
     --admin-text-primary: #1f2937;
@@ -105,11 +105,11 @@
 
     0%,
     100% {
-        box-shadow: 0 0 5px rgba(46, 110, 247, 0.3);
+        box-shadow: 0 0 5px rgba(78, 205, 196, 0.3);
     }
 
     50% {
-        box-shadow: 0 0 20px rgba(46, 110, 247, 0.6);
+        box-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
     }
 }
 
@@ -398,7 +398,7 @@
     left: 0 !important;
     right: 0 !important;
     height: 3px !important;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    background: linear-gradient(135deg, #4ECDC4 0%, #26D0CE 100%) !important;
 }
 
 .admin-theme .chart-header {
@@ -437,12 +437,12 @@
     transition: all var(--admin-transition) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
-    box-shadow: 0 4px 12px rgba(46, 110, 247, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.25) !important;
 }
 
 .admin-theme .btn-primary:hover {
     transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 8px 20px rgba(46, 110, 247, 0.35) !important;
+    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.35) !important;
 }
 
 .admin-theme .btn-outline-primary {
@@ -480,7 +480,7 @@
 .admin-theme .form-select:focus {
     outline: none !important;
     border-color: var(--admin-primary) !important;
-    box-shadow: 0 0 0 3px rgba(46, 110, 247, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
 }
 
 /* ===== UTILITIES ===== */

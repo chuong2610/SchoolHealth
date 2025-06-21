@@ -15,7 +15,7 @@
   margin: -2rem -2rem 2rem -2rem;
   border-radius: 0 0 20px 20px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.15);
 }
 
 .admin-profile-header-bg {
@@ -77,8 +77,8 @@
   background: white !important;
   border-radius: 20px !important;
   padding: 2rem !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   text-align: center !important;
   height: fit-content !important;
 }
@@ -128,13 +128,13 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
   transition: all 0.3s ease;
 }
 
 .admin-profile-avatar-edit:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(255, 149, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
 }
 
 .admin-profile-info {
@@ -225,7 +225,7 @@
 .admin-profile-field .value:hover {
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.1);
 }
 
 /* Security Items */
@@ -237,7 +237,7 @@
   margin-bottom: 1rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   border-radius: 12px;
-  border: 1px solid rgba(255, 149, 0, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.1);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -261,7 +261,7 @@
 
 .admin-security-item:hover {
   transform: translateX(5px);
-  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.15);
   border-color: var(--admin-primary);
 }
 
@@ -319,7 +319,7 @@
   margin-bottom: 0.75rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   border-radius: 12px;
-  border: 1px solid rgba(255, 149, 0, 0.08);
+  border: 1px solid rgba(78, 205, 196, 0.08);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -343,7 +343,7 @@
 
 .admin-activity-item:hover {
   transform: translateX(8px);
-  box-shadow: 0 6px 20px rgba(255, 149, 0, 0.1);
+  box-shadow: 0 6px 20px rgba(78, 205, 196, 0.1);
   border-color: var(--admin-primary);
 }
 
@@ -356,7 +356,7 @@
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
   animation: iconPulse 2s infinite;
 }
 
@@ -364,11 +364,11 @@
 
   0%,
   100% {
-    box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
   }
 
   50% {
-    box-shadow: 0 4px 20px rgba(255, 149, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(78, 205, 196, 0.4);
   }
 }
 
@@ -452,11 +452,11 @@
 .admin-modal-profile .nav-tabs .nav-link.active {
   background: var(--admin-gradient-primary);
   color: white;
-  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
 }
 
 .admin-modal-profile .nav-tabs .nav-link:hover:not(.active) {
-  background: rgba(255, 149, 0, 0.1);
+  background: rgba(78, 205, 196, 0.1);
   color: var(--admin-primary);
 }
 
@@ -480,7 +480,7 @@
 .admin-modal-profile .form-control:focus,
 .admin-modal-profile .form-select:focus {
   border-color: var(--admin-primary);
-  box-shadow: 0 0 0 0.2rem rgba(255, 149, 0, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
   background: linear-gradient(135deg, #ffffff 0%, #fef8f1 100%);
 }
 

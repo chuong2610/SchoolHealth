@@ -446,8 +446,8 @@ const MedicineInventory = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="quantity" fill="#FF9500" name="Hiện tại" />
-                                        <Bar dataKey="minStock" fill="#9C27B0" name="Tối thiểu" />
+                                        <Bar dataKey="quantity" fill="#4ECDC4" name="Hiện tại" />
+                                        <Bar dataKey="minStock" fill="#26D0CE" name="Tối thiểu" />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -542,7 +542,7 @@ const MedicineInventory = () => {
                                                     borderRadius: '20px',
                                                     fontSize: '0.75rem',
                                                     fontWeight: '600',
-                                                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                                                    background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                                                     color: 'white',
                                                     display: 'inline-block'
                                                 }}>

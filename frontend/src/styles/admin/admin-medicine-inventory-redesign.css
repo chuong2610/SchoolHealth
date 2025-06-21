@@ -1,4 +1,4 @@
-﻿/* ========================================
+/* ========================================
    ADMIN MEDICINE INVENTORY REDESIGN - ORANGE TO PURPLE GRADIENT
    ======================================== */
 
@@ -11,14 +11,14 @@
 }
 
 .admin-medicine-header {
-  background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+  background: linear-gradient(135deg, #4ECDC4 0%, #1DD1A1 50%, #26D0CE 100%) !important;
   color: white !important;
   padding: 2.5rem 2rem !important;
   border-radius: 0 0 24px 24px !important;
   position: relative !important;
   overflow: hidden !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Stats Cards */
@@ -33,8 +33,8 @@
   background: white !important;
   border-radius: 16px !important;
   padding: 2rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   position: relative !important;
   overflow: hidden !important;
   transition: all 0.3s ease !important;
@@ -47,21 +47,21 @@
   left: 0 !important;
   right: 0 !important;
   height: 4px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .admin-medicine-stat-icon {
   width: 60px !important;
   height: 60px !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   font-size: 1.5rem !important;
   margin-bottom: 1rem !important;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Medicine Table */
@@ -69,8 +69,8 @@
   background: white !important;
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   margin-bottom: 2rem !important;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .admin-medicine-table thead th {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   padding: 1.25rem 1rem !important;
   font-weight: 600 !important;
@@ -131,7 +131,7 @@
 }
 
 .admin-medicine-btn.view {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .admin-medicine-btn.edit {
@@ -152,13 +152,13 @@
   background: white !important;
   border-radius: 16px !important;
   overflow: hidden !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   margin-bottom: 2rem !important;
 }
 
 .medicine-table-header {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
 }
 
@@ -200,7 +200,7 @@
   width: 48px !important;
   height: 48px !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -240,7 +240,7 @@
 }
 
 .action-btn.view-btn {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .action-btn.edit-btn {
@@ -274,7 +274,7 @@
 /* Stat Cards */
 .admin-medicine-stat-card:hover {
   transform: translateY(-6px) !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.2) !important;
 }
 
 .admin-medicine-stat-value {
@@ -303,14 +303,14 @@
   width: 48px !important;
   height: 48px !important;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   color: white !important;
   font-weight: 700 !important;
   font-size: 1.25rem !important;
-  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2) !important;
 }
 
 .admin-medicine-info {
@@ -368,15 +368,15 @@
   border-radius: 16px !important;
   padding: 1.5rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   display: flex !important;
   gap: 1rem !important;
   align-items: center !important;
 }
 
 .admin-medicine-search-input {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.75rem 1rem !important;
   font-size: 0.95rem !important;
@@ -386,14 +386,14 @@
 }
 
 .admin-medicine-search-input:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
 }
 
 .admin-medicine-filter-btn {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   border: none !important;
   border-radius: 12px !important;
@@ -409,7 +409,7 @@
 
 .admin-medicine-filter-btn:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3) !important;
   color: white !important;
 }
 
@@ -422,7 +422,7 @@
 }
 
 .admin-medicine-modal .modal-header {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   border-bottom: none !important;
   padding: 2rem !important;
@@ -464,7 +464,7 @@
 }
 
 .admin-medicine-form-control {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.875rem 1rem !important;
   font-size: 0.95rem !important;
@@ -474,8 +474,8 @@
 }
 
 .admin-medicine-form-control:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
 }

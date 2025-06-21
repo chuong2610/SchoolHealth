@@ -12,6 +12,7 @@ import {
   Tab,
   Nav
 } from "react-bootstrap";
+import healthBgImage from '../../assets/nenkhaibaoyte.jpg';
 import {
   FaUser,
   FaCheckCircle,
@@ -210,7 +211,14 @@ const HealthDeclaration = () => {
   };
 
   return (
-    <div className="health-declaration-page animate-fade-in">
+    <div className="health-declaration-page animate-fade-in" style={{
+      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.925), rgba(255, 255, 255, 0.2)), url(${healthBgImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
+      minHeight: '100vh'
+    }}>
       {/* Hero Header */}
       <div className="health-hero-header animate-slide-in-down">
         <Container>

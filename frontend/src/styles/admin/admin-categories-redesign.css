@@ -1,4 +1,4 @@
-﻿/* ========================================
+/* ========================================
    ADMIN CATEGORIES REDESIGN - ORANGE TO PURPLE GRADIENT
    ======================================== */
 
@@ -11,14 +11,14 @@
 }
 
 .admin-categories-header {
-  background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+  background: linear-gradient(135deg, #4ECDC4 0%, #1DD1A1 50%, #26D0CE 100%) !important;
   color: white !important;
   padding: 2.5rem 2rem !important;
   border-radius: 0 0 24px 24px !important;
   position: relative !important;
   overflow: hidden !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.2) !important;
 }
 
 /* Category Grid */
@@ -33,8 +33,8 @@
   background: white !important;
   border-radius: 20px !important;
   padding: 2rem !important;
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   position: relative !important;
   overflow: hidden !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -48,25 +48,25 @@
   left: 0 !important;
   right: 0 !important;
   height: 6px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
 }
 
 .admin-category-card:hover {
   transform: translateY(-8px) scale(1.02) !important;
-  box-shadow: 0 16px 48px rgba(255, 149, 0, 0.25) !important;
-  border-color: rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 16px 48px rgba(78, 205, 196, 0.25) !important;
+  border-color: rgba(78, 205, 196, 0.3) !important;
 }
 
 .admin-category-icon-wrapper {
   width: 80px !important;
   height: 80px !important;
   border-radius: 20px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   margin-bottom: 1.5rem !important;
-  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3) !important;
   transition: all 0.3s ease !important;
 }
 
@@ -93,7 +93,7 @@
 /* Category Card Hover Effects */
 .admin-category-card:hover .admin-category-icon-wrapper {
   transform: scale(1.1) rotate(5deg) !important;
-  box-shadow: 0 12px 32px rgba(255, 149, 0, 0.4) !important;
+  box-shadow: 0 12px 32px rgba(78, 205, 196, 0.4) !important;
 }
 
 .admin-category-name {
@@ -119,7 +119,7 @@
   padding: 1rem !important;
   background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
   border-radius: 12px !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
 }
 
 .admin-category-stat {
@@ -129,7 +129,7 @@
 .admin-category-stat-value {
   font-size: 1.5rem !important;
   font-weight: 800 !important;
-  color: #FF9500 !important;
+  color: #4ECDC4 !important;
   margin: 0 !important;
   line-height: 1 !important;
 }
@@ -182,8 +182,8 @@
 
 /* Add Category Card */
 .admin-add-category-card {
-  background: linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(156, 39, 176, 0.05)) !important;
-  border: 2px dashed rgba(255, 149, 0, 0.3) !important;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(156, 39, 176, 0.05)) !important;
+  border: 2px dashed rgba(78, 205, 196, 0.3) !important;
   border-radius: 20px !important;
   padding: 3rem 2rem !important;
   text-align: center !important;
@@ -197,8 +197,8 @@
 }
 
 .admin-add-category-card:hover {
-  background: linear-gradient(135deg, rgba(255, 149, 0, 0.1), rgba(156, 39, 176, 0.1)) !important;
-  border-color: rgba(255, 149, 0, 0.5) !important;
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(156, 39, 176, 0.1)) !important;
+  border-color: rgba(78, 205, 196, 0.5) !important;
   transform: scale(1.02) !important;
 }
 
@@ -206,14 +206,14 @@
   width: 80px !important;
   height: 80px !important;
   border-radius: 20px !important;
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   margin-bottom: 1.5rem !important;
   color: white !important;
   font-size: 2rem !important;
-  box-shadow: 0 8px 24px rgba(255, 149, 0, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3) !important;
 }
 
 .admin-add-category-text {
@@ -234,15 +234,15 @@
   border-radius: 16px !important;
   padding: 1.5rem !important;
   margin-bottom: 2rem !important;
-  box-shadow: 0 4px 16px rgba(255, 149, 0, 0.15) !important;
-  border: 1px solid rgba(255, 149, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15) !important;
+  border: 1px solid rgba(78, 205, 196, 0.1) !important;
   display: flex !important;
   gap: 1rem !important;
   align-items: center !important;
 }
 
 .admin-categories-search-input {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.75rem 1rem !important;
   font-size: 0.95rem !important;
@@ -252,8 +252,8 @@
 }
 
 .admin-categories-search-input:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
 }
@@ -267,7 +267,7 @@
 }
 
 .admin-categories-modal .modal-header {
-  background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+  background: linear-gradient(135deg, #4ECDC4, #26D0CE) !important;
   color: white !important;
   border-bottom: none !important;
   padding: 2rem !important;
@@ -309,7 +309,7 @@
 }
 
 .admin-categories-form-control {
-  border: 2px solid rgba(255, 149, 0, 0.2) !important;
+  border: 2px solid rgba(78, 205, 196, 0.2) !important;
   border-radius: 12px !important;
   padding: 0.875rem 1rem !important;
   font-size: 0.95rem !important;
@@ -319,8 +319,8 @@
 }
 
 .admin-categories-form-control:focus {
-  border-color: #FF9500 !important;
-  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+  border-color: #4ECDC4 !important;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1) !important;
   background: white !important;
   outline: none !important;
 }

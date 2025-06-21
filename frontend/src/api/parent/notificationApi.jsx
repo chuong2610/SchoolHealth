@@ -19,15 +19,19 @@ export const getNotificationDetailById = async (data) => {
     try {
         // Validate request data
         if (!data.notificationId || !data.studentId) {
+            console.error("❌ Missing required fields:", { notificationId: data.notificationId, studentId: data.studentId });
             throw new Error("Missing required fields: notificationId or studentId");
         }
 
+        console.log("📡 Sending notification detail request:", data);
+
+        // Call the actual backend endpoint (with typo) that exists
         const res = await axiosInstance.post("/Notification/notificationDeatil", data);
         if (res.data.success === true) {
             return res.data.data;
         } else {
             console.error("❌ Error in getNotificationDetailById:", res.data.message);
-            return {};
+            throw new Error(res.data.message || "Failed to fetch notification detail");
         }
     } catch (error) {
         console.error("❌ Error fetching notification detail:", error);

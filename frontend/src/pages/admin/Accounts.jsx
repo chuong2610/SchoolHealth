@@ -806,7 +806,7 @@ const Accounts = () => {
                   fontSize: '0.875rem',
                   fontWeight: '600'
                 }}>
-                  <FaKey style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  <FaKey style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                   Thông tin bảo mật
                 </span>
               </div>
@@ -847,14 +847,14 @@ const Accounts = () => {
               {/* Password Requirements */}
               <div style={{
                 background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-                border: '1px solid rgba(255, 149, 0, 0.2)',
+                border: '1px solid rgba(78, 205, 196, 0.2)',
                 borderRadius: '8px',
                 padding: '0.875rem',
                 fontSize: '0.8rem',
                 color: '#757575'
               }}>
                 <div style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
-                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                   Yêu cầu mật khẩu:
                 </div>
                 <ul style={{ margin: '0', paddingLeft: '1.25rem' }}>
@@ -870,14 +870,14 @@ const Accounts = () => {
           {modalType === "edit" && (
             <div style={{
               background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-              border: '1px solid rgba(255, 149, 0, 0.2)',
+              border: '1px solid rgba(78, 205, 196, 0.2)',
               borderRadius: '8px',
               padding: '0.875rem',
               fontSize: '0.875rem',
               color: '#757575',
               marginTop: '1rem'
             }}>
-              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
               Để thay đổi mật khẩu, vui lòng sử dụng chức năng "Đặt lại mật khẩu" riêng biệt.
             </div>
           )}
@@ -935,7 +935,7 @@ const Accounts = () => {
               <Dropdown.Toggle
                 className="admin-primary-btn"
                 style={{
-                  background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                  background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                   border: 'none',
                   borderRadius: '12px',
                   padding: '0.75rem 1.5rem',
@@ -954,8 +954,8 @@ const Accounts = () => {
               <Dropdown.Menu
                 style={{
                   borderRadius: '12px',
-                  border: '1px solid rgba(255, 149, 0, 0.2)',
-                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
+                  border: '1px solid rgba(78, 205, 196, 0.2)',
+                  boxShadow: '0 8px 32px rgba(78, 205, 196, 0.15)',
                   padding: '0.5rem 0',
                   minWidth: '200px'
                 }}
@@ -972,7 +972,7 @@ const Accounts = () => {
                   }}
                   className="dropdown-item-hover"
                 >
-                  <FaUserPlus style={{ color: '#FF9500' }} />
+                  <FaUserPlus style={{ color: '#4ECDC4' }} />
                   <div>
                     <div style={{ fontWeight: '600', color: '#424242' }}>Thêm tài khoản</div>
                     <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tạo tài khoản mới thủ công</div>
@@ -991,7 +991,7 @@ const Accounts = () => {
                   }}
                   className="dropdown-item-hover"
                 >
-                  <FaFileUpload style={{ color: '#FF9500' }} />
+                  <FaFileUpload style={{ color: '#4ECDC4' }} />
                   <div>
                     <div style={{ fontWeight: '600', color: '#424242' }}>Import từ Excel</div>
                     <div style={{ fontSize: '0.75rem', color: '#757575' }}>Nhập nhiều tài khoản cùng lúc</div>
@@ -1009,7 +1009,7 @@ const Accounts = () => {
                   }}
                   className="dropdown-item-hover"
                 >
-                  <FaFileDownload style={{ color: '#FF9500' }} />
+                  <FaFileDownload style={{ color: '#4ECDC4' }} />
                   <div>
                     <div style={{ fontWeight: '600', color: '#424242' }}>Tải file mẫu</div>
                     <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tải về file Excel mẫu</div>
@@ -1068,7 +1068,7 @@ const Accounts = () => {
 
           <div className="admin-accounts-search-bar">
             <InputGroup style={{ flex: 1 }}>
-              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '12px 0 0 12px', border: '2px solid rgba(255, 149, 0, 0.2)', borderRight: 0 }}>
+              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '12px 0 0 12px', border: '2px solid rgba(78, 205, 196, 0.2)', borderRight: 0 }}>
                 <FaSearch className="text-muted" />
               </InputGroup.Text>
               <Form.Control
@@ -1087,8 +1087,8 @@ const Accounts = () => {
                 className="admin-filter-btn"
                 style={{
                   background: (filterGender || filterStatus) ?
-                    'linear-gradient(135deg, #FF9500, #9C27B0)' :
-                    'linear-gradient(135deg, #FF9500, #9C27B0)',
+                    'linear-gradient(135deg, #4ECDC4, #26D0CE)' :
+                    'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                   border: 'none',
                   borderRadius: '12px',
                   padding: '0.75rem 1.5rem',
@@ -1130,8 +1130,8 @@ const Accounts = () => {
                 style={{
                   minWidth: '280px',
                   borderRadius: '12px',
-                  border: '1px solid rgba(255, 149, 0, 0.2)',
-                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
+                  border: '1px solid rgba(78, 205, 196, 0.2)',
+                  boxShadow: '0 8px 32px rgba(78, 205, 196, 0.15)',
                   padding: '1rem'
                 }}
               >
@@ -1143,14 +1143,14 @@ const Accounts = () => {
                     color: '#424242',
                     fontSize: '0.875rem'
                   }}>
-                    <FaVenusMars style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                    <FaVenusMars style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                     Lọc theo giới tính
                   </label>
                   <Form.Select
                     value={filterGender}
                     onChange={(e) => setFilterGender(e.target.value)}
                     style={{
-                      border: '2px solid rgba(255, 149, 0, 0.2)',
+                      border: '2px solid rgba(78, 205, 196, 0.2)',
                       borderRadius: '8px',
                       fontSize: '0.875rem'
                     }}
@@ -1170,14 +1170,14 @@ const Accounts = () => {
                     color: '#424242',
                     fontSize: '0.875rem'
                   }}>
-                    <i className="fas fa-toggle-on" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                    <i className="fas fa-toggle-on" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                     Lọc theo trạng thái
                   </label>
                   <Form.Select
                     value={filterStatus}
                     onChange={(e) => setFilterStatus(e.target.value)}
                     style={{
-                      border: '2px solid rgba(255, 149, 0, 0.2)',
+                      border: '2px solid rgba(78, 205, 196, 0.2)',
                       borderRadius: '8px',
                       fontSize: '0.875rem'
                     }}
@@ -1207,7 +1207,7 @@ const Accounts = () => {
                     onClick={() => setShowFilterDropdown(false)}
                     style={{
                       flex: 1,
-                      background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                      background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                       border: 'none',
                       fontSize: '0.875rem'
                     }}
@@ -1485,7 +1485,7 @@ const Accounts = () => {
       {/* Import User Modal */}
       <Modal show={showImportModal} onHide={() => setShowImportModal(false)} className="admin-modal" size="lg">
         <Modal.Header closeButton style={{
-          background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+          background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
           color: 'white',
           borderBottom: 'none',
           padding: '2rem'
@@ -1505,22 +1505,22 @@ const Accounts = () => {
         <Modal.Body style={{ padding: '2rem', background: 'white' }}>
           <div className="admin-form-group">
             <label className="admin-form-label">
-              <i className="fas fa-file-excel" style={{ color: '#FF9500' }}></i>
+              <i className="fas fa-file-excel" style={{ color: '#4ECDC4' }}></i>
               Chọn file Excel
             </label>
             <div style={{
-              border: '2px dashed rgba(255, 149, 0, 0.3)',
+              border: '2px dashed rgba(78, 205, 196, 0.3)',
               borderRadius: '12px',
               padding: '2rem',
               textAlign: 'center',
-              background: 'linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(156, 39, 176, 0.05))',
+              background: 'linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(38, 208, 206, 0.05))',
               position: 'relative',
               transition: 'all 0.3s ease',
               cursor: 'pointer'
             }}>
               <div style={{
                 marginBottom: '1rem',
-                color: '#FF9500',
+                color: '#4ECDC4',
                 fontSize: '3rem'
               }}>
                 <i className="fas fa-cloud-upload-alt"></i>
@@ -1555,7 +1555,7 @@ const Accounts = () => {
               />
               <div style={{
                 display: 'inline-block',
-                background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                 color: 'white',
                 padding: '0.5rem 1rem',
                 borderRadius: '8px',
@@ -1605,12 +1605,12 @@ const Accounts = () => {
               <div style={{
                 maxHeight: '300px',
                 overflowY: 'auto',
-                border: '1px solid rgba(255, 149, 0, 0.2)',
+                border: '1px solid rgba(78, 205, 196, 0.2)',
                 borderRadius: '8px'
               }}>
                 <Table style={{ margin: 0, fontSize: '0.875rem' }}>
                   <thead style={{
-                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                    background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                     color: 'white',
                     position: 'sticky',
                     top: 0
@@ -1634,7 +1634,7 @@ const Accounts = () => {
                         <td style={{ padding: '0.75rem' }}>{u.phone}</td>
                         <td style={{ padding: '0.75rem' }}>
                           <span style={{
-                            background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                            background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                             color: 'white',
                             padding: '0.25rem 0.5rem',
                             borderRadius: '4px',

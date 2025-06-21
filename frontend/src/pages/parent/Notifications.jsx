@@ -35,6 +35,7 @@ import {
   FaEye,
   FaCheck
 } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import { sendConsentApi } from "../../api/parent/sendConsentApi";
 import {
@@ -170,12 +171,30 @@ export default function Notifications() {
   // Modal logic
   const openModal = async (notificationId, studentId) => {
     try {
-      const data = { notificationId, studentId };
+      console.log("🔍 Opening modal with:", { notificationId, studentId });
+
+      // Validate parameters
+      if (!notificationId || !studentId) {
+        console.error("❌ Invalid parameters:", { notificationId, studentId });
+        toast.error("Thiếu thông tin để hiển thị chi tiết thông báo");
+        return;
+      }
+
+      // Convert to numbers if they're strings
+      const data = {
+        notificationId: typeof notificationId === 'string' ? parseInt(notificationId) : notificationId,
+        studentId: typeof studentId === 'string' ? parseInt(studentId) : studentId
+      };
+
+      console.log("📋 Processed data:", data);
       const detail = await getNotificationDetailById(data);
+      console.log("✅ Got detail:", detail);
+
       setReason("");
       setModal({ show: true, notification: { ...detail }, consent: false });
     } catch (error) {
       console.error("Error fetching notification detail:", error);
+      toast.error("Không thể tải chi tiết thông báo. Vui lòng thử lại.");
       setModal({ show: false, notification: null, consent: false });
     }
   };

@@ -77,7 +77,7 @@ const AdminDashboard = () => {
       id: 1,
       title: 'Tổng số học sinh',
       value: dashboardData.numberOfStudents?.toLocaleString() || '0',
-      change: '+12.5%',
+
       isPositive: true,
       icon: FaUserGraduate,
       color: 'primary',
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
       id: 2,
       title: 'Tổng số phụ huynh',
       value: dashboardData.numberOfParents?.toLocaleString() || '0',
-      change: '+8.2%',
+
       isPositive: true,
       icon: FaUsers,
       color: 'success',
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
       id: 3,
       title: 'Tổng số y tá',
       value: dashboardData.numberOfNurses?.toLocaleString() || '0',
-      change: '+2.1%',
+
       isPositive: true,
       icon: FaUserMd,
       color: 'info',
@@ -110,7 +110,7 @@ const AdminDashboard = () => {
       id: 4,
       title: 'Đơn thuốc chờ xử lý',
       value: dashboardData.pendingMedicationsNumber?.toLocaleString() || '0',
-      change: '-5.2%',
+
       isPositive: false,
       icon: FaPills,
       color: 'warning',
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
     {
       name: 'Chờ xử lý',
       value: dashboardData.pendingMedicationsNumber || 0,
-      color: '#FF9800',
+      color: '#FFA62B',
       percentage: dashboardData.pendingMedicationsNumber ? ((dashboardData.pendingMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
     },
     {
@@ -158,7 +158,7 @@ const AdminDashboard = () => {
       percentage: dashboardData.completedMedicationsNumber ? ((dashboardData.completedMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
     }
   ] : [
-    { name: 'Chờ xử lý', value: 0, color: '#FF9800', percentage: 0 },
+    { name: 'Chờ xử lý', value: 0, color: '#FFA62B', percentage: 0 },
     { name: 'Đang xử lý', value: 0, color: '#2196F3', percentage: 0 },
     { name: 'Hoàn thành', value: 0, color: '#4CAF50', percentage: 0 }
   ];
@@ -276,7 +276,7 @@ const AdminDashboard = () => {
             <div className="col-lg-12 text-center">
               <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
                 <div className="text-center">
-                  <FaSpinner className="fa-spin mb-3" size={48} style={{ color: '#FF9500' }} />
+                  <FaSpinner className="fa-spin mb-3" size={48} style={{ color: '#4ECDC4' }} />
                   <h4>Đang tải dữ liệu dashboard...</h4>
                   <p className="text-muted">Vui lòng chờ trong giây lát</p>
                 </div>
@@ -324,22 +324,7 @@ const AdminDashboard = () => {
           </div>
           <div className="col-lg-4 text-end">
             <div className="d-flex gap-3 justify-content-end align-items-center">
-              <select
-                value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="form-select admin-btn-secondary"
-                style={{
-                  width: 'auto',
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: 'black'
-                }}
-              >
-                <option value="7days">7 ngày qua</option>
-                <option value="30days">30 ngày qua</option>
-                <option value="90days">3 tháng qua</option>
-                <option value="year">Năm nay</option>
-              </select>
+
 
             </div>
           </div>
@@ -362,10 +347,7 @@ const AdminDashboard = () => {
                   <div className="admin-stat-icon">
                     <Icon />
                   </div>
-                  <div className={`admin-stat-change ${stat.isPositive ? 'positive' : 'negative'}`}>
-                    {stat.isPositive ? <FaArrowUp /> : <FaArrowDown />}
-                    {stat.change}
-                  </div>
+
                 </div>
                 <div className="admin-stat-value">{stat.value}</div>
                 <div className="admin-stat-label">{stat.title}</div>
@@ -421,12 +403,12 @@ const AdminDashboard = () => {
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="medicalEventsGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#FF9500" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#FF9500" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#4ECDC4" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#4ECDC4" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="healthGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#9C27B0" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#9C27B0" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#26D0CE" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#26D0CE" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="medicinesGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.3} />
@@ -448,7 +430,7 @@ const AdminDashboard = () => {
                     <Area
                       type="monotone"
                       dataKey="medical_events"
-                      stroke="#FF9500"
+                      stroke="#4ECDC4"
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#medicalEventsGradient)"
@@ -457,7 +439,7 @@ const AdminDashboard = () => {
                     <Area
                       type="monotone"
                       dataKey="health_checks"
-                      stroke="#9C27B0"
+                      stroke="#26D0CE"
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#healthGradient)"
@@ -570,7 +552,7 @@ const AdminDashboard = () => {
                         style={{
                           width: '40px',
                           height: '40px',
-                          background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                          background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                           color: 'white',
                           fontSize: '0.875rem'
                         }}
@@ -613,18 +595,18 @@ const AdminDashboard = () => {
                           className={`w-100 p-3 border-0 rounded-3 admin-animate-scale`}
                           style={{
                             animationDelay: `${index * 0.1}s`,
-                            background: 'linear-gradient(135deg, #FFFFFF, #FFF8F3)',
-                            border: '1px solid rgba(255, 149, 0, 0.1)',
+                            background: 'linear-gradient(135deg, #FFFFFF, #F8FFFE)',
+                            border: '1px solid rgba(78, 205, 196, 0.1)',
                             transition: 'all 0.3s ease',
                             cursor: 'pointer'
                           }}
                           onMouseEnter={(e) => {
                             e.target.style.transform = 'translateY(-4px)';
-                            e.target.style.boxShadow = '0 8px 32px rgba(255, 149, 0, 0.2)';
+                            e.target.style.boxShadow = '0 8px 32px rgba(78, 205, 196, 0.2)';
                           }}
                           onMouseLeave={(e) => {
                             e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 4px 16px rgba(255, 149, 0, 0.15)';
+                            e.target.style.boxShadow = '0 4px 16px rgba(78, 205, 196, 0.15)';
                           }}
                         >
                           <div className="text-start">
@@ -633,7 +615,7 @@ const AdminDashboard = () => {
                               style={{
                                 width: '40px',
                                 height: '40px',
-                                background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                                background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                                 color: 'white'
                               }}
                             >

@@ -10,6 +10,13 @@ import {
   Button,
   Badge
 } from "react-bootstrap";
+import architecturalConcept from '../../assets/architectural concept.jpg';
+import collegeStudentsImage from '../../assets/Op Ed_ Should College Students Avoid Debt_.jpg';
+import downloadImage from '../../assets/download.jpg';
+import healthCareImage from '../../assets/CHĂM SÓC SỨC KHỎE TOÀN DIỆN LÀ GÌ_.jpg';
+import medicineImage from '../../assets/Wednesday August 2nd 2023 CVS Health Layoffs 5000 Jobs Cut_ A Ripple Effect on our Economy and Lives.jpg';
+import securityImage from '../../assets/Las 8 mejores aplicaciones de seguridad personal.jpg';
+import supportImage from '../../assets/Dịch vụ hỗ trợ khách hàng tại Zaloqq.jpg';
 import {
   FaHeartbeat,
   FaUser,
@@ -79,14 +86,45 @@ const ParentDashboard = () => {
   return (
     <div className="parent-container">
       {/* Dashboard Header */}
-      <div className="parent-page-header parent-animate-fade-in">
-        <div className="parent-page-header-bg"></div>
-        <div className="parent-page-header-content">
-          <h1 className="parent-page-title">
-            <FaHeartbeat />
+      <div
+        className="parent-page-header parent-animate-fade-in"
+        style={{
+          position: 'relative',
+          minHeight: '400px',
+          backgroundImage: `linear-gradient(rgba(253, 248, 248, 0.81), rgba(255, 253, 253, 0.16)), url(${collegeStudentsImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div className="parent-page-header-content" style={{
+          position: 'relative',
+          zIndex: 2,
+          textAlign: 'center',
+          color: 'white',
+          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)'
+        }}>
+          <h1 className="parent-page-title" style={{
+            color: 'rgb(50, 179, 253)',
+            fontSize: '4rem',
+            fontWeight: 'bold',
+            marginBottom: '1.5rem',
+            textShadow: '3px 3px 6px rgba(0, 0, 0, 0.8)'
+          }}>
+            <FaHeartbeat className="me-3" />
             Chăm sóc sức khỏe học đường
           </h1>
-          <p className="parent-page-subtitle">
+          <p className="parent-page-subtitle" style={{
+            color: 'white',
+            fontSize: '1.3rem',
+            marginBottom: '2rem',
+            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+            maxWidth: '600px',
+            margin: '0 auto 2rem auto'
+          }}>
             Đồng hành cùng phụ huynh trong việc chăm sóc và theo dõi sức khỏe học sinh
           </p>
           <Button
@@ -94,178 +132,466 @@ const ParentDashboard = () => {
             to="/parent/more-know"
             className="parent-primary-btn mt-3"
             size="lg"
+            style={{
+              background: 'rgba(252, 252, 252, 0.71)',
+              border: 'none',
+              color: 'rgb(11, 92, 146)',
+              padding: '15px 30px',
+              fontSize: '1.3rem',
+              fontWeight: '500',
+              borderRadius: '50px',
+              boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'white';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.3)';
+            }}
           >
-            <FaBookOpen className="me-2" />
+            <FaBookOpen className="me-2" style={{ color: 'rgb(50, 179, 253)' }} />
             Tìm hiểu thêm
           </Button>
+          <div className="text-center mt-4">
+            <small style={{
+              color: 'rgb(255, 255, 255)',
+              fontSize: '1rem',
+              fontStyle: 'italic',
+              textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)'
+            }}>
+              🎓 Cùng nhau xây dựng tương lai tươi sáng cho thế hệ trẻ
+            </small>
+          </div>
         </div>
+        {/* Decorative overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, rgba(30, 126, 156, 0.1) 0%, rgba(240, 98, 146, 0.1) 100%)',
+          zIndex: 1
+        }}></div>
       </div>
 
       <Container>
         {/* Welcome Section */}
-        <div className="parent-card parent-animate-fade-in mb-4">
-          <div className="parent-card-header">
+        <div className="parent-card parent-animate-fade-in mb-4" style={{
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)), url(${architecturalConcept})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '300px'
+        }}>
+          <div className="parent-card-header" style={{ position: 'relative', zIndex: 2 }}>
             <h2 className="parent-card-title">
               <FaHome />
               Chào mừng đến với hệ thống quản lý sức khỏe
             </h2>
           </div>
-          <div className="parent-card-body">
+          <div className="parent-card-body" style={{ position: 'relative', zIndex: 2 }}>
             <Row className="align-items-center">
-              <Col md={8}>
-                <p className="mb-3" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-                  Hệ thống giúp phụ huynh theo dõi và quản lý sức khỏe của con em một cách chuyên nghiệp,
-                  đảm bảo an toàn và hiệu quả trong môi trường học đường.
-                </p>
-                <div className="d-flex gap-3 flex-wrap">
-                  <Badge bg="success" className="p-2">
-                    <FaShieldAlt className="me-2" />
-                    An toàn tuyệt đối
-                  </Badge>
-                  <Badge bg="primary" className="p-2">
-                    <FaUserMd className="me-2" />
-                    Đội ngũ chuyên nghiệp
-                  </Badge>
-                  <Badge bg="info" className="p-2">
-                    <FaClock className="me-2" />
-                    Hỗ trợ 24/7
-                  </Badge>
+              <Col md={5} className="text-center mb-4 mb-md-0">
+                <div className="welcome-image-container" style={{
+                  position: 'relative',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: '0 15px 35px rgba(30, 126, 156, 0.3)',
+                  transition: 'all 0.3s ease',
+                  transform: 'perspective(1000px) rotateY(-5deg)',
+                  background: 'white',
+                  padding: '10px'
+                }}>
+                  <img
+                    src={downloadImage}
+                    alt="Hệ thống quản lý sức khỏe hiện đại"
+                    style={{
+                      width: '100%',
+                      height: '280px',
+                      objectFit: 'cover',
+                      borderRadius: '15px',
+                      transition: 'transform 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.parentElement.style.transform = 'perspective(1000px) rotateY(0deg) translateY(-5px)';
+                      e.currentTarget.parentElement.style.boxShadow = '0 20px 40px rgba(30, 126, 156, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.parentElement.style.transform = 'perspective(1000px) rotateY(-5deg) translateY(0)';
+                      e.currentTarget.parentElement.style.boxShadow = '0 15px 35px rgba(30, 126, 156, 0.3)';
+                    }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '15px',
+                    right: '15px',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '50%',
+                    width: '50px',
+                    height: '50px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                    color: 'var(--parent-primary)',
+                    fontSize: '1.5rem'
+                  }}>
+                    <FaHeartbeat />
+                  </div>
                 </div>
               </Col>
-              <Col md={4} className="text-center">
-                <div className="parent-stat-icon" style={{ margin: '0 auto', transform: 'scale(1.2)' }}>
-                  <FaGraduationCap />
+              <Col md={7}>
+                <div className="welcome-content">
+                  <p className="mb-4" style={{
+                    fontSize: '1.3rem',
+                    lineHeight: '1.7',
+                    fontWeight: '500',
+                    color: '#2d3748',
+                    textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)',
+                    marginBottom: '1.5rem'
+                  }}>
+                    Hệ thống giúp phụ huynh theo dõi và quản lý sức khỏe của con em một cách chuyên nghiệp,
+                    đảm bảo an toàn và hiệu quả trong môi trường học đường hiện đại.
+                  </p>
+                  <div className="d-flex gap-3 flex-wrap mb-4">
+                    <Badge bg="success" className="p-3" style={{
+                      fontSize: '1rem',
+                      boxShadow: '0 6px 20px rgba(40, 167, 69, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '25px'
+                    }}>
+                      <FaShieldAlt className="me-2" />
+                      An toàn tuyệt đối
+                    </Badge>
+                    <Badge bg="primary" className="p-3" style={{
+                      fontSize: '1rem',
+                      boxShadow: '0 6px 20px rgba(0, 123, 255, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '25px'
+                    }}>
+                      <FaUserMd className="me-2" />
+                      Đội ngũ chuyên nghiệp
+                    </Badge>
+                    <Badge bg="info" className="p-3" style={{
+                      fontSize: '1rem',
+                      boxShadow: '0 6px 20px rgba(23, 162, 184, 0.3)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      borderRadius: '25px'
+                    }}>
+                      <FaClock className="me-2" />
+                      Hỗ trợ 24/7
+                    </Badge>
+                  </div>
+                  <div className="features-highlight" style={{
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '15px',
+                    padding: '20px',
+                    border: '1px solid rgba(30, 126, 156, 0.2)',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    <div className="d-flex align-items-center mb-2">
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'var(--parent-gradient-button)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        marginRight: '15px'
+                      }}>
+                        <FaGraduationCap />
+                      </div>
+                      <div>
+                        <h6 className="mb-1" style={{ color: 'var(--parent-primary)', fontWeight: 'bold' }}>
+                          Công nghệ hiện đại
+                        </h6>
+                        <small style={{
+                          color: '#6c757d',
+                          fontSize: '0.9rem',
+                          fontStyle: 'italic'
+                        }}>
+                          🏫 Môi trường học đường thông minh với concept kiến trúc tiên tiến
+                        </small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Col>
             </Row>
           </div>
+          {/* Decorative overlay */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(45deg, rgba(30, 126, 156, 0.05) 0%, rgba(240, 98, 146, 0.05) 100%)',
+            zIndex: 1
+          }}></div>
         </div>
 
         {/* Statistics Dashboard */}
         <Row className="g-4 mb-5">
           <Col lg={3} md={6}>
-            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
-              <div className="parent-stat-icon">
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`} style={{
+              position: 'relative',
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.75)), url(${healthCareImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              border: '2px solid rgba(240, 98, 146, 0.3)',
+              boxShadow: '0 8px 25px rgba(240, 98, 146, 0.2)',
+              overflow: 'hidden'
+            }}>
+              <div className="parent-stat-icon" style={{
+                background: 'linear-gradient(135deg, #E91E63 0%, #F06292 100%)',
+                boxShadow: '0 6px 20px rgba(233, 30, 99, 0.4)',
+                position: 'relative',
+                zIndex: 2
+              }}>
                 <FaHeartbeat />
               </div>
-              <div className="parent-stat-value">24/7</div>
-              <div className="parent-stat-label">Chăm sóc sức khỏe</div>
+              <div className="parent-stat-value" style={{
+                color: '#E91E63',
+                fontWeight: 'bold',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>24/7</div>
+              <div className="parent-stat-label" style={{
+                color: '#2d3748',
+                fontWeight: '600',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>Chăm sóc sức khỏe</div>
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                width: '30px',
+                height: '30px',
+                background: 'rgba(233, 30, 99, 0.9)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '0.8rem',
+                zIndex: 1
+              }}>
+                ❤️
+              </div>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(233, 30, 99, 0.05) 0%, rgba(240, 98, 146, 0.05) 100%)',
+                zIndex: 1
+              }}></div>
             </div>
           </Col>
           <Col lg={3} md={6}>
-            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
-              <div className="parent-stat-icon">
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`} style={{
+              position: 'relative',
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.75)), url(${medicineImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              border: '2px solid rgba(23, 162, 184, 0.3)',
+              boxShadow: '0 8px 25px rgba(23, 162, 184, 0.2)',
+              overflow: 'hidden'
+            }}>
+              <div className="parent-stat-icon" style={{
+                background: 'linear-gradient(135deg, #17a2b8 0%, #20c997 100%)',
+                boxShadow: '0 6px 20px rgba(23, 162, 184, 0.4)',
+                position: 'relative',
+                zIndex: 2
+              }}>
                 <FaPills />
               </div>
-              <div className="parent-stat-value">100%</div>
-              <div className="parent-stat-label">Quản lý thuốc</div>
+              <div className="parent-stat-value" style={{
+                color: '#17a2b8',
+                fontWeight: 'bold',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>100%</div>
+              <div className="parent-stat-label" style={{
+                color: '#2d3748',
+                fontWeight: '600',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>Quản lý thuốc</div>
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                width: '30px',
+                height: '30px',
+                background: 'rgba(23, 162, 184, 0.9)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '0.8rem',
+                zIndex: 1
+              }}>
+                💊
+              </div>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(23, 162, 184, 0.05) 0%, rgba(32, 201, 151, 0.05) 100%)',
+                zIndex: 1
+              }}></div>
             </div>
           </Col>
           <Col lg={3} md={6}>
-            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
-              <div className="parent-stat-icon">
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`} style={{
+              position: 'relative',
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.75)), url(${securityImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              border: '2px solid rgba(40, 167, 69, 0.3)',
+              boxShadow: '0 8px 25px rgba(40, 167, 69, 0.2)',
+              overflow: 'hidden'
+            }}>
+              <div className="parent-stat-icon" style={{
+                background: 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                boxShadow: '0 6px 20px rgba(40, 167, 69, 0.4)',
+                position: 'relative',
+                zIndex: 2
+              }}>
                 <FaShieldAlt />
               </div>
-              <div className="parent-stat-value">Safe</div>
-              <div className="parent-stat-label">An toàn tuyệt đối</div>
+              <div className="parent-stat-value" style={{
+                color: '#28a745',
+                fontWeight: 'bold',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>Safe</div>
+              <div className="parent-stat-label" style={{
+                color: '#2d3748',
+                fontWeight: '600',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>An toàn tuyệt đối</div>
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                width: '30px',
+                height: '30px',
+                background: 'rgba(40, 167, 69, 0.9)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '0.8rem',
+                zIndex: 1
+              }}>
+                🛡️
+              </div>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(32, 201, 151, 0.05) 100%)',
+                zIndex: 1
+              }}></div>
             </div>
           </Col>
           <Col lg={3} md={6}>
-            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`}>
-              <div className="parent-stat-icon">
+            <div className={`parent-stat-card parent-animate-fade-in ${animateStats ? 'animate-in' : ''}`} style={{
+              position: 'relative',
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.75)), url(${supportImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              border: '2px solid rgba(255, 152, 0, 0.3)',
+              boxShadow: '0 8px 25px rgba(255, 152, 0, 0.2)',
+              overflow: 'hidden'
+            }}>
+              <div className="parent-stat-icon" style={{
+                background: 'linear-gradient(135deg, #ff9800 0%, #ff6f00 100%)',
+                boxShadow: '0 6px 20px rgba(255, 152, 0, 0.4)',
+                position: 'relative',
+                zIndex: 2
+              }}>
                 <FaUserMd />
               </div>
-              <div className="parent-stat-value">Pro</div>
-              <div className="parent-stat-label">Hỗ trợ chuyên nghiệp</div>
+              <div className="parent-stat-value" style={{
+                color: '#ff9800',
+                fontWeight: 'bold',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>Pro</div>
+              <div className="parent-stat-label" style={{
+                color: '#2d3748',
+                fontWeight: '600',
+                textShadow: '1px 1px 2px rgba(255, 255, 255, 0.8)',
+                position: 'relative',
+                zIndex: 2
+              }}>Hỗ trợ chuyên nghiệp</div>
+              <div style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                width: '30px',
+                height: '30px',
+                background: 'rgba(255, 152, 0, 0.9)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '0.8rem',
+                zIndex: 1
+              }}>
+                🎧
+              </div>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 111, 0, 0.05) 100%)',
+                zIndex: 1
+              }}></div>
             </div>
           </Col>
         </Row>
 
-        {/* Quick Actions */}
-        <div className="parent-card parent-animate-slide-in mb-5">
-          <div className="parent-card-header">
-            <h2 className="parent-card-title">
-              <FaChartLine />
-              Thao tác nhanh
-            </h2>
-          </div>
-          <div className="parent-card-body">
-            <Row className="g-3">
-              <Col lg={3} md={6}>
-                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
-                  <Card.Body className="text-center p-4">
-                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
-                      <FaClipboardList />
-                    </div>
-                    <h6 className="fw-bold mb-2">Khai báo sức khỏe</h6>
-                    <p className="text-muted small mb-3">Khai báo tình trạng sức khỏe hằng ngày</p>
-                    <Button
-                      as={Link}
-                      to="/parent/health-declaration"
-                      className="parent-primary-btn btn-sm"
-                    >
-                      Khai báo
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col lg={3} md={6}>
-                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
-                  <Card.Body className="text-center p-4">
-                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
-                      <FaPills />
-                    </div>
-                    <h6 className="fw-bold mb-2">Gửi thuốc</h6>
-                    <p className="text-muted small mb-3">Gửi thông tin thuốc cho học sinh</p>
-                    <Button
-                      as={Link}
-                      to="/parent/send-medicine"
-                      className="parent-primary-btn btn-sm"
-                    >
-                      Gửi thuốc
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col lg={3} md={6}>
-                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
-                  <Card.Body className="text-center p-4">
-                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
-                      <FaStethoscope />
-                    </div>
-                    <h6 className="fw-bold mb-2">Lịch sử sức khỏe</h6>
-                    <p className="text-muted small mb-3">Xem lại lịch sử chăm sóc sức khỏe</p>
-                    <Button
-                      as={Link}
-                      to="/parent/health-history"
-                      className="parent-primary-btn btn-sm"
-                    >
-                      Xem lịch sử
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col lg={3} md={6}>
-                <Card className="border-0 h-100" style={{ background: 'linear-gradient(135deg, #e6f3ff 0%, #ffffff 100%)', borderRadius: '1rem' }}>
-                  <Card.Body className="text-center p-4">
-                    <div style={{ width: '50px', height: '50px', background: 'var(--parent-gradient-button)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: 'white', fontSize: '1.25rem' }}>
-                      <FaBell />
-                    </div>
-                    <h6 className="fw-bold mb-2">Thông báo</h6>
-                    <p className="text-muted small mb-3">Xem các thông báo quan trọng</p>
-                    <Button
-                      as={Link}
-                      to="/parent/notifications"
-                      className="parent-primary-btn btn-sm"
-                    >
-                      Xem thông báo
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </div>
-        </div>
+
 
         {/* Features Section */}
         <div className="parent-card parent-animate-scale-in mb-5">
