@@ -15,6 +15,34 @@ namespace backend.Controllers
         {
             _excelService = excelService;
         }
+        [HttpGet("export-form-students-and-parents")]
+        public async Task<IActionResult> ExportStudentsAndParentsToExcel()
+        {
+            try
+            {
+                var fileContent = await _excelService.ExportStudentsAndParentFromExcelAsync();
+                if (fileContent == null || fileContent.Length == 0)
+                {
+                    return NotFound(new BaseResponse<string>
+                    {
+                        Data = null,
+                        Message = "No data found for export.",
+                        Success = false
+                    });
+                }
+
+                return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "StudentsAndParents.xlsx");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>
+                {
+                    Data = null,
+                    Message = $"Error exporting students and parents: {ex.Message}",
+                    Success = false
+                });
+            }
+        }
 
         [HttpPost("import-students-and-parents")]
         public async Task<IActionResult> ImportStudentsAndParentsFromExcel(IFormFile file)

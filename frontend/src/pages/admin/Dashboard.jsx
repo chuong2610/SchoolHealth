@@ -39,6 +39,12 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 const COLORS = ["#00c6fb", "#43e97b", "#7f53ac", "#647dee"];
+const PIE_COLORS = [
+  "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#FFD166", "#06D6A0", "#118AB2", "#EF476F"
+];
+function getRandomColor() {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({});
@@ -118,12 +124,24 @@ const Dashboard = () => {
 
         // Process Medical Supplies data from API
         if (data.medicalSupplies && Array.isArray(data.medicalSupplies)) {
-          const suppliesForChart = data.medicalSupplies.map((supply, index) => ({
+          // Sort by quantity desc
+          const sorted = [...data.medicalSupplies].sort((a, b) => b.quantity - a.quantity);
+          let topSupplies = sorted.slice(0, 6);
+          let otherSupplies = sorted.slice(6);
+          let chartData = topSupplies.map((supply, idx) => ({
             name: supply.name,
             value: supply.quantity,
-            fill: `url(#gradient${index})`
+            fill: PIE_COLORS[idx] || getRandomColor()
           }));
-          setMedicalSuppliesData(suppliesForChart);
+          if (otherSupplies.length > 0) {
+            const otherTotal = otherSupplies.reduce((sum, s) => sum + s.quantity, 0);
+            chartData.push({
+              name: "Khác",
+              value: otherTotal,
+              fill: PIE_COLORS[chartData.length] || getRandomColor()
+            });
+          }
+          setMedicalSuppliesData(chartData);
         }
 
         // Process Medications data from API
@@ -298,7 +316,7 @@ const Dashboard = () => {
                         {medicalSuppliesData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={entry.fill || `url(#gradient${index % 6})`}
+                            fill={entry.fill}
                           />
                         ))}
                       </Pie>
@@ -317,6 +335,11 @@ const Dashboard = () => {
                         verticalAlign="bottom"
                         height={36}
                         formatter={(value) => <span style={{ color: 'var(--text-primary)', fontSize: '12px', fontWeight: '500' }}>{value}</span>}
+                        payload={medicalSuppliesData.map((entry, idx) => ({
+                          value: entry.name,
+                          type: "square",
+                          color: entry.fill
+                        }))}
                       />
                     </PieChart>
                   </ResponsiveContainer>

@@ -330,7 +330,11 @@ export default function Notifications() {
   }, []);
 
   // Filtered notifications
-  const filtered = notifications.filter(
+  // Loại bỏ trùng lặp theo id
+  const uniqueNotifications = Array.from(
+    new Map(notifications.map(n => [n.id, n])).values()
+  );
+  const filtered = uniqueNotifications.filter(
     (n) =>
       (activeTab === "all" || n.type === activeTab) &&
       (n.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -468,8 +472,8 @@ export default function Notifications() {
           )}
         </MainCard>
         {modal.show && (
-          <ModalOverlay>
-            <ModalBox>
+          <ModalOverlay onClick={closeModal}>
+            <ModalBox onClick={(e) => e.stopPropagation()}>
               <ModalClose onClick={closeModal}>&times;</ModalClose>
               <ModalTitle>{modal.notification?.title}</ModalTitle>
               <div className="medicine-detail-card" style={{ marginBottom: 0 }}>
@@ -486,9 +490,9 @@ export default function Notifications() {
                     <div className="medicine-label"><i className="fas fa-user me-2"></i>Học sinh</div>
                     <div className="medicine-detail-value">{modal.notification?.studentName || "---"}</div>
                   </div>
-                  
+
                 </div>
-                
+
                 <div style={{ marginTop: 8 }}>
                   <div className="medicine-label" style={{ color: '#2563eb', fontWeight: 700, marginBottom: 6 }}><i className="fas fa-info-circle me-2"></i>Nội dung</div>
                   <div className="medicine-detail-value">{modal.notification?.message || ""}</div>
@@ -509,7 +513,7 @@ export default function Notifications() {
                   </span>
                 </div>
               </div>
-              {modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận" ? (
+              {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
                 <div style={{ marginBottom: 12 }}>
                   <b>Ý kiến:</b>
                   <ModalInput
@@ -519,7 +523,7 @@ export default function Notifications() {
                     rows={3}
                   />
                 </div>
-              ) : null}
+              )}
               <ModalFooter>
                 <ActionButton
                   style={{ background: "#e0e0e0", color: "#2563eb" }}

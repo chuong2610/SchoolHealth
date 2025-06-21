@@ -1,4 +1,5 @@
 import React from "react";
+import "../../styles/parent-theme.css";
 
 const parentInfo = {
   avatar: "https://randomuser.me/api/portraits/men/32.jpg",
@@ -9,6 +10,7 @@ const parentInfo = {
   address: "123 Đường Lê Lợi, Quận 1, TP.HCM",
   dob: "15/05/1980",
   gender: "Nam",
+  role: "Phụ huynh",
   children: [
     {
       name: "Nguyễn Văn C",
@@ -20,88 +22,71 @@ const parentInfo = {
 
 const Profile = () => {
   return (
-    <div
-      style={{ background: "#f5f7fa", minHeight: "100vh", padding: "32px 0" }}
-    >
-      <div className="container" style={{ maxWidth: 600 }}>
-        <div
-          className="card shadow-sm border-0 rounded-4 p-4"
-          style={{ margin: "0 auto" }}
-        >
-          <div className="d-flex flex-column align-items-center mb-4">
+    <div className="parent-bg-img parent-theme" style={{ minHeight: "00vh", padding: "20px 0" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
+        <div className="parent-card" style={{ borderRadius: 24, boxShadow: "0 4px 24px rgba(56,182,255,0.10)", padding: 36, margin: "0 auto" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 24 }}>
             <img
               src={parentInfo.avatar}
               alt="Avatar"
-              className="rounded-circle mb-3"
               style={{
-                width: 110,
-                height: 110,
+                width: 120,
+                height: 120,
                 objectFit: "cover",
-                border: "4px solid #e5e7eb",
+                borderRadius: "50%",
+                border: "5px solid #e5e7eb",
+                marginBottom: 12,
+                boxShadow: "0 2px 12px rgba(56,182,255,0.12)"
               }}
             />
-            <h2 className="fw-bold mb-1" style={{ fontSize: 28 }}>
-              {parentInfo.name}
-            </h2>
-            <span
-              className="badge bg-primary mb-2"
-              style={{ fontSize: 16, borderRadius: 8 }}
-            >
-              Mã phụ huynh: {parentInfo.code}
+            <div style={{ fontWeight: 800, fontSize: 28, color: "#1a365d", marginBottom: 6, textAlign: "center" }}>{parentInfo.name}</div>
+            <span style={{ background: "#2563eb", color: "#fff", borderRadius: 10, padding: "4px 18px", fontWeight: 600, fontSize: 16, marginBottom: 8, display: "inline-block" }}>
+              Vai trò: {parentInfo.role}
             </span>
             <button
-              className="btn btn-outline-primary px-4"
-              style={{ borderRadius: 8 }}
+              className="parent-btn"
+              style={{ borderRadius: 10, fontWeight: 600, fontSize: 16, marginBottom: 0, marginTop: 2, padding: "8px 28px", background: "#2563eb" }}
               disabled
             >
-              <i className="fas fa-edit me-2"></i>Chỉnh sửa
+              <i className="fas fa-edit" style={{ marginRight: 8 }}></i>Chỉnh sửa
             </button>
           </div>
-          <div className="row mb-3">
-            <div className="col-6 mb-2">
-              <i className="fas fa-envelope me-2 text-secondary"></i>Email:
-              <br />
-              <span className="fw-semibold">{parentInfo.email}</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 0 }}>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-envelope" style={{ marginRight: 7 }}></i>Email:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.email}</div>
             </div>
-            <div className="col-6 mb-2">
-              <i className="fas fa-phone me-2 text-secondary"></i>Số điện thoại:
-              <br />
-              <span className="fw-semibold">{parentInfo.phone}</span>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-phone" style={{ marginRight: 7 }}></i>Số điện thoại:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.phone}</div>
             </div>
-            <div className="col-6 mb-2">
-              <i className="fas fa-map-marker-alt me-2 text-secondary"></i>Địa
-              chỉ:
-              <br />
-              <span className="fw-semibold">{parentInfo.address}</span>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-map-marker-alt" style={{ marginRight: 7 }}></i>Địa chỉ:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.address}</div>
             </div>
-            <div className="col-6 mb-2">
-              <i className="fas fa-birthday-cake me-2 text-secondary"></i>Ngày
-              sinh:
-              <br />
-              <span className="fw-semibold">{parentInfo.dob}</span>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-birthday-cake" style={{ marginRight: 7 }}></i>Ngày sinh:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.dob}</div>
             </div>
-            <div className="col-6 mb-2">
-              <i className="fas fa-venus-mars me-2 text-secondary"></i>Giới
-              tính:
-              <br />
-              <span className="fw-semibold">{parentInfo.gender}</span>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-venus-mars" style={{ marginRight: 7 }}></i>Giới tính:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.gender}</div>
+            </div>
+            <div style={{ flex: "1 1 50%", minWidth: 200, marginBottom: 18 }}>
+              <div style={{ color: "#888", fontWeight: 600, fontSize: 15, marginBottom: 2 }}><i className="fas fa-id-card" style={{ marginRight: 7 }}></i>Mã phụ huynh:</div>
+              <div style={{ fontWeight: 500, color: "#1a365d" }}>{parentInfo.code}</div>
             </div>
           </div>
-          <div className="mt-3">
-            <div className="fw-bold mb-2" style={{ fontSize: 18 }}>
-              Học sinh liên quan
-            </div>
-            <ul className="list-group">
+          <div style={{ marginTop: 24 }}>
+            <div style={{ fontWeight: 700, fontSize: 18, color: "#2563eb", marginBottom: 10 }}>Học sinh liên quan</div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {parentInfo.children.map((child, idx) => (
-                <li
-                  key={idx}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span>
-                    <i className="fas fa-user-graduate me-2 text-secondary"></i>
+                <li key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#f0f5ff", borderRadius: 10, padding: "10px 18px", marginBottom: 8, boxShadow: "0 2px 8px rgba(56,182,255,0.06)" }}>
+                  <span style={{ fontWeight: 500, color: "#1a365d" }}>
+                    <i className="fas fa-user-graduate" style={{ marginRight: 8, color: "#2563eb" }}></i>
                     {child.name} ({child.class})
                   </span>
-                  <span className="badge bg-info text-white">{child.id}</span>
+                  <span style={{ background: "#38b6ff", color: "#fff", borderRadius: 8, padding: "4px 14px", fontWeight: 600, fontSize: 15 }}>{child.id}</span>
                 </li>
               ))}
             </ul>

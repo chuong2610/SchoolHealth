@@ -9,6 +9,7 @@ import { Dropdown, Button, Modal } from "antd";
 import "../styles/parent-theme.css";
 import "../styles/admin-theme.css";
 import "../styles/nurse-theme.css";
+import "../styles/sidebar.css";
 
 const MainLayout = ({ children }) => {
   const location = useLocation();
@@ -39,14 +40,7 @@ const MainLayout = ({ children }) => {
           { path: "/parent/notifications", label: "Thông báo", icon: "fas fa-bell" },
           { path: "/parent/health-history", label: "Lịch sử sức khỏe", icon: "fas fa-history" },
         ];
-      case "student":
-        return [
-          { path: "/student/dashboard", label: "Trang chủ", icon: "fas fa-home" },
-          { path: "/student/health-info", label: "Thông tin sức khỏe", icon: "fas fa-user-friends" },
-          { path: "/student/health-events", label: "Lịch sử sự kiện", icon: "fas fa-clipboard-list" },
-          { path: "/student/vaccination-history", label: "Tiêm chủng & Khám sức khỏe", icon: "fas fa-syringe" },
-          { path: "/student/notifications", label: "Thông báo", icon: "fas fa-bell" },
-        ];
+      
       case "nurse":
         return [
           { path: "/nurse/dashboard", label: "Trang chủ", icon: "fas fa-home" },
@@ -74,8 +68,7 @@ const MainLayout = ({ children }) => {
         return 'parent-theme';
       case 'nurse':
         return 'nurse-theme';
-      case 'student':
-        return 'student-theme';
+     
       default:
         return '';
     }
@@ -177,29 +170,30 @@ const MainLayout = ({ children }) => {
       )}
 
       {/* Main Content */}
-      <div className="flex-grow-1" style={getMainContentStyle()}>
+      <div className="flex-grow-1" style={{ ...getMainContentStyle(), padding: '0px' }}>
         {/* Header */}
         <header
           className={`header w-100 ${user?.role}-header border-bottom`}
           style={{
-            height: '56px',
+            height: '53px',
+            width: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 24px',
-            background: user?.role === 'parent' ? 'transparent' : '#ffffff'
+            padding: '0 29px',
+            background: '#ffffff'
           }}
         >
           {/* Left: Logo + tên hệ thống */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: user?.role === 'parent' ? 0 : 70 }}>
-            <FaHeartbeat style={{ color: '#2563eb', fontSize: 40 }} />
-            <span className="fw-bold fs-5" style={{ color: '#2563eb' }}>School Health</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginLeft: user?.role === 'parent' ? 20 : 70 }}>
+            <FaHeartbeat style={{ color: '#2563eb', fontSize: 50 }} />
+            <span className="fw-bold fs-2" style={{ color: '#2563eb'}}>School Health</span>
           </div>
 
           {/* Right: Navigation menu + avatar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 32}}>
             {user?.role === 'parent' && (
-              <nav style={{ display: 'flex', gap: '24px' }}>
+              <nav style={{ display: 'flex', gap: '28px' }}>
                 {parentMenu.map((item) => (
                   <Link
                     key={item.path}
@@ -256,7 +250,7 @@ const MainLayout = ({ children }) => {
         </header>
 
         {/* Main Content Wrapper */}
-        <div style={{ marginTop: '20px', padding: '20px' }}>
+        <div style={{ marginTop: '10px', padding: '20px' }}>
           <main>
             <Outlet />
           </main>

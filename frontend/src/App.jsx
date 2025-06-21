@@ -94,7 +94,9 @@ const App = () => {
     <AuthProvider>
       <ToastContainer />
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginLayout />}>
+          <Route index element={<Login />} />
+        </Route>
         <Route path="/auth/google/callback" element={<AuthCallback />} />
         {/* Public Routes */}
         <Route path="/" element={<MainLayout />} />
