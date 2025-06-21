@@ -61,11 +61,10 @@ namespace backend.Services
             {
                 Items = postDtos,
                 TotalPages = totalPages,
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber,
+                TotalItems = totalPosts
             };
         }
-
-
 
         public async Task<BlogPostDetailDTO> GetByIdAsync(int id)
         {

@@ -88,12 +88,23 @@ namespace backend.Repositories
                 .Where(u => u.IsActive)
                 .ToListAsync();
         }
-        public async Task<List<User>> GetUsersByRoleAsync(string role)
+        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.Role.Name == role && u.IsActive) // Chỉ lấy user active
+                .OrderBy(u => u.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountUsersByRoleAsync(string role)
         {
             return await _context.Users
                 .Include(u => u.Role)
                 .Where(u => u.Role.Name == role && u.IsActive)
-                .ToListAsync();
+                .CountAsync();
         }
 
         public Task<int> GetNumberOfUsersAsync(string role)

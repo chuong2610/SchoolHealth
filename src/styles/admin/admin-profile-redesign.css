@@ -1,0 +1,258 @@
+/* ========================================
+   ADMIN PROFILE REDESIGN - ORANGE TO PURPLE GRADIENT
+   ======================================== */
+
+/* Container and Header */
+.admin-profile-container {
+    background: linear-gradient(135deg, #FFF3E0 0%, #F3E5F5 100%) !important;
+    min-height: 100vh !important;
+    padding: 2rem !important;
+    font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.admin-profile-header {
+    background: linear-gradient(135deg, #FF9500 0%, #FF7043 50%, #9C27B0 100%) !important;
+    color: white !important;
+    padding: 2.5rem 2rem !important;
+    border-radius: 0 0 24px 24px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.2) !important;
+}
+
+.admin-profile-title {
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    margin: 0 0 0.5rem 0 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.admin-profile-subtitle {
+    font-size: 1.1rem !important;
+    opacity: 0.9 !important;
+    margin: 0 !important;
+    font-weight: 400 !important;
+}
+
+/* Profile Content */
+.admin-profile-content {
+    display: grid !important;
+    grid-template-columns: 1fr 2fr !important;
+    gap: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Profile Card */
+.admin-profile-card {
+    background: white !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15) !important;
+    border: 1px solid rgba(255, 149, 0, 0.1) !important;
+    text-align: center !important;
+    height: fit-content !important;
+}
+
+.admin-profile-avatar {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    margin: 0 auto 1.5rem auto !important;
+    background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 3rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 8px 24px rgba(255, 149, 0, 0.3) !important;
+}
+
+.admin-profile-name {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #424242 !important;
+    margin: 0 0 0.5rem 0 !important;
+}
+
+.admin-profile-role {
+    background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 20px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    display: inline-block !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.admin-profile-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+    margin-top: 1.5rem !important;
+}
+
+.admin-profile-stat {
+    text-align: center !important;
+    padding: 1rem !important;
+    background: linear-gradient(135deg, #FFF8F3, #FDF4FF) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 149, 0, 0.1) !important;
+}
+
+.admin-profile-stat-value {
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    color: #FF9500 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+}
+
+.admin-profile-stat-label {
+    font-size: 0.75rem !important;
+    color: #757575 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-top: 0.25rem !important;
+}
+
+/* Form Section */
+.admin-profile-form {
+    background: white !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    box-shadow: 0 8px 32px rgba(255, 149, 0, 0.15) !important;
+    border: 1px solid rgba(255, 149, 0, 0.1) !important;
+}
+
+.admin-profile-form-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #424242 !important;
+    margin: 0 0 1.5rem 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+.admin-profile-form-group {
+    margin-bottom: 1.5rem !important;
+}
+
+.admin-profile-form-label {
+    font-weight: 600 !important;
+    color: #424242 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.95rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.admin-profile-form-control {
+    border: 2px solid rgba(255, 149, 0, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 1rem !important;
+    font-size: 0.95rem !important;
+    background: #FAFAFA !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+.admin-profile-form-control:focus {
+    border-color: #FF9500 !important;
+    box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.1) !important;
+    background: white !important;
+    outline: none !important;
+}
+
+.admin-profile-form-actions {
+    display: flex !important;
+    gap: 1rem !important;
+    margin-top: 2rem !important;
+}
+
+.admin-profile-btn {
+    flex: 1 !important;
+    padding: 0.875rem 1.5rem !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.admin-profile-btn.save {
+    background: linear-gradient(135deg, #FF9500, #9C27B0) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(255, 149, 0, 0.3) !important;
+}
+
+.admin-profile-btn.cancel {
+    background: #E0E0E0 !important;
+    color: #757575 !important;
+}
+
+.admin-profile-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-profile-container {
+        padding: 1rem !important;
+    }
+
+    .admin-profile-header {
+        padding: 2rem 1rem !important;
+    }
+
+    .admin-profile-title {
+        font-size: 1.75rem !important;
+    }
+
+    .admin-profile-content {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem !important;
+    }
+
+    .admin-profile-stats {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-profile-form-actions {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-profile-title {
+        font-size: 1.5rem !important;
+    }
+
+    .admin-profile-subtitle {
+        font-size: 1rem !important;
+    }
+
+    .admin-profile-card {
+        padding: 1.5rem !important;
+    }
+
+    .admin-profile-form {
+        padding: 1.5rem !important;
+    }
+
+    .admin-profile-avatar {
+        width: 100px !important;
+        height: 100px !important;
+        font-size: 2.5rem !important;
+    }
+}

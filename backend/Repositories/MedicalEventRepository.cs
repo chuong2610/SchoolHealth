@@ -32,14 +32,22 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(me => me.Id == id);
         }
 
-        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync()
+        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize)
         {
             return await _context.MedicalEvents
                 .Include(me => me.Student)
                 .Include(me => me.Nurse)
                 .Include(me => me.MedicalEventSupplys)
-                .ThenInclude(mes => mes.MedicalSupply)
+                    .ThenInclude(mes => mes.MedicalSupply)
+                .OrderBy(me => me.Id) // Sắp xếp để phân trang ổn định
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<int> CountMedicalEventsAsync()
+        {
+            return await _context.MedicalEvents.CountAsync();
         }
 
         public async Task<List<MedicalEvent>> GetMedicalEventsTodayAsync()

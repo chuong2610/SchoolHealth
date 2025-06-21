@@ -8,7 +8,7 @@ namespace backend.Interfaces
     {
 
         Task<List<UserDTO>> GetAllUsersAsync();
-        Task<List<UserDTO>> GetUsersByRoleAsync(string role);
+        Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize);
         Task<bool> CreateUserAsync(CreateUserRequest request);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByPhoneAsync(string phone);

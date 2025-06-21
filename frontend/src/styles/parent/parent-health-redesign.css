@@ -1,0 +1,7 @@
+﻿/* Parent Health Specific Styles */
+.parent-health-card {
+  background: var(--parent-gradient-card);
+  border-radius: var(--parent-border-radius-lg);
+  padding: var(--parent-spacing-lg);
+  border: 1px solid rgba(30, 126, 156, 0.1);
+}

@@ -29,7 +29,11 @@
         },
         {
           "Name": "Last-Modified",
+<<<<<<< HEAD
           "Value": "Thu, 19 Jun 2025 05:31:53 GMT"
+=======
+          "Value": "Fri, 20 Jun 2025 16:36:43 GMT"
+>>>>>>> API/Blog
         }
       ],
       "EndpointProperties": [
@@ -74,7 +78,11 @@
         },
         {
           "Name": "Last-Modified",
+<<<<<<< HEAD
           "Value": "Thu, 19 Jun 2025 05:31:53 GMT"
+=======
+          "Value": "Fri, 20 Jun 2025 16:36:43 GMT"
+>>>>>>> API/Blog
         }
       ],
       "EndpointProperties": [
@@ -275,7 +283,11 @@
         },
         {
           "Name": "Last-Modified",
+<<<<<<< HEAD
           "Value": "Thu, 19 Jun 2025 05:31:53 GMT"
+=======
+          "Value": "Fri, 20 Jun 2025 16:36:43 GMT"
+>>>>>>> API/Blog
         }
       ],
       "EndpointProperties": [
@@ -320,7 +332,11 @@
         },
         {
           "Name": "Last-Modified",
+<<<<<<< HEAD
           "Value": "Thu, 19 Jun 2025 05:31:53 GMT"
+=======
+          "Value": "Fri, 20 Jun 2025 16:36:43 GMT"
+>>>>>>> API/Blog
         }
       ],
       "EndpointProperties": [

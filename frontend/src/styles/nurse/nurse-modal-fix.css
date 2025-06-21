@@ -1,0 +1,339 @@
+/* ====================================================================
+   NURSE MODAL FIX - PINK THEME MODAL OVERRIDES & RESPONSIVE FIXES
+   ==================================================================== */
+
+/* ===== NURSE MODAL CONTAINER FIXES ===== */
+.nurse-modal .modal-dialog {
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+    margin: 0.5rem auto !important;
+    display: flex !important;
+    align-items: center !important;
+    min-height: calc(100vh - 1rem) !important;
+}
+
+.nurse-modal .modal-content {
+    max-height: 90vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: var(--nurse-radius-lg) !important;
+    box-shadow: var(--nurse-shadow-lg) !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+}
+
+/* ===== NURSE MODAL HEADER - PINK THEME ===== */
+.nurse-modal .modal-header {
+    flex-shrink: 0 !important;
+    padding: 1rem 1.5rem !important;
+    background: var(--nurse-bg-header) !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: var(--nurse-radius-lg) var(--nurse-radius-lg) 0 0 !important;
+}
+
+.nurse-modal .modal-header .btn-close {
+    filter: invert(1) !important;
+    opacity: 0.8 !important;
+    transition: opacity var(--nurse-transition) !important;
+}
+
+.nurse-modal .modal-header .btn-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.1) !important;
+}
+
+.nurse-modal .modal-title {
+    font-weight: 600 !important;
+    font-size: 1.125rem !important;
+    margin: 0 !important;
+    color: white !important;
+}
+
+/* ===== NURSE MODAL BODY ===== */
+.nurse-modal .modal-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 1.5rem !important;
+    max-height: calc(90vh - 140px) !important;
+    background: linear-gradient(135deg, #ffffff 0%, #fce4ec 100%) !important;
+}
+
+/* ===== NURSE MODAL FOOTER ===== */
+.nurse-modal .modal-footer {
+    flex-shrink: 0 !important;
+    padding: 1rem 1.5rem !important;
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
+    border-top: 1px solid rgba(240, 98, 146, 0.2) !important;
+    display: flex !important;
+    gap: 0.75rem !important;
+    justify-content: flex-end !important;
+    border-radius: 0 0 var(--nurse-radius-lg) var(--nurse-radius-lg) !important;
+}
+
+/* ===== NURSE MODAL FORM ELEMENTS ===== */
+.nurse-modal .form-control,
+.nurse-modal .form-select {
+    border: 2px solid rgba(240, 98, 146, 0.2) !important;
+    border-radius: var(--nurse-radius-sm) !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+    transition: all var(--nurse-transition) !important;
+    background: white !important;
+}
+
+.nurse-modal .form-control:focus,
+.nurse-modal .form-select:focus {
+    outline: none !important;
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+.nurse-modal .form-label {
+    font-weight: 600 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* ===== NURSE MODAL BUTTONS ===== */
+.nurse-modal .btn {
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    border-radius: var(--nurse-radius-sm) !important;
+    font-size: 0.875rem !important;
+    transition: all var(--nurse-transition) !important;
+    border: none !important;
+}
+
+.nurse-modal .btn-primary {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.25) !important;
+}
+
+.nurse-modal .btn-primary:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(240, 98, 146, 0.35) !important;
+}
+
+.nurse-modal .btn-secondary {
+    background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+    color: white !important;
+}
+
+.nurse-modal .btn-secondary:hover {
+    background: linear-gradient(135deg, #4b5563, #374151) !important;
+    transform: translateY(-2px) !important;
+}
+
+.nurse-modal .btn-danger {
+    background: linear-gradient(135deg, var(--nurse-danger), #dc2626) !important;
+    color: white !important;
+}
+
+.nurse-modal .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ===== NURSE MODAL TABLES ===== */
+.nurse-modal .table {
+    font-size: 0.875rem !important;
+    margin-bottom: 0 !important;
+    border-radius: var(--nurse-radius-sm) !important;
+    overflow: hidden !important;
+    box-shadow: var(--nurse-shadow-sm) !important;
+}
+
+.nurse-modal .table thead th {
+    background: var(--nurse-bg-header) !important;
+    border-bottom: none !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: white !important;
+    padding: 0.75rem !important;
+}
+
+.nurse-modal .table tbody td {
+    padding: 0.75rem !important;
+    border-bottom: 1px solid rgba(240, 98, 146, 0.1) !important;
+    vertical-align: middle !important;
+    background: white !important;
+}
+
+.nurse-modal .table tbody tr:hover {
+    background: rgba(248, 187, 217, 0.1) !important;
+}
+
+/* ===== NURSE MODAL ALERTS ===== */
+.nurse-modal .alert {
+    border-radius: var(--nurse-radius-sm) !important;
+    border: none !important;
+    font-size: 0.875rem !important;
+    padding: 1rem !important;
+}
+
+.nurse-modal .alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+    color: #065f46 !important;
+    border-left: 4px solid var(--nurse-success) !important;
+}
+
+.nurse-modal .alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+    color: #92400e !important;
+    border-left: 4px solid var(--nurse-warning) !important;
+}
+
+.nurse-modal .alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%) !important;
+    color: #991b1b !important;
+    border-left: 4px solid var(--nurse-danger) !important;
+}
+
+.nurse-modal .alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%) !important;
+    color: #1e40af !important;
+    border-left: 4px solid var(--nurse-info) !important;
+}
+
+/* ===== NURSE MODAL BADGES ===== */
+.nurse-modal .badge {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    padding: 0.375em 0.75em !important;
+    border-radius: var(--nurse-radius-sm) !important;
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+}
+
+/* ===== NURSE MODAL PROGRESS ===== */
+.nurse-modal .progress {
+    height: 8px !important;
+    border-radius: 4px !important;
+    background-color: rgba(240, 98, 146, 0.2) !important;
+    overflow: hidden !important;
+}
+
+.nurse-modal .progress-bar {
+    background: linear-gradient(90deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    border-radius: 4px !important;
+    transition: width 0.6s ease !important;
+}
+
+/* ===== NURSE MODAL LOADING ===== */
+.nurse-modal .loading-overlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1000 !important;
+    border-radius: var(--nurse-radius-lg) !important;
+}
+
+.nurse-modal .spinner-border {
+    color: var(--nurse-primary) !important;
+    width: 2rem !important;
+    height: 2rem !important;
+}
+
+/* ===== NURSE MODAL SCROLLBAR ===== */
+.nurse-modal .modal-body::-webkit-scrollbar {
+    width: 6px !important;
+}
+
+.nurse-modal .modal-body::-webkit-scrollbar-track {
+    background: rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-modal .modal-body::-webkit-scrollbar-thumb {
+    background: var(--nurse-light) !important;
+    border-radius: 3px !important;
+}
+
+.nurse-modal .modal-body::-webkit-scrollbar-thumb:hover {
+    background: var(--nurse-primary) !important;
+}
+
+/* ===== NURSE MODAL RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .nurse-modal .modal-dialog {
+        max-width: 98vw !important;
+        margin: 0.25rem auto !important;
+        min-height: calc(100vh - 0.5rem) !important;
+    }
+
+    .nurse-modal .modal-content {
+        max-height: 95vh !important;
+        border-radius: var(--nurse-radius-sm) !important;
+    }
+
+    .nurse-modal .modal-header,
+    .nurse-modal .modal-body,
+    .nurse-modal .modal-footer {
+        padding: 1rem !important;
+    }
+
+    .nurse-modal .modal-body {
+        max-height: calc(95vh - 120px) !important;
+    }
+
+    .nurse-modal .modal-footer {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .nurse-modal .modal-footer .btn {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .nurse-modal .modal-dialog {
+        max-width: 100vw !important;
+        margin: 0 !important;
+        min-height: 100vh !important;
+    }
+
+    .nurse-modal .modal-content {
+        max-height: 100vh !important;
+        border-radius: 0 !important;
+    }
+
+    .nurse-modal .modal-body {
+        max-height: calc(100vh - 120px) !important;
+    }
+}
+
+/* ===== NURSE MODAL ANIMATIONS ===== */
+@keyframes nurseModalFadeIn {
+    from {
+        opacity: 0 !important;
+        transform: scale(0.95) !important;
+    }
+
+    to {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+    }
+}
+
+.nurse-modal.show .modal-dialog {
+    animation: nurseModalFadeIn 0.3s ease-out !important;
+}
+
+/* ===== NURSE MODAL BACKDROP ===== */
+.nurse-modal-backdrop {
+    background-color: rgba(240, 98, 146, 0.3) !important;
+    backdrop-filter: blur(4px) !important;
+}

@@ -14,9 +14,9 @@ namespace backend.Controllers
             _homeService = homeService;
         }
         [HttpGet("nurse/{id}")]
-        public async Task<IActionResult> GetHomeNurse(int id)
+        public async Task<IActionResult> GetHomeNurse(int id, int pageNumber, int pageSize)
         {
-            var result = await _homeService.GetHomeNurseAsync(id);
+            var result = await _homeService.GetHomeNurseAsync(id, pageNumber, pageSize);
             if (result == null)
             {
                 return NotFound(new BaseResponse<HomeNurseDTO>(null, "Nurse not found", false));
@@ -24,9 +24,9 @@ namespace backend.Controllers
             return Ok(new BaseResponse<HomeNurseDTO>(result, "Lấy thông tin điều dưỡng thành công", true));
         }
         [HttpGet("admin")]
-        public async Task<IActionResult> GetHomeAdmin()
+        public async Task<IActionResult> GetHomeAdmin(int pageNumber, int pageSize)
         {
-            var result = await _homeService.GetHomeAdminAsync();
+            var result = await _homeService.GetHomeAdminAsync(pageNumber, pageSize);
             if (result == null)
             {
                 return NotFound(new BaseResponse<HomeAdminDTO>(null, "Admin not found", false));

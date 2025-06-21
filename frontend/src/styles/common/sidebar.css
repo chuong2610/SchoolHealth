@@ -1,0 +1,544 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+i {
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+/* KIỂM TRA: Reset toàn bộ style - nên bỏ sau khi hoàn tất layout */
+/*
+#sidebar,
+#sidebar * {
+  background: none !important;
+  color: inherit !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+*/
+
+/* Layout wrapper */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+  margin-left: 0;
+  /* Default sẽ được override bởi sidebar rules */
+  background: #f8f9fa;
+}
+
+.main-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  /* background-color: #f8f9fa; Light background for the header */
+  background: linear-gradient(to bottom right, #eecff6, #ffe2e4);
+  border-bottom: 1px solid #ddd;
+  left: 70px;
+  /* Default collapsed state */
+  width: calc(100% - 70px);
+  /* Default collapsed state width */
+  transition: left 0.3s ease, width 0.3s ease;
+  /* Add transition for smooth resizing */
+}
+
+.toggle-btn-main {
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.notification-dot {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff0000;
+  /* Red dot for new notifications */
+  border-radius: 50%;
+}
+
+.user-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #853452;
+  color: #f2f2f2;
+  background-color: #caa2b0;
+}
+
+.user-avatar i {
+  font-size: 1.8rem;
+  /* Increased font size for the icon */
+  color: #a40640;
+  /* Default color for the icon, can be adjusted */
+}
+
+/* (Tuỳ chọn) Hover cho từng role */
+/* #sidebar.nurse a.sidebar-link:hover {
+  color: #4a4a4a;
+  border-left: 7px solid #8b8b6e; màu đậm hơn màu nền
+}
+
+#sidebar.admin a.sidebar-link:hover {
+  color: #ffffff;
+  border-left: 7px solid #3f7dff;
+} */
+
+/* Khi sidebar mở rộng (200px), main dịch sang phải */
+#sidebar.expand~.main {
+  margin-left: 200px !important;
+}
+
+/* Khi sidebar thu gọn (70px), main dịch sang phải */
+#sidebar~.main {
+  margin-left: 70px !important;
+}
+
+/* Parent role không có sidebar */
+body.parent-role .main {
+  margin-left: 0 !important;
+}
+
+/* CSS Backup: Alternative selectors (giữ lại để đảm bảo compatibility) */
+.wrapper #sidebar.expand+.main,
+.wrapper #sidebar.nurse.expand+.main,
+.wrapper #sidebar.admin.expand+.main {
+  margin-left: 200px !important;
+}
+
+.wrapper #sidebar:not(.expand)+.main,
+.wrapper #sidebar.nurse:not(.expand)+.main,
+.wrapper #sidebar.admin:not(.expand)+.main {
+  margin-left: 70px !important;
+}
+
+/* Nurse: màu be */
+#sidebar.nurse {
+  color: white;
+  background: linear-gradient(to bottom, #ff6b6b, #ff007f);
+  /* Pink gradient */
+}
+
+#sidebar.nurse .d-flex {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  /* padding-bottom: 1rem; */
+  margin-bottom: 2rem;
+}
+
+/* Admin: xanh dương đậm */
+#sidebar.admin {
+  background-color: #1e3a5f;
+  /* xanh dương đậm */
+}
+
+/* Sidebar kiểm tra logic - bỏ màu, hiệu ứng, chỉ giữ layout */
+#sidebar,
+#sidebar * {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Sidebar styles */
+#sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 70px;
+  min-width: 70px;
+  height: 100vh;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+}
+
+#sidebar.expand {
+  width: 200px;
+  max-width: 200px;
+}
+
+/* Role-specific sidebar colors */
+#sidebar.nurse {
+  background: linear-gradient(to bottom, #ff6b6b, #ff007f);
+}
+
+#sidebar.admin {
+  background: linear-gradient(to bottom, #ff6b6b, #5e023b);
+
+}
+
+/* Sidebar Logo */
+.app-sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0 1rem;
+  transition: all 0.3s;
+}
+
+.sidebar-logo-text {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 900;
+  margin-left: 0.5rem;
+  transition: opacity 0.3s, transform 0.3s;
+  white-space: nowrap;
+}
+
+#sidebar:not(.expand) .sidebar-logo-text {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+
+}
+
+/* Sidebar Navigation */
+.app-sidebar-nav {
+  padding: 1rem 0;
+  flex: 1 1 auto;
+}
+
+.app-sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.app-sidebar-nav li {
+  margin: 4px 0;
+}
+
+/* Sidebar Links */
+.app-sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.3s;
+  border-radius: 0 25px 25px 0;
+  margin-right: 0.75rem;
+}
+
+.sidebar-link-icon {
+  font-size: 1.3rem;
+  min-width: 28px;
+  width: 28px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0.75rem;
+}
+
+.sidebar-link-text {
+  transition: opacity 0.3s, transform 0.3s;
+  white-space: nowrap;
+}
+
+#sidebar:not(.expand) .sidebar-link-text {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
+}
+
+.app-sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.app-sidebar-link.active {
+  background: #fff;
+  color: #333;
+  transform: translateX(8px);
+}
+
+.app-sidebar-link.active .sidebar-link-icon,
+.app-sidebar-link.active .sidebar-link-text {
+  color: #333;
+}
+
+/* Sidebar Footer */
+.app-sidebar-footer {
+  padding: 1rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logout-btn {
+  background: none !important;
+  border: none !important;
+  width: 100%;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Toggle Button */
+.app-sidebar-toggle-btn {
+  position: fixed;
+  top: 70px;
+  left: 50px;
+  z-index: 1100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.3s, background 0.2s;
+  cursor: pointer;
+}
+
+.app-sidebar-toggle-btn.expanded {
+  left: 180px;
+}
+
+.app-sidebar-toggle-btn:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  #sidebar {
+    left: -200px;
+    width: 0;
+    min-width: 0;
+  }
+
+  #sidebar.expand {
+    left: 0;
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
+  }
+
+  .app-sidebar-toggle-btn {
+    left: 10px;
+    top: 10px;
+  }
+
+  .app-sidebar-toggle-btn.expanded {
+    left: 10px;
+  }
+
+  /* Mobile: main không đẩy lề */
+  #sidebar~.main,
+  #sidebar.expand~.main {
+    margin-left: 0 !important;
+  }
+
+  /* Overlay when sidebar open on mobile */
+  #sidebar.expand::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 12px 12px 12px 0;
+    /* Loại bỏ padding-left cho mobile */
+  }
+
+  .app-sidebar-toggle-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Layout Styles */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 20px 20px 20px 16px;
+  /* Thêm chút padding-left nhỏ cho content không sát sidebar */
+  /* Không cần margin-top vì Header đã nằm trong .main */
+}
+
+/* Parent role không có sidebar */
+body.parent-role .main {
+  margin-left: 0 !important;
+}
+
+/* Parent responsive styles - Đơn giản vì không còn wrapper */
+.parent-main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-top: 70px;
+  /* Tạo khoảng cách với header sticky 50px + 20px */
+  min-height: calc(100vh - 50px);
+}
+
+/* Sidebar duplicate đã xóa */
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 16px 16px 16px 0;
+    /* Loại bỏ padding-left cho tablet */
+  }
+
+  .parent-main-content {
+    padding: 16px;
+    padding-top: 66px;
+    /* 46px header + 20px spacing */
+    max-width: 100%;
+  }
+
+  #sidebar {
+    left: -200px;
+    width: 0;
+    min-width: 0;
+  }
+
+  #sidebar.expand {
+    left: 0;
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+  }
+
+  .app-sidebar-toggle-btn {
+    left: 10px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .app-sidebar-toggle-btn.expanded {
+    left: 10px;
+  }
+
+  /* Mobile: main không đẩy lề */
+  #sidebar~.main,
+  #sidebar.expand~.main {
+    margin-left: 0 !important;
+  }
+
+  /* Overlay when sidebar open on mobile */
+  #sidebar.expand::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-content {
+    padding: 12px 12px 12px 0;
+    /* Loại bỏ padding-left cho mobile nhỏ */
+  }
+
+  .parent-main-content {
+    padding: 12px;
+    padding-top: 62px;
+    /* 42px header + 20px spacing */
+  }
+
+  .app-sidebar-toggle-btn {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Parent specific responsive styles */
+@media (max-width: 1200px) {
+  .parent-main-content {
+    padding: 16px;
+    padding-top: 70px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 992px) {
+  .parent-main-content {
+    padding: 14px;
+    padding-top: 66px;
+  }
+}
+
+/* Large screens optimization for parent */
+@media (min-width: 1400px) {
+  .parent-main-content {
+    max-width: 1600px;
+  }
+}

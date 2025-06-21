@@ -19,13 +19,18 @@ namespace backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
-        // [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetNotificationsByParentId(int parentId)
+        [Authorize(Policy = "ParentOnly")]
+        public async Task<IActionResult> GetNotificationsByParentId(int parentId, int pageNumber, int pageSize, string? title)
         {
             try
             {
-                var notifications = await _notificationService.GetNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo thành công", true));
+                var notifications = await _notificationService
+                    .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+
+                return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(
+                    notifications,
+                    "Lấy danh sách thông báo thành công",
+                    true));
             }
             catch (Exception ex)
             {
@@ -35,12 +40,12 @@ namespace backend.Controllers
 
         [HttpGet("parent/{parentId}/HealthCheck")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetHealthChecksNotificationsByParentId(int parentId)
+        public async Task<IActionResult> GetHealthChecksNotificationsByParentId(int parentId, int pageNumber, int pageSize, string? title)
         {
             try
             {
-                var notifications = await _notificationService.GetHealthChecksNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo kiểm tra sức khỏe thành công", true));
+                var notifications = await _notificationService.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+                return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo kiểm tra sức khỏe thành công", true));
             }
             catch (Exception ex)
             {
@@ -50,12 +55,12 @@ namespace backend.Controllers
 
         [HttpGet("parent/{parentId}/Vaccination")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetVaccinationsNotificationsByParentId(int parentId)
+        public async Task<IActionResult> GetVaccinationsNotificationsByParentId(int parentId, int pageNumber, int pageSize, string? Title)
         {
             try
             {
-                var notifications = await _notificationService.GetVaccinationsNotificationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo tiêm chủng thành công", true));
+                var notifications = await _notificationService.GetVaccinationNotificationsByParentIdAsync(parentId, pageNumber, pageSize, Title);
+                return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo tiêm chủng thành công", true));
             }
             catch (Exception ex)
             {
@@ -82,27 +87,50 @@ namespace backend.Controllers
             }
         }
         [HttpGet("admin/{id}")]
-        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id)
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id, int pageNumber, int pageSize)
         {
             try
             {
-                var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+                var notification = await _notificationService
+                    .GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize);
+
                 if (notification == null)
                 {
                     return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
                 }
-                return Ok(new BaseResponse<NotificationDetailAdminDTO>(notification, "Lấy thông tin chi tiết thông báo thành công", true));
+
+                return Ok(new BaseResponse<NotificationDetailAdminDTO>(
+                    notification,
+                    "Lấy thông tin chi tiết thông báo thành công",
+                    true));
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificationClassDTO>>> GetAll()
+        public async Task<ActionResult<BaseResponse<PageResult<NotificationClassDTO>>>> GetAll(int pageNumber, int pageSize)
         {
-            var notifications = (await _notificationService.GetAllNotificationAsync()).ToList();
-            return Ok(notifications);
+            try
+            {
+                var notificationsPage = await _notificationService
+                    .GetAllNotificationAsync(pageNumber, pageSize);
+
+                return Ok(new BaseResponse<PageResult<NotificationClassDTO>>(
+                    notificationsPage,
+                    "Lấy danh sách thông báo thành công",
+                    true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false));
+            }
         }
 
 

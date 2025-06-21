@@ -1,0 +1,469 @@
+/* Accounts Table Styles */
+:root {
+    --accounts-table-primary: #5865F2;
+    --accounts-table-secondary: #7289DA;
+    --accounts-table-success: #57F287;
+    --accounts-table-warning: #FEE75C;
+    --accounts-table-danger: #ED4245;
+    --accounts-table-info: #5865F2;
+}
+
+.accounts-table-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(88, 101, 242, 0.12);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.accounts-table-header {
+    background: linear-gradient(135deg, var(--accounts-table-primary), var(--accounts-table-secondary));
+    color: white;
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 2fr 1.3fr 1.8fr 1fr 1.2fr;
+    padding: 20px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    gap: 12px;
+    align-items: center;
+}
+
+.accounts-table-header .header-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.accounts-table-header .header-cell i {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.accounts-table-body {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.accounts-table-row {
+    display: grid;
+    grid-template-columns: 0.8fr 1.5fr 2fr 1.3fr 1.8fr 1fr 1.2fr;
+    padding: 16px;
+    gap: 12px;
+    align-items: center;
+    border-bottom: 1px solid #f1f3f4;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.accounts-table-row:hover {
+    background: rgba(88, 101, 242, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.08);
+}
+
+.accounts-table-row:last-child {
+    border-bottom: none;
+}
+
+.accounts-table-row:nth-child(even) {
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.accounts-table-row:nth-child(even):hover {
+    background: rgba(88, 101, 242, 0.05);
+}
+
+.accounts-table-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+}
+
+.accounts-id-cell {
+    font-weight: 700;
+    color: var(--accounts-table-primary);
+    font-size: 13px;
+}
+
+.accounts-name-cell {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.accounts-email-cell {
+    color: #6b7280;
+    font-size: 13px;
+    word-break: break-word;
+}
+
+.accounts-phone-cell {
+    color: #374151;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.accounts-address-cell {
+    color: #6b7280;
+    font-size: 13px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.accounts-gender-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.accounts-gender-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.accounts-gender-badge.male {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.accounts-gender-badge.female {
+    background: rgba(231, 84, 128, 0.1);
+    color: #e75480;
+}
+
+.accounts-gender-badge.other {
+    background: rgba(88, 101, 242, 0.1);
+    color: var(--accounts-table-primary);
+}
+
+.accounts-actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.accounts-action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.accounts-action-btn.edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.accounts-action-btn.edit:hover {
+    background: #3b82f6;
+    color: white;
+    transform: scale(1.1);
+}
+
+.accounts-action-btn.delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.accounts-action-btn.delete:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+.accounts-action-btn.permissions {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.accounts-action-btn.permissions:hover {
+    background: #22c55e;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Empty State */
+.accounts-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.accounts-empty-state i {
+    font-size: 48px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.accounts-empty-state h4 {
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+/* Loading State */
+.accounts-loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--accounts-table-primary);
+}
+
+.accounts-loading-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(88, 101, 242, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--accounts-table-primary);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error State */
+.accounts-error-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ef4444;
+}
+
+.accounts-error-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+}
+
+/* Search and Filter Bar */
+.accounts-search-bar {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(88, 101, 242, 0.08);
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.accounts-search-input-group {
+    flex: 1;
+    position: relative;
+}
+
+.accounts-search-input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.accounts-search-input:focus {
+    outline: none;
+    border-color: var(--accounts-table-primary);
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.1);
+}
+
+.accounts-search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 16px;
+}
+
+.accounts-filter-btn {
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accounts-filter-btn:hover {
+    border-color: var(--accounts-table-primary);
+    color: var(--accounts-table-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+
+    .accounts-table-header,
+    .accounts-table-row {
+        grid-template-columns: 0.6fr 1.2fr 1.8fr 1.1fr 1.5fr 0.8fr 1fr;
+        font-size: 13px;
+    }
+
+    .accounts-address-cell {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 992px) {
+    .accounts-table-container {
+        overflow-x: auto;
+    }
+
+    .accounts-table-header,
+    .accounts-table-row {
+        min-width: 800px;
+        grid-template-columns: 60px 120px 180px 120px 150px 80px 100px;
+        font-size: 12px;
+    }
+
+    .accounts-search-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .accounts-search-input-group {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .accounts-table-header,
+    .accounts-table-row {
+        min-width: 700px;
+        padding: 12px;
+        grid-template-columns: 50px 100px 160px 110px 130px 70px 90px;
+        gap: 8px;
+    }
+
+    .accounts-action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* Pagination Styles */
+.accounts-pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding: 0 4px;
+}
+
+.accounts-pagination-info {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.accounts-pagination {
+    display: flex;
+    gap: 4px;
+}
+
+.accounts-pagination-btn {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.accounts-pagination-btn:hover {
+    background: var(--accounts-table-primary);
+    color: white;
+    border-color: var(--accounts-table-primary);
+}
+
+.accounts-pagination-btn.active {
+    background: var(--accounts-table-primary);
+    color: white;
+    border-color: var(--accounts-table-primary);
+}
+
+.accounts-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.accounts-pagination-btn:disabled:hover {
+    background: white;
+    color: #374151;
+    border-color: #e5e7eb;
+}
+
+/* Role Tabs */
+.accounts-role-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    background: white;
+    padding: 8px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(88, 101, 242, 0.08);
+}
+
+.accounts-role-tab {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.accounts-role-tab.active {
+    background: var(--accounts-table-primary);
+    color: white;
+}
+
+.accounts-role-tab:hover:not(.active) {
+    background: rgba(88, 101, 242, 0.1);
+    color: var(--accounts-table-primary);
+}
+
+/* Address tooltip on hover */
+.accounts-address-cell:hover {
+    overflow: visible;
+    white-space: normal;
+    position: relative;
+    z-index: 10;
+}

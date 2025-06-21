@@ -1,0 +1,900 @@
+/* ===========================================
+   NURSE HEALTH EVENTS - BEAUTIFUL REDESIGN
+   =========================================== */
+
+/* Enhanced Keyframe Animations */
+@keyframes eventFadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes eventSlideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes eventPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(240, 98, 146, 0.4);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px rgba(240, 98, 146, 0);
+    }
+}
+
+@keyframes statusGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(240, 98, 146, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(240, 98, 146, 0.6);
+    }
+}
+
+@keyframes timelinePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+@keyframes floatingBubbles {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+/* Main Container */
+.nurse-health-events-redesigned {
+    background: linear-gradient(135deg, #fafbff 0%, #f8f9fe 50%, #fef7f9 100%) !important;
+    min-height: 100vh !important;
+    padding: 32px !important;
+    position: relative !important;
+    overflow-x: hidden !important;
+}
+
+.nurse-health-events-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: radial-gradient(circle at 20% 80%, rgba(240, 98, 146, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(233, 30, 99, 0.03) 0%, transparent 50%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+.nurse-health-events-redesigned::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 10% !important;
+    right: 5% !important;
+    width: 100px !important;
+    height: 100px !important;
+    background: rgba(240, 98, 146, 0.1) !important;
+    border-radius: 50% !important;
+    animation: floatingBubbles 6s ease-in-out infinite !important;
+    pointer-events: none !important;
+}
+
+.nurse-health-events-redesigned>* {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Enhanced Header */
+.nurse-events-header-redesigned {
+    background: linear-gradient(135deg, var(--nurse-primary) 0%, var(--nurse-secondary) 50%, var(--nurse-accent) 100%) !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    margin-bottom: 40px !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: eventFadeInUp 0.8s ease-out !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.2) !important;
+}
+
+.nurse-events-header-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    right: -20% !important;
+    width: 400px !important;
+    height: 400px !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    animation: eventPulse 4s ease-in-out infinite !important;
+}
+
+.nurse-events-header-redesigned::after {
+    content: '🏥' !important;
+    position: absolute !important;
+    bottom: 20px !important;
+    right: 30px !important;
+    font-size: 3rem !important;
+    opacity: 0.3 !important;
+    animation: eventPulse 3s ease-in-out infinite !important;
+}
+
+.nurse-events-title-redesigned {
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+    animation: eventSlideInLeft 0.8s ease-out 0.2s both !important;
+}
+
+.nurse-events-title-icon-redesigned {
+    width: 64px !important;
+    height: 64px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2rem !important;
+    backdrop-filter: blur(10px) !important;
+    animation: timelinePulse 3s ease-in-out infinite !important;
+}
+
+.nurse-events-subtitle-redesigned {
+    font-size: 1.1rem !important;
+    opacity: 0.95 !important;
+    margin-bottom: 0 !important;
+    animation: eventSlideInLeft 0.8s ease-out 0.4s both !important;
+}
+
+/* Enhanced Filter Bar */
+.nurse-events-filter-redesigned {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 20px !important;
+    padding: 32px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    margin-bottom: 32px !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+    animation: eventFadeInUp 0.8s ease-out 0.3s both !important;
+}
+
+.nurse-filter-row-redesigned {
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto !important;
+    gap: 24px !important;
+    align-items: end !important;
+}
+
+.nurse-filter-group-redesigned {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.nurse-filter-label-redesigned {
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 4px !important;
+}
+
+.nurse-filter-input-redesigned {
+    padding: 16px 20px !important;
+    border: 2px solid rgba(240, 98, 146, 0.15) !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.05) !important;
+}
+
+.nurse-filter-input-redesigned:focus {
+    outline: none !important;
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 0 0 6px rgba(240, 98, 146, 0.15) !important;
+    background: white !important;
+    transform: translateY(-2px) !important;
+}
+
+.nurse-filter-select-redesigned {
+    padding: 16px 20px !important;
+    border: 2px solid rgba(240, 98, 146, 0.15) !important;
+    border-radius: 16px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.05) !important;
+}
+
+.nurse-filter-select-redesigned:focus {
+    outline: none !important;
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 0 0 6px rgba(240, 98, 146, 0.15) !important;
+    transform: translateY(-2px) !important;
+}
+
+.nurse-filter-btn-redesigned {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    border: none !important;
+    padding: 16px 28px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    height: fit-content !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.3) !important;
+    font-size: 0.95rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.nurse-filter-btn-redesigned:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
+}
+
+/* Enhanced Timeline Container */
+.nurse-events-timeline-redesigned {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    margin-bottom: 40px !important;
+    border: 1px solid rgba(240, 98, 146, 0.08) !important;
+    animation: eventFadeInUp 0.8s ease-out 0.5s both !important;
+}
+
+.nurse-timeline-header-redesigned {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 40px !important;
+    padding-bottom: 24px !important;
+    border-bottom: 2px solid rgba(240, 98, 146, 0.1) !important;
+    position: relative !important;
+}
+
+.nurse-timeline-title-redesigned {
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+.nurse-timeline-title-icon-redesigned {
+    width: 48px !important;
+    height: 48px !important;
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 1.2rem !important;
+    animation: timelinePulse 3s ease-in-out infinite !important;
+}
+
+.nurse-add-event-btn-redesigned {
+    background: linear-gradient(135deg, var(--nurse-accent), #F50057) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 24px !important;
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    box-shadow: 0 4px 16px rgba(245, 0, 87, 0.3) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.9rem !important;
+}
+
+.nurse-add-event-btn-redesigned:hover {
+    background: linear-gradient(135deg, #F50057, #C51162) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(245, 0, 87, 0.4) !important;
+}
+
+/* Enhanced Timeline Items */
+.nurse-timeline-container-redesigned {
+    position: relative !important;
+    padding-left: 48px !important;
+}
+
+.nurse-timeline-container-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 24px !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 4px !important;
+    background: linear-gradient(to bottom,
+            var(--nurse-primary) 0%,
+            var(--nurse-secondary) 50%,
+            var(--nurse-accent) 100%) !important;
+    border-radius: 2px !important;
+    box-shadow: 0 0 10px rgba(240, 98, 146, 0.3) !important;
+}
+
+.nurse-timeline-item-redesigned {
+    position: relative !important;
+    margin-bottom: 40px !important;
+    padding: 32px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    border: 2px solid rgba(240, 98, 146, 0.1) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
+    backdrop-filter: blur(10px) !important;
+    animation: eventSlideInLeft 0.6s ease-out both !important;
+    cursor: pointer !important;
+}
+
+.nurse-timeline-item-redesigned:nth-child(2) {
+    animation-delay: 0.1s !important;
+}
+
+.nurse-timeline-item-redesigned:nth-child(3) {
+    animation-delay: 0.2s !important;
+}
+
+.nurse-timeline-item-redesigned:nth-child(4) {
+    animation-delay: 0.3s !important;
+}
+
+.nurse-timeline-item-redesigned:nth-child(5) {
+    animation-delay: 0.4s !important;
+}
+
+.nurse-timeline-item-redesigned:hover {
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 12px 40px rgba(240, 98, 146, 0.2) !important;
+    transform: translateX(8px) translateY(-4px) scale(1.02) !important;
+    background: white !important;
+}
+
+.nurse-timeline-item-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    left: -60px !important;
+    top: 40px !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: var(--nurse-primary) !important;
+    border-radius: 50% !important;
+    border: 4px solid white !important;
+    box-shadow: 0 0 0 4px var(--nurse-primary), 0 0 20px rgba(240, 98, 146, 0.3) !important;
+    z-index: 10 !important;
+    transition: all 0.4s ease !important;
+}
+
+.nurse-timeline-item-redesigned:hover::before {
+    transform: scale(1.3) !important;
+    box-shadow: 0 0 0 4px var(--nurse-primary), 0 0 30px rgba(240, 98, 146, 0.5) !important;
+    animation: timelinePulse 1s ease-in-out infinite !important;
+}
+
+.nurse-timeline-item-redesigned.completed::before {
+    background: var(--nurse-success) !important;
+    box-shadow: 0 0 0 4px var(--nurse-success), 0 0 20px rgba(76, 175, 80, 0.3) !important;
+}
+
+.nurse-timeline-item-redesigned.pending::before {
+    background: var(--nurse-warning) !important;
+    box-shadow: 0 0 0 4px var(--nurse-warning), 0 0 20px rgba(255, 152, 0, 0.3) !important;
+}
+
+.nurse-timeline-item-redesigned.cancelled::before {
+    background: var(--nurse-danger) !important;
+    box-shadow: 0 0 0 4px var(--nurse-danger), 0 0 20px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* Enhanced Event Content */
+.nurse-event-card-redesigned {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
+.nurse-event-header-redesigned {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    position: relative !important;
+}
+
+.nurse-event-info-redesigned {
+    flex: 1 !important;
+}
+
+.nurse-event-category-redesigned {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 6px 14px !important;
+    background: linear-gradient(135deg, rgba(240, 98, 146, 0.1), rgba(233, 30, 99, 0.1)) !important;
+    color: var(--nurse-primary) !important;
+    border-radius: 16px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border: 1px solid rgba(240, 98, 146, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.nurse-event-category-redesigned:hover {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+}
+
+.nurse-event-category-redesigned.vaccination {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(25, 118, 210, 0.1)) !important;
+    color: var(--nurse-info) !important;
+    border-color: rgba(33, 150, 243, 0.2) !important;
+}
+
+.nurse-event-category-redesigned.checkup {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(56, 142, 60, 0.1)) !important;
+    color: var(--nurse-success) !important;
+    border-color: rgba(76, 175, 80, 0.2) !important;
+}
+
+.nurse-event-category-redesigned.emergency {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(211, 47, 47, 0.1)) !important;
+    color: var(--nurse-danger) !important;
+    border-color: rgba(244, 67, 54, 0.2) !important;
+}
+
+.nurse-event-title-redesigned {
+    font-weight: 800 !important;
+    color: var(--nurse-text-primary) !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    transition: color 0.3s ease !important;
+}
+
+.nurse-timeline-item-redesigned:hover .nurse-event-title-redesigned {
+    color: var(--nurse-primary) !important;
+}
+
+.nurse-event-student-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-size: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+    font-weight: 600 !important;
+}
+
+.nurse-event-class-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.nurse-event-status-redesigned {
+    padding: 10px 20px !important;
+    border-radius: 25px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    text-align: center !important;
+    min-width: 120px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.nurse-event-status-redesigned:hover {
+    transform: scale(1.05) !important;
+    animation: statusGlow 2s ease-in-out infinite !important;
+}
+
+.nurse-event-status-redesigned.completed {
+    background: linear-gradient(135deg, var(--nurse-success), #66BB6A) !important;
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.pending {
+    background: linear-gradient(135deg, var(--nurse-warning), #FFB74D) !important;
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.cancelled {
+    background: linear-gradient(135deg, var(--nurse-danger), #E57373) !important;
+    color: white !important;
+}
+
+.nurse-event-status-redesigned.in-progress {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+}
+
+/* Enhanced Event Description */
+.nurse-event-description-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    line-height: 1.7 !important;
+    padding: 20px !important;
+    background: linear-gradient(135deg, rgba(252, 228, 236, 0.4), rgba(248, 187, 217, 0.2)) !important;
+    border-radius: 16px !important;
+    border-left: 5px solid var(--nurse-primary) !important;
+    font-size: 0.95rem !important;
+    position: relative !important;
+}
+
+.nurse-event-description-redesigned::before {
+    content: '"' !important;
+    position: absolute !important;
+    top: -5px !important;
+    left: 15px !important;
+    font-size: 3rem !important;
+    color: var(--nurse-primary) !important;
+    opacity: 0.3 !important;
+    font-family: serif !important;
+}
+
+/* Enhanced Event Metadata */
+.nurse-event-meta-redesigned {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 24px !important;
+    background: linear-gradient(135deg, rgba(248, 187, 217, 0.1), rgba(240, 98, 146, 0.05)) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-event-meta-item-redesigned {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-size: 0.95rem !important;
+    padding: 12px !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+}
+
+.nurse-event-meta-item-redesigned:hover {
+    background: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-event-meta-icon-redesigned {
+    color: var(--nurse-primary) !important;
+    width: 24px !important;
+    height: 24px !important;
+    background: rgba(240, 98, 146, 0.1) !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.9rem !important;
+    flex-shrink: 0 !important;
+}
+
+.nurse-event-meta-label-redesigned {
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    min-width: 90px !important;
+}
+
+.nurse-event-meta-value-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-weight: 600 !important;
+}
+
+/* Enhanced Event Actions */
+.nurse-event-actions-redesigned {
+    display: flex !important;
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+}
+
+.nurse-event-action-btn-redesigned {
+    padding: 12px 24px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 140px !important;
+    justify-content: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.nurse-event-action-btn-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.nurse-event-action-btn-redesigned:hover::before {
+    left: 100% !important;
+}
+
+.nurse-event-action-btn-redesigned.primary {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.3) !important;
+}
+
+.nurse-event-action-btn-redesigned.primary:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
+}
+
+.nurse-event-action-btn-redesigned.success {
+    background: linear-gradient(135deg, var(--nurse-success), #66BB6A) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3) !important;
+}
+
+.nurse-event-action-btn-redesigned.success:hover {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4) !important;
+}
+
+.nurse-event-action-btn-redesigned.danger {
+    background: linear-gradient(135deg, var(--nurse-danger), #E57373) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(244, 67, 54, 0.3) !important;
+}
+
+.nurse-event-action-btn-redesigned.danger:hover {
+    background: linear-gradient(135deg, #E57373, #F44336) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4) !important;
+}
+
+.nurse-event-action-btn-redesigned.secondary {
+    background: rgba(252, 228, 236, 0.6) !important;
+    color: var(--nurse-text-primary) !important;
+    border: 2px solid rgba(240, 98, 146, 0.2) !important;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-event-action-btn-redesigned.secondary:hover {
+    background: white !important;
+    border-color: var(--nurse-primary) !important;
+    color: var(--nurse-primary) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.2) !important;
+}
+
+/* Priority Indicators */
+.nurse-event-priority-redesigned {
+    position: absolute !important;
+    top: 24px !important;
+    right: 24px !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    animation: eventPulse 2s ease-in-out infinite !important;
+}
+
+.nurse-event-priority-redesigned.high {
+    background: var(--nurse-danger) !important;
+    box-shadow: 0 0 15px rgba(244, 67, 54, 0.5) !important;
+}
+
+.nurse-event-priority-redesigned.medium {
+    background: var(--nurse-warning) !important;
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.5) !important;
+}
+
+.nurse-event-priority-redesigned.low {
+    background: var(--nurse-success) !important;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5) !important;
+}
+
+/* Empty State */
+.nurse-events-empty-redesigned {
+    text-align: center !important;
+    padding: 100px 40px !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    animation: eventFadeInUp 0.8s ease-out !important;
+}
+
+.nurse-events-empty-icon-redesigned {
+    font-size: 6rem !important;
+    color: var(--nurse-light) !important;
+    margin-bottom: 32px !important;
+    animation: eventPulse 3s ease-in-out infinite !important;
+}
+
+.nurse-events-empty-title-redesigned {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 16px !important;
+}
+
+.nurse-events-empty-description-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    margin-bottom: 40px !important;
+    max-width: 500px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    line-height: 1.6 !important;
+    font-size: 1.1rem !important;
+}
+
+.nurse-events-empty-action-redesigned {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    padding: 16px 32px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    font-size: 1rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.3) !important;
+}
+
+.nurse-events-empty-action-redesigned:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 1024px) {
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 16px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-health-events-redesigned {
+        padding: 20px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 28px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.8rem !important;
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 1fr !important;
+    }
+
+    .nurse-timeline-container-redesigned {
+        padding-left: 32px !important;
+    }
+
+    .nurse-timeline-container-redesigned::before {
+        left: 16px !important;
+    }
+
+    .nurse-timeline-item-redesigned::before {
+        left: -44px !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    .nurse-event-actions-redesigned {
+        flex-direction: column !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        min-width: auto !important;
+    }
+
+    .nurse-timeline-header-redesigned {
+        flex-direction: column !important;
+        gap: 20px !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .nurse-events-timeline-redesigned {
+        padding: 24px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 20px !important;
+    }
+
+    .nurse-events-empty-redesigned {
+        padding: 60px 20px !important;
+    }
+}

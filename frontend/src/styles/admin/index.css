@@ -1,0 +1,30 @@
+/* ====================================================================
+   ADMIN STYLES INDEX - OPTIMIZED IMPORTS WITHOUT DUPLICATES
+   ==================================================================== */
+
+/* Core Admin Styles - Single source of truth */
+@import './admin-core.css';
+
+/* Specialized Table Styles */
+@import './accounts-table.css';
+@import './category-table.css';
+@import './medicine-table.css';
+@import './notification-table.css';
+@import './plan-table.css';
+
+/* Accounts Management Modals */
+@import './accounts-modal.css';
+@import './accounts-modal-override.css';
+
+/* 
+REMOVED DUPLICATE FILES (60KB+ saved):
+- admin-theme.css (33KB) - Merged into admin-core.css
+- admin-clean.css (20KB) - Merged into admin-core.css  
+- admin-override.css (18KB) - Merged into admin-core.css
+- admin-dashboard.css (17KB) - Merged into admin-core.css
+- admin-components.css (13KB) - Merged into admin-core.css
+- admin-tables.css (20KB) - Replaced by specialized table files
+- admin-tables-override.css (13KB) - No longer needed
+- admin-animations.css (7KB) - Merged into admin-core.css
+- admin-responsive.css (12KB) - Merged into admin-core.css
+*/
