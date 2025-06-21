@@ -22,40 +22,30 @@ namespace backend.Services
             _classrRepository = classrRepository;
 
         }
-        public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
+        public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            // Lấy tổng số record có hoặc không có tìm kiếm
-            var totalCount = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, title);
+            var totalItems = await _notificationRepository.CountNotificationStudentsByParentIdAsync(parentId, search);
 
-            // Lấy data theo parentId + title
-            var notifications = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+            var (items, _) = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
 
             var result = new List<NotificationParentDTO>();
-
-            foreach (var notification in notifications)
+            foreach (var item in items)
             {
-                foreach (var student in notification.NotificationStudents)
-                {
-                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
-                }
+                result.Add(MapToNotificationParentDTO(item.Notification, item.Student.Id, item.Student.Name));
             }
-
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
             return new PageResult<NotificationParentDTO>
             {
                 Items = result,
-                TotalPages = totalPages,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
                 CurrentPage = pageNumber,
-                TotalItems = totalCount
+                TotalItems = totalItems
             };
         }
-
-        public async Task<PageResult<NotificationParentDTO>> GetVaccinationNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
+        public async Task<PageResult<NotificationParentDTO>> GetVaccinationNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.GetVaccinationsNotificationsCountByParentIdAsync(parentId, title);
+            var totalItems = await _notificationRepository.GetVaccinationsNotificationsCountByParentIdAsync(parentId, search);
 
-            var (items, _) = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+            var (items, _) = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
 
             var result = new List<NotificationParentDTO>();
             foreach (var item in items)
@@ -71,11 +61,11 @@ namespace backend.Services
                 TotalItems = totalItems
             };
         }
-        public async Task<PageResult<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
+        public async Task<PageResult<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.GetHealthChecksNotificationsCountByParentIdAsync(parentId, title);
+            var totalItems = await _notificationRepository.GetHealthChecksNotificationsCountByParentIdAsync(parentId, search);
 
-            var data = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+            var data = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
 
             var result = new List<NotificationParentDTO>();
             foreach (var item in data.Items)

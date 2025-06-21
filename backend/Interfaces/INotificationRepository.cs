@@ -4,12 +4,12 @@ namespace backend.Interfaces
 {
         public interface INotificationRepository
         {
-                Task<List<Notification>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title);
-                Task<int> CountNotificationsByParentIdAsync(int parentId, string? title);
-                Task<(List<NotificationStudent> Items, int TotalItems)> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title);
-                Task<int> GetHealthChecksNotificationsCountByParentIdAsync(int parentId, string? title);
-                Task<(List<NotificationStudent> Items, int TotalItems)> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title = null);
-                Task<int> GetVaccinationsNotificationsCountByParentIdAsync(int parentId, string? title);
+                Task<(List<NotificationStudent> Items, int TotalItems)> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
+                Task<int> CountNotificationStudentsByParentIdAsync(int parentId, string? search);
+                Task<(List<NotificationStudent> Items, int TotalItems)> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
+                Task<int> GetHealthChecksNotificationsCountByParentIdAsync(int parentId, string? search);
+                Task<(List<NotificationStudent> Items, int TotalItems)> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
+                Task<int> GetVaccinationsNotificationsCountByParentIdAsync(int parentId, string? search);
                 Task<Notification?> GetNotificationByIdAsync(int id);
                 Task<List<Notification>> GetNotificationsByNurseIdAsync(int id);
                 Task<List<Notification>> Get5Notifications();
