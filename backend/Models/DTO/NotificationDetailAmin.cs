@@ -15,5 +15,6 @@ namespace backend.Models.DTO
         public string NurseName { get; set; } = string.Empty;
         public int NurseId { get; set; }
         public PageResult<object> PagedResults { get; set; } = new();
+
     }
 }

@@ -103,13 +103,11 @@ namespace backend.Services
                 CurrentPage = pageNumber
             };
         }
-        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(
-    int id, int pageNumber, int pageSize)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize)
         {
             var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id);
 
-            var medications = await _medicationRepository
-                .GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize);
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize);
 
             var medicationDTOs = medications.Select(m => MapToDTO(m)).ToList();
 

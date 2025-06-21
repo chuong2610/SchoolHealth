@@ -70,15 +70,11 @@ namespace backend.Repositories
             return await _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
-                .Include(m => m.Student)
-                    .ThenInclude(s => s.Parent)
-                .Include(m => m.Student)
-                    .ThenInclude(s => s.Class)
+                .Include(m => m.Student).ThenInclude(s => s.Parent)
+                .Include(m => m.Student).ThenInclude(s => s.Class)
                 .Where(m => m.Nurse.Id == id
-                    && m.Status == "Completed"
-                    && m.ReviceDate.HasValue
-                    && m.ReviceDate.Value.Date == today)
-                .OrderBy(m => m.Id) // Sắp xếp để phân trang ổn định
+                    && m.Status == "Completed")
+                .OrderBy(m => m.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -90,9 +86,7 @@ namespace backend.Repositories
 
             return await _context.Medications
                 .Where(m => m.Nurse.Id == id
-                    && m.Status == "Completed"
-                    && m.ReviceDate.HasValue
-                    && m.ReviceDate.Value.Date == today)
+                    && m.Status == "Completed")
                 .CountAsync();
         }
 

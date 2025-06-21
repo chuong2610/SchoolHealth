@@ -22,14 +22,13 @@ namespace backend.Services
             _classrRepository = classrRepository;
 
         }
-        public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
+        public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
         {
-            // Đếm tổng số bản ghi
-            var totalCount = await _notificationRepository.CountNotificationsByParentIdAsync(parentId);
+            // Lấy tổng số record có hoặc không có tìm kiếm
+            var totalCount = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, title);
 
-            // Lấy danh sách đã phân trang
-            var notifications = await _notificationRepository
-                .GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize);
+            // Lấy data theo parentId + title
+            var notifications = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
 
             var result = new List<NotificationParentDTO>();
 
@@ -41,7 +40,7 @@ namespace backend.Services
                 }
             }
 
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             return new PageResult<NotificationParentDTO>
             {
@@ -52,31 +51,45 @@ namespace backend.Services
             };
         }
 
-        public async Task<List<NotificationParentDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId)
+        public async Task<PageResult<NotificationParentDTO>> GetVaccinationNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
         {
-            var notifications = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId);
+            var totalItems = await _notificationRepository.GetVaccinationsNotificationsCountByParentIdAsync(parentId, title);
+
+            var (items, _) = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+
             var result = new List<NotificationParentDTO>();
-            foreach (var notification in notifications)
+            foreach (var item in items)
             {
-                foreach (var student in notification.NotificationStudents)
-                {
-                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
-                }
+                result.Add(MapToNotificationParentDTO(item.Notification, item.Student.Id, item.Student.Name));
             }
-            return result;
+
+            return new PageResult<NotificationParentDTO>
+            {
+                Items = result,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                CurrentPage = pageNumber,
+                TotalItems = totalItems
+            };
         }
-        public async Task<List<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId)
+        public async Task<PageResult<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? title)
         {
-            var notifications = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId);
+            var totalItems = await _notificationRepository.GetHealthChecksNotificationsCountByParentIdAsync(parentId, title);
+
+            var data = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, title);
+
             var result = new List<NotificationParentDTO>();
-            foreach (var notification in notifications)
+            foreach (var item in data.Items)
             {
-                foreach (var student in notification.NotificationStudents)
-                {
-                    result.Add(MapToNotificationParentDTO(notification, student.Student.Id, student.Student.Name));
-                }
+                result.Add(MapToNotificationParentDTO(item.Notification, item.Student.Id, item.Student.Name));
             }
-            return result;
+
+            return new PageResult<NotificationParentDTO>
+            {
+                Items = result,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                CurrentPage = pageNumber,
+                TotalItems = totalItems
+            };
         }
         public async Task<NotificationDetailDTO> GetNotificationByIdAsync(int notificationId, int studentId)
         {
@@ -146,6 +159,7 @@ namespace backend.Services
                         var healthCheckPage = await _healthCheckService
                             .GetHealthChecksByNotificationIdAsync(notification.Id, pageNumber, pageSize);
 
+                        // Trực tiếp sử dụng Items
                         dto.PagedResults = new PageResult<object>
                         {
                             Items = healthCheckPage.Items.Cast<object>().ToList(),
@@ -155,7 +169,6 @@ namespace backend.Services
                         };
                         break;
                     }
-
                 case "Vaccination":
                     {
                         var vaccinationPage = await _vaccinationService
