@@ -1,33 +1,27 @@
 import axiosInstance from "../axiosInstance"
 
 export const getHealthCheckResultDeltail = async (healthCheckId) => {
-    try{
+    try {
         const res = await axiosInstance.get(`/HealthCheck/${healthCheckId}`);
-        if(res.data.success) {
-            console.log(res.data.message);
+        if (res.data.success) {
             return res.data.data;
         } else {
-            console.log(res.data.message);
             return {};
         }
-    }catch(error) {
-        console.log("Loi getHealthCheckResultDeltail:", error);
+    } catch (error) {
         throw error;
     }
 }
 
 export const getVaccinationResultDeltail = async (vaccinationId) => {
-    try{
+    try {
         const res = await axiosInstance.get(`/Vaccination/${vaccinationId}`);
-        if(res.data.success) {
-            console.log(res.data.message);
+        if (res.data.success) {
             return res.data.data;
         } else {
-            console.log(res.data.message);
             return {};
         }
-    }catch(error) {
-        console.log("Loi getVaccinationResultDeltail:", error);
+    } catch (error) {
         throw error;
     }
 }

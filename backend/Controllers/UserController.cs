@@ -39,10 +39,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("role/{role}")]
-        public async Task<IActionResult> GetUsersByRole(string role)
+        public async Task<IActionResult> GetUsersByRole(string role, int pageNumber, int pageSize)
         {
-            var users = await _userService.GetUsersByRoleAsync(role);
-            if (users == null || users.Count == 0)
+            var users = await _userService.GetUsersByRoleAsync(role, pageNumber, pageSize);
+            if (users == null || users.Items.Count == 0)
             {
                 return Ok(new BaseResponse<List<UserDTO>>(
                     data: null,
@@ -50,7 +50,7 @@ namespace backend.Controllers
                     success: true
                 ));
             }
-            return Ok(new BaseResponse<List<UserDTO>>(
+            return Ok(new BaseResponse<PageResult<UserDTO>>(
                 data: users,
                 message: "Users by role retrieved successfully.",
                 success: true

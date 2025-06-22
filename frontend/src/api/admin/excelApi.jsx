@@ -16,14 +16,11 @@ export const importExcelFile = async (id, file) => {
     );
 
     if (res.data.success === true) {
-      console.log(res.data.message);
       //   return res.data.data;
     } else {
-      console.log("Lỗi importExcelFile từ backend");
       //   return [];
     }
   } catch (error) {
-    console.log("Lỗi importExcelFile:", error);
     throw error;
   }
 };
@@ -46,7 +43,6 @@ export const exportExcelFile = async (id) => {
     link.remove();
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.log("Lỗi exportExcelFile:", error);
     throw error;
   }
 };

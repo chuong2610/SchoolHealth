@@ -68,11 +68,11 @@ namespace backend.Controllers
             }
         }
         [HttpGet("export-form-result/{id}")]
-        public async Task<IActionResult> ExportFormResult(int id)
+        public async Task<IActionResult> ExportFormResult(int id, int pageNumber, int pageSize)
         {
             try
             {
-                var fileContent = await _excelService.ExportFormResultAsync(id);
+                var fileContent = await _excelService.ExportFormResultAsync(id, pageNumber, pageSize);
                 if (fileContent == null || fileContent.Length == 0)
                 {
                     return NotFound(new BaseResponse<string>
@@ -97,7 +97,7 @@ namespace backend.Controllers
 
         }
         [HttpPost("import-result/{notificationId}")]
-        public async Task<IActionResult> ImportResult(int notificationId, IFormFile file)
+        public async Task<IActionResult> ImportResult(IFormFile file, int notificationId, int pageNumber, int pageSize)
         {
             if (file == null || file.Length == 0)
             {
@@ -111,7 +111,7 @@ namespace backend.Controllers
 
             try
             {
-                var result = await _excelService.ImportFormResultAsync(file, notificationId);
+                var result = await _excelService.ImportFormResultAsync(file, notificationId, pageNumber, pageSize);
                 return Ok(new BaseResponse<ImportResult>
                 {
                     Data = result,

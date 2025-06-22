@@ -1,124 +1,52 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, InputGroup, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Alert,
+  Modal,
+  Spinner
+} from "react-bootstrap";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 import {
   getStudentListByParentId,
   sendMedicineApi,
 } from "../../api/parent/medicineApi";
-import styled, { keyframes } from 'styled-components';
-import { FaUser, FaCalendarAlt, FaPills, FaCheckCircle, FaPlusCircle, FaTrash, FaPaperPlane } from 'react-icons/fa';
-import '../../styles/parent-theme.css';
-import { Tooltip } from 'antd';
+import {
+  FaUser,
+  FaPills,
+  FaCheckCircle,
+  FaPlusCircle,
+  FaTrash,
+  FaPaperPlane,
+  FaStethoscope,
+  FaClipboardList,
+  FaInfoCircle,
+  FaGraduationCap,
+  FaStickyNote,
+  FaTimesCircle,
+  FaSpinner
+} from 'react-icons/fa';
+import "../../styles/parent/parent-sendmedicine-redesign.css";
 
 const defaultMedicine = {
   medicineName: "",
-  // quantity: 1,
   dosage: "",
-  // time: "",
   notes: "",
 };
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const CardInput = styled.div`
-  background: linear-gradient(120deg, #e6f7ff 60%, #f0f5ff 100%);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(56,182,255,0.12);
-  padding: 32px 28px 18px 28px;
-  margin-bottom: 24px;
-  animation: ${fadeIn} 0.7s;
-`;
-
-const InputLabel = styled.div`
-  font-weight: 700;
-  color: #2563eb;
-  margin-bottom: 6px;
-  font-size: 1.08rem;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledInput = styled.input`
-  border-radius: 10px;
-  border: 2px solid #e6f7ff;
-  background: #fff;
-  padding: 10px 16px;
-  width: 100%;
-  margin-bottom: 12px;
-  transition: border 0.2s, box-shadow 0.2s;
-  &:focus {
-    border-color: #38b6ff;
-    box-shadow: 0 0 0 2px rgba(56,182,255,0.12);
-    outline: none;
-  }
-`;
-
-const MiniCard = styled.div`
-  background: #f0f5ff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(56,182,255,0.08);
-  padding: 12px 18px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  animation: ${fadeIn} 0.5s;
-`;
-
-const MiniIcon = styled.span`
-  color: #38b6ff;
-  font-size: 1.2rem;
-  margin-right: 10px;
-`;
-
-const GradientButton = styled(Button)`
-  background: linear-gradient(90deg, #2980B9 60%, #38b6ff 100%) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 16px !important;
-  font-weight: 600 !important;
-  padding: 12px 32px !important;
-  font-size: 1.1rem !important;
-  box-shadow: 0 2px 12px rgba(56,182,255,0.18) !important;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.2s !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  &:hover {
-    background: linear-gradient(90deg, #38b6ff 0%, #2980B9 100%) !important;
-    box-shadow: 0 6px 24px rgba(56,182,255,0.22) !important;
-    transform: scale(1.05) !important;
-  }
-`;
-
-const StyledFormControl = styled(Form.Control)`
-  border-radius: 12px !important;
-  border: 2px solid #e6eaf0 !important;
-  background: #f8f9fa !important;
-  padding: 12px 16px !important;
-  font-size: 1rem !important;
-  margin-bottom: 12px !important;
-  transition: border 0.2s, box-shadow 0.2s !important;
-  &:focus {
-    border-color: #38b6ff !important;
-    box-shadow: 0 0 0 2px rgba(56,182,255,0.12) !important;
-    outline: none !important;
-  }
-`;
-
 const SendMedicine = () => {
+  const { user } = useAuth();
   const [students, setStudents] = useState([]);
-  // const [studentName, setStudentName] = useState("");
-  // const [studentClass, setStudentClass] = useState("");
   const [medicines, setMedicines] = useState([{ ...defaultMedicine }]);
-  // const [senderName, setSenderName] = useState("");
-  // const [senderPhone, setSenderPhone] = useState("");
-  // const [senderNote, setSenderNote] = useState("");
   const [validated, setValidated] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleMedicineChange = (idx, field, value) => {
     setMedicines((prev) =>
@@ -134,194 +62,366 @@ const SendMedicine = () => {
     setMedicines((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validateForm = () => {
     let hasError = false;
+
     if (!selectedStudentId) {
       toast.error("Vui lòng chọn học sinh.");
       hasError = true;
     }
+
     medicines.forEach((med, idx) => {
-      if (!med.medicineName) {
-        toast.error(`Vui lòng nhập tên thuốc!`);
+      if (!med.medicineName.trim()) {
+        toast.error(`Vui lòng nhập tên thuốc thứ ${idx + 1}!`);
         hasError = true;
       }
-      if (!med.dosage) {
-        toast.error(`Vui lòng nhập liều dùng!`);
+      if (!med.dosage.trim()) {
+        toast.error(`Vui lòng nhập liều dùng cho thuốc thứ ${idx + 1}!`);
         hasError = true;
       }
     });
-    if (hasError) return;
 
-    if (e.currentTarget.checkValidity() === true) {
-      console.log("submit success");
+    return !hasError;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      setValidated(true);
+      return;
+    }
+
+    setShowConfirmModal(true);
+  };
+
+  const confirmSubmit = async () => {
+    setSubmitLoading(true);
+    setShowConfirmModal(false);
+
+    try {
       const data = {
         studentId: Number(selectedStudentId),
         medicines,
       };
-      console.log("Form submitted:", data);
 
-      //xu ly du lieu voi api
-      try {
-        const res = await sendMedicineApi(data);
-        console.log("Server respone: ", res);
+      const res = await sendMedicineApi(data);
 
-        // dung toast de hien thi thong bao
-        toast.success("Gửi thành công!");
+      toast.success("Gửi thuốc thành công! Y tá sẽ xem xét và phản hồi sớm nhất.");
 
-        // reset form
-        setSelectedStudentId("");
-        setMedicines([]);
-        setValidated(false);
+      // Reset form
+      setSelectedStudentId("");
+      setMedicines([{ ...defaultMedicine }]);
+      setValidated(false);
 
-        // Cuộn lên đầu
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } catch (error) {
-        toast.error("Đã xảy ra lỗi khi gửi thuốc.");
-        console.error("Gửi thuốc thất bại:", error);
-      }
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi khi gửi thuốc. Vui lòng thử lại!");
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
-  // khi load trang thi goi api de lay danh sach student
+  // Fetch student list when component mounts
   useEffect(() => {
     const fetchStudentList = async () => {
+      if (!user?.id) {
+        return;
+      }
+
+      setLoading(true);
       try {
-        const res = await getStudentListByParentId();
-        setStudents(res);
+        const res = await getStudentListByParentId(user.id);
+        setStudents(res || []);
       } catch (error) {
-        console.log("Loi fetchStudentList");
+        toast.error("Không thể tải danh sách học sinh!");
+      } finally {
+        setLoading(false);
       }
     };
     fetchStudentList();
-  }, []);
+  }, [user?.id]);
 
-  useEffect(() => {
-    console.log(students);
-  }, [students]);
+  const selectedStudent = students.find(student => student.id.toString() === selectedStudentId);
+
   return (
-    <div className="parent-bg-img parent-theme" style={{ minHeight: "100vh", padding: "24px 0px" }}>
-      <div className="fade-in-up">
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-md-8">
-              <form className="parent-form" onSubmit={handleSubmit} noValidate>
-                <div className="parent-form-header">
-                  <h2>
-                    <FaPills style={{ color: "#38b6ff", marginRight: 12, fontSize: 32, verticalAlign: "middle" }} />
-                    Gửi thuốc cho học sinh
-                  </h2>
-                  <p>Vui lòng điền thông tin thuốc và hướng dẫn sử dụng để nhà trường hỗ trợ tốt nhất.</p>
-                </div>
-                <div className="parent-form-grid">
-                  <div className="form-group">
-                    <label htmlFor="studentSelect">Chọn học sinh</label>
-                    <select
-                      className="parent-input"
-                      id="studentSelect"
-                      value={selectedStudentId}
-                      onChange={(e) => setSelectedStudentId(e.target.value)}
-                      required
-                    >
-                      <option value="">-- Chọn học sinh --</option>
-                      {students?.map((student) => (
-                        <option key={student.id} value={student.id}>{student.studentName} (Mã: {student.id}, Lớp: {student.className})</option>
-                      ))}
-                    </select>
+    <div className="send-medicine-page animate-fade-in">
+      {/* Hero Header */}
+      <div className="medicine-hero-header animate-slide-in-down">
+        <Container>
+          <div className="hero-content">
+            <h1 className="hero-title animate-fade-in-up delay-200">
+              <div className="hero-icon animate-float">
+                <FaPills />
+              </div>
+              Gửi thuốc cho học sinh
+            </h1>
+            <p className="hero-subtitle animate-fade-in-up delay-300">
+              Gửi thông tin thuốc và hướng dẫn sử dụng để nhà trường hỗ trợ tốt nhất cho con bạn
+            </p>
+          </div>
+        </Container>
+      </div>
+
+      {/* Main Content */}
+      <Container className="medicine-main-container">
+        <div className="medicine-form-wrapper animate-scale-in-center delay-500 animate-card">
+          {/* Form Header */}
+          <div className="form-header-section">
+            <h2 className="form-main-title">
+              <div className="title-icon">
+                <FaStethoscope />
+              </div>
+              Thông tin gửi thuốc
+            </h2>
+            <p className="form-description-text">
+              Vui lòng điền đầy đủ thông tin để đảm bảo học sinh được chăm sóc sức khỏe tốt nhất
+            </p>
+          </div>
+
+          {/* Form Body */}
+          <div className="form-body-section">
+            <Form onSubmit={handleSubmit} noValidate validated={validated}>
+              {/* Student Selection Section */}
+              <div className="info-section animate-fade-in-up delay-700">
+                <div className="section-header">
+                  <div className="section-icon-wrapper animate-scale-hover">
+                    <FaUser />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="class">Lớp</label>
-                    <input
-                      className="parent-input"
-                      id="class"
-                      readOnly
-                      value={
-                        students?.find((student) => student.id.toString() === selectedStudentId)?.className || ""
-                      }
-                    />
-                  </div>
+                  <h3 className="section-title-text">Chọn học sinh</h3>
                 </div>
-                <h4 className="mt-4 mb-3" style={{ color: "#2563eb", fontWeight: 700 }}>
-                  <FaPills style={{ marginRight: 8 }} /> Thông tin thuốc
-                </h4>
+
+                <div className="enhanced-form-group">
+                  <Form.Label className="enhanced-label">
+                    <FaGraduationCap className="label-icon" />
+                    Học sinh cần gửi thuốc
+                  </Form.Label>
+                  <Form.Select
+                    className="enhanced-control animate-input"
+                    value={selectedStudentId || ""}
+                    onChange={(e) => setSelectedStudentId(e.target.value)}
+                    required
+                    disabled={loading}
+                  >
+                    <option value="">-- Chọn học sinh --</option>
+                    {students.map((student) => (
+                      <option key={student.id} value={student.id}>
+                        {student.studentName} (Mã: {student.id}, Lớp: {student.className})
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng chọn học sinh
+                  </Form.Control.Feedback>
+                </div>
+
+                {selectedStudent && (
+                  <div className="student-display-card animate-scale-in-center delay-200">
+                    <div className="student-info-row">
+                      <div className="student-name-display">
+                        <FaUser />
+                        {selectedStudent.studentName}
+                      </div>
+                      <div className="student-class-display">
+                        <FaGraduationCap />
+                        Lớp: {selectedStudent.className}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Medicine Information Section */}
+              <div className="info-section animate-fade-in-up delay-1000">
+                <div className="section-header">
+                  <div className="section-icon-wrapper animate-scale-hover">
+                    <FaPills />
+                  </div>
+                  <h3 className="section-title-text">Thông tin thuốc</h3>
+                </div>
+
                 {medicines.map((med, idx) => (
-                  <div key={idx} className="parent-form-grid mb-4" style={{ border: "1px solid #e6eaf0", borderRadius: 12, padding: 16 }}>
-                    <div className="form-group">
-                      <label htmlFor={`medicineName-${idx}`}>Tên thuốc</label>
-                      <input
-                        className="parent-input"
-                        id={`medicineName-${idx}`}
-                        required
-                        type="text"
-                        value={med.medicineName}
-                        onChange={(e) => handleMedicineChange(idx, "medicineName", e.target.value)}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor={`dosage-${idx}`}>Liều dùng</label>
-                      <input
-                        className="parent-input"
-                        id={`dosage-${idx}`}
-                        required
-                        type="text"
-                        value={med.dosage}
-                        onChange={(e) => handleMedicineChange(idx, "dosage", e.target.value)}
-                        placeholder="Ví dụ: 1 viên/lần"
-                      />
-                    </div>
-                    <div className="form-group" style={{ gridColumn: "1/-1" }}>
-                      <label htmlFor={`notes-${idx}`}>Ghi chú</label>
-                      <textarea
-                        className="parent-input"
-                        id={`notes-${idx}`}
-                        rows={2}
-                        placeholder="Nhập hướng dẫn sử dụng hoặc lưu ý..."
-                        value={med.notes}
-                        onChange={(e) => handleMedicineChange(idx, "notes", e.target.value)}
-                        onInput={(e) => {
-                          e.target.style.height = "auto";
-                          e.target.style.height = `${e.target.scrollHeight}px`;
-                        }}
-                      />
-                    </div>
-                    <div className="d-flex align-items-end justify-content-end mt-2" style={{ gridColumn: "1/-1" }}>
+                  <div key={idx} className="medicine-item-card animate-stagger-fade-in animate-lift">
+                    <div className="medicine-card-header">
+                      <div className="medicine-number-badge animate-pulse">
+                        {idx + 1}
+                      </div>
                       {medicines.length > 1 && (
                         <button
                           type="button"
-                          className="btn btn-outline-danger"
+                          className="remove-medicine-button animate-button-hover"
                           onClick={() => handleRemoveMedicine(idx)}
-                          style={{ display: "flex", alignItems: "center", gap: 4 }}
                         >
-                          <FaTrash className="me-1" /> Xóa thuốc
+                          <FaTrash />
+                          Xóa thuốc
                         </button>
                       )}
                     </div>
+
+                    <Row>
+                      <Col md={6}>
+                        <div className="enhanced-form-group">
+                          <Form.Label className="enhanced-label">
+                            <FaPills className="label-icon" />
+                            Tên thuốc
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            className="enhanced-control animate-input"
+                            placeholder="VD: Paracetamol, Amoxicillin..."
+                            value={med.medicineName}
+                            onChange={(e) => handleMedicineChange(idx, "medicineName", e.target.value)}
+                            required
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên thuốc
+                          </Form.Control.Feedback>
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <div className="enhanced-form-group">
+                          <Form.Label className="enhanced-label">
+                            <FaClipboardList className="label-icon" />
+                            Liều dùng
+                          </Form.Label>
+                          <Form.Control
+                            type="text"
+                            className="enhanced-control animate-input"
+                            placeholder="VD: 1 viên/lần, 2 lần/ngày"
+                            value={med.dosage}
+                            onChange={(e) => handleMedicineChange(idx, "dosage", e.target.value)}
+                            required
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập liều dùng
+                          </Form.Control.Feedback>
+                        </div>
+                      </Col>
+                    </Row>
+
+                    <div className="enhanced-form-group">
+                      <Form.Label className="enhanced-label">
+                        <FaStickyNote className="label-icon" />
+                        Ghi chú và hướng dẫn
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        className="enhanced-control animate-input"
+                        placeholder="Nhập hướng dẫn sử dụng, thời gian uống thuốc, lưu ý đặc biệt..."
+                        value={med.notes}
+                        onChange={(e) => handleMedicineChange(idx, "notes", e.target.value)}
+                      />
+                    </div>
                   </div>
                 ))}
-                <div className="mb-4">
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onClick={handleAddMedicine}
-                    style={{ display: "flex", alignItems: "center", gap: 4 }}
-                  >
-                    <FaPlusCircle className="me-2" /> Thêm thuốc
-                  </button>
-                </div>
-                <div className="d-grid" style={{ gridColumn: "1/-1" }}>
-                  <button
-                    type="submit"
-                    className="parent-btn parent-gradient-btn"
-                    style={{ marginTop: 16 }}
-                  >
-                    <FaPaperPlane /> Gửi thuốc
-                  </button>
-                </div>
-              </form>
-            </div>
+
+                <button
+                  type="button"
+                  className="add-medicine-button animate-button-hover animate-lift"
+                  onClick={handleAddMedicine}
+                >
+                  <FaPlusCircle />
+                  Thêm thuốc khác
+                </button>
+              </div>
+            </Form>
+          </div>
+
+          {/* Submit Section */}
+          <div className="submit-area">
+            <button
+              type="submit"
+              className="primary-submit-button animate-button-hover animate-scale-hover"
+              onClick={handleSubmit}
+              disabled={submitLoading || loading}
+            >
+              {submitLoading ? (
+                <>
+                  <FaSpinner className="animate-spin" />
+                  Đang gửi...
+                </>
+              ) : (
+                <>
+                  <FaPaperPlane />
+                  Gửi thuốc
+                </>
+              )}
+            </button>
           </div>
         </div>
-      </div>
+      </Container>
+
+      {/* Confirmation Modal */}
+      <Modal
+        show={showConfirmModal}
+        onHide={() => setShowConfirmModal(false)}
+        size="md"
+        centered
+        className="confirmation-modal"
+      >
+        <div className={showConfirmModal ? 'animate-modal-enter' : 'animate-modal-exit'}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <FaCheckCircle style={{ color: '#10b981' }} className="animate-pulse" />
+              Xác nhận gửi thuốc
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Alert variant="info" className="mb-3 animate-fade-in-up delay-200">
+              <FaInfoCircle className="me-2" />
+              Bạn có chắc chắn muốn gửi thông tin thuốc này? Y tá sẽ xem xét và phản hồi sớm nhất.
+            </Alert>
+
+            {selectedStudent && (
+              <div className="mb-3 animate-fade-in-up delay-300">
+                <strong>Học sinh:</strong> {selectedStudent.studentName} - Lớp {selectedStudent.className}
+              </div>
+            )}
+
+            <div className="animate-fade-in-up delay-500">
+              <strong>Số loại thuốc:</strong> {medicines.length}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button
+              className="modal-button-secondary animate-button-hover"
+              onClick={() => setShowConfirmModal(false)}
+            >
+              <FaTimesCircle className="me-1" />
+              Hủy
+            </button>
+            <button
+              className="modal-button-primary animate-button-hover animate-scale-hover"
+              onClick={confirmSubmit}
+              disabled={submitLoading}
+            >
+              {submitLoading ? (
+                <>
+                  <FaSpinner className="animate-spin me-1" />
+                  Đang gửi...
+                </>
+              ) : (
+                <>
+                  <FaCheckCircle className="me-1" />
+                  Xác nhận gửi
+                </>
+              )}
+            </button>
+          </Modal.Footer>
+        </div>
+      </Modal>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="page-loading-overlay animate-backdrop-enter">
+          <div className="loading-card animate-scale-in-center">
+            <Spinner animation="border" className="loading-spinner-large animate-spin" />
+            <h5 className="loading-text animate-fade-in-up delay-300">Đang tải danh sách học sinh...</h5>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -74,12 +74,24 @@ namespace backend.Services
             var users = await _userRepository.GetAllUsersAsync();
             return users.Select(MapToUserDTO).ToList();
         }
-        public async Task<List<UserDTO>> GetUsersByRoleAsync(string role)
+        public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
         {
-            var users = await _userRepository.GetUsersByRoleAsync(role);
-            return users.Select(MapToUserDTO).ToList();
-        }
+            var totalItems = await _userRepository.CountUsersByRoleAsync(role);
 
+            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize);
+
+            var userDtos = users.Select(MapToUserDTO).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<UserDTO>
+            {
+                Items = userDtos,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
+        }
         private UserDTO MapToUserDTO(User user)
         {
             return new UserDTO

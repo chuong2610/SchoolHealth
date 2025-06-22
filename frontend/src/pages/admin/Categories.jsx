@@ -1,573 +1,561 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
-  Modal,
+  Card,
+  Table,
+  Badge,
+  InputGroup,
   Form,
+  Modal,
   Row,
   Col,
-  Badge,
-  ButtonGroup,
+  Alert,
+  Dropdown,
+  Spinner
 } from "react-bootstrap";
-import { FaEye, FaEdit, FaTrash, FaPlus, FaListUl } from "react-icons/fa";
-
-const initialMedicineCategories = [
-  {
-    id: "MED101",
-    name: "Thuốc giảm đau",
-    description: "Các loại thuốc giảm đau thông thường",
-    unit: "Viên",
-    prescriptionRequired: false,
-    count: 15,
-    items: [
-      { name: "Paracetamol 500mg", type: "Viên" },
-      { name: "Ibuprofen 400mg", type: "Viên" },
-      { name: "Aspirin 500mg", type: "Viên" },
-    ],
-  },
-  {
-    id: "MED102",
-    name: "Thuốc kháng sinh",
-    description: "Các loại thuốc kháng sinh thông dụng",
-    unit: "Viên",
-    prescriptionRequired: true,
-    count: 8,
-    items: [
-      { name: "Amoxicillin 500mg", type: "Viên" },
-      { name: "Azithromycin 250mg", type: "Viên" },
-    ],
-  },
-  {
-    id: "MED103",
-    name: "Băng y tế",
-    description: "Vật tư y tế dùng để băng bó",
-    unit: "Hộp",
-    prescriptionRequired: false,
-    count: 5,
-    items: [
-      { name: "Băng gạc vô trùng 10x10cm", type: "Gói" },
-      { name: "Băng keo y tế", type: "Cuộn" },
-    ],
-  },
-];
-
-const initialFormCategories = [
-  {
-    id: "FORM201",
-    name: "Phiếu tiêm chủng",
-    description: "Phiếu tiêm chủng cho học sinh",
-    template: "vaccination",
-    requireSignature: false,
-    count: 3,
-    items: [
-      { name: "Phiếu tiêm chủng mũi 1", type: "PDF" },
-      { name: "Phiếu tiêm chủng mũi 2", type: "PDF" },
-      { name: "Phiếu tiêm chủng mũi 3", type: "PDF" },
-    ],
-  },
-  {
-    id: "FORM202",
-    name: "Phiếu khám sức khỏe",
-    description: "Phiếu khám sức khỏe định kỳ",
-    template: "medical_examination",
-    requireSignature: true,
-    count: 2,
-    items: [
-      { name: "Phiếu khám sức khỏe học sinh", type: "PDF" },
-      { name: "Phiếu khám sức khỏe giáo viên", type: "PDF" },
-    ],
-  },
-  {
-    id: "FORM203",
-    name: "Phiếu theo dõi bệnh",
-    description: "Phiếu theo dõi bệnh mãn tính",
-    template: "monitoring",
-    requireSignature: false,
-    count: 4,
-    items: [
-      { name: "Phiếu theo dõi huyết áp", type: "PDF" },
-      { name: "Phiếu theo dõi tiểu đường", type: "PDF" },
-      { name: "Phiếu theo dõi hen suyễn", type: "PDF" },
-      { name: "Phiếu theo dõi dị ứng", type: "PDF" },
-    ],
-  },
-];
-
-const formTemplates = [
-  { value: "medical_examination", label: "Khám sức khỏe" },
-  { value: "vaccination", label: "Tiêm chủng" },
-  { value: "medication", label: "Cấp phát thuốc" },
-  { value: "monitoring", label: "Theo dõi bệnh" },
-  { value: "custom", label: "Tùy chỉnh" },
-];
+import {
+  FaPlus,
+  FaSearch,
+  FaEdit,
+  FaTrash,
+  FaList,
+  FaTag,
+  FaFilter,
+  FaDownload,
+  FaUpload,
+  FaEye,
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+  FaFolder,
+  FaFolderOpen,
+  FaPills,
+  FaMedkit,
+  FaCapsules,
+  FaBandAid
+} from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+// Styles được import từ main.jsx
 
 const Categories = () => {
-  const [medicineCategories, setMedicineCategories] = useState(
-    initialMedicineCategories
-  );
-  const [formCategories, setFormCategories] = useState(initialFormCategories);
-  const [showAddEditModal, setShowAddEditModal] = useState(false);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [modalType, setModalType] = useState("add"); // add | edit
-  const [categoryType, setCategoryType] = useState("medicine");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categories, setCategories] = useState([
+    {
+      id: 1,
+      name: "Thuốc kháng sinh",
+      description: "Các loại thuốc kháng sinh điều trị nhiễm khuẩn",
+      status: "Hoạt động",
+      items: 15,
+      icon: "FaPills",
+      color: "#FF5722"
+    },
+    {
+      id: 2,
+      name: "Thuốc giảm đau",
+      description: "Thuốc giảm đau và hạ sốt cho các bệnh lý thông thường",
+      status: "Hoạt động",
+      items: 8,
+      icon: "FaCapsules",
+      color: "#9C27B0"
+    },
+    {
+      id: 3,
+      name: "Vitamin",
+      description: "Các loại vitamin và khoáng chất bổ sung dinh dưỡng",
+      status: "Hoạt động",
+      items: 12,
+      icon: "FaMedkit",
+      color: "#4CAF50"
+    },
+    {
+      id: 4,
+      name: "Vật tư y tế",
+      description: "Băng gạc, bông y tế và các dụng cụ y tế khác",
+      status: "Tạm ngưng",
+      items: 5,
+      icon: "FaBandAid",
+      color: "#FF9500"
+    }
+  ]);
+
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState("add");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [formState, setFormState] = useState({
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [sortField, setSortField] = useState("name");
+  const [sortDirection, setSortDirection] = useState("asc");
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  const [formData, setFormData] = useState({
+    id: null,
     name: "",
     description: "",
-    unit: "Viên",
-    prescriptionRequired: false,
-    template: "medical_examination",
-    requireSignature: false,
+    status: "Hoạt động",
+    icon: "FaTag",
+    color: "#FF9500"
   });
 
-  // Mở modal thêm mới
-  const handleShowAdd = (type) => {
-    setModalType("add");
-    setCategoryType(type);
-    setFormState({
-      name: "",
-      description: "",
-      unit: "Viên",
-      prescriptionRequired: false,
-      template: "medical_examination",
-      requireSignature: false,
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        staggerChildren: 0.1
+      }
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3 }
+    },
+  };
+
+  // Helper functions
+  const getIconComponent = (iconName) => {
+    const iconMap = {
+      FaPills,
+      FaCapsules,
+      FaMedkit,
+      FaBandAid,
+      FaTag,
+      FaFolder
+    };
+    return iconMap[iconName] || FaTag;
+  };
+
+  // Filter và sort categories
+  const filteredCategories = categories
+    .filter(category => {
+      const matchesSearch = category.name.toLowerCase().includes(search.toLowerCase()) ||
+        category.description.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = filterStatus === "all" || category.status === filterStatus;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      const modifier = sortDirection === "asc" ? 1 : -1;
+
+      if (typeof aValue === 'string') {
+        return aValue.localeCompare(bValue) * modifier;
+      }
+      return (aValue - bValue) * modifier;
     });
-    setShowAddEditModal(true);
+
+  const handleShowModal = (type, category = null) => {
+    setModalType(type);
+    if (category) {
+      setFormData({
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        status: category.status,
+        icon: category.icon || "FaTag",
+        color: category.color || "#FF9500"
+      });
+    } else {
+      setFormData({
+        id: null,
+        name: "",
+        description: "",
+        status: "Hoạt động",
+        icon: "FaTag",
+        color: "#FF9500"
+      });
+    }
+    setShowModal(true);
   };
 
-  // Mở modal chỉnh sửa
-  const handleShowEdit = (type, cat) => {
-    setModalType("edit");
-    setCategoryType(type);
-    setSelectedCategory(cat);
-    setFormState({
-      name: cat.name,
-      description: cat.description,
-      unit: cat.unit || "Viên",
-      prescriptionRequired: cat.prescriptionRequired || false,
-      template: cat.template || "medical_examination",
-      requireSignature: cat.requireSignature || false,
-    });
-    setShowAddEditModal(true);
-  };
-
-  // Mở modal chi tiết
-  const handleShowDetail = (type, cat) => {
-    setCategoryType(type);
-    setSelectedCategory(cat);
-    setShowDetailModal(true);
-  };
-
-  // Lưu danh mục
-  const handleSave = (e) => {
-    e.preventDefault();
-    if (!formState.name) {
-      alert("Vui lòng nhập tên danh mục");
+  const handleSaveCategory = () => {
+    if (!formData.name.trim()) {
+      alert("Vui lòng nhập tên danh mục!");
       return;
     }
-    if (categoryType === "medicine") {
+
+    setLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
       if (modalType === "add") {
-        setMedicineCategories([
-          ...medicineCategories,
-          {
-            id: `MED${Math.floor(Math.random() * 900) + 100}`,
-            name: formState.name,
-            description: formState.description,
-            unit: formState.unit,
-            prescriptionRequired: formState.prescriptionRequired,
-            count: 0,
-            items: [],
-          },
-        ]);
-      } else if (modalType === "edit" && selectedCategory) {
-        setMedicineCategories(
-          medicineCategories.map((cat) =>
-            cat.id === selectedCategory.id
-              ? {
-                  ...cat,
-                  name: formState.name,
-                  description: formState.description,
-                  unit: formState.unit,
-                  prescriptionRequired: formState.prescriptionRequired,
-                }
-              : cat
-          )
-        );
+        const newCategory = {
+          ...formData,
+          id: Date.now(),
+          items: 0
+        };
+        setCategories([...categories, newCategory]);
+      } else {
+        setCategories(categories.map(cat =>
+          cat.id === formData.id ? { ...cat, ...formData } : cat
+        ));
       }
-    } else {
-      if (modalType === "add") {
-        setFormCategories([
-          ...formCategories,
-          {
-            id: `FORM${Math.floor(Math.random() * 900) + 100}`,
-            name: formState.name,
-            description: formState.description,
-            template: formState.template,
-            requireSignature: formState.requireSignature,
-            count: 0,
-            items: [],
-          },
-        ]);
-      } else if (modalType === "edit" && selectedCategory) {
-        setFormCategories(
-          formCategories.map((cat) =>
-            cat.id === selectedCategory.id
-              ? {
-                  ...cat,
-                  name: formState.name,
-                  description: formState.description,
-                  template: formState.template,
-                  requireSignature: formState.requireSignature,
-                }
-              : cat
-          )
-        );
-      }
-    }
-    setShowAddEditModal(false);
+
+      setShowModal(false);
+      setLoading(false);
+    }, 1000);
   };
 
-  // Xóa danh mục
-  const handleDelete = () => {
-    if (categoryType === "medicine") {
-      setMedicineCategories(
-        medicineCategories.filter((cat) => cat.id !== selectedCategory.id)
-      );
-    } else {
-      setFormCategories(
-        formCategories.filter((cat) => cat.id !== selectedCategory.id)
-      );
+  const handleDeleteCategory = () => {
+    if (categoryToDelete) {
+      setCategories(categories.filter(cat => cat.id !== categoryToDelete.id));
+      setShowDeleteModal(false);
+      setCategoryToDelete(null);
     }
-    setShowDeleteModal(false);
   };
 
-  // Hiển thị danh sách danh mục
-  const renderCategoryList = (type, categories) => (
-    <div className="card border-0 shadow-sm mb-4">
-      <div className="card-body">
-        <h5 className="card-title mb-3">
-          {type === "medicine" ? "Loại thuốc & vật tư" : "Mẫu phiếu"}
-        </h5>
-        <div className="list-group">
-          {categories.length === 0 ? (
-            <div className="text-muted small text-center p-2">
-              Chưa có danh mục
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const getSortIcon = (field) => {
+    if (sortField !== field) return <FaSort className="ms-1" />;
+    return sortDirection === "asc" ? <FaSortUp className="ms-1" /> : <FaSortDown className="ms-1" />;
+  };
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      "Hoạt động": "success",
+      "Tạm ngưng": "warning",
+      "Ngưng hoạt động": "danger"
+    };
+    return <Badge bg={variants[status] || "secondary"}>{status}</Badge>;
+  };
+
+  return (
+    <div className="admin-categories-container">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Header */}
+        <motion.div variants={itemVariants} className="admin-categories-header">
+          <Row className="align-items-center">
+            <Col>
+              <h1 className="admin-categories-title mb-2">
+                <FaFolder className="me-3" />
+                Quản lý danh mục
+              </h1>
+              <p className="admin-categories-subtitle mb-0">
+                Quản lý các danh mục thuốc và vật tư y tế với giao diện gradient cam tím hiện đại
+              </p>
+            </Col>
+            <Col xs="auto">
+              <div className="d-flex gap-3">
+                <button
+                  className="admin-primary-btn"
+                  onClick={() => handleShowModal("add")}
+                >
+                  <FaPlus className="me-2" />
+                  Thêm danh mục
+                </button>
+                <button className="admin-secondary-btn">
+                  <FaDownload className="me-2" />
+                  Xuất báo cáo
+                </button>
+              </div>
+            </Col>
+          </Row>
+        </motion.div>
+
+        {/* Search Bar */}
+        <motion.div variants={itemVariants} className="admin-categories-search-bar">
+          <div style={{ flex: 1 }}>
+            <input
+              type="text"
+              placeholder="Tìm kiếm danh mục..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="admin-categories-search-input"
+            />
+          </div>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="admin-categories-search-input"
+            style={{ flex: '0 0 200px' }}
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Hoạt động">Hoạt động</option>
+            <option value="Tạm ngưng">Tạm ngưng</option>
+            <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+          </select>
+          <button className="admin-medicine-filter-btn">
+            <FaFilter />
+            Lọc nâng cao
+          </button>
+        </motion.div>
+
+        {/* Categories Grid */}
+        <motion.div variants={itemVariants} className="admin-categories-grid">
+          {/* Add Category Card */}
+          <div className="admin-add-category-card" onClick={() => handleShowModal("add")}>
+            <div className="admin-add-category-icon">
+              <FaPlus />
             </div>
-          ) : (
-            categories.map((cat) => (
-              <div
-                key={cat.id}
-                className="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-              >
-                <span>{cat.name}</span>
-                <div>
-                  <span
-                    className="badge bg-primary rounded-pill me-2"
-                    style={{
-                      fontSize: 10,
-                      minWidth: 32,
-                      minHeight: 24,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {cat.count || 0}
-                  </span>
-                  <div className="btn-group btn-group-sm">
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      className="btn-view-category"
-                      onClick={() => handleShowDetail(type, cat)}
-                    >
-                      <FaEye />
-                    </Button>
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      className="btn-edit-category"
-                      onClick={() => handleShowEdit(type, cat)}
+            <div className="admin-add-category-text">Thêm danh mục mới</div>
+            <div className="admin-add-category-subtext">Tạo danh mục thuốc và vật tư y tế</div>
+          </div>
+
+          {/* Category Cards */}
+          <AnimatePresence>
+            {filteredCategories.map((category, index) => {
+              const IconComponent = getIconComponent(category.icon);
+              return (
+                <motion.div
+                  key={category.id}
+                  className="admin-category-card"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <div className="admin-category-icon-wrapper">
+                    <IconComponent className="admin-category-icon" />
+                  </div>
+
+                  <div className="admin-category-name">{category.name}</div>
+                  <div className="admin-category-description">{category.description}</div>
+
+                  <div className="admin-category-stats">
+                    <div className="admin-category-stat">
+                      <div className="admin-category-stat-value">{category.items}</div>
+                      <div className="admin-category-stat-label">Sản phẩm</div>
+                    </div>
+                    <div className="admin-category-stat">
+                      <div className="admin-category-stat-value" style={{
+                        color: category.status === 'Hoạt động' ? '#4CAF50' :
+                          category.status === 'Tạm ngưng' ? '#FF9800' : '#F44336'
+                      }}>
+                        {category.status === 'Hoạt động' ? '✓' :
+                          category.status === 'Tạm ngưng' ? '⏸' : '✗'}
+                      </div>
+                      <div className="admin-category-stat-label">{category.status}</div>
+                    </div>
+                  </div>
+
+                  <div className="admin-category-actions">
+                    <button
+                      className="admin-category-btn edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShowModal("edit", category);
+                      }}
                     >
                       <FaEdit />
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      className="btn-delete-category"
-                      onClick={() => {
-                        setSelectedCategory(cat);
-                        setCategoryType(type);
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      className="admin-category-btn delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCategoryToDelete(category);
                         setShowDeleteModal(true);
                       }}
                     >
                       <FaTrash />
-                    </Button>
+                      Xóa
+                    </button>
                   </div>
-                </div>
-              </div>
-            ))
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+
+          {filteredCategories.length === 0 && search && (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: '#757575' }}>
+              <FaFolder style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }} />
+              <h4>Không tìm thấy danh mục nào</h4>
+              <p>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc</p>
+            </div>
           )}
-        </div>
-        <Button
-          className="btn btn-primary w-100 mt-3"
-          onClick={() => handleShowAdd(type)}
-        >
-          <FaPlus /> Thêm mới
-        </Button>
-      </div>
-    </div>
-  );
+        </motion.div>
 
-  // Modal Thêm/Sửa
-  const renderAddEditModal = () => (
-    <Modal show={showAddEditModal} onHide={() => setShowAddEditModal(false)}>
-      <Form onSubmit={handleSave} autoComplete="off">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {modalType === "add"
-              ? `Thêm mới ${
-                  categoryType === "medicine" ? "Thuốc & Vật tư" : "Mẫu Phiếu"
-                }`
-              : `Chỉnh sửa ${
-                  categoryType === "medicine" ? "Thuốc & Vật tư" : "Mẫu Phiếu"
-                }`}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label>Tên danh mục</Form.Label>
-            <Form.Control
-              value={formState.name}
-              onChange={(e) =>
-                setFormState({ ...formState, name: e.target.value })
-              }
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Mô tả</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={formState.description}
-              onChange={(e) =>
-                setFormState({ ...formState, description: e.target.value })
-              }
-            />
-          </Form.Group>
-          {categoryType === "medicine" ? (
-            <>
-              <Form.Group className="mb-3">
-                <Form.Label>Đơn vị</Form.Label>
-                <Form.Control
-                  value={formState.unit}
-                  onChange={(e) =>
-                    setFormState({ ...formState, unit: e.target.value })
-                  }
+        {/* Add/Edit Modal */}
+        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered className="admin-categories-modal">
+          <Modal.Header closeButton>
+            <Modal.Title className="admin-categories-modal-title">
+              <FaFolder className="me-2" />
+              {modalType === "add" ? "Thêm danh mục mới" : "Chỉnh sửa danh mục"}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Row>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaTag />
+                      Tên danh mục *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Nhập tên danh mục"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="admin-categories-form-control"
+                    />
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaList />
+                      Trạng thái
+                    </label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      className="admin-categories-form-control"
+                    >
+                      <option value="Hoạt động">Hoạt động</option>
+                      <option value="Tạm ngưng">Tạm ngưng</option>
+                      <option value="Ngưng hoạt động">Ngưng hoạt động</option>
+                    </select>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaEye />
+                      Icon danh mục
+                    </label>
+                    <select
+                      value={formData.icon}
+                      onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                      className="admin-categories-form-control"
+                    >
+                      <option value="FaPills">💊 Thuốc viên</option>
+                      <option value="FaCapsules">💊 Thuốc nang</option>
+                      <option value="FaMedkit">🏥 Dụng cụ y tế</option>
+                      <option value="FaBandAid">🩹 Băng gạc</option>
+                      <option value="FaTag">🏷️ Thẻ gắn</option>
+                      <option value="FaFolder">📁 Thư mục</option>
+                    </select>
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="admin-categories-form-group">
+                    <label className="admin-categories-form-label">
+                      <FaFilter />
+                      Màu chủ đạo
+                    </label>
+                    <select
+                      value={formData.color}
+                      onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      className="admin-categories-form-control"
+                    >
+                      <option value="#FF9500">🟠 Cam</option>
+                      <option value="#9C27B0">🟣 Tím</option>
+                      <option value="#4CAF50">🟢 Xanh lá</option>
+                      <option value="#2196F3">🔵 Xanh dương</option>
+                      <option value="#FF5722">🔴 Đỏ cam</option>
+                      <option value="#607D8B">⚫ Xám xanh</option>
+                    </select>
+                  </div>
+                </Col>
+              </Row>
+              <div className="admin-categories-form-group">
+                <label className="admin-categories-form-label">
+                  <FaEdit />
+                  Mô tả danh mục
+                </label>
+                <textarea
+                  rows={4}
+                  placeholder="Nhập mô tả chi tiết cho danh mục..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="admin-categories-form-control"
+                  style={{ resize: 'vertical', minHeight: '100px' }}
                 />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Check
-                  type="checkbox"
-                  label="Cần đơn thuốc khi cấp phát"
-                  checked={formState.prescriptionRequired}
-                  onChange={(e) =>
-                    setFormState({
-                      ...formState,
-                      prescriptionRequired: e.target.checked,
-                    })
-                  }
-                />
-              </Form.Group>
-            </>
-          ) : (
-            <>
-              <h6 className="mb-3">Thông tin bổ sung cho mẫu phiếu</h6>
-              <Form.Group className="mb-3">
-                <Form.Label>Mẫu phiếu</Form.Label>
-                <Form.Select
-                  value={formState.template}
-                  onChange={(e) =>
-                    setFormState({ ...formState, template: e.target.value })
-                  }
-                >
-                  {formTemplates.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Check
-                  type="checkbox"
-                  label="Yêu cầu chữ ký"
-                  checked={formState.requireSignature}
-                  onChange={(e) =>
-                    setFormState({
-                      ...formState,
-                      requireSignature: e.target.checked,
-                    })
-                  }
-                />
-              </Form.Group>
-            </>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowAddEditModal(false)}
-          >
-            Hủy
-          </Button>
-          <Button type="submit" variant="success">
-            Lưu danh mục
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
-  );
+              </div>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
+              Hủy
+            </button>
+            <button
+              className="admin-primary-btn"
+              onClick={handleSaveCategory}
+              disabled={loading}
+            >
+              {loading && <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>}
+              {modalType === "add" ? "Thêm danh mục" : "Cập nhật"}
+            </button>
+          </Modal.Footer>
+        </Modal>
 
-  // Modal Chi tiết
-  const renderDetailModal = () => (
-    <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>
-          Chi tiết{" "}
-          {categoryType === "medicine" ? "Thuốc & Vật tư" : "Mẫu Phiếu"}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="mb-3">
-          <label className="form-label fw-bold">Tên danh mục</label>
-          <div className="form-control-plaintext">{selectedCategory?.name}</div>
-        </div>
-        <div className="mb-3">
-          <label className="form-label fw-bold">Mô tả</label>
-          <div className="form-control-plaintext">
-            {selectedCategory?.description}
-          </div>
-        </div>
-        {categoryType === "medicine" ? (
-          <>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Đơn vị</label>
-              <div className="form-control-plaintext">
-                {selectedCategory?.unit}
+        {/* Delete Confirmation Modal */}
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered className="admin-categories-modal">
+          <Modal.Header closeButton>
+            <Modal.Title className="admin-categories-modal-title">
+              <FaTrash className="me-2" />
+              Xác nhận xóa danh mục
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="text-center py-4">
+              <div className="mb-4">
+                <FaFolder style={{ fontSize: '5rem', color: '#F44336', opacity: 0.7 }} />
               </div>
-            </div>
-            <div className="mb-3">
-              <label className="form-label fw-bold">
-                Cần đơn thuốc khi cấp phát
-              </label>
-              <div className="form-control-plaintext">
-                {selectedCategory?.prescriptionRequired ? "Có" : "Không"}
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <h6 className="mb-3">Thông tin bổ sung cho mẫu phiếu</h6>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Mẫu phiếu</label>
-              <div className="form-control-plaintext">
-                {
-                  formTemplates.find(
-                    (t) => t.value === selectedCategory?.template
-                  )?.label
-                }
-              </div>
-            </div>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Yêu cầu chữ ký</label>
-              <div className="form-control-plaintext">
-                {selectedCategory?.requireSignature ? "Có" : "Không"}
-              </div>
-            </div>
-          </>
-        )}
-        <div className="mb-3">
-          <h6 className="mb-2">
-            Danh sách các mục ({selectedCategory?.items?.length || 0})
-          </h6>
-          <div className="list-group mb-2">
-            {selectedCategory?.items && selectedCategory.items.length > 0 ? (
-              selectedCategory.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  {item.name}
-                  <Badge bg="info">{item.type || "---"}</Badge>
+              <h4 className="mb-3">Bạn có chắc chắn muốn xóa danh mục</h4>
+              <h4 className="mb-4" style={{ color: '#FF9500', fontWeight: 'bold' }}>
+                "{categoryToDelete?.name}"?
+              </h4>
+              <div style={{
+                padding: '1.5rem',
+                backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                border: '2px solid rgba(255, 152, 0, 0.3)',
+                borderRadius: '16px',
+                color: '#FF9800'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <FaTrash style={{ marginRight: '0.75rem', fontSize: '1.25rem' }} />
+                  <strong>Cảnh báo quan trọng!</strong>
                 </div>
-              ))
-            ) : (
-              <div className="text-muted small text-center p-2">
-                Chưa có mục nào trong danh mục này
+                <p style={{ margin: 0, lineHeight: 1.6 }}>
+                  Thao tác này không thể hoàn tác. Tất cả <strong>{categoryToDelete?.items || 0} sản phẩm</strong> trong
+                  danh mục này sẽ bị ảnh hưởng và cần được phân loại lại.
+                </p>
               </div>
-            )}
-          </div>
-          <Button size="sm" variant="outline-primary" className="mt-2">
-            <FaListUl /> Quản lý danh sách
-          </Button>
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
-          Đóng
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-
-  // Modal xác nhận xóa
-  const renderDeleteModal = () => (
-    <Modal
-      show={showDeleteModal}
-      onHide={() => setShowDeleteModal(false)}
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Xác nhận xóa</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <p>
-          Bạn có chắc chắn muốn xóa danh mục{" "}
-          <strong>{selectedCategory?.name}</strong>?
-        </p>
-        <p className="text-danger">
-          <small>Thao tác này không thể hoàn tác.</small>
-        </p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-          Hủy
-        </Button>
-        <Button variant="danger" onClick={handleDelete}>
-          Xóa
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-
-  return (
-    <div
-      style={{ background: "#f8f9fa", minHeight: "100vh", padding: "32px 0" }}
-    >
-      <div className="container py-4">
-        <h2 className="mb-4 text-center fw-bold" style={{ fontSize: 36 }}>
-          Quản lý danh mục
-        </h2>
-        <Row className="g-4">
-          <Col md={6}>{renderCategoryList("medicine", medicineCategories)}</Col>
-          <Col md={6}>{renderCategoryList("form", formCategories)}</Col>
-        </Row>
-      </div>
-      {renderAddEditModal()}
-      {renderDetailModal()}
-      {renderDeleteModal()}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button className="admin-secondary-btn" onClick={() => setShowDeleteModal(false)}>
+              Hủy bỏ
+            </button>
+            <button
+              className="admin-medicine-btn delete"
+              onClick={handleDeleteCategory}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                width: 'auto',
+                height: 'auto',
+                fontSize: '0.95rem',
+                fontWeight: '600'
+              }}
+            >
+              <FaTrash className="me-2" />
+              Xóa vĩnh viễn
+            </button>
+          </Modal.Footer>
+        </Modal>
+      </motion.div>
     </div>
   );
 };

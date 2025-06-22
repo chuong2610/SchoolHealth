@@ -1,0 +1,490 @@
+/* Accounts Modal Styles - HIGH SPECIFICITY TO OVERRIDE NURSE MODAL */
+:root {
+    --accounts-modal-primary: #5865F2;
+    --accounts-modal-secondary: #7289DA;
+    --accounts-modal-success: #57F287;
+    --accounts-modal-danger: #ED4245;
+    --accounts-modal-warning: #FEE75C;
+}
+
+/* Modal Container - Override nurse modal */
+.accounts-modal.modal .modal-dialog {
+    max-width: 600px !important;
+    margin: 2rem auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    display: block !important;
+    align-items: unset !important;
+}
+
+.accounts-modal.modal .modal-content {
+    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(88, 101, 242, 0.15) !important;
+    overflow: hidden !important;
+    background: white !important;
+    max-height: none !important;
+    flex-direction: column !important;
+}
+
+/* Modal Header */
+.accounts-modal .modal-header {
+    background: linear-gradient(135deg, var(--accounts-modal-primary), var(--accounts-modal-secondary));
+    color: white;
+    border: none;
+    padding: 24px 32px;
+    position: relative;
+}
+
+.accounts-modal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    pointer-events: none;
+}
+
+.accounts-modal .modal-title {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.accounts-modal .modal-title i {
+    font-size: 1.3rem;
+    opacity: 0.9;
+}
+
+.accounts-modal .btn-close {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    opacity: 1;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+}
+
+.accounts-modal .btn-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Modal Body */
+.accounts-modal .modal-body {
+    padding: 32px;
+    background: white;
+}
+
+/* Form Groups */
+.accounts-modal .form-group {
+    margin-bottom: 24px;
+}
+
+.accounts-modal .form-label {
+    font-family: 'Inter', 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accounts-modal .form-label i {
+    color: var(--accounts-modal-primary);
+    font-size: 16px;
+}
+
+/* Form Controls */
+.accounts-modal .form-control,
+.accounts-modal .form-select {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: white;
+    color: #1f2937;
+    transition: all 0.3s ease;
+    box-shadow: none;
+}
+
+.accounts-modal .form-control:focus,
+.accounts-modal .form-select:focus {
+    border-color: var(--accounts-modal-primary);
+    box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.1);
+    outline: none;
+}
+
+.accounts-modal .form-control::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* Gender Select Styling */
+.accounts-modal .gender-select-wrapper {
+    position: relative;
+}
+
+.accounts-modal .gender-select-wrapper::before {
+    content: '\f228';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accounts-modal-primary);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.accounts-modal .gender-select-wrapper .form-select {
+    padding-left: 44px;
+}
+
+/* Form Row Spacing */
+.accounts-modal .row+.row {
+    margin-top: 0;
+}
+
+.accounts-modal .col-md-6:first-child {
+    padding-right: 12px;
+}
+
+.accounts-modal .col-md-6:last-child {
+    padding-left: 12px;
+}
+
+/* Modal Footer */
+.accounts-modal .modal-footer {
+    background: #f8fafc;
+    border: none;
+    padding: 24px 32px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Buttons */
+.accounts-modal .btn {
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.accounts-modal .btn-secondary {
+    background: #e5e7eb;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+}
+
+.accounts-modal .btn-secondary:hover {
+    background: #d1d5db;
+    color: #374151;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.accounts-modal .btn-primary {
+    background: linear-gradient(135deg, var(--accounts-modal-primary), var(--accounts-modal-secondary));
+    color: white;
+    box-shadow: 0 4px 16px rgba(88, 101, 242, 0.25);
+}
+
+.accounts-modal .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(88, 101, 242, 0.35);
+}
+
+.accounts-modal .btn-primary:disabled {
+    background: #9ca3af;
+    color: #f9fafb;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Loading Spinner */
+.accounts-modal .spinner-border-sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+}
+
+/* Delete Modal Styles */
+.accounts-delete-modal .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.accounts-delete-modal .modal-header {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+}
+
+.accounts-delete-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.accounts-delete-modal .modal-body {
+    padding: 24px;
+    text-align: center;
+}
+
+.accounts-delete-modal .modal-body i {
+    font-size: 48px;
+    color: #ef4444;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.accounts-delete-modal .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: none;
+    color: white;
+}
+
+.accounts-delete-modal .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Permissions Modal */
+.accounts-permissions-modal .modal-dialog {
+    max-width: 700px;
+}
+
+.accounts-permissions-modal .modal-content {
+    background: #1f2937;
+    color: white;
+    border-radius: 20px;
+}
+
+.accounts-permissions-modal .modal-header {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border: none;
+}
+
+.accounts-permissions-modal .permission-group {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.accounts-permissions-modal .permission-title {
+    color: #f3f4f6;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.accounts-permissions-modal .form-check {
+    margin-bottom: 8px;
+}
+
+.accounts-permissions-modal .form-check-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.accounts-permissions-modal .form-check-input:checked {
+    background: var(--accounts-modal-primary);
+    border-color: var(--accounts-modal-primary);
+}
+
+.accounts-permissions-modal .form-check-label {
+    color: #e5e7eb;
+    margin-left: 8px;
+}
+
+/* Import Modal */
+.accounts-import-modal .modal-dialog {
+    max-width: 900px;
+}
+
+.accounts-import-modal .modal-header {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+.accounts-import-modal .file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    margin: 16px 0;
+}
+
+.accounts-import-modal .file-upload-area:hover {
+    border-color: var(--accounts-modal-primary);
+    background: rgba(88, 101, 242, 0.05);
+}
+
+.accounts-import-modal .file-upload-area i {
+    font-size: 32px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.accounts-import-modal .file-upload-area.dragover {
+    border-color: var(--accounts-modal-primary);
+    background: rgba(88, 101, 242, 0.1);
+}
+
+/* Preview Table */
+.accounts-import-modal .preview-table-container {
+    max-height: 400px;
+    overflow: auto;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.accounts-import-modal .preview-table {
+    margin: 0;
+    font-size: 13px;
+}
+
+.accounts-import-modal .preview-table th {
+    background: var(--accounts-modal-primary);
+    color: white;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.accounts-import-modal .preview-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .accounts-modal .modal-dialog {
+        margin: 1rem;
+        max-width: none;
+    }
+
+    .accounts-modal .modal-header,
+    .accounts-modal .modal-body,
+    .accounts-modal .modal-footer {
+        padding: 20px;
+    }
+
+    .accounts-modal .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .accounts-modal .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .accounts-modal .col-md-6:first-child,
+    .accounts-modal .col-md-6:last-child {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .accounts-modal .btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .accounts-modal .modal-header,
+    .accounts-modal .modal-body,
+    .accounts-modal .modal-footer {
+        padding: 16px;
+    }
+
+    .accounts-modal .modal-footer {
+        flex-direction: column;
+    }
+
+    .accounts-modal .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .accounts-modal .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Animation for modal */
+.accounts-modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translate(0, -50px);
+}
+
+.accounts-modal.show .modal-dialog {
+    transform: none;
+}
+
+/* Form validation styles */
+.accounts-modal .form-control.is-invalid,
+.accounts-modal .form-select.is-invalid {
+    border-color: var(--accounts-modal-danger);
+    box-shadow: 0 0 0 3px rgba(237, 66, 69, 0.1);
+}
+
+.accounts-modal .invalid-feedback {
+    display: block;
+    color: var(--accounts-modal-danger);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* Success state */
+.accounts-modal .form-control.is-valid,
+.accounts-modal .form-select.is-valid {
+    border-color: var(--accounts-modal-success);
+    box-shadow: 0 0 0 3px rgba(87, 242, 135, 0.1);
+}
+
+.accounts-modal .valid-feedback {
+    display: block;
+    color: var(--accounts-modal-success);
+    font-size: 13px;
+    margin-top: 4px;
+    font-weight: 500;
+}

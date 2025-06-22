@@ -4,7 +4,8 @@ import { FaPills, FaClock, FaCalendarAlt, FaUserCheck, FaCheckCircle, FaUserNurs
 import { PieChart, Pie as RePie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area, AreaChart } from 'recharts';
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/nurse-theme.css";
+import axiosInstance from "../../api/axiosInstance";
+// CSS được import tự động từ main.jsx
 import CustomTable from "../../components/CustomTable";
 import MedicalExaminationFemaleSvg from "../../assets/medical-examination-female-svgrepo-com.svg";
 
@@ -181,11 +182,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (!nurseId) return;
     const fetchDashboard = async () => {
-      setLoading(true);
-      const res = await fetch(`http://localhost:5182/api/Home/nurse/${nurseId}`);
-      const data = await res.json();
-      setDashboardData(data.data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const res = await axiosInstance.get(`/Home/nurse/${nurseId}`);
+        setDashboardData(res.data.data);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     };
     fetchDashboard();
   }, [nurseId]);

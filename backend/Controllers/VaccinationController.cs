@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,12 +49,12 @@ namespace backend.Controllers
         }
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetVaccinationsByParentId(int parentId)
+        public async Task<IActionResult> GetVaccinationsByParentId(int parentId, int pageNumber, int pageSize)
         {
             try
             {
-                var vaccinations = await _vaccinationService.GetVaccinationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<VaccinationDTO>>(vaccinations, "Lấy danh sách tiêm chủng theo phụ huynh thành công", true));
+                var vaccinations = await _vaccinationService.GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize);
+                return Ok(new BaseResponse<PageResult<VaccinationDTO>>(vaccinations, "Lấy danh sách tiêm chủng theo phụ huynh thành công", true));
             }
             catch (Exception ex)
             {
