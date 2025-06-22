@@ -3,14 +3,11 @@ using StackExchange.Redis;
 
 public class RedisService : IRedisService
 {
-    private readonly IDatabase _database;
-    private readonly ConnectionMultiplexer _redis;
+   private readonly IDatabase _database;
 
-    public RedisService(IConfiguration configuration)
+    public RedisService(IConnectionMultiplexer redis)
     {
-        var redisConnectionString = configuration.GetConnectionString("Redis");
-        _redis = ConnectionMultiplexer.Connect(redisConnectionString);
-        _database = _redis.GetDatabase();
+        _database = redis.GetDatabase();
     }
 
     public async Task SetOtpAsync(string phone, string otp)

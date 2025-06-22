@@ -384,3 +384,8 @@ D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\Pipelines.Sockets.Unoffic
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\StackExchange.Redis.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
 D:\SWP391\SWP391\SchoolHealth\backend\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Extensions.Diagnostics.Abstractions.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Extensions.Hosting.Abstractions.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Microsoft.Extensions.ObjectPool.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\Newtonsoft.Json.dll
+F:\dev\.net\swp\backend\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll

@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using backend.Infrastructure;
 using System.Net.WebSockets;
 using backend.Hubs;
+using StackExchange.Redis;
 
 
 
@@ -185,6 +186,15 @@ builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var configString = builder.Configuration.GetConnectionString("Redis");
+    var config = ConfigurationOptions.Parse(configString);
+    config.AbortOnConnectFail = false;
+    return ConnectionMultiplexer.Connect(config);
+});
 builder.Services.AddSignalR();
 
 
@@ -193,6 +203,7 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<ChatHub>("/chatHub");
 // app.UseWebSockets(); // 👈 Bật WebSocket
 // var socketManager = app.Services.GetRequiredService<backend.Infrastructure.WebSocketManager>();
 
