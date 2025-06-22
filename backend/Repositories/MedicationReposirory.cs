@@ -43,70 +43,165 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<List<Medication>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize)
+        public async Task<List<Medication>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
         {
-            return await _context.Medications
+            var query = _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student.Parent)
                 .Include(m => m.Student.Class)
-                .Where(m => m.Nurse.Id == id && m.Status == "Active")
+                .Where(m => m.Nurse.Id == id && m.Status == "Active");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search))
+                );
+            }
+
+            return await query
                 .OrderByDescending(m => m.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicationsActiveByNurseIdAsync(int id)
+        public async Task<int> CountMedicationsActiveByNurseIdAsync(int id, string? search)
         {
-            return await _context.Medications
-                .CountAsync(m => m.Nurse.Id == id && m.Status == "Active");
+            var query = _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student.Parent)
+                .Include(m => m.Student.Class)
+                .Where(m => m.Nurse.Id == id && m.Status == "Active");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query.CountAsync();
         }
 
-        public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize)
+        public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
         {
-            var today = DateTime.Today;
-
-            return await _context.Medications
+            var query = _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student).ThenInclude(s => s.Parent)
                 .Include(m => m.Student).ThenInclude(s => s.Class)
-                .Where(m => m.Nurse.Id == id
-                    && m.Status == "Completed")
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query
                 .OrderBy(m => m.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicationsCompletedByNurseIdAsync(int id)
+        public async Task<int> CountMedicationsCompletedByNurseIdAsync(int id, string? search)
         {
-            var today = DateTime.Today;
+            var query = _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student).ThenInclude(s => s.Parent)
+                .Include(m => m.Student).ThenInclude(s => s.Class)
+                .Where(m => m.Nurse.Id == id && m.Status == "Completed");
 
-            return await _context.Medications
-                .Where(m => m.Nurse.Id == id
-                    && m.Status == "Completed")
-                .CountAsync();
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query.CountAsync();
         }
 
-        public async Task<List<Medication>> GetMedicationsPendingAsync(int pageNumber, int pageSize)
+        public async Task<List<Medication>> GetMedicationsPendingAsync(int pageNumber, int pageSize, string? search)
         {
-            return await _context.Medications
+            var query = _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student.Parent)
                 .Include(m => m.Student.Class)
-                .Where(m => m.Status == "Pending")
-                .OrderByDescending(m => m.Id) // hoặc OrderBy khác để phân trang ổn định
+                .Where(m => m.Status == "Pending");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query
+                .OrderByDescending(m => m.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountPendingMedicationsAsync()
+        public async Task<int> CountPendingMedicationsAsync(string? search)
         {
-            return await _context.Medications.CountAsync(m => m.Status == "Pending");
+            var query = _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student.Parent)
+                .Include(m => m.Student.Class)
+                .Where(m => m.Status == "Pending");
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query.CountAsync();
         }
 
 
@@ -126,24 +221,58 @@ namespace backend.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
+        public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            return await _context.Medications
+            var query = _context.Medications
                 .Include(m => m.Nurse)
                 .Include(m => m.MedicationDeclares)
                 .Include(m => m.Student.Parent)
                 .Include(m => m.Student.Class)
-                .Where(m => m.Student.ParentId == parentId)
+                .Where(m => m.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query
                 .OrderByDescending(m => m.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicationsByParentIdAsync(int parentId)
+        public async Task<int> CountMedicationsByParentIdAsync(int parentId, string? search = null)
         {
-            return await _context.Medications
-                .CountAsync(m => m.Student.ParentId == parentId);
+            var query = _context.Medications
+                .Include(m => m.Nurse)
+                .Include(m => m.MedicationDeclares)
+                .Include(m => m.Student.Parent)
+                .Include(m => m.Student.Class)
+                .Where(m => m.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            return await query.CountAsync();
         }
 
 
