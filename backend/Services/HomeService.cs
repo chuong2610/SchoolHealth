@@ -21,11 +21,11 @@ namespace backend.Services
             _userService = userService;
             _medicalSupplyService = medicalSupplyService;
         }
-        public async Task<HomeNurseDTO> GetHomeNurseAsync(int nurseId, int pageNumber, int pageSize)
+        public async Task<HomeNurseDTO> GetHomeNurseAsync(int nurseId, int pageNumber, int pageSize, string? search)
         {
-            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize);
-            var activeMedications = await _medicationService.GetMedicationsActiveByNurseIdAsync(nurseId, pageNumber, pageSize);
-            var completedMedications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(nurseId, pageNumber, pageSize);
+            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize, search);
+            var activeMedications = await _medicationService.GetMedicationsActiveByNurseIdAsync(nurseId, pageNumber, pageSize, search);
+            var completedMedications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(nurseId, pageNumber, pageSize, search);
             var notifications = await _notificationService.GetNotificationsByNurseIdAsync(nurseId);
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
@@ -45,12 +45,12 @@ namespace backend.Services
             };
         }
 
-        public async Task<HomeAdminDTO> GetHomeAdminAsync(int pageNumber, int pageSize)
+        public async Task<HomeAdminDTO> GetHomeAdminAsync(int pageNumber, int pageSize, string? search)
         {
             var numberOfStudents = await _studentService.GetNumberOfStudents();
             var numberOfNurses = await _userService.GetNumberOfUsersAsync("Nurse");
             var numberOfParents = await _userService.GetNumberOfUsersAsync("Parent");
-            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize);
+            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize, search);
             var activeMedications = await _medicationService.GetMedicationsActiveAsync();
             var completedMedications = await _medicationService.GetMedicationsCompletedAsync();
             var notifications = await _notificationService.Get5Notifications();
