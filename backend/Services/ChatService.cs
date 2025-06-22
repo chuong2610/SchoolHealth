@@ -100,7 +100,7 @@ namespace backend.Services
         {
             return _repo.UpdateUnassignedMessagesAsync(parentId, nurseId);
         }
-        
+
         public async Task<List<ChatMessageDTO>> GetMessageRequestsAsync(int userId)
         {
             var messages = await _repo.GetMessageRequestsAsync(userId);
@@ -111,6 +111,10 @@ namespace backend.Services
                 Message = msg.Message,
                 Timestamp = msg.Timestamp
             }).ToList();
+        }
+        public Task<bool> HasMessageAsync(int userId)
+        {
+            return _repo.HasMessageAsync(userId);
         }
         // public async Task BroadcastMessageToNursesAsync(int fromUserId, string message)
         // {

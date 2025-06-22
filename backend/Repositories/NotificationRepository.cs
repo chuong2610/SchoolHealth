@@ -108,5 +108,15 @@ namespace backend.Repositories
             .Take(5)
             .ToListAsync();
         }
+        public async Task<bool> HasNotificationAsync(int parentId)
+        {
+            return await _context.Notifications
+                        .AnyAsync(n =>
+                            n.NotificationStudents.Any(ns =>
+                                ns.Student.ParentId == parentId &&
+                                ns.Status == "Pending"
+                            )
+                        );
+        }
     }
 }

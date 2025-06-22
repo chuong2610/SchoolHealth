@@ -304,6 +304,10 @@ namespace backend.Services
 
             };
         }
+        public async Task<bool> HasNotificationAsync(int parentId)
+        {
+            return await _notificationRepository.HasNotificationAsync(parentId);
+        }    
 
     }
 }

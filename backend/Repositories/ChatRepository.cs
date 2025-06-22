@@ -71,7 +71,7 @@ namespace backend.Repositories
                 .Where(x => x.FromUserId == userId || x.ToUserId == userId)
                 .OrderByDescending(x => x.Timestamp)
                 .GroupBy(x => x.FromUserId == userId ? x.ToUserId : x.FromUserId)
-                
+
                 .Select(g => new
                 {
                     User = g.Key,
@@ -130,6 +130,13 @@ namespace backend.Repositories
                 Message = msg.Message,
                 Timestamp = msg.Timestamp
             }).ToList();
-        }    
+        }
+
+        public async Task<bool> HasMessageAsync(int userId)
+        {
+            var dbRedis = _redis.GetDatabase();
+            var key = $"chat:unread:{userId}";
+            return await dbRedis.ListLengthAsync(key) > 0;
+        }      
     }
 }

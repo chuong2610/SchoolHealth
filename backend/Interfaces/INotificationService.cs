@@ -19,6 +19,7 @@ namespace backend.Interfaces
                 Task<bool> UpdateNotificationAsync(int id, NotificationRequest notificationRequest);
                 Task<bool> DeleteNotificationAsync(int id);
                 Task<IEnumerable<NotificationClassDTO>> GetAllNotificationAsync();
+                Task<bool> HasNotificationAsync(int parentId);
 
         }
 }

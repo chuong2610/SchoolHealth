@@ -12,5 +12,6 @@ namespace backend.Interfaces
         Task<List<ChatMessage>> GetUnassignedMessagesAsync();
         Task UpdateUnassignedMessagesAsync(int parentId, int nurseId);
         Task<List<ChatMessage>> GetMessageRequestsAsync(int userId);
+        Task<bool> HasMessageAsync(int userId);
     }
 }

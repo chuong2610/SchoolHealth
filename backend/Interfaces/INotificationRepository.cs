@@ -15,5 +15,6 @@ namespace backend.Interfaces
                 Task<bool> UpdateNotificationAsync(Notification notification);
                 Task<bool> DeleteNotificationAsync(Notification notification);
                 Task<List<Notification>> GetAllNotificationsAsync();
+                Task<bool> HasNotificationAsync(int parentId);
         }
 }
