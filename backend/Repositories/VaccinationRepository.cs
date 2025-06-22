@@ -26,22 +26,38 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public Task<List<Vaccination>> GetVaccinationByNotificationIdAsync(int notificationId)
+        public async Task<List<Vaccination>> GetVaccinationsByNotificationIdAsync(int notificationId, int pageNumber, int pageSize)
         {
-            return _context.Vaccinations
+            return await _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
                 .Where(v => v.NotificationId == notificationId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId)
+        public async Task<int> CountVaccinationsByNotificationIdAsync(int notificationId)
+        {
+            return await _context.Vaccinations
+                .CountAsync(v => v.NotificationId == notificationId);
+        }
+
+        public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
             return await _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
                 .Where(v => v.Student.ParentId == parentId)
+                .OrderByDescending(v => v.Id) // hoặc OrderBy nào bạn muốn
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<int> CountVaccinationsByParentIdAsync(int parentId)
+        {
+            return await _context.Vaccinations.CountAsync(v => v.Student.ParentId == parentId);
         }
         public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
         {

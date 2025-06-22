@@ -74,12 +74,24 @@ namespace backend.Services
             var users = await _userRepository.GetAllUsersAsync();
             return users.Select(MapToUserDTO).ToList();
         }
-        public async Task<List<UserDTO>> GetUsersByRoleAsync(string role)
+        public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
         {
-            var users = await _userRepository.GetUsersByRoleAsync(role);
-            return users.Select(MapToUserDTO).ToList();
-        }
+            var totalItems = await _userRepository.CountUsersByRoleAsync(role);
 
+            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize);
+
+            var userDtos = users.Select(MapToUserDTO).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<UserDTO>
+            {
+                Items = userDtos,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
+        }
         private UserDTO MapToUserDTO(User user)
         {
             return new UserDTO
@@ -138,34 +150,44 @@ namespace backend.Services
                 return false;
             }
 
-            // Update Name if not null
+            // Update Name
             if (!string.IsNullOrWhiteSpace(request.Name))
             {
                 existingUserProfile.Name = request.Name;
             }
 
-            // Update Phone if not null
+            // Update Phone
             if (!string.IsNullOrWhiteSpace(request.Phone))
             {
                 existingUserProfile.Phone = request.Phone;
             }
-            // Update Address if not null
+
+            // Update Address
             if (!string.IsNullOrWhiteSpace(request.Address))
             {
                 existingUserProfile.Address = request.Address;
             }
-            // Update Gender if not null
+
+            // Update Gender
             if (!string.IsNullOrWhiteSpace(request.Gender))
             {
                 existingUserProfile.Gender = request.Gender;
             }
+
             // Update DateOfBirth if not null
-            if (request.DateOfBirth != null)
+            if (request.DateOfBirth.HasValue)
             {
-                existingUserProfile.DateOfBirth = request.DateOfBirth;
+                existingUserProfile.DateOfBirth = request.DateOfBirth.Value;
             }
 
+            // Update Image if uploaded
+            if (!string.IsNullOrWhiteSpace(request.ImageUrl))
+            {
 
+                existingUserProfile.ImageUrl = request.ImageUrl;
+            }
+
+            // Save changes
             var updated = await _userRepository.UpdateUserAsync(existingUserProfile);
             return updated;
         }

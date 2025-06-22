@@ -1,3 +1,4 @@
+
 using System.Text;
 using backend.Data;
 using backend.Filter;
@@ -13,6 +14,12 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using backend.Infrastructure;
+using System.Net.WebSockets;
+using backend.Hubs;
+using StackExchange.Redis;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -136,7 +143,7 @@ builder.Services.AddCors(options =>
 //     options.ClientSecret = builder.Configuration["Google:ClientSecret"];
 //     options.CallbackPath = "/signin-google";
 // });
-
+// builder.Services.AddSingleton<backend.Infrastructure.WebSocketManager>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.Configure<FileUploadSettings>(
@@ -179,11 +186,49 @@ builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IClassService, ClassService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var configString = builder.Configuration.GetConnectionString("Redis");
+    var config = ConfigurationOptions.Parse(configString);
+    config.AbortOnConnectFail = false;
+    return ConnectionMultiplexer.Connect(config);
+});
+builder.Services.AddSignalR();
+
 
 
 
 
 var app = builder.Build();
+app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<ChatHub>("/chatHub");
+// app.UseWebSockets(); // 👈 Bật WebSocket
+// var socketManager = app.Services.GetRequiredService<backend.Infrastructure.WebSocketManager>();
+
+// app.Map("/ws", async (Microsoft.AspNetCore.Http.HttpContext context) =>
+// {
+//     if (context.Request.Query.TryGetValue("userId", out var userIdStr) && int.TryParse(userIdStr, out var userId))
+//     {
+//         if (context.WebSockets.IsWebSocketRequest)
+//         {
+//             var socket = await context.WebSockets.AcceptWebSocketAsync();
+//             socketManager.Add(userId, socket); 
+
+//             while (socket.State == WebSocketState.Open)
+//             {
+//                 await Task.Delay(1000);
+//             }
+
+//             socketManager.Remove(userId);
+//             return;
+//         }
+//     }
+
+//     context.Response.StatusCode = 400;
+// });
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

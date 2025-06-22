@@ -19,15 +19,27 @@ namespace backend.Services
             return _medicalSupplyRepository.UpdateMedicalSupplyQuantityAsync(supplyId, quantity);
         }
 
-        public Task<List<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync()
+        public async Task<PageResult<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize)
         {
-            return _medicalSupplyRepository.GetAllMedicalSuppliesAsync()
-            .ContinueWith(task => task.Result.Select(supply => new MedicalSupplyDTO
+            var supplies = await _medicalSupplyRepository.GetAllMedicalSuppliesAsync(pageNumber, pageSize);
+            var totalCount = await _medicalSupplyRepository.CountAllMedicalSuppliesAsync();
+
+            var items = supplies.Select(s => new MedicalSupplyDTO
             {
-                Id = supply.Id,
-                Name = supply.Name,
-                Quantity = supply.Quantity
-            }).ToList());
+                Id = s.Id,
+                Name = s.Name,
+                Quantity = s.Quantity
+            }).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            return new PageResult<MedicalSupplyDTO>
+            {
+                Items = items,
+                TotalItems = totalCount,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<bool> CreateMedicalSuppliesAsync(MedicalSupplyRequest request)
@@ -36,7 +48,7 @@ namespace backend.Services
             {
                 Name = request.Name,
                 Description = request.Description,
-                Quantity = request.Quantity
+                Quantity = request.Quantity ?? 0
             };
             var created = await _medicalSupplyRepository.AddMedicalSuppliesAsync(supply);
             return created;
@@ -60,9 +72,9 @@ namespace backend.Services
                 existingMedicalSupply.Description = supplyRequest.Description;
             }
             // update Quantity if not null
-            if (supplyRequest.Quantity != 0)
+            if (supplyRequest.Quantity.HasValue)
             {
-                existingMedicalSupply.Quantity = supplyRequest.Quantity;
+                existingMedicalSupply.Quantity = supplyRequest.Quantity.Value;
             }
             var updated = await _medicalSupplyRepository.UpdateMedicalSuppliesAsync(existingMedicalSupply);
             return updated;

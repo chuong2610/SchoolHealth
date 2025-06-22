@@ -22,6 +22,36 @@ namespace backend.Services
             _vaccinationService = vaccinationService;
         }
 
+        public async Task<byte[]> ExportStudentsAndParentFromExcelAsync()
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Students & Parents");
+
+            // Tạo tiêu đề
+            var headers = new List<string>
+    {
+        "STT", "Mã học sinh", "Tên học sinh", "Giới tính", "Ngày sinh", "Lớp",
+        "Tên phụ huynh", "Ngày sinh PH", "Giới tính PH", "SĐT", "Email", "Địa chỉ"
+    };
+
+            for (int i = 0; i < headers.Count; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = headers[i];
+                worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                worksheet.Column(i + 1).Width = 20;
+            }
+
+            // Gợi ý định dạng (nếu cần)
+            worksheet.Cell(2, 5).Value = "dd/MM/yyyy"; // Gợi ý định dạng ngày sinh học sinh
+            worksheet.Cell(2, 8).Value = "dd/MM/yyyy"; // Gợi ý định dạng ngày sinh phụ huynh
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
+
+
+
         public async Task<ImportPSResult> ImportStudentsAndParentsFromExcelAsync(IFormFile file)
         {
             var result = new ImportPSResult();
@@ -119,9 +149,9 @@ namespace backend.Services
 
             return result;
         }
-        public async Task<byte[]> ExportFormResultAsync(int id)
+        public async Task<byte[]> ExportFormResultAsync(int id, int pageNumber, int pageSize)
         {
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize);
             if (notification == null)
             {
                 throw new Exception("Không tìm thấy thông báo");
@@ -170,17 +200,17 @@ namespace backend.Services
             {
                 worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
                 worksheet.Cell(currentRow, 2).Value = student.StudentName;
-                Console.WriteLine($"Exporting student: {student.StudentName}");          
+                Console.WriteLine($"Exporting student: {student.StudentName}");
             }
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
 
-        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId)
+        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId, int pageNumber, int pageSize)
         {
             var importResult = new ImportResult();
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId, pageNumber, pageSize);
             if (notification == null)
                 throw new Exception("Không tìm thấy thông báo");
 
@@ -192,72 +222,122 @@ namespace backend.Services
             var worksheet = workbook.Worksheet(1);
 
             string nurseName = "";
-            int id = 0;
+            int userId = 0;
 
-            var parts = worksheet.Cell(2, 1).GetString().Replace("Nhân viên y tế: ", "").Split(" - ");
-            if (parts.Length >= 2)
+            try
             {
-                nurseName = parts[0].Trim();
-                int.TryParse(parts[1].Trim(), out id);
+                var parts = worksheet.Cell(2, 1).GetString().Replace("Nhân viên y tế: ", "").Split(" - ");
+                if (parts.Length >= 2)
+                {
+                    nurseName = parts[0].Trim();
+                    int.TryParse(parts[1].Trim(), out userId);
+                }
+            }
+            catch (Exception ex)
+            {
+                importResult.ErrorMessages.Add($"Lỗi đọc thông tin nhân viên y tế: {ex.Message}");
+                return importResult;
             }
 
-            int row = 6; // Dòng bắt đầu có dữ liệu
+            int row = 6;
 
             switch (notification.Type)
             {
                 case "HealthCheck":
                     while (!worksheet.Cell(row, 1).IsEmpty())
                     {
-                        var student = await _studentService.GetStudentByStudentNumberAsync(worksheet.Cell(row, 1).GetString());
-                        var healthCheck = new HealthCheck
+                        try
                         {
-                            StudentId = student?.Id ?? 0,
-                            Height = worksheet.Cell(row, 3).GetValue<decimal>(),
-                            Weight = worksheet.Cell(row, 4).GetValue<decimal>(),
-                            VisionLeft = worksheet.Cell(row, 5).GetValue<decimal>(),
-                            VisionRight = worksheet.Cell(row, 6).GetValue<decimal>(),
-                            Bmi = worksheet.Cell(row, 7).GetValue<decimal>(),
-                            BloodPressure = worksheet.Cell(row, 8).GetString(),
-                            HeartRate = worksheet.Cell(row, 9).GetString(),
-                            Description = worksheet.Cell(row, 10).GetString(),
-                            Conclusion = worksheet.Cell(row, 11).GetString(),
-                            NotificationId = notificationId,
-                            Date = notification.Date,
-                            UserId = id,
-                            Location = notification.Location
+                            string studentNumber = worksheet.Cell(row, 1).GetString().Trim();
+                            var student = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+                            if (student == null)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không tìm thấy học sinh với mã '{studentNumber}'.");
+                                row++;
+                                continue;
+                            }
 
-                        };
-                        bool isCreated = await _healthCheckService.CreateHealthCheckAsync(healthCheck);
-                        if (!isCreated)
+                            decimal height = worksheet.Cell(row, 3).GetValue<decimal>();
+                            decimal weight = worksheet.Cell(row, 4).GetValue<decimal>();
+                            decimal visionLeft = worksheet.Cell(row, 5).GetValue<decimal>();
+                            decimal visionRight = worksheet.Cell(row, 6).GetValue<decimal>();
+                            decimal bmi = worksheet.Cell(row, 7).GetValue<decimal>();
+                            string bloodPressure = worksheet.Cell(row, 8).GetString().Trim();
+                            string heartRate = worksheet.Cell(row, 9).GetString().Trim();
+                            string description = worksheet.Cell(row, 10).GetString().Trim();
+                            string conclusion = worksheet.Cell(row, 11).GetString().Trim();
+
+                            var healthCheck = new HealthCheck
+                            {
+                                StudentId = student.Id,
+                                Height = height,
+                                Weight = weight,
+                                VisionLeft = visionLeft,
+                                VisionRight = visionRight,
+                                Bmi = bmi,
+                                BloodPressure = bloodPressure,
+                                HeartRate = heartRate,
+                                Description = description,
+                                Conclusion = conclusion,
+                                NotificationId = notificationId,
+                                Date = notification.Date,
+                                UserId = userId,
+                                Location = notification.Location
+                            };
+
+                            bool isCreated = await _healthCheckService.CreateHealthCheckAsync(healthCheck);
+                            if (!isCreated)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không thể lưu thông tin khám sức khỏe cho học sinh '{student.StudentName}'.");
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            importResult.ErrorMessages.Add($"Failed to import health check for student {healthCheck.StudentId}");
+                            importResult.ErrorMessages.Add($"Dòng {row}: Lỗi khi xử lý - {ex.Message}");
                         }
                         row++;
                     }
-
-
                     break;
 
                 case "Vaccination":
                     while (!worksheet.Cell(row, 1).IsEmpty())
                     {
-                        var student = await _studentService.GetStudentByStudentNumberAsync(worksheet.Cell(row, 1).GetString());
-                        var vaccination = new Vaccination
+                        try
                         {
-                            StudentId = student?.Id ?? 0,
-                            VaccineName = worksheet.Cell(row, 3).GetString(),
-                            Description = worksheet.Cell(row, 4).GetString(),
-                            Result = worksheet.Cell(row, 5).GetString(),
-                            NotificationId = notificationId,
-                            UserId = id,
-                            Date = notification.Date,
-                            Location = notification.Location
+                            string studentNumber = worksheet.Cell(row, 1).GetString().Trim();
+                            var student = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+                            if (student == null)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không tìm thấy học sinh với mã '{studentNumber}'.");
+                                row++;
+                                continue;
+                            }
 
-                        };
-                        bool isCreated = await _vaccinationService.CreateVaccinationAsync(vaccination);
-                        if (!isCreated)
+                            string vaccineName = worksheet.Cell(row, 3).GetString().Trim();
+                            string description = worksheet.Cell(row, 4).GetString().Trim();
+                            string result = worksheet.Cell(row, 5).GetString().Trim();
+
+                            var vaccination = new Vaccination
+                            {
+                                StudentId = student.Id,
+                                VaccineName = vaccineName,
+                                Description = description,
+                                Result = result,
+                                NotificationId = notificationId,
+                                Date = notification.Date,
+                                UserId = userId,
+                                Location = notification.Location
+                            };
+
+                            bool isCreated = await _vaccinationService.CreateVaccinationAsync(vaccination);
+                            if (!isCreated)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không thể lưu thông tin tiêm chủng cho học sinh '{student.StudentName}'.");
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            importResult.ErrorMessages.Add($"Failed to import vaccination for student {vaccination.StudentId}");
+                            importResult.ErrorMessages.Add($"Dòng {row}: Lỗi khi xử lý - {ex.Message}");
                         }
                         row++;
                     }
@@ -266,7 +346,9 @@ namespace backend.Services
                 default:
                     throw new Exception("Loại biểu mẫu không được hỗ trợ.");
             }
+
             return importResult;
         }
+
     }
 }

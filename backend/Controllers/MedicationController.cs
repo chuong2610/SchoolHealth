@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using backend.Models.Request;
 using System.Collections.Generic;
 using backend.Interfaces;
+using backend.Models;
 
 namespace backend.Controllers
 {
@@ -42,12 +43,12 @@ namespace backend.Controllers
         }
 
         [HttpGet("pending")]
-        public async Task<IActionResult> GetPendingMedications()
+        public async Task<IActionResult> GetPendingMedications(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsPendingAsync();
-                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
+                var medications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
             }
             catch (Exception ex)
             {
@@ -56,12 +57,12 @@ namespace backend.Controllers
         }
 
         [HttpGet("nurse/{id}/Active")]
-        public async Task<IActionResult> GetMedicationsActiveByNurseId(int id)
+        public async Task<IActionResult> GetMedicationsActiveByNurseId(int id, int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsActiveByNurseIdAsync(id);
-                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
+                var medications = await _medicationService.GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
             }
             catch (Exception ex)
             {
@@ -70,12 +71,12 @@ namespace backend.Controllers
         }
 
         [HttpGet("nurse/{id}/Completed")]
-        public async Task<IActionResult> GetMedicationsCompletedByNurseId(int id)
+        public async Task<IActionResult> GetMedicationsCompletedByNurseId(int id, int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(id);
-                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
+                var medications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
             }
             catch (Exception ex)
             {
@@ -126,12 +127,12 @@ namespace backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
-        public async Task<IActionResult> GetMedicationsByParentId(int parentId)
+        public async Task<IActionResult> GetMedicationsByParentId(int parentId, int pageNumber, int pageSize, string search)
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsByParentIdAsync(parentId);
-                return Ok(new BaseResponse<List<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc theo phụ huynh thành công", true));
+                var medications = await _medicationService.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc theo phụ huynh thành công", true));
             }
             catch (Exception ex)
             {

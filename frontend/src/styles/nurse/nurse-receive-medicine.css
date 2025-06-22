@@ -1,0 +1,2020 @@
+/* ===========================================
+   NURSE RECEIVE MEDICINE - BEAUTIFUL REDESIGN WITH AMAZING MODAL
+   =========================================== */
+
+/* Enhanced Keyframe Animations */
+@keyframes medicineSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes medicineCardHover {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(-8px) scale(1.03);
+    }
+}
+
+@keyframes medicineGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(240, 98, 146, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(240, 98, 146, 0.5);
+    }
+}
+
+@keyframes medicinePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes medicineSpinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes statusBadgeGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 4px 20px rgba(240, 98, 146, 0.3);
+    }
+}
+
+@keyframes modalSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes overlayFadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes floatingBubbles {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+/* Main Container */
+.nurse-receive-medicine-redesigned,
+.nurse-receive-medicine {
+    background: linear-gradient(135deg, #fafbff 0%, #f8f9fe 50%, #fef7f9 100%) !important;
+    min-height: 100vh !important;
+    padding: 32px !important;
+    position: relative !important;
+    overflow-x: hidden !important;
+}
+
+.nurse-receive-medicine-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: radial-gradient(circle at 25% 75%, rgba(240, 98, 146, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(233, 30, 99, 0.04) 0%, transparent 50%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+.nurse-receive-medicine-redesigned::after {
+    content: '💊' !important;
+    position: absolute !important;
+    top: 15% !important;
+    right: 8% !important;
+    font-size: 4rem !important;
+    opacity: 0.1 !important;
+    animation: floatingBubbles 8s ease-in-out infinite !important;
+    pointer-events: none !important;
+}
+
+.nurse-receive-medicine-redesigned>* {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Enhanced Header */
+.nurse-medicine-header-redesigned {
+    background: linear-gradient(135deg, var(--nurse-primary) 0%, var(--nurse-secondary) 50%, var(--nurse-accent) 100%) !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    margin-bottom: 40px !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: medicineSlideIn 0.8s ease-out !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.2) !important;
+}
+
+.nurse-medicine-header-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -40% !important;
+    right: -15% !important;
+    width: 300px !important;
+    height: 300px !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    animation: medicinePulse 4s ease-in-out infinite !important;
+}
+
+.nurse-medicine-header-redesigned::after {
+    content: '💊' !important;
+    position: absolute !important;
+    bottom: 20px !important;
+    right: 30px !important;
+    font-size: 3rem !important;
+    opacity: 0.3 !important;
+    animation: medicinePulse 3s ease-in-out infinite !important;
+}
+
+.nurse-medicine-title-redesigned {
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px !important;
+}
+
+.nurse-medicine-title-icon-redesigned {
+    width: 64px !important;
+    height: 64px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2rem !important;
+    backdrop-filter: blur(10px) !important;
+    animation: medicinePulse 3s ease-in-out infinite !important;
+}
+
+.nurse-medicine-subtitle-redesigned {
+    font-size: 1.1rem !important;
+    opacity: 0.95 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Medicine Stats Dashboard */
+.nurse-medicine-stats-redesigned {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 24px !important;
+    margin-bottom: 40px !important;
+}
+
+.nurse-medicine-stat-card-redesigned {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 20px !important;
+    padding: 28px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: medicineSlideIn 0.6s ease-out both !important;
+    cursor: pointer !important;
+}
+
+.nurse-medicine-stat-card-redesigned:nth-child(2) {
+    animation-delay: 0.1s !important;
+}
+
+.nurse-medicine-stat-card-redesigned:nth-child(3) {
+    animation-delay: 0.2s !important;
+}
+
+.nurse-medicine-stat-card-redesigned:nth-child(4) {
+    animation-delay: 0.3s !important;
+}
+
+.nurse-medicine-stat-card-redesigned:hover {
+    transform: translateY(-6px) scale(1.02) !important;
+    box-shadow: 0 12px 40px rgba(240, 98, 146, 0.15) !important;
+    border-color: var(--nurse-primary) !important;
+}
+
+.nurse-medicine-stat-card-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.3s ease !important;
+}
+
+.nurse-medicine-stat-card-redesigned:hover::before {
+    transform: scaleX(1) !important;
+}
+
+.nurse-medicine-stat-header-redesigned {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 16px !important;
+}
+
+.nurse-medicine-stat-icon-redesigned {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.5rem !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.nurse-medicine-stat-card-redesigned:hover .nurse-medicine-stat-icon-redesigned {
+    transform: scale(1.1) !important;
+    animation: medicinePulse 1s ease-in-out infinite !important;
+}
+
+.nurse-medicine-stat-value-redesigned {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 4px !important;
+}
+
+.nurse-medicine-stat-label-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+}
+
+.nurse-medicine-stat-trend-redesigned {
+    padding: 4px 8px !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+}
+
+.nurse-medicine-stat-trend-redesigned.up {
+    background: rgba(76, 175, 80, 0.1) !important;
+    color: var(--nurse-success) !important;
+}
+
+.nurse-medicine-stat-trend-redesigned.down {
+    background: rgba(244, 67, 54, 0.1) !important;
+    color: var(--nurse-danger) !important;
+}
+
+/* Enhanced Medicine Requests Grid */
+.nurse-medicine-requests-redesigned {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)) !important;
+    gap: 32px !important;
+    margin-bottom: 40px !important;
+}
+
+.nurse-medicine-card-redesigned {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    padding: 32px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    border: 2px solid rgba(240, 98, 146, 0.1) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: medicineSlideIn 0.6s ease-out both !important;
+    cursor: pointer !important;
+}
+
+.nurse-medicine-card-redesigned:nth-child(2) {
+    animation-delay: 0.1s !important;
+}
+
+.nurse-medicine-card-redesigned:nth-child(3) {
+    animation-delay: 0.2s !important;
+}
+
+.nurse-medicine-card-redesigned:nth-child(4) {
+    animation-delay: 0.3s !important;
+}
+
+.nurse-medicine-card-redesigned:hover {
+    border-color: var(--nurse-primary) !important;
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 16px 50px rgba(240, 98, 146, 0.2) !important;
+    background: white !important;
+}
+
+.nurse-medicine-card-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 6px !important;
+    background: linear-gradient(90deg, var(--nurse-primary), var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.4s ease !important;
+}
+
+.nurse-medicine-card-redesigned:hover::before {
+    transform: scaleX(1) !important;
+}
+
+.nurse-medicine-card-redesigned::after {
+    content: '💊' !important;
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    font-size: 1.5rem !important;
+    opacity: 0.2 !important;
+    transition: all 0.3s ease !important;
+}
+
+.nurse-medicine-card-redesigned:hover::after {
+    opacity: 0.4 !important;
+    transform: scale(1.2) !important;
+}
+
+/* Enhanced Medicine Card Header */
+.nurse-medicine-card-header-redesigned {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-bottom: 24px !important;
+}
+
+.nurse-medicine-info-redesigned {
+    flex: 1 !important;
+}
+
+.nurse-medicine-request-id-redesigned {
+    background: rgba(240, 98, 146, 0.1) !important;
+    color: var(--nurse-primary) !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
+    display: inline-block !important;
+}
+
+.nurse-medicine-name-redesigned {
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    transition: color 0.3s ease !important;
+}
+
+.nurse-medicine-card-redesigned:hover .nurse-medicine-name-redesigned {
+    color: var(--nurse-primary) !important;
+}
+
+.nurse-medicine-student-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-size: 1rem !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-weight: 600 !important;
+}
+
+.nurse-medicine-class-redesigned {
+    color: var(--nurse-text-secondary) !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.nurse-medicine-status-redesigned {
+    padding: 12px 20px !important;
+    border-radius: 25px !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    text-align: center !important;
+    min-width: 120px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    border: 2px solid transparent !important;
+}
+
+.nurse-medicine-status-redesigned:hover {
+    transform: scale(1.05) !important;
+    animation: statusBadgeGlow 2s ease-in-out infinite !important;
+}
+
+.nurse-medicine-status-redesigned.pending {
+    background: linear-gradient(135deg, var(--nurse-warning), #FFB74D) !important;
+    color: white !important;
+}
+
+.nurse-medicine-status-redesigned.approved {
+    background: linear-gradient(135deg, var(--nurse-success), #66BB6A) !important;
+    color: white !important;
+}
+
+.nurse-medicine-status-redesigned.dispensed {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+}
+
+.nurse-medicine-status-redesigned.rejected {
+    background: linear-gradient(135deg, var(--nurse-danger), #E57373) !important;
+    color: white !important;
+}
+
+/* Medicine Details */
+.nurse-medicine-details {
+    background: var(--nurse-bg-section);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.nurse-medicine-detail-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.nurse-medicine-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nurse-medicine-detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--nurse-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nurse-medicine-detail-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+}
+
+.nurse-medicine-dosage {
+    background: white;
+    border: 2px solid var(--nurse-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.nurse-medicine-dosage-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+    margin-bottom: 8px;
+}
+
+.nurse-medicine-dosage-text {
+    font-size: 0.8rem;
+    color: var(--nurse-text-secondary);
+    line-height: 1.4;
+}
+
+/* Medicine Actions */
+.nurse-medicine-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.nurse-medicine-action-btn {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.nurse-medicine-action-btn.dispense {
+    background: var(--nurse-primary);
+    color: white;
+}
+
+.nurse-medicine-action-btn.dispense:hover {
+    background: var(--nurse-primary-dark);
+    transform: translateY(-1px);
+}
+
+.nurse-medicine-action-btn.view {
+    background: var(--nurse-info);
+    color: white;
+}
+
+.nurse-medicine-action-btn.view:hover {
+    background: #1976D2;
+    transform: translateY(-1px);
+}
+
+.nurse-medicine-action-btn.reject {
+    background: var(--nurse-danger);
+    color: white;
+}
+
+.nurse-medicine-action-btn.reject:hover {
+    background: #D32F2F;
+    transform: translateY(-1px);
+}
+
+/* Medicine Inventory Summary */
+.nurse-medicine-inventory {
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--nurse-shadow);
+    margin-bottom: 32px;
+}
+
+.nurse-inventory-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.nurse-inventory-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nurse-inventory-search {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.nurse-inventory-search-input {
+    padding: 10px 16px;
+    border: 2px solid var(--nurse-border);
+    border-radius: 10px;
+    background: white;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    min-width: 250px;
+}
+
+.nurse-inventory-search-input:focus {
+    outline: none;
+    border-color: var(--nurse-primary);
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.nurse-inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.nurse-inventory-item {
+    background: white;
+    border: 2px solid var(--nurse-border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.nurse-inventory-item:hover {
+    border-color: var(--nurse-primary-light);
+    box-shadow: var(--nurse-shadow);
+}
+
+.nurse-inventory-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.nurse-inventory-item-name {
+    font-weight: 700;
+    color: var(--nurse-text-primary);
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.nurse-inventory-item-category {
+    color: var(--nurse-text-secondary);
+    font-size: 0.8rem;
+}
+
+.nurse-inventory-quantity {
+    text-align: right;
+}
+
+.nurse-inventory-quantity-number {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--nurse-primary);
+}
+
+.nurse-inventory-quantity-unit {
+    font-size: 0.8rem;
+    color: var(--nurse-text-secondary);
+}
+
+.nurse-inventory-item-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--nurse-border);
+}
+
+.nurse-inventory-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nurse-inventory-meta-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--nurse-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nurse-inventory-meta-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+}
+
+/* Stock Status Indicators */
+.nurse-stock-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.nurse-stock-indicator.high {
+    background: var(--nurse-success);
+}
+
+.nurse-stock-indicator.medium {
+    background: var(--nurse-warning);
+}
+
+.nurse-stock-indicator.low {
+    background: var(--nurse-danger);
+}
+
+/* Medicine Dispense Modal Styles */
+.nurse-dispense-modal {
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.nurse-dispense-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--nurse-border);
+}
+
+.nurse-dispense-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.nurse-dispense-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--nurse-text-primary);
+}
+
+.nurse-dispense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.nurse-dispense-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nurse-dispense-label {
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+    font-size: 0.9rem;
+}
+
+.nurse-dispense-input {
+    padding: 12px 16px;
+    border: 2px solid var(--nurse-border);
+    border-radius: 10px;
+    background: white;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.nurse-dispense-input:focus {
+    outline: none;
+    border-color: var(--nurse-primary);
+    box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.nurse-dispense-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Empty State */
+.nurse-medicine-empty {
+    text-align: center;
+    padding: 64px 32px;
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    box-shadow: var(--nurse-shadow);
+}
+
+.nurse-medicine-empty-icon {
+    font-size: 4rem;
+    color: var(--nurse-primary-light);
+    margin-bottom: 24px;
+}
+
+.nurse-medicine-empty-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+    margin-bottom: 12px;
+}
+
+.nurse-medicine-empty-description {
+    color: var(--nurse-text-secondary);
+    margin-bottom: 24px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nurse-receive-medicine {
+        padding: 16px;
+    }
+
+    .nurse-medicine-header {
+        padding: 24px;
+    }
+
+    .nurse-medicine-title {
+        font-size: 1.6rem;
+    }
+
+    .nurse-medicine-requests {
+        grid-template-columns: 1fr;
+    }
+
+    .nurse-medicine-actions {
+        flex-direction: column;
+    }
+
+    .nurse-medicine-action-btn {
+        min-width: auto;
+    }
+
+    .nurse-inventory-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nurse-inventory-search-input {
+        min-width: 200px;
+    }
+}
+
+/* BEAUTIFUL MODAL DESIGN */
+.nurse-medicine-modal-overlay-redesigned {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: overlayFadeIn 0.3s ease-out !important;
+    padding: 20px !important;
+}
+
+.nurse-medicine-modal-redesigned {
+    background: white !important;
+    border-radius: 24px !important;
+    max-width: 600px !important;
+    width: 100% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    box-shadow: 0 20px 60px rgba(240, 98, 146, 0.2) !important;
+    animation: modalSlideIn 0.4s ease-out !important;
+    position: relative !important;
+    border: 2px solid rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-medicine-modal-header-redesigned {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    padding: 32px !important;
+    border-radius: 24px 24px 0 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.nurse-medicine-modal-header-redesigned::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    right: -20% !important;
+    width: 200px !important;
+    height: 200px !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    animation: medicinePulse 3s ease-in-out infinite !important;
+}
+
+.nurse-medicine-modal-title-redesigned {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.nurse-medicine-modal-close-redesigned {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: white !important;
+    font-size: 1.2rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 2 !important;
+}
+
+.nurse-medicine-modal-close-redesigned:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.1) !important;
+}
+
+.nurse-medicine-modal-subtitle-redesigned {
+    opacity: 0.9 !important;
+    font-size: 1rem !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.nurse-medicine-modal-body-redesigned {
+    padding: 32px !important;
+    background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%) !important;
+}
+
+.nurse-medicine-modal-section-redesigned {
+    margin-bottom: 32px !important;
+    padding: 24px !important;
+    background: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.05) !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-medicine-modal-section-title-redesigned {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.nurse-medicine-modal-form-group-redesigned {
+    margin-bottom: 24px !important;
+}
+
+.nurse-medicine-modal-label-redesigned {
+    font-weight: 700 !important;
+    color: var(--nurse-text-primary) !important;
+    margin-bottom: 8px !important;
+    display: block !important;
+    font-size: 0.95rem !important;
+}
+
+.nurse-medicine-modal-input-redesigned {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    border: 2px solid rgba(240, 98, 146, 0.15) !important;
+    border-radius: 12px !important;
+    background: white !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.95rem !important;
+}
+
+.nurse-medicine-modal-input-redesigned:focus {
+    outline: none !important;
+    border-color: var(--nurse-primary) !important;
+    box-shadow: 0 0 0 4px rgba(240, 98, 146, 0.1) !important;
+}
+
+.nurse-medicine-modal-textarea-redesigned {
+    min-height: 100px !important;
+    resize: vertical !important;
+}
+
+.nurse-medicine-modal-footer-redesigned {
+    padding: 24px 32px !important;
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
+    border-radius: 0 0 24px 24px !important;
+    display: flex !important;
+    gap: 16px !important;
+    justify-content: flex-end !important;
+}
+
+.nurse-medicine-modal-btn-redesigned {
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    min-width: 120px !important;
+}
+
+.nurse-medicine-modal-btn-redesigned.cancel {
+    background: rgba(255, 255, 255, 0.8) !important;
+    color: var(--nurse-text-primary) !important;
+    border: 2px solid rgba(240, 98, 146, 0.2) !important;
+}
+
+.nurse-medicine-modal-btn-redesigned.cancel:hover {
+    background: white !important;
+    border-color: var(--nurse-primary) !important;
+}
+
+.nurse-medicine-modal-btn-redesigned.confirm {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.3) !important;
+}
+
+.nurse-medicine-modal-btn-redesigned.confirm:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(240, 98, 146, 0.4) !important;
+}
+
+/* ===========================================
+   APPLY REDESIGNED STYLES TO CURRENT CLASSES
+   =========================================== */
+
+/* Apply new styling to existing classes */
+.page-header {
+    background: linear-gradient(135deg, var(--nurse-primary) 0%, var(--nurse-secondary) 50%, var(--nurse-accent) 100%) !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    margin-bottom: 40px !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: medicineSlideIn 0.8s ease-out !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.2) !important;
+}
+
+.page-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -40% !important;
+    right: -15% !important;
+    width: 300px !important;
+    height: 300px !important;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%) !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    animation: medicinePulse 4s ease-in-out infinite !important;
+}
+
+.page-header::after {
+    content: '💊' !important;
+    position: absolute !important;
+    bottom: 20px !important;
+    right: 30px !important;
+    font-size: 3rem !important;
+    opacity: 0.3 !important;
+    animation: medicinePulse 3s ease-in-out infinite !important;
+}
+
+/* Medicine cards with beautiful styling */
+.medicine-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    padding: 32px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    border: 2px solid rgba(240, 98, 146, 0.1) !important;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: medicineSlideIn 0.6s ease-out both !important;
+    cursor: pointer !important;
+}
+
+.medicine-card:hover {
+    border-color: var(--nurse-primary) !important;
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 16px 50px rgba(240, 98, 146, 0.2) !important;
+    background: white !important;
+}
+
+.medicine-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 6px !important;
+    background: linear-gradient(90deg, var(--nurse-primary), var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: scaleX(0) !important;
+    transition: transform 0.4s ease !important;
+}
+
+.medicine-card:hover::before {
+    transform: scaleX(1) !important;
+}
+
+.medicine-card::after {
+    content: '💊' !important;
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    font-size: 1.5rem !important;
+    opacity: 0.2 !important;
+    transition: all 0.3s ease !important;
+}
+
+.medicine-card:hover::after {
+    opacity: 0.4 !important;
+    transform: scale(1.2) !important;
+}
+
+/* Enhanced action buttons */
+.btn-action {
+    padding: 12px 24px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 140px !important;
+    justify-content: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-action::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-action:hover::before {
+    left: 100% !important;
+}
+
+.btn-action.confirm {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.3) !important;
+}
+
+.btn-action.confirm:hover {
+    background: linear-gradient(135deg, var(--nurse-secondary), var(--nurse-accent)) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
+}
+
+.btn-action.view {
+    background: linear-gradient(135deg, var(--nurse-info), #42A5F5) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.3) !important;
+}
+
+.btn-action.view:hover {
+    background: linear-gradient(135deg, #42A5F5, #1976D2) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4) !important;
+}
+
+.btn-action.reject {
+    background: linear-gradient(135deg, var(--nurse-danger), #E57373) !important;
+    color: white !important;
+    box-shadow: 0 4px 16px rgba(244, 67, 54, 0.3) !important;
+}
+
+.btn-action.reject:hover {
+    background: linear-gradient(135deg, #E57373, #D32F2F) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(244, 67, 54, 0.4) !important;
+}
+
+/* Enhanced table styling */
+.medicine-table-container {
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+    padding: 40px !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+    margin-bottom: 40px !important;
+    border: 1px solid rgba(240, 98, 146, 0.08) !important;
+    animation: medicineSlideIn 0.8s ease-out 0.5s both !important;
+}
+
+.medicine-table {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
+}
+
+.medicine-table thead th {
+    background: linear-gradient(135deg, var(--nurse-primary), var(--nurse-secondary)) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 20px !important;
+    border: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.9rem !important;
+}
+
+.medicine-table tbody td {
+    padding: 20px !important;
+    border: none !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    vertical-align: middle !important;
+}
+
+.medicine-table tbody tr {
+    transition: all 0.3s ease !important;
+    border-bottom: 1px solid rgba(240, 98, 146, 0.1) !important;
+}
+
+.medicine-table tbody tr:hover {
+    background: rgba(252, 228, 236, 0.3) !important;
+    transform: scale(1.01) !important;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.1) !important;
+}
+
+/* NURSE RECEIVE MEDICINE - FORCE OVERRIDE INLINE STYLES */
+
+/* =====================================================
+   CONTAINER & LAYOUT OVERRIDES WITH HIGH SPECIFICITY 
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management {
+    background: linear-gradient(135deg, #f5f1ff 0%, #ffe1ed 50%, #fff0f5 100%) !important;
+    min-height: 100vh !important;
+    padding: 0 !important;
+    position: relative !important;
+    overflow-x: hidden !important;
+}
+
+.container-fluid.nurse-theme.medicine-management::before {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(240, 98, 146, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(233, 30, 99, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(194, 24, 91, 0.03) 0%, transparent 50%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+/* =====================================================
+   PAGE HEADER - ENHANCED GRADIENT DESIGN
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .page-header {
+    background: linear-gradient(135deg, #F06292 0%, #E91E63 50%, #C2185B 100%) !important;
+    color: white !important;
+    padding: 3rem 2rem !important;
+    margin: 0 -15px 3rem -15px !important;
+    border-radius: 0 0 30px 30px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 40px rgba(240, 98, 146, 0.3) !important;
+    z-index: 1 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.1) 0%, transparent 40%) !important;
+    pointer-events: none !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header .header-content {
+    position: relative !important;
+    z-index: 2 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 2rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header .page-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    animation: headerSlideIn 0.8s ease-out !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header .page-icon {
+    font-size: 2.5rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    animation: iconPulse 2s infinite !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header h1 {
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .page-header .page-subtitle {
+    font-size: 1.1rem !important;
+    opacity: 0.9 !important;
+    margin: 0.5rem 0 0 0 !important;
+    font-weight: 400 !important;
+}
+
+/* =====================================================
+   STATISTICS DASHBOARD - FLOATING CARDS EFFECT
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .stats-dashboard {
+    margin-bottom: 3rem !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 40px rgba(240, 98, 146, 0.12) !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+    overflow: hidden !important;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    position: relative !important;
+    backdrop-filter: blur(10px) !important;
+    transform: translateY(0) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, #F06292, #E91E63, #C2185B) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 20px 60px rgba(240, 98, 146, 0.2) !important;
+    border-color: rgba(240, 98, 146, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card:hover::before {
+    opacity: 1 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card .card-body {
+    padding: 2rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card .stats-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card .stats-icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 15px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.8rem !important;
+    position: relative !important;
+    transition: all 0.3s ease !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card.pending .stats-icon {
+    background: linear-gradient(135deg, #FFC107, #FF9800) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card.active .stats-icon {
+    background: linear-gradient(135deg, #2196F3, #1976D2) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card.completed .stats-icon {
+    background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card.today .stats-icon {
+    background: linear-gradient(135deg, #F06292, #E91E63) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card:hover .stats-icon {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card .stats-number {
+    font-size: 2.5rem !important;
+    font-weight: 800 !important;
+    color: #2c3e50 !important;
+    line-height: 1 !important;
+    margin-bottom: 0.3rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .stats-card .stats-label {
+    font-size: 1rem !important;
+    color: #7f8c8d !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* =====================================================
+   MEDICINE TABS - GLASS MORPHISM DESIGN
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 40px rgba(240, 98, 146, 0.1) !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+    backdrop-filter: blur(15px) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-tabs {
+    background: linear-gradient(135deg, rgba(240, 98, 146, 0.05) 0%, rgba(233, 30, 99, 0.08) 100%) !important;
+    border-bottom: none !important;
+    padding: 1.5rem 2rem 0 2rem !important;
+    position: relative !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-tabs::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, rgba(240, 98, 146, 0.2), transparent) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-link {
+    border: none !important;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1rem 1.5rem !important;
+    margin-right: 0.5rem !important;
+    color: #7f8c8d !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-link.active {
+    background: white !important;
+    color: #F06292 !important;
+    box-shadow: 0 -4px 20px rgba(240, 98, 146, 0.15) !important;
+    transform: translateY(-3px) !important;
+    border-bottom: 3px solid #F06292 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-link:hover {
+    color: #F06292 !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    transform: translateY(-2px) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .tab-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .tab-icon {
+    font-size: 1.1rem !important;
+    transition: transform 0.3s ease !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .nav-link.active .tab-icon {
+    transform: scale(1.1) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-tabs .tab-badge {
+    background: linear-gradient(135deg, #F06292, #E91E63) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 0.2rem 0.6rem !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    animation: badgePulse 2s infinite !important;
+}
+
+/* =====================================================
+   TABLE CONTAINER - FLOATING DESIGN
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 10px 50px rgba(240, 98, 146, 0.08) !important;
+    border: 1px solid rgba(240, 98, 146, 0.1) !important;
+    backdrop-filter: blur(15px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #F06292, #E91E63, #C2185B) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .table-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 2rem !important;
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .search-controls {
+    display: flex !important;
+    gap: 1rem !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .search-box {
+    position: relative !important;
+    min-width: 300px !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .search-input {
+    border: 2px solid rgba(240, 98, 146, 0.2) !important;
+    border-radius: 25px !important;
+    padding: 0.8rem 1rem 0.8rem 3.5rem !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.3s ease !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 2px 10px rgba(240, 98, 146, 0.05) !important;
+    width: 100% !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .search-input:focus {
+    border-color: #F06292 !important;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1), 0 2px 10px rgba(240, 98, 146, 0.15) !important;
+    background: white !important;
+    outline: none !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table-container .search-icon {
+    position: absolute !important;
+    left: 1.2rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #F06292 !important;
+    font-size: 1.1rem !important;
+    z-index: 5 !important;
+}
+
+/* =====================================================
+   ACTION BUTTONS - ENHANCED DESIGN
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .filter-btn,
+.container-fluid.nurse-theme.medicine-management .export-btn {
+    border: 2px solid transparent !important;
+    border-radius: 12px !important;
+    padding: 0.8rem 1.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .filter-btn {
+    background: linear-gradient(135deg, #F06292, #E91E63) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .filter-btn:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
+    background: linear-gradient(135deg, #E91E63, #C2185B) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .export-btn {
+    background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .export-btn:hover {
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4) !important;
+    background: linear-gradient(135deg, #388E3C, #2E7D32) !important;
+}
+
+/* =====================================================
+   TABLE DESIGN - PROFESSIONAL STYLING
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .medicine-table {
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table thead th {
+    background: linear-gradient(135deg, #F06292 0%, #E91E63 50%, #C2185B 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    padding: 1.5rem 1rem !important;
+    border: none !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    box-shadow: 0 2px 10px rgba(240, 98, 146, 0.2) !important;
+    text-align: center !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table tbody td {
+    padding: 1.5rem 1rem !important;
+    border-bottom: 1px solid rgba(240, 98, 146, 0.1) !important;
+    vertical-align: middle !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    text-align: center !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row {
+    transition: all 0.3s ease !important;
+    position: relative !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row:nth-child(even) td {
+    background: rgba(240, 98, 146, 0.02) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.15) !important;
+    z-index: 2 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-table .table-row:hover td {
+    background: linear-gradient(135deg, rgba(240, 98, 146, 0.08) 0%, rgba(233, 30, 99, 0.05) 100%) !important;
+    color: #2c3e50 !important;
+    font-weight: 500 !important;
+}
+
+/* =====================================================
+   ACTION BUTTONS IN TABLE
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .btn-action {
+    width: 35px !important;
+    height: 35px !important;
+    padding: 0 !important;
+    margin: 0 3px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 10px !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    font-size: 14px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action:hover::before {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.view {
+    background: linear-gradient(135deg, #F06292, #E91E63) !important;
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(240, 98, 146, 0.4) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.view:hover {
+    transform: scale(1.15) rotate(5deg) !important;
+    box-shadow: 0 6px 20px rgba(240, 98, 146, 0.5) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.confirm {
+    background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(76, 175, 80, 0.4) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.confirm:hover {
+    transform: scale(1.15) rotate(-5deg) !important;
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.reject {
+    background: linear-gradient(135deg, #FF5722, #D32F2F) !important;
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(255, 87, 34, 0.4) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.reject:hover {
+    transform: scale(1.15) rotate(5deg) !important;
+    box-shadow: 0 6px 20px rgba(255, 87, 34, 0.5) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.complete {
+    background: linear-gradient(135deg, #FF9800, #F57C00) !important;
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(255, 152, 0, 0.4) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .btn-action.complete:hover {
+    transform: scale(1.15) rotate(-5deg) !important;
+    box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5) !important;
+}
+
+/* =====================================================
+   ENHANCED MODAL STYLING
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .medicine-detail-modal.professional-prescription-modal .modal-dialog {
+    max-width: 95% !important;
+    margin: 2rem auto !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .medicine-detail-modal.professional-prescription-modal .modal-content {
+    border: none !important;
+    border-radius: 25px !important;
+    box-shadow: 0 30px 80px rgba(240, 98, 146, 0.3) !important;
+    overflow: hidden !important;
+    background: white !important;
+    animation: modalSlideIn 0.4s ease-out !important;
+}
+
+/* =====================================================
+   FLOATING ELEMENTS EFFECTS
+   ===================================================== */
+
+.container-fluid.nurse-theme.medicine-management .main-content {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .empty-content {
+    text-align: center !important;
+    padding: 4rem !important;
+    color: #7f8c8d !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    margin: 2rem 0 !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .loading-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4rem !important;
+    text-align: center !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    margin: 2rem 0 !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.1) !important;
+}
+
+.container-fluid.nurse-theme.medicine-management .loading-icon {
+    color: #F06292 !important;
+    font-size: 3rem !important;
+    margin-bottom: 1rem !important;
+    animation: loadingSpin 1s linear infinite !important;
+}
+
+/* =====================================================
+   ENHANCED ANIMATIONS
+   ===================================================== */
+
+@keyframes headerSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+@keyframes badgePulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes loadingSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .container-fluid.nurse-theme.medicine-management .page-header {
+        padding: 2rem 1rem !important;
+        margin: 0 -15px 2rem -15px !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .page-header .header-content {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .page-header h1 {
+        font-size: 1.8rem !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .stats-card {
+        margin-bottom: 1rem !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .medicine-table-container .search-box {
+        min-width: 100% !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .medicine-table-container .table-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .medicine-table-container .search-controls {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .medicine-table thead th {
+        padding: 1rem 0.5rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .container-fluid.nurse-theme.medicine-management .medicine-table tbody td {
+        padding: 1rem 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+}

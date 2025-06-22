@@ -11,18 +11,15 @@ export const sendMedicineApi = async (data) => {
 };
 
 export const getStudentListByParentId = async (parentId) => {
-  try{
-    // fake parentId
-    const parentId = localStorage.userId;
+  try {
     const res = await axiosInstance.get(`/Students/by-parent/${parentId}`);
-    if(res.data.success === true) {
-      console.log(res.data.message);
+    if (res.data.success === true) {
       return res.data.data;
     } else {
-      console.log("Loi roi");
+      console.error("Error in getStudentListByParentId:", res.data.message);
       return [];
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Get StudentList failed:", error);
     throw error;
   }

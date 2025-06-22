@@ -31,11 +31,22 @@ namespace backend.Repositories
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
         }
 
-        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync()
+        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize)
+        {
+            return _context.MedicalSupplies
+                .AsNoTracking()
+                .Where(ms => ms.IsActive)
+                .OrderBy(ms => ms.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<int> CountAllMedicalSuppliesAsync()
         {
             return _context.MedicalSupplies
                 .Where(ms => ms.IsActive)
-                .ToListAsync();
+                .CountAsync();
         }
 
         public async Task<bool> AddMedicalSuppliesAsync(MedicalSupply supply)

@@ -13,15 +13,13 @@ namespace backend.Services
     {
         private readonly IMedicationRepository _medicationRepository;
 
-        private readonly ApplicationDbContext _context;
-        private readonly IStudentService _studentService;
+        private readonly IStudentRepository _studentRepository;
 
         public MedicationService(
-            IMedicationRepository medicationRepository, ApplicationDbContext context, IStudentService studentService)
+            IMedicationRepository medicationRepository, IStudentRepository studentRepository)
         {
             _medicationRepository = medicationRepository;
-            _context = context;
-            _studentService = studentService;
+            _studentRepository = studentRepository;
 
         }
 
@@ -40,7 +38,7 @@ namespace backend.Services
             }
 
             // 3. Kiểm tra student tồn tại
-            var student = await _studentService.GetStudentByIdAsync(request.StudentId);
+            var student = await _studentRepository.GetByIdAsync(request.StudentId);
             if (student == null)
                 throw new Exception("Không tìm thấy học sinh.");
 
@@ -66,22 +64,60 @@ namespace backend.Services
 
 
 
-        public async Task<List<MedicationDTO>> GetMedicationsPendingAsync()
+        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int pageNumber, int pageSize, string? search)
         {
-            var medications = await _medicationRepository.GetMedicationsPendingAsync();
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search);
+            var medications = await _medicationRepository.GetMedicationsPendingAsync(pageNumber, pageSize, search);
+
+            var dtos = medications
+                .Select(m => MapToDTO(m))
+                .ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
         {
-            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id);
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search);
+
+            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+
+            var dtos = medications.Select(m => MapToDTO(m)).ToList();
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
+                CurrentPage = pageNumber
+            };
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
         {
-            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id);
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search);
+
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
+
+            var medicationDTOs = medications.Select(m => MapToDTO(m)).ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = medicationDTOs,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
@@ -138,11 +174,27 @@ namespace backend.Services
 
         }
 
-        public async Task<List<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId);
-            return medications.Select(m => MapToDTO(m)).ToList();
+            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId, search);
+
+            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+
+            var dtos = medications
+                .Select(m => MapToDTO(m))
+                .ToList();
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            return new PageResult<MedicationDTO>
+            {
+                Items = dtos,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
+
 
         public async Task<List<MedicationDTO>> GetMedicationsActiveAsync()
         {

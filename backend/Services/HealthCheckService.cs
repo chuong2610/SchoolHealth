@@ -45,16 +45,45 @@ namespace backend.Services
                 nurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }
-        public async Task<List<HealthCheckDTO>> GetAllHealthChecksByParentIdAsync(int parentId)
+        public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize)
         {
-            var healthChecks = await _healthCheckRepository.GetAllHealthChecksByParentIdAsync(parentId);
-            return healthChecks.Select(p => MapToDTO(p)).ToList();
+            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId);
+
+            var healthChecks = await _healthCheckRepository
+                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize);
+
+            var dtos = healthChecks
+                .Select(h => MapToDTO(h))
+                .ToList();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            return new PageResult<HealthCheckDTO>
+            {
+                Items = dtos,
+                TotalItems = totalCount,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
 
-        public async Task<List<HealthCheckDTO>> GetHealthChecksByNotificationIdAsync(int notificationId)
+        public async Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(
+    int notificationId, int pageNumber, int pageSize)
         {
-            var healthChecks = await _healthCheckRepository.GetHealthChecksByNotificationIdAsync(notificationId);
-            return healthChecks.Select(p => MapToDTO(p)).ToList();
+            var totalItems = await _healthCheckRepository
+                .CountHealthChecksByNotificationIdAsync(notificationId);
+
+            var healthChecks = await _healthCheckRepository
+                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize);
+
+            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return new PageResult<HealthCheck>
+            {
+                Items = healthChecks,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
         }
         public async Task<bool> CreateHealthCheckAsync(HealthCheck healthCheck)
         {
@@ -75,6 +104,6 @@ namespace backend.Services
             };
         }
 
-        
+
     }
 }

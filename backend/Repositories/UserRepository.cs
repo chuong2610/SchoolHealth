@@ -85,21 +85,32 @@ namespace backend.Repositories
         {
             return await _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.IsActive) // Assuming you want only active users
+                .Where(u => u.IsActive)
                 .ToListAsync();
         }
-        public async Task<List<User>> GetUsersByRoleAsync(string role)
+        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
         {
             return await _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.Role.Name == role && u.IsActive) // Only active users
+                .Where(u => u.Role.Name == role && u.IsActive) // Chỉ lấy user active
+                .OrderBy(u => u.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+
+        public async Task<int> CountUsersByRoleAsync(string role)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => u.Role.Name == role && u.IsActive)
+                .CountAsync();
         }
 
         public Task<int> GetNumberOfUsersAsync(string role)
         {
             return _context.Users
-                .CountAsync(u => u.IsActive && u.Role.Name == role); // Count only active users
+                .CountAsync(u => u.IsActive && u.Role.Name == role);
         }
         public async Task<List<User>> GetAllNursesAsync()
         {

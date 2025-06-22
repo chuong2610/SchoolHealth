@@ -15,13 +15,20 @@ namespace backend.Repositories
         {
             _context = context;
         }
-
-        // Lấy danh sách tất cả bài viết
-        public async Task<IEnumerable<BlogPost>> GetAllAsync()
+        public async Task<IEnumerable<BlogPost>> GetAllAsync(int pageNumber, int pageSize)
         {
-            return await _context.BlogPosts.
-                Where(ms => ms.IsActive)
+            return await _context.BlogPosts
+                .Where(p => p.IsActive)
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+        }
+        public async Task<int> CountAsync()
+        {
+            return await _context.BlogPosts
+                .Where(p => p.IsActive)
+                .CountAsync();
         }
 
         public async Task<BlogPost> GetByIdAsync(int id)

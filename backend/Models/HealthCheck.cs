@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -21,9 +22,11 @@ namespace backend.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
+        [JsonIgnore]
         public Student Student { get; set; } = null!;
         public int UserId { get; set; }
-        [ForeignKey("UserId")] 
+        [ForeignKey("UserId")]
+        [JsonIgnore]
         public User Nurse { get; set; } = null!;
-    }    
+    }
 }

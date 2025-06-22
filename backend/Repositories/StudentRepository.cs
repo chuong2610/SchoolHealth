@@ -18,9 +18,6 @@ namespace backend.Repositories
         {
             _context = context;
         }
-
-
-
         public async Task<List<Student>> GetStudentIdsByParentIdAsync(int parentId)
         {
             return await _context.Students
@@ -28,9 +25,6 @@ namespace backend.Repositories
                 .Where(s => s.ParentId == parentId)
                 .ToListAsync();
         }
-
-
-
         public async Task<Student?> GetStudentByStudentNumberAsync(string studentNumber)
         {
             return await _context.Students
@@ -56,7 +50,6 @@ namespace backend.Repositories
                 .Include(ns => ns.Student).ThenInclude(s => s.Class)
                 .Where(ns => ns.NotificationId == notificationId && ns.Status == "Confirmed")
                 .Select(ns => ns.Student)
-                .Include(s => s.Class)
                 .ToListAsync();
         }
         public async Task<int> GetNumberOfStudents()
@@ -75,7 +68,6 @@ namespace backend.Repositories
         {
             var student = await _context.Students.FindAsync(studentId);
             if (student?.ParentId == null) return null;
-
             return await _context.Users.FindAsync(student.ParentId);
         }
 
