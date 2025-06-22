@@ -1,8 +1,10 @@
+using backend.Hubs;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
+using Microsoft.AspNetCore.SignalR;
 
 namespace backend.Services
 {
@@ -13,14 +15,15 @@ namespace backend.Services
         private readonly IVaccinationService _vaccinationService;
         private readonly IStudentRepository _studentRepository;
         private readonly IClassRepository _classrRepository;
-        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IStudentRepository studentRepository, IClassRepository classrRepository)
+        private readonly IHubContext<NotificationHub> _hub;
+        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IStudentRepository studentRepository, IClassRepository classrRepository, IHubContext<NotificationHub> hub)
         {
             _notificationRepository = notificationRepository;
             _healthCheckService = healthCheckService;
             _vaccinationService = vaccinationService;
             _studentRepository = studentRepository;
             _classrRepository = classrRepository;
-
+            _hub = hub;
         }
         public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
@@ -280,8 +283,14 @@ namespace backend.Services
                     Status = "Pending"
                 }).ToList()
             };
-
-            return await _notificationRepository.CreateNotificationAsync(notification);
+            var isSussess = await _notificationRepository.CreateNotificationAsync(notification);
+            await _hub.Clients.All.SendAsync("ReceiveNotification", new
+            {
+                title = notification.Title,
+                content = notification.Message,
+                createdAt = notification.CreatedAt
+            });
+            return isSussess;
         }
 
 
@@ -350,6 +359,10 @@ namespace backend.Services
 
             };
         }
+        public async Task<bool> HasNotificationAsync(int parentId)
+        {
+            return await _notificationRepository.HasNotificationAsync(parentId);
+        }    
 
     }
 }

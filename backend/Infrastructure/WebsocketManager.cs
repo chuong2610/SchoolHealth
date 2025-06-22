@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 
-namespace backend.Infractructure
+namespace backend.Infrastructure
 {
     public class WebSocketManager
     {

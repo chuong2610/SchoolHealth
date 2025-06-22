@@ -23,6 +23,7 @@ namespace backend.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
         public DbSet<Class> Classes { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
