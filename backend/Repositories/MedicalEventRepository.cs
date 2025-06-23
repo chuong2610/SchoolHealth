@@ -32,22 +32,43 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(me => me.Id == id);
         }
 
-        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize)
+        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
         {
-            return await _context.MedicalEvents
+            var query = _context.MedicalEvents
                 .Include(me => me.Student)
                 .Include(me => me.Nurse)
                 .Include(me => me.MedicalEventSupplys)
                     .ThenInclude(mes => mes.MedicalSupply)
-                .OrderBy(me => me.Id) // Sắp xếp để phân trang ổn định
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Status.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(me => me.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicalEventsAsync()
+        public async Task<int> CountMedicalEventsAsync(string? search)
         {
-            return await _context.MedicalEvents.CountAsync();
+            var query = _context.MedicalEvents.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Status.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
 
         public async Task<List<MedicalEvent>> GetMedicalEventsTodayAsync()

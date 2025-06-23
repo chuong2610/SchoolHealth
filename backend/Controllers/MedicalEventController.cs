@@ -44,11 +44,11 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMedicalEvents(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllMedicalEvents(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync(pageNumber, pageSize);
+                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync(pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<MedicalEventDTO>>(medicalEvents, "Medical events retrieved successfully", true));
             }
             catch (Exception ex)

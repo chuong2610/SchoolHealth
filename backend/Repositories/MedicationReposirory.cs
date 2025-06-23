@@ -87,9 +87,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 
@@ -112,9 +110,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 
@@ -141,12 +137,9 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
-
             return await query.CountAsync();
         }
 
@@ -166,9 +159,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 
@@ -195,9 +186,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 
@@ -237,9 +226,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 
@@ -266,9 +253,7 @@ namespace backend.Repositories
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
                     m.MedicationDeclares.Any(d =>
-                        d.Name.Contains(search) ||
-                        d.Dosage.Contains(search) ||
-                        d.Note.Contains(search))
+                        d.Name.Contains(search))
                 );
             }
 

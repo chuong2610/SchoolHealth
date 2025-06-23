@@ -19,10 +19,10 @@ namespace backend.Services
             return _medicalSupplyRepository.UpdateMedicalSupplyQuantityAsync(supplyId, quantity);
         }
 
-        public async Task<PageResult<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize)
+        public async Task<PageResult<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize, string? search)
         {
-            var supplies = await _medicalSupplyRepository.GetAllMedicalSuppliesAsync(pageNumber, pageSize);
-            var totalCount = await _medicalSupplyRepository.CountAllMedicalSuppliesAsync();
+            var supplies = await _medicalSupplyRepository.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
+            var totalCount = await _medicalSupplyRepository.CountAllMedicalSuppliesAsync(search);
 
             var items = supplies.Select(s => new MedicalSupplyDTO
             {

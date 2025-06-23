@@ -18,11 +18,11 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMedicalSupplies(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllMedicalSupplies(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var supplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize);
+                var supplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<MedicalSupplyDTO>>(supplies, "Lấy danh sách vật tư y tế thành công", true));
             }
             catch (Exception ex)

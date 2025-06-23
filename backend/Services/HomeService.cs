@@ -56,7 +56,7 @@ namespace backend.Services
             var notifications = await _notificationService.Get5Notifications();
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
-            var medicalSupplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize);
+            var medicalSupplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
 
             return new HomeAdminDTO
             {

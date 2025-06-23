@@ -30,39 +30,77 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(h => h.Id == id);
         }
 
-        public async Task<List<HealthCheck>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize)
+        public async Task<List<HealthCheck>> GetHealthChecksByParentIdAsync(
+    int parentId, int pageNumber, int pageSize, string? search)
         {
-            return await _context.HealthChecks
+            var query = _context.HealthChecks
                 .Include(h => h.Nurse)
                 .Include(h => h.Student)
-                .Where(h => h.Student.ParentId == parentId)
-                .OrderByDescending(h => h.Id) // Sắp xếp để phân trang ổn định
+                .Where(h => h.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(h => h.Student.Name.Contains(search)
+                                       || h.Nurse.Name.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(h => h.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountHealthChecksByParentIdAsync(int parentId)
+        public async Task<int> CountHealthChecksByParentIdAsync(int parentId, string? search)
         {
-            return await _context.HealthChecks
-                .CountAsync(h => h.Student.ParentId == parentId);
+            var query = _context.HealthChecks
+                .Where(h => h.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(h => h.Student.Name.Contains(search)
+                                       || h.Nurse.Name.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
 
-        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize)
+        public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
         {
-            return await _context.HealthChecks
+            var query = _context.HealthChecks
                 .Include(h => h.Nurse)
                 .Include(h => h.Student)
-                .Where(h => h.NotificationId == notificationId)
+                .Where(h => h.NotificationId == notificationId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(h =>
+                    h.Nurse.Name.Contains(search) ||
+                    h.Student.Name.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(h => h.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountHealthChecksByNotificationIdAsync(int notificationId)
+        public async Task<int> CountHealthChecksByNotificationIdAsync(int notificationId, string? search)
         {
-            return await _context.HealthChecks
-                .CountAsync(h => h.NotificationId == notificationId);
+            var query = _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .Where(h => h.NotificationId == notificationId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(h =>
+                    h.Nurse.Name.Contains(search) ||
+                    h.Student.Name.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
 
 

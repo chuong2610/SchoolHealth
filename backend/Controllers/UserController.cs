@@ -20,28 +20,21 @@ namespace backend.Controllers
             _userRepository = userRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(int pageNumber, int pageSize, string? search)
         {
-            var users = await _userService.GetAllUsersAsync();
-            if (users == null || users.Count == 0)
-            {
-                return Ok(new BaseResponse<List<UserDTO>>(
-                    data: null,
-                    message: "No users found.",
-                    success: true
-                ));
-            }
-            return Ok(new BaseResponse<List<UserDTO>>(
-                data: users,
+            var result = await _userService.GetAllUsersAsync(pageNumber, pageSize, search);
+
+            return Ok(new BaseResponse<PageResult<UserDTO>>(
+                data: result,
                 message: "Users retrieved successfully.",
                 success: true
             ));
         }
 
         [HttpGet("role/{role}")]
-        public async Task<IActionResult> GetUsersByRole(string role, int pageNumber, int pageSize)
+        public async Task<IActionResult> GetUsersByRole(string role, int pageNumber, int pageSize, string? search)
         {
-            var users = await _userService.GetUsersByRoleAsync(role, pageNumber, pageSize);
+            var users = await _userService.GetUsersByRoleAsync(role, pageNumber, pageSize, search);
             if (users == null || users.Items.Count == 0)
             {
                 return Ok(new BaseResponse<List<UserDTO>>(

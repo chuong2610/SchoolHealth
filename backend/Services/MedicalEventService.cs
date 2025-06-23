@@ -85,11 +85,11 @@ namespace backend.Services
                 }).ToList()
             };
         }
-        public async Task<PageResult<MedicalEventDTO>> GetAllMedicalEventsAsync(int pageNumber, int pageSize)
+        public async Task<PageResult<MedicalEventDTO>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _medicalEventRepository.CountMedicalEventsAsync();
+            var totalItems = await _medicalEventRepository.CountMedicalEventsAsync(search);
 
-            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync(pageNumber, pageSize);
+            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync(pageNumber, pageSize, search);
 
             var eventDTOs = medicalEvents.Select(me => new MedicalEventDTO
             {

@@ -127,7 +127,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
-        public async Task<IActionResult> GetMedicationsByParentId(int parentId, int pageNumber, int pageSize, string search)
+        public async Task<IActionResult> GetMedicationsByParentId(int parentId, int pageNumber, int pageSize, string? search)
         {
             try
             {

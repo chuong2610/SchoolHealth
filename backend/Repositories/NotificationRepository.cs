@@ -14,34 +14,28 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<(List<NotificationStudent> Items, int TotalItems)> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
                 .Include(ns => ns.Student)
                 .Where(ns => ns.Student.ParentId == parentId);
 
-            // Lọc title nếu có
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(ns => ns.Notification.Title.Contains(search));
             }
 
-            var totalItems = await query.CountAsync();
-
-            var items = await query
-                .OrderByDescending(ns => ns.NotificationId) // Sắp xếp theo Id thông báo
+            return await query
+                .OrderByDescending(ns => ns.NotificationId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
-            return (items, totalItems);
         }
 
-        public async Task<int> CountNotificationStudentsByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountNotificationsByParentIdAsync(int parentId, string? search)
         {
             var query = _context.NotificationStudents
-                .Include(ns => ns.Student)
                 .Include(ns => ns.Notification)
                 .Where(ns => ns.Student.ParentId == parentId);
 
@@ -52,6 +46,7 @@ namespace backend.Repositories
 
             return await query.CountAsync();
         }
+
         // public async Task<List<Notification>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
         // {
         //     return await _context.Notifications
@@ -64,74 +59,72 @@ namespace backend.Repositories
         //         .Take(pageSize)
         //         .ToListAsync();
         // }
-        public async Task<(List<NotificationStudent> Items, int TotalItems)> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
                 .Include(ns => ns.Student)
-                .Where(ns => ns.Notification.Type == "HealthCheck" && ns.Student.ParentId == parentId);
+                .Where(ns => ns.Notification.Type == "HealthCheck"
+                            && ns.Student.ParentId == parentId);
 
-            // Khi có title thì filter thêm
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                            ns.Student.Name.Contains(search));
             }
 
-            var totalItems = await query.CountAsync();
-            var items = await query
+            return await query
                 .OrderByDescending(ns => ns.NotificationId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
-            return (items, totalItems);
         }
-        public async Task<int> GetHealthChecksNotificationsCountByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountHealthChecksNotificationsByParentIdAsync(int parentId, string? search)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
-                .Where(ns => ns.Student.ParentId == parentId && ns.Notification.Type == "HealthCheck");
+                .Where(ns => ns.Notification.Type == "HealthCheck"
+                            && ns.Student.ParentId == parentId);
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                            ns.Student.Name.Contains(search));
             }
 
             return await query.CountAsync();
         }
-        public async Task<(List<NotificationStudent> Items, int TotalItems)> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
                 .Include(ns => ns.Student)
-                .Where(ns => ns.Notification.Type == "Vaccination" && ns.Student.ParentId == parentId);
+                .Where(ns => ns.Notification.Type == "Vaccination"
+                            && ns.Student.ParentId == parentId);
 
-            // ✅ Kiểm tra nếu title có được nhập hay không
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                            ns.Student.Name.Contains(search));
             }
 
-            var totalItems = await query.CountAsync();
-
-            var items = await query
+            return await query
                 .OrderByDescending(ns => ns.NotificationId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-
-            return (items, totalItems);
         }
-
-        public async Task<int> GetVaccinationsNotificationsCountByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountVaccinationsNotificationsByParentIdAsync(int parentId, string? search)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
-                .Where(ns => ns.Student.ParentId == parentId && ns.Notification.Type == "Vaccination");
+                .Where(ns => ns.Notification.Type == "Vaccination"
+                            && ns.Student.ParentId == parentId);
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                            ns.Student.Name.Contains(search));
             }
 
             return await query.CountAsync();
@@ -146,24 +139,36 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize)
+        public async Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search)
         {
-            return await _context.Notifications
+            var query = _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
                         .ThenInclude(s => s.Class)
-                .Where(n => n.IsActive)
-                .OrderByDescending(n => n.Id) // Sắp xếp để kết quả ổn định
+                .Where(n => n.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(n => n.Title.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(n => n.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountNotificationsAsync()
+        public async Task<int> CountNotificationsAsync(string? search)
         {
-            return await _context.Notifications
-                .Where(n => n.IsActive)
-                .CountAsync();
+            var query = _context.Notifications.AsQueryable().Where(n => n.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(n => n.Title.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
 
         public async Task<bool> CreateNotificationAsync(Notification notification)
@@ -216,9 +221,7 @@ namespace backend.Repositories
                         .AnyAsync(n =>
                             n.NotificationStudents.Any(ns =>
                                 ns.Student.ParentId == parentId &&
-                                ns.Status == "Pending"
-                            )
-                        );
+                                ns.Status == "Pending"));
         }
 
     }

@@ -45,12 +45,12 @@ namespace backend.Services
                 nurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }
-        public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize)
+        public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId);
+            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId, search);
 
             var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize);
+                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search);
 
             var dtos = healthChecks
                 .Select(h => MapToDTO(h))
@@ -66,14 +66,13 @@ namespace backend.Services
             };
         }
 
-        public async Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(
-    int notificationId, int pageNumber, int pageSize)
+        public async Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
         {
             var totalItems = await _healthCheckRepository
-                .CountHealthChecksByNotificationIdAsync(notificationId);
+                .CountHealthChecksByNotificationIdAsync(notificationId, search);
 
             var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize);
+                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize, search);
 
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 

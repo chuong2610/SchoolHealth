@@ -49,11 +49,11 @@ namespace backend.Controllers
 
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetAllHealthChecksByParentId(int parentId, int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllHealthChecksByParentId(int parentId, int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var healthChecks = await _healthCheckService.GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize);
+                var healthChecks = await _healthCheckService.GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<HealthCheckDTO>>(healthChecks, "Lấy danh sách kiểm tra sức khỏe theo phụ huynh thành công", true));
             }
             catch (Exception ex)

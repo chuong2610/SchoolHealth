@@ -31,22 +31,35 @@ namespace backend.Repositories
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
         }
 
-        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize)
+        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize, string? search)
         {
-            return _context.MedicalSupplies
+            var query = _context.MedicalSupplies
                 .AsNoTracking()
-                .Where(ms => ms.IsActive)
+                .Where(ms => ms.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ms => ms.Name.Contains(search));
+            }
+
+            return query
                 .OrderBy(ms => ms.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public Task<int> CountAllMedicalSuppliesAsync()
+        public Task<int> CountAllMedicalSuppliesAsync(string? search)
         {
-            return _context.MedicalSupplies
-                .Where(ms => ms.IsActive)
-                .CountAsync();
+            var query = _context.MedicalSupplies
+                .Where(ms => ms.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ms => ms.Name.Contains(search));
+            }
+
+            return query.CountAsync();
         }
 
         public async Task<bool> AddMedicalSuppliesAsync(MedicalSupply supply)
