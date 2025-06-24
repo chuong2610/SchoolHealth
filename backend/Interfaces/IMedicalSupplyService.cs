@@ -11,5 +11,6 @@ namespace backend.Interfaces
         Task<bool> CreateMedicalSuppliesAsync(MedicalSupplyRequest request);
         Task<bool> UpdateMedicalSupplyAsync(MedicalSupplyRequest supplyRequest, int id);
         Task<bool> DeleteMeidcalSuppliesAsync(int id);
+        Task<MedicalSuppliesCountDTO> GetInventoryCountsAsync();
     }
 }

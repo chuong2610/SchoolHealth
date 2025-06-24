@@ -56,5 +56,19 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Error: {ex.Message}", false));
             }
         }
+
+        [HttpGet("medical-event-count")]
+        public async Task<IActionResult> GetMedicalEventsCount()
+        {
+            try
+            {
+                var result = await _medicalEventService.GetEventCountsAsync();
+                return Ok(new BaseResponse<MedicalEventCountDTO>(result, "Lấy số lượng sự kiện y tế thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponse<MedicalEventCountDTO>(null, $"Có lỗi xảy ra: {ex.Message}", false));
+            }
+        }
     }
 }

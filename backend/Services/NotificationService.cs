@@ -354,5 +354,14 @@ namespace backend.Services
             return await _notificationRepository.HasNotificationAsync(parentId);
         }
 
+        public async Task<NotificationCountDTO> GetNotificationCountsAsync(int parentId)
+        {
+            return await _notificationRepository.GetNotificationCountsAsync(parentId);
+        }
+
+        public async Task<NotificationAdminCountDTO> GetNotificationAdminCountsAsync()
+        {
+            return await _notificationRepository.GetNotificationAdminCountsAsync();
+        }
     }
 }

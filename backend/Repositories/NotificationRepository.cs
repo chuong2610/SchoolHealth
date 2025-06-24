@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -224,5 +225,45 @@ namespace backend.Repositories
                                 ns.Status == "Pending"));
         }
 
+        public async Task<NotificationCountDTO> GetNotificationCountsAsync(int parentId)
+        {
+            var counts = await _context.NotificationStudents
+                .Where(n => n.Student.ParentId == parentId)
+                .GroupBy(n => n.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            var pending = counts.FirstOrDefault(c => c.Status == "Pending")?.Count ?? 0;
+            var confirmed = counts.FirstOrDefault(c => c.Status == "Confirmed")?.Count ?? 0;
+            var rejected = counts.FirstOrDefault(c => c.Status == "Rejected")?.Count ?? 0;
+
+            return new NotificationCountDTO
+            {
+                TotalNotification = pending + confirmed + rejected,
+                PendingNotification = pending,
+                ConfirmedNotification = confirmed,
+                RejectedNotification = rejected
+            };
+        }
+
+        public async Task<NotificationAdminCountDTO> GetNotificationAdminCountsAsync()
+        {
+            var today = DateTime.UtcNow.Date;
+            var tomorrow = today.AddDays(1);
+
+            var total = await _context.Notifications.CountAsync();
+            var vaccination = await _context.Notifications.CountAsync(n => n.Type == "Vaccination");
+            var healthcheck = await _context.Notifications.CountAsync(n => n.Type == "Healthcheck");
+            var sentToday = await _context.Notifications.CountAsync(
+                n => n.Date >= today && n.Date < tomorrow);
+
+            return new NotificationAdminCountDTO
+            {
+                TotalNotifications = total,
+                VaccinationNotifications = vaccination,
+                HealthcheckNotifications = healthcheck,
+                NotificationsSentToday = sentToday
+            };
+        }
     }
 }

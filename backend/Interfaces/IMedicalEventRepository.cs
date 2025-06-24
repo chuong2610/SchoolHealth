@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Models.DTO;
 
 namespace backend.Interfaces
 {
@@ -10,5 +11,6 @@ namespace backend.Interfaces
         Task<int> CountMedicalEventsAsync(string? search);
         Task<List<MedicalEvent>> GetMedicalEventsTodayAsync();
         Task<Dictionary<string, int>> GetWeeklyMedicalEventCountsAsync();
+        Task<MedicalEventCountDTO> GetMedicalEventCountsAsync();
     }
 }

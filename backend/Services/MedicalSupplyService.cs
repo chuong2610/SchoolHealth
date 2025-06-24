@@ -92,5 +92,10 @@ namespace backend.Services
             var deleted = await _medicalSupplyRepository.DeleteMedicalSuppliesAsync(medicalSupply);
             return deleted;
         }
+
+        public async Task<MedicalSuppliesCountDTO> GetInventoryCountsAsync()
+        {
+            return await _medicalSupplyRepository.GetMedicalSuppliesCountsAsync();
+        }
     }
 }

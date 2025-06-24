@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -115,6 +116,25 @@ namespace backend.Repositories
             }
 
             return result;
+        }
+
+        public async Task<MedicalEventCountDTO> GetMedicalEventCountsAsync()
+        {
+            var today = DateTime.UtcNow.Date;
+            var sevenDaysAgo = today.AddDays(-7);
+
+            var total = await _context.MedicalEvents.CountAsync();
+            var last7Days = await _context.MedicalEvents.CountAsync(m =>
+                m.Date >= sevenDaysAgo && m.Date < today.AddDays(1));
+            var todayCount = await _context.MedicalEvents.CountAsync(m =>
+                m.Date >= today && m.Date < today.AddDays(1));
+
+            return new MedicalEventCountDTO
+            {
+                TotalCount = total,
+                Last7DaysCount = last7Days,
+                TodayCount = todayCount
+            };
         }
     }
 }

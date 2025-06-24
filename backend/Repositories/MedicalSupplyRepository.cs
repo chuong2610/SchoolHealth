@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -88,5 +89,26 @@ namespace backend.Repositories
             var deleted = await _context.SaveChangesAsync();
             return deleted > 0;
         }
+
+        public async Task<MedicalSuppliesCountDTO> GetMedicalSuppliesCountsAsync()
+        {
+            var total = await _context.MedicalSupplies.CountAsync();
+
+            var inStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity > 5);
+            var lowStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity <= 5 && m.Quantity > 0);
+            var outOfStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity == 0);
+
+            return new MedicalSuppliesCountDTO
+            {
+                TotalMedications = total,
+                InStock = inStock,
+                LowStock = lowStock,
+                OutOfStock = outOfStock
+            };
+        }
+    }
+
+    public class MedicationSuppliesCountDTO
+    {
     }
 }

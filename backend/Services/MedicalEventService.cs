@@ -128,5 +128,10 @@ namespace backend.Services
         {
             return await _medicalEventRepository.GetWeeklyMedicalEventCountsAsync();
         }
+
+        public async Task<MedicalEventCountDTO> GetEventCountsAsync()
+        {
+            return await _medicalEventRepository.GetMedicalEventCountsAsync();
+        }
     }
 }

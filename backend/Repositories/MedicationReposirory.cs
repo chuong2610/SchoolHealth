@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -285,6 +286,27 @@ namespace backend.Repositories
                     .ThenInclude(s => s.Class)
                 .Where(m => m.Status == "Completed")
                 .ToListAsync();
+        }
+
+        public async Task<MedicationCountDTO> GetMedicationCountsAsync()
+        {
+            var today = DateTime.UtcNow.Date;
+            var tomorrow = today.AddDays(1);
+
+            var pendingCount = await _context.Medications.CountAsync(m => m.Status == "Pending" && m.Date < today);
+            var activeCount = await _context.Medications.CountAsync(m => m.Status == "Active");
+            var completedCount = await _context.Medications.CountAsync(m => m.Status == "Completed");
+            var inTodayCount = await _context.Medications.CountAsync(m => m.Status == "Pending"
+                                                                        && m.Date >= today
+                                                                       && m.Date < tomorrow);
+
+            return new MedicationCountDTO
+            {
+                PendingMedication = pendingCount,
+                ActiveMedication = activeCount,
+                CompletedMedication = completedCount,
+                MedicationInToday = inTodayCount
+            };
         }
     }
 }

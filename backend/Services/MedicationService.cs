@@ -207,5 +207,10 @@ namespace backend.Services
             var medications = await _medicationRepository.GetMedicationsCompletedAsync();
             return medications.Select(m => MapToDTO(m)).ToList();
         }
+
+        public async Task<MedicationCountDTO> GetMedicationCountsAsync()
+        {
+            return await _medicationRepository.GetMedicationCountsAsync();
+        }
     }
 }

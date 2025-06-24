@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Models.DTO;
 
 namespace backend.Interfaces
 {
@@ -17,6 +18,7 @@ namespace backend.Interfaces
         Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId);
         Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
         Task<int> CountMedicationsByParentIdAsync(int parentId, string? search);
+        Task<MedicationCountDTO> GetMedicationCountsAsync();
     }
 }
 

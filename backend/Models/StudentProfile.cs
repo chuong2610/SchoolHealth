@@ -14,5 +14,6 @@ namespace backend.Models
         public string OtherMedicalConditions { get; set; } = string.Empty; // điều kiện y tế khác
         [JsonIgnore]
         public Student Student { get; set; } = null!;
+        public ICollection<HealthDeclareHistory> HealthDeclareHistories { get; set; } = new List<HealthDeclareHistory>();
     }
 }

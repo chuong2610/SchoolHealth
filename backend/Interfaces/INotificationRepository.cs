@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Models.DTO;
 
 namespace backend.Interfaces
 {
@@ -20,5 +21,7 @@ namespace backend.Interfaces
                 Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search);
                 Task<int> CountNotificationsAsync(string? search);
                 Task<bool> HasNotificationAsync(int parentId);
+                Task<NotificationCountDTO> GetNotificationCountsAsync(int parentId);
+                Task<NotificationAdminCountDTO> GetNotificationAdminCountsAsync();
         }
 }

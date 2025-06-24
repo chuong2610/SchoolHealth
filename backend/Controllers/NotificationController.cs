@@ -207,5 +207,49 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
             }
         }
+
+        [HttpGet("notification-count")]
+        public async Task<ActionResult<BaseResponse<object>>> GetNotificationCounts(int parentId)
+        {
+            try
+            {
+                var result = await _notificationService.GetNotificationCountsAsync(parentId);
+                return Ok(new BaseResponse<object>(
+                    result,
+                    "Lấy số lượng thông báo thành công",
+                    true
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false
+                ));
+            }
+        }
+
+        [HttpGet("notification-admin-count")]
+        public async Task<ActionResult<BaseResponse<object>>> GetNotificationAdminCount()
+        {
+            try
+            {
+                var result = await _notificationService.GetNotificationAdminCountsAsync();
+                return Ok(new BaseResponse<object>(
+                    result,
+                    "Lấy thống kê thông báo thành công",
+                    true
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false
+                ));
+            }
+        }
     }
 }

@@ -71,5 +71,60 @@ namespace backend.Repositories
             return await _context.Users.FindAsync(student.ParentId);
         }
 
+        public async Task<List<Student>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
+        {
+            var query = _context.Students
+                .Where(s => s.ClassId == classId)
+                .Include(s => s.Parent)
+                .Include(s => s.Class)
+                .AsNoTracking();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(s => s.Name.Contains(search));
+            }
+
+            return await query
+                .OrderBy(s => s.Name)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountStudentsAsync(int classId, string? search)
+        {
+            var query = _context.Students
+                .Where(s => s.ClassId == classId)
+                .Include(s => s.Parent)
+                .Include(s => s.Class)
+                .AsNoTracking();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(s => s.Name.Contains(search));
+            }
+
+            return await query.CountAsync();
+        }
+
+        public async Task<bool> CreateStudentAsync(Student student)
+        {
+            _context.Students.Add(student);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateStudentAsync(Student student)
+        {
+            _context.Students.Update(student);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteStudentAsync(Student student)
+        {
+            student.IsActive = false;
+            _context.Students.Update(student);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }
