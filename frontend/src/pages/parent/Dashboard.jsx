@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
 import {
   Container,
   Row,
@@ -8,7 +8,7 @@ import {
   Card,
   Spinner,
   Button,
-  Badge
+  Badge,
 } from "react-bootstrap";
 // Import beautiful images
 import schoolImage from '../../assets/09134957-Vasily-Kolo.jpg';
@@ -32,8 +32,10 @@ import {
   FaExclamationTriangle,
   FaBell,
   FaChartLine,
-  FaFileAlt
-} from 'react-icons/fa';
+  FaFileAlt,
+} from "react-icons/fa";
+import PaginationBar from "../../components/common/PaginationBar";
+// Styles được import từ main.jsx
 
 const ParentDashboard = () => {
   const [blogs, setBlogs] = useState([]);
@@ -67,34 +69,45 @@ const ParentDashboard = () => {
       }
     };
   }, [blogs]); // Re-run when blogs change
+  const [animateStats, setAnimateStats] = useState(false);
+  const token = localStorage.getItem("token");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 3;
+  const navigate = useNavigate();
 
-  // Gọi API khi component được mount
+  const fetchBlogs = async (page = 1) => {
+    try {
+      console.log(
+        "API URL:",
+        `/BlogPosts?pageNumber=${page}&pageSize=${pageSize}`
+      );
+      const response = await axiosInstance.get(
+        `/BlogPosts?pageNumber=${page}&pageSize=${pageSize}`
+      );
+      console.log("Response:", response);
+      setBlogs(response.data.items);
+      setTotalPages(response.data.totalPages);
+      setTotalItems(response.data.totalItems);
+      setCurrentPage(page);
+      setLoading(false);
+      setTimeout(() => setAnimateStats(true), 500);
+    } catch (err) {
+      setError(
+        err.response
+          ? `Lỗi ${err.response.status}: ${
+              err.response.data.message || "Không thể tải dữ liệu blog."
+            }`
+          : "Không thể kết nối đến server."
+      );
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZW1haWwiOiJwYXJlbnRAZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUGFyZW50IiwiZXhwIjoxNzQ5MDM4OTI3LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUxODIiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUxODIifQ.bPbFgD4y0GGSlryFzZj7YYYzlkWFL9pDbg6uHdZGz4U";
-        const response = await axios.get(
-          "http://localhost:5182/api/BlogPosts",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setBlogs(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(
-          err.response
-            ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."}`
-            : "Không thể kết nối đến server."
-        );
-        setLoading(false);
-      }
-    };
-    fetchBlogs();
-  }, []);
+    fetchBlogs(1);
+  }, [token]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("vi-VN", {
@@ -102,6 +115,16 @@ const ParentDashboard = () => {
       month: "2-digit",
       year: "numeric",
     });
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setLoading(true);
+    fetchBlogs(pageNumber);
+  };
+
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
   };
 
   return (
@@ -202,64 +225,132 @@ const ParentDashboard = () => {
         </section>
 
         {/* Blog Section */}
-        <section className="blog-section" >
-          <h2 className="section-title scroll-animate">Blog sức khỏe học đường</h2>
-
-          {loading ? (
-            <div className="loading-state">
-              <Spinner animation="border" />
-              <p>Đang tải bài viết...</p>
-            </div>
-          ) : error ? (
-            <div className="error-state">
-              <FaExclamationTriangle />
-              <p>{error}</p>
-            </div>
-          ) : (
-            <Row className="g-4">
-              {blogs.slice(0, 3).map((blog, index) => (
-                <Col lg={4} md={6} key={blog.id}>
-                  <div className={`blog-card scroll-animate delay-${index + 1}`}>
-                    <div className="blog-image">
-                      <img
-                        src={blog.imageUrl}
-                        alt={blog.title}
-                        onError={(e) => {
-                          e.target.onError = null;
-                          e.target.src = "https://placehold.jp/400x200.png?text=No+Image";
+        <div className="parent-card parent-animate-fade-in">
+          <div className="parent-card-header">
+            <h2 className="parent-card-title">
+              <FaBookOpen />
+              Blog sức khỏe học đường
+            </h2>
+          </div>
+          <div className="parent-card-body">
+            {loading ? (
+              <div className="text-center py-5">
+                <Spinner
+                  animation="border"
+                  style={{ color: "var(--parent-primary)" }}
+                  className="mb-3"
+                />
+                <h5 style={{ color: "var(--parent-primary)" }}>
+                  Đang tải bài viết...
+                </h5>
+              </div>
+            ) : error ? (
+              <div className="text-center text-danger py-5">
+                <FaExclamationTriangle className="mb-3" size={48} />
+                <p>{error}</p>
+              </div>
+            ) : (
+              <Row className="g-4">
+                {blogs.map((blog) => {
+                  const plainSummary = stripHtml(blog.contentSummary);
+                  return (
+                    <Col lg={4} md={6} key={blog.id}>
+                      <Card
+                        className="border-0 h-100 shadow-sm"
+                        style={{
+                          borderRadius: "1rem",
+                          overflow: "hidden",
+                          transition: "all 0.3s ease",
+                          cursor: "pointer",
                         }}
-                      />
-                    </div>
-                    <div className="blog-content">
-                      <div className="blog-date">
-                        <FaCalendarAlt />
-                        {formatDate(blog.createdAt)}
-                      </div>
-                      <h5>{blog.title}</h5>
-                      <p>
-                        {blog.contentSummary.length > 120
-                          ? blog.contentSummary.substring(0, 120) + "..."
-                          : blog.contentSummary}
-                      </p>
-                      <Link to={`/parent/blog/${blog.id}`} className="blog-link">
-                        Đọc thêm <FaArrowRight />
-                      </Link>
-                    </div>
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          )}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "translateY(-8px)";
+                          e.currentTarget.style.boxShadow =
+                            "0 12px 40px rgba(30, 126, 156, 0.15)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow =
+                            "0 1px 3px rgba(0,0,0,0.12)";
+                        }}
+                        onClick={() => navigate(`/parent/blog/${blog.id}`)}
+                      >
+                        <div
+                          style={{ position: "relative", overflow: "hidden" }}
+                        >
+                          <img
+                            src={blog.imageUrl}
+                            alt={blog.title}
+                            style={{
+                              width: "100%",
+                              height: "200px",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.target.onError = null;
+                              e.target.src =
+                                "https://placehold.jp/400x200.png?text=No+Image";
+                            }}
+                          />
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "0",
+                              left: "0",
+                              right: "0",
+                              height: "4px",
+                              background: "var(--parent-gradient-primary)",
+                            }}
+                          ></div>
+                        </div>
+                        <Card.Body className="p-4">
+                          <div
+                            className="d-flex align-items-center mb-3"
+                            style={{ color: "#6c757d", fontSize: "0.875rem" }}
+                          >
+                            <FaCalendarAlt className="me-2" />
+                            {formatDate(blog.createdAt)}
+                          </div>
+                          <h5
+                            className="fw-bold mb-3"
+                            style={{
+                              color: "var(--parent-primary)",
+                              lineHeight: "1.4",
+                            }}
+                          >
+                            {blog.title}
+                          </h5>
+                          <p
+                            className="text-muted mb-4"
+                            style={{ lineHeight: "1.6" }}
+                          >
+                            {plainSummary.length > 120
+                              ? plainSummary.substring(0, 120) + "..."
+                              : plainSummary}
+                          </p>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
+              </Row>
+            )}
 
-          {blogs.length > 3 && !loading && (
-            <div className="section-footer scroll-animate delay-4">
-              <Button as={Link} to="/parent/more-know" className="view-all-btn">
-                <FaBookOpen className="me-2" />
-                Xem tất cả bài viết
-              </Button>
-            </div>
-          )}
-        </section>
+            {/* Pagination */}
+            {!loading && !error && totalPages > 1 && (
+              <div className="text-center mt-4">
+                <PaginationBar
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+                <div className="mt-2 text-muted">
+                  Hiển thị {blogs.length} trong tổng số {totalItems} bài viết
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </Container>
     </div>
     </div>

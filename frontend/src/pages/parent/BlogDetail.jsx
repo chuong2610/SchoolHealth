@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Container, Card, Button, Badge, Spinner, Alert } from "react-bootstrap";
-import { FaArrowLeft, FaCalendarAlt, FaUser, FaClock, FaTags, FaBookOpen } from "react-icons/fa";
+import {
+  Container,
+  Card,
+  Button,
+  Badge,
+  Spinner,
+  Alert,
+} from "react-bootstrap";
+import {
+  FaArrowLeft,
+  FaCalendarAlt,
+  FaUser,
+  FaClock,
+  FaTags,
+  FaBookOpen,
+} from "react-icons/fa";
 import axiosInstance from "../../api/axiosInstance";
 // Styles được import từ main.jsx
 
@@ -104,8 +118,8 @@ const BlogDetail = () => {
           .blog-header {
             background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
             color: white !important;
-            padding: 2rem 0 !important;
-            margin-bottom: 3rem !important;
+            padding: 1.5rem 0 !important;
+            margin-bottom: 0 !important;
             border-radius: 0 0 30px 30px !important;
             position: relative !important;
             overflow: hidden !important;
@@ -122,30 +136,26 @@ const BlogDetail = () => {
             pointer-events: none !important;
           }
           
-          .header-content {
-            position: relative !important;
-            z-index: 2 !important;
-          }
-          
           .back-btn {
-            background: rgba(255, 255, 255, 0.2) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            color: white !important;
-            padding: 0.75rem 1.5rem !important;
+            background: transparent !important;
+            border: 2px solid #e5e7eb !important;
+            color: #374151 !important;
+            padding: 0.5rem 1rem !important;
             border-radius: 12px !important;
             font-weight: 600 !important;
             transition: all 0.3s ease !important;
+            margin-top: 1.5rem !important;
           }
           
           .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3) !important;
-            border-color: rgba(255, 255, 255, 0.5) !important;
+            background: linear-gradient(135deg, #2563eb 0%, #38b6ff 100%) !important;
+            border-color: transparent !important;
             color: white !important;
-            transform: translateX(-5px) !important;
+            transform: translateY(-2px) !important;
           }
           
           .blog-container {
-            margin: -2rem 1rem 0 1rem !important;
+            margin: 2rem auto 0 auto !important;
             position: relative !important;
             z-index: 10 !important;
             max-width: 900px !important;
@@ -248,33 +258,6 @@ const BlogDetail = () => {
             margin: 1.5rem 0 1rem 0 !important;
           }
           
-          .blog-actions {
-            background: linear-gradient(135deg, #f8f9fc 0%, #e3f2fd 100%) !important;
-            padding: 2rem !important;
-            border-radius: 0 0 25px 25px !important;
-            text-align: center !important;
-          }
-          
-          .action-btn {
-            background: linear-gradient(135deg, #2563eb, #38b6ff) !important;
-            border: none !important;
-            color: white !important;
-            padding: 1rem 2rem !important;
-            border-radius: 12px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-          }
-          
-          .action-btn:hover {
-            background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3) !important;
-            color: white !important;
-          }
-          
           @media (max-width: 768px) {
             .blog-title {
               font-size: 2rem !important;
@@ -302,16 +285,7 @@ const BlogDetail = () => {
 
       <div className="blog-detail-page">
         {/* Header */}
-        <div className="blog-header">
-          <Container>
-            <div className="header-content">
-              <Button variant="outline-light" className="back-btn" onClick={() => navigate(-1)}>
-                <FaArrowLeft className="me-2" />
-                Quay lại
-              </Button>
-            </div>
-          </Container>
-        </div>
+        <div className="blog-header">{/* Decorative header, no content */}</div>
 
         {/* Main Content */}
         <Container className="blog-container">
@@ -361,15 +335,17 @@ const BlogDetail = () => {
                 </div>
               )}
             </div>
-
-            {/* Blog Actions */}
-            <div className="blog-actions">
-              <Button className="action-btn" onClick={() => navigate(-1)}>
-                <FaBookOpen className="me-2" />
-                Xem thêm bài viết
-              </Button>
-            </div>
           </Card>
+          <div className="text-center">
+            <Button
+              variant="outline-secondary"
+              className="back-btn"
+              onClick={() => navigate(-1)}
+            >
+              <FaArrowLeft className="me-2" />
+              Quay lại
+            </Button>
+          </div>
         </Container>
       </div>
     </div>

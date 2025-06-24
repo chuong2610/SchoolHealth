@@ -32,8 +32,9 @@ import {
   FaUserFriends,
   FaStickyNote,
   FaTimes,
-  FaUserGraduate
-} from 'react-icons/fa';
+  FaUserGraduate,
+} from "react-icons/fa";
+import PaginationBar from "../../components/common/PaginationBar";
 // CSS được import tự động từ main.jsx
 
 const ReceiveMedicine = () => {
@@ -60,7 +61,7 @@ const ReceiveMedicine = () => {
     dateRange: { start: "", end: "" },
     className: "",
     status: "",
-    medicineType: ""
+    medicineType: "",
   });
   const [animateStats, setAnimateStats] = useState(false);
   const [visibleRows, setVisibleRows] = useState({
@@ -69,26 +70,43 @@ const ReceiveMedicine = () => {
     completed: true
   });
   const ROW_LIMIT = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const pageSize = 1;
+
+  const handlePageChange = (pageNumber) => {
+    // setLoading(true);
+    // fetchActive(pageNumber);
+    if (pageNumber >= 1 || pageNumber <= totalPages) return;
+    setCurrentPage(pageNumber);
+  };
 
   // Fetch danh sách đơn thuốc chờ xác nhận
   const fetchPending = async () => {
     try {
-      const res = await axiosInstance.get("/Medication/pending");
+      const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`);
       const data = res.data;
-      setPendingRequests((data.data || []).map((item) => {
-        const med = item.medications && item.medications[0] ? item.medications[0] : {};
-        return {
-          id: item.id || item.medicationId || "",
-          student: item.studentName || "",
-          studentClassName: item.studentClassName || "",
-          parent: item.parentName || "",
-          medicine: med.medicationName || "",
-          dosage: med.dosage || "",
-          date: item.createdDate ? item.createdDate.split("T")[0] : "",
-          note: med.note || "",
-          days: item.days || "",
-        };
-      }));
+      setPendingRequests(
+        (data.data || []).map((item) => {
+          const med =
+            item.medications && item.medications[0] ? item.medications[0] : {};
+          return {
+            id: item.id || item.medicationId || "",
+            student: item.studentName || "",
+            studentClassName: item.studentClassName || "",
+            parent: item.parentName || "",
+            medicine: med.medicationName || "",
+            dosage: med.dosage || "",
+            date: item.createdDate ? item.createdDate.split("T")[0] : "",
+            note: med.note || "",
+            days: item.days || "",
+          };
+        })
+      );
+      if(data.data.totalPages ){
+          setTotalPages(data.data.totalPages);
+      }
     } catch (error) {
       showNotification("Failed to load pending medication requests!", "error");
     }
@@ -98,20 +116,29 @@ const ReceiveMedicine = () => {
   const fetchActive = async () => {
     if (!nurseId) return;
     try {
-      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Active`);
+      const res = await axiosInstance.get(
+        `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`
+      );
       const data = res.data;
-      setActiveRequests((data.data || []).map((item) => {
-        const med = item.medications && item.medications[0] ? item.medications[0] : {};
-        return {
-          id: item.id || "",
-          student: item.studentName || "",
-          studentClassName: item.studentClassName || "",
-          medicine: med.medicationName || "",
-          dosage: med.dosage || "",
-          date: item.createdDate ? item.createdDate.split("T")[0] : "",
-          note: med.note || "",
-        };
-      }));
+      setActiveRequests(
+        (data.data.items || []).map((item) => {
+          const med =
+            item.medications && item.medications[0] ? item.medications[0] : {};
+          return {
+            id: item.id || "",
+            student: item.studentName || "",
+            studentClassName: item.studentClassName || "",
+            medicine: med.medicationName || "",
+            dosage: med.dosage || "",
+            date: item.createdDate ? item.createdDate.split("T")[0] : "",
+            note: med.note || "",
+          };
+        })
+      );
+      if(data.data.totalPages ){
+          setTotalPages(data.data.totalPages);
+      }
+      
     } catch (error) {
       showNotification("Failed to load active medication requests!", "error");
     }
@@ -121,24 +148,47 @@ const ReceiveMedicine = () => {
   const fetchCompleted = async () => {
     if (!nurseId) return;
     try {
-      const res = await axiosInstance.get(`/Medication/nurse/${nurseId}/Completed`);
+      const res = await axiosInstance.get(
+        `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`
+      );
       const data = res.data;
-      setCompletedRequests((data.data || []).map((item) => {
-        const med = item.medications && item.medications[0] ? item.medications[0] : {};
-        return {
-          id: item.id || "",
-          student: item.studentName || "",
-          studentClassName: item.studentClassName || "",
-          medicine: med.medicationName || "",
-          dosage: med.dosage || "",
-          date: item.createdDate ? item.createdDate.split("T")[0] : "",
-          note: med.note || "",
-        };
-      }));
+      setCompletedRequests(
+        (data.data || []).map((item) => {
+          const med =
+            item.medications && item.medications[0] ? item.medications[0] : {};
+          return {
+            id: item.id || "",
+            student: item.studentName || "",
+            studentClassName: item.studentClassName || "",
+            medicine: med.medicationName || "",
+            dosage: med.dosage || "",
+            date: item.createdDate ? item.createdDate.split("T")[0] : "",
+            note: med.note || "",
+          };
+        })
+      );
+      if(data.data.totalPages ){
+          setTotalPages(data.data.totalPages);
+      }
     } catch (error) {
-      showNotification("Failed to load completed medication requests!", "error");
+      showNotification(
+        "Failed to load completed medication requests!",
+        "error"
+      );
     }
   };
+
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+  const handler = setTimeout(() => {
+    setDebouncedSearch(search); // cập nhật sau 500ms nếu không gõ nữa
+  }, 500);
+
+  return () => {
+    clearTimeout(handler); // clear timeout nếu user vẫn đang gõ
+  };
+}, [search]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -152,7 +202,7 @@ const ReceiveMedicine = () => {
       }
     };
     loadData();
-  }, [nurseId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nurseId, currentPage,debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -167,24 +217,35 @@ const ReceiveMedicine = () => {
       const headers = ["Mã đơn", "Lớp", "Học sinh",  "Loại thuốc", "Liều lượng", "Ngày", "Trạng thái"];
       const csvContent = [
         headers.join(","),
-        ...data.map(row => [
-          row.id,
-          row.studentClassName,
-          row.student,
-          row.parent || "N/A",
-          row.medicine,
-          row.dosage,
-          row.date,
-          activeTab === "pending" ? "Chờ xác nhận" : activeTab === "active" ? "Đang sử dụng" : "Đã hoàn thành"
-        ].join(","))
+        ...data.map((row) =>
+          [
+            row.id,
+            row.studentClassName,
+            row.student,
+            row.parent || "N/A",
+            row.medicine,
+            row.dosage,
+            row.date,
+            activeTab === "pending"
+              ? "Chờ xác nhận"
+              : activeTab === "active"
+              ? "Đang sử dụng"
+              : "Đã hoàn thành",
+          ].join(",")
+        ),
       ].join("\n");
 
       // Create and download file
-      const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+      const blob = new Blob(["\uFEFF" + csvContent], {
+        type: "text/csv;charset=utf-8;",
+      });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
       link.setAttribute("href", url);
-      link.setAttribute("download", `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
+      link.setAttribute(
+        "download",
+        `${filename}_${new Date().toISOString().split("T")[0]}.csv`
+      );
       link.style.visibility = "hidden";
       document.body.appendChild(link);
       link.click();
@@ -198,13 +259,22 @@ const ReceiveMedicine = () => {
 
   // Apply filters
   const applyFilters = (data) => {
-    return data.filter(item => {
-      const matchesDate = !filterOptions.dateRange.start || !filterOptions.dateRange.end ||
-        (item.date >= filterOptions.dateRange.start && item.date <= filterOptions.dateRange.end);
-      const matchesClass = !filterOptions.className ||
-        item.studentClassName.toLowerCase().includes(filterOptions.className.toLowerCase());
-      const matchesMedicine = !filterOptions.medicineType ||
-        item.medicine.toLowerCase().includes(filterOptions.medicineType.toLowerCase());
+    return data.filter((item) => {
+      const matchesDate =
+        !filterOptions.dateRange.start ||
+        !filterOptions.dateRange.end ||
+        (item.date >= filterOptions.dateRange.start &&
+          item.date <= filterOptions.dateRange.end);
+      const matchesClass =
+        !filterOptions.className ||
+        item.studentClassName
+          .toLowerCase()
+          .includes(filterOptions.className.toLowerCase());
+      const matchesMedicine =
+        !filterOptions.medicineType ||
+        item.medicine
+          .toLowerCase()
+          .includes(filterOptions.medicineType.toLowerCase());
 
       return matchesDate && matchesClass && matchesMedicine;
     });
@@ -216,7 +286,7 @@ const ReceiveMedicine = () => {
       dateRange: { start: "", end: "" },
       className: "",
       status: "",
-      medicineType: ""
+      medicineType: "",
     });
     setShowFilterModal(false);
     showNotification("Đã xóa bộ lọc!", "info");
@@ -277,36 +347,56 @@ const ReceiveMedicine = () => {
   };
 
   // Lọc tìm kiếm và áp dụng filters
-  const filteredPending = applyFilters(pendingRequests.filter(
-    (r) =>
-      r.id.toString().toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.studentClassName || "").toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.student || "").toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.parent || "").toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.medicine || "").toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.dosage || "").toLowerCase().includes(searchPending.toLowerCase()) ||
-      (r.date || "").toLowerCase().includes(searchPending.toLowerCase())
-  ));
+  const filteredPending = applyFilters(
+    pendingRequests.filter(
+      (r) =>
+        r.id.toString().toLowerCase().includes(search.toLowerCase()) ||
+        (r.studentClassName || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.student || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.parent || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.medicine || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.dosage || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.date || "").toLowerCase().includes(search.toLowerCase())
+    )
+  );
 
-  const filteredActive = applyFilters(activeRequests.filter(
-    (r) =>
-      r.id.toString().toLowerCase().includes(searchActive.toLowerCase()) ||
-      (r.studentClassName || "").toLowerCase().includes(searchActive.toLowerCase()) ||
-      (r.student || "").toLowerCase().includes(searchActive.toLowerCase()) ||
-      (r.medicine || "").toLowerCase().includes(searchActive.toLowerCase()) ||
-      (r.dosage || "").toLowerCase().includes(searchActive.toLowerCase()) ||
-      (r.date || "").toLowerCase().includes(searchActive.toLowerCase())
-  ));
+  const filteredActive = applyFilters(
+    activeRequests.filter(
+      (r) =>
+        r.id.toString().toLowerCase().includes(search.toLowerCase()) ||
+        (r.studentClassName || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.student || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.medicine || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.dosage || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.date || "").toLowerCase().includes(search.toLowerCase())
+    )
+  );
 
-  const filteredCompleted = applyFilters(completedRequests.filter(
-    (r) =>
-      r.id.toString().toLowerCase().includes(searchCompleted.toLowerCase()) ||
-      (r.studentClassName || "").toLowerCase().includes(searchCompleted.toLowerCase()) ||
-      (r.student || "").toLowerCase().includes(searchCompleted.toLowerCase()) ||
-      (r.medicine || "").toLowerCase().includes(searchCompleted.toLowerCase()) ||
-      (r.dosage || "").toLowerCase().includes(searchCompleted.toLowerCase()) ||
-      (r.date || "").toLowerCase().includes(searchCompleted.toLowerCase())
-  ));
+  const filteredCompleted = applyFilters(
+    completedRequests.filter(
+      (r) =>
+        r.id.toString().toLowerCase().includes(search.toLowerCase()) ||
+        (r.studentClassName || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.student || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.medicine || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.dosage || "")
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        (r.date || "").toLowerCase().includes(search.toLowerCase())
+    )
+  );
 
   // Hàm lấy chi tiết đơn thuốc từ API
   const fetchMedicationDetail = async (id) => {
@@ -334,18 +424,24 @@ const ReceiveMedicine = () => {
   const totalPending = pendingRequests.length;
   const totalActive = activeRequests.length;
   const totalCompleted = completedRequests.length;
-  const totalToday = [...pendingRequests, ...activeRequests, ...completedRequests]
-    .filter(req => req.date === new Date().toISOString().split('T')[0]).length;
+  const totalToday = [
+    ...pendingRequests,
+    ...activeRequests,
+    ...completedRequests,
+  ].filter((req) => req.date === new Date().toISOString().split("T")[0]).length;
 
   // Render Action Buttons
   const renderActionButtons = (req, type) => (
-    <div className="medicine-action-buttons" style={{
-      display: 'flex',
-      gap: '6px',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexWrap: 'wrap'
-    }}>
+    <div
+      className="medicine-action-buttons"
+      style={{
+        display: "flex",
+        gap: "6px",
+        alignItems: "center",
+        justifyContent: "center",
+        flexWrap: "wrap",
+      }}
+    >
       <button
         className="btn-action view"
         onClick={() => setModalDetail({ type, data: req })}
@@ -488,7 +584,14 @@ const ReceiveMedicine = () => {
   );
 
   // Render Table
-  const renderTable = (data, type, searchValue, setSearch, showAll, setShowAll) => (
+  const renderTable = (
+    data,
+    type,
+    searchValue,
+    setSearch,
+    showAll,
+    setShowAll
+  ) => (
     <div className="medicine-table-container">
       <div className="table-header">
         <div className="search-container">
@@ -499,7 +602,7 @@ const ReceiveMedicine = () => {
               className="search-input"
               placeholder="Tìm kiếm theo mã đơn, học sinh, thuốc..."
               value={searchValue}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="action-buttons">
@@ -528,8 +631,12 @@ const ReceiveMedicine = () => {
               variant="outline-success"
               className="export-btn"
               onClick={() => {
-                const filename = type === "pending" ? "don-thuoc-cho-xac-nhan" :
-                  type === "active" ? "don-thuoc-dang-su-dung" : "don-thuoc-hoan-thanh";
+                const filename =
+                  type === "pending"
+                    ? "don-thuoc-cho-xac-nhan"
+                    : type === "active"
+                    ? "don-thuoc-dang-su-dung"
+                    : "don-thuoc-hoan-thanh";
                 exportToExcel(data, filename);
               }}
             >
@@ -539,8 +646,18 @@ const ReceiveMedicine = () => {
         </div>
       </div>
 
-      <div className="table-responsive medicine-table-wrapper" style={{ overflowX: 'auto', width: '100%', maxWidth: '100%' }}>
-        <Table className="medicine-table" style={{ width: '100%', tableLayout: 'fixed', minWidth: type === "pending" ? '920px' : '800px' }}>
+      <div
+        className="table-responsive medicine-table-wrapper"
+        style={{ overflowX: "auto", width: "100%", maxWidth: "100%" }}
+      >
+        <Table
+          className="medicine-table"
+          style={{
+            width: "100%",
+            tableLayout: "fixed",
+            minWidth: type === "pending" ? "920px" : "800px",
+          }}
+        >
           <thead>
             <tr>
               <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Mã đơn</th>
@@ -555,7 +672,8 @@ const ReceiveMedicine = () => {
           </thead>
           <tbody>
             {(showAll ? data : data.slice(0, ROW_LIMIT)).map((req, index) => (
-              <tr key={req.id || `req-${index}`}
+              <tr
+                key={req.id || `req-${index}`}
                 className="table-row"
                 style={{}}>
                 <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
@@ -603,12 +721,18 @@ const ReceiveMedicine = () => {
                 )} */}
                 <td style={{ width: type === "pending" ? '150px' : '180px', minWidth: type === "pending" ? '150px' : '180px', maxWidth: type === "pending" ? '150px' : '180px' }}>
                   <div className="medicine-info">
-                    <strong>{req.medicine || 'N/A'}</strong>
+                    <strong>{req.medicine || "N/A"}</strong>
                   </div>
                 </td>
-                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
+                <td
+                  style={{
+                    width: "100px",
+                    minWidth: "100px",
+                    maxWidth: "100px",
+                  }}
+                >
                   <Badge bg="info" className="dosage-badge">
-                    {req.dosage || 'N/A'}
+                    {req.dosage || "N/A"}
                   </Badge>
                 </td>
                 <td style={{
@@ -619,15 +743,26 @@ const ReceiveMedicine = () => {
                 }}>
                   <div className="date-info">
                     <FaCalendarAlt className="date-icon" />
-                    {req.date || 'N/A'}
+                    {req.date || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>{renderActionButtons(req, type)}</td>
+                <td
+                  style={{
+                    width: "150px",
+                    minWidth: "150px",
+                    maxWidth: "150px",
+                  }}
+                >
+                  {renderActionButtons(req, type)}
+                </td>
               </tr>
             ))}
             {data.length === 0 && (
               <tr>
-                <td colSpan={type === "pending" ? 8 : 7} className="text-center empty-state">
+                <td
+                  colSpan={type === "pending" ? 8 : 7}
+                  className="text-center empty-state"
+                >
                   <div className="empty-content">
                     <FaCapsules className="empty-icon" />
                     <p>Không có đơn thuốc nào</p>
@@ -646,7 +781,7 @@ const ReceiveMedicine = () => {
             className="show-more-btn"
             onClick={() => setShowAll(!showAll)}
           >
-            {showAll ? 'Thu gọn' : `Xem thêm ${data.length - ROW_LIMIT} đơn`}
+            {showAll ? "Thu gọn" : `Xem thêm ${data.length - ROW_LIMIT} đơn`}
           </Button>
         </div>
       )}
@@ -659,7 +794,7 @@ const ReceiveMedicine = () => {
       style={{
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         backgroundColor: "#f8f9fc",
-        minHeight: "100vh"
+        minHeight: "100vh",
       }}
     >
       {/* Notification */}
@@ -750,77 +885,96 @@ const ReceiveMedicine = () => {
             <p>Đang tải dữ liệu...</p>
           </div>
         ) : (
-          <Tabs
-            activeKey={activeTab}
-            onSelect={setActiveTab}
-            className="medicine-tabs"
-          >
-            <Tab
-              eventKey="pending"
-              title={
-                <div className="tab-title pending">
-                  <FaExclamationTriangle className="tab-icon" />
-                  <span>Chờ xác nhận</span>
-                  <Badge bg="warning" className="tab-badge">{totalPending}</Badge>
-                </div>
-              }
+          <>
+            <Tabs
+              activeKey={activeTab}
+              onSelect={(key) => {
+                setActiveTab(key);
+                setCurrentPage(1);
+              }}
+              className="medicine-tabs"
             >
-              <div className="tab-content">
-                {renderTable(
-                  filteredPending,
-                  "pending",
-                  searchPending,
-                  setSearchPending,
-                  pendingShowAll,
-                  setPendingShowAll
-                )}
-              </div>
-            </Tab>
+              <Tab
+                eventKey="pending"
+                title={
+                  <div className="tab-title pending">
+                    <FaExclamationTriangle className="tab-icon" />
+                    <span>Chờ xác nhận</span>
+                    <Badge bg="warning" className="tab-badge">
+                      {totalPending}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    filteredPending,
+                    "pending",
+                    search,
+                    setSearch,
+                    pendingShowAll,
+                    setPendingShowAll
+                  )}
+                </div>
+              </Tab>
 
-            <Tab
-              eventKey="active"
-              title={
-                <div className="tab-title active">
-                  <FaClock className="tab-icon" />
-                  <span>Đang sử dụng</span>
-                  <Badge bg="info" className="tab-badge">{totalActive}</Badge>
+              <Tab
+                eventKey="active"
+                title={
+                  <div className="tab-title active">
+                    <FaClock className="tab-icon" />
+                    <span>Đang sử dụng</span>
+                    <Badge bg="info" className="tab-badge">
+                      {totalActive}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    filteredActive,
+                    "active",
+                    search,
+                    setSearch,
+                    activeShowAll,
+                    setActiveShowAll
+                  )}
                 </div>
-              }
-            >
-              <div className="tab-content">
-                {renderTable(
-                  filteredActive,
-                  "active",
-                  searchActive,
-                  setSearchActive,
-                  activeShowAll,
-                  setActiveShowAll
-                )}
-              </div>
-            </Tab>
+              </Tab>
 
-            <Tab
-              eventKey="completed"
-              title={
-                <div className="tab-title completed">
-                  <FaCheckCircle className="tab-icon" />
-                  <span>Đã hoàn thành</span>
-                  <Badge bg="success" className="tab-badge">{totalCompleted}</Badge>
+              <Tab
+                eventKey="completed"
+                title={
+                  <div className="tab-title completed">
+                    <FaCheckCircle className="tab-icon" />
+                    <span>Đã hoàn thành</span>
+                    <Badge bg="success" className="tab-badge">
+                      {totalCompleted}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    filteredCompleted,
+                    "completed",
+                    search,
+                    setSearch,
+                    completedShowAll,
+                    setCompletedShowAll
+                  )}
                 </div>
-              }
-            >
-              <div className="tab-content">
-                {renderTable(
-                  filteredCompleted,
-                  "completed",
-                  searchCompleted,
-                  setSearchCompleted,
-                  completedShowAll,
-                  setCompletedShowAll
-                )}
-              </div>
-            </Tab>
-          </Tabs>
+              </Tab>
+            </Tabs>
+            {console.log("Currentpage", currentPage)}
+            {console.log("Totalpages", totalPages)}
+
+            <PaginationBar
+              currentPages={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
       </div>
 
@@ -1068,55 +1222,75 @@ const ReceiveMedicine = () => {
             <div className="row">
               <div className="col-md-6">
                 <Form.Group className="mb-3">
-                  <Form.Label><FaCalendarAlt className="me-2" />Từ ngày</Form.Label>
+                  <Form.Label>
+                    <FaCalendarAlt className="me-2" />
+                    Từ ngày
+                  </Form.Label>
                   <Form.Control
                     type="date"
                     value={filterOptions.dateRange.start}
-                    onChange={(e) => setFilterOptions(prev => ({
-                      ...prev,
-                      dateRange: { ...prev.dateRange, start: e.target.value }
-                    }))}
+                    onChange={(e) =>
+                      setFilterOptions((prev) => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, start: e.target.value },
+                      }))
+                    }
                   />
                 </Form.Group>
               </div>
               <div className="col-md-6">
                 <Form.Group className="mb-3">
-                  <Form.Label><FaCalendarAlt className="me-2" />Đến ngày</Form.Label>
+                  <Form.Label>
+                    <FaCalendarAlt className="me-2" />
+                    Đến ngày
+                  </Form.Label>
                   <Form.Control
                     type="date"
                     value={filterOptions.dateRange.end}
-                    onChange={(e) => setFilterOptions(prev => ({
-                      ...prev,
-                      dateRange: { ...prev.dateRange, end: e.target.value }
-                    }))}
+                    onChange={(e) =>
+                      setFilterOptions((prev) => ({
+                        ...prev,
+                        dateRange: { ...prev.dateRange, end: e.target.value },
+                      }))
+                    }
                   />
                 </Form.Group>
               </div>
             </div>
 
             <Form.Group className="mb-3">
-              <Form.Label><FaHospital className="me-2" />Lớp học</Form.Label>
+              <Form.Label>
+                <FaHospital className="me-2" />
+                Lớp học
+              </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Nhập tên lớp (vd: 6A1, 7B2...)"
                 value={filterOptions.className}
-                onChange={(e) => setFilterOptions(prev => ({
-                  ...prev,
-                  className: e.target.value
-                }))}
+                onChange={(e) =>
+                  setFilterOptions((prev) => ({
+                    ...prev,
+                    className: e.target.value,
+                  }))
+                }
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label><FaCapsules className="me-2" />Loại thuốc</Form.Label>
+              <Form.Label>
+                <FaCapsules className="me-2" />
+                Loại thuốc
+              </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Nhập tên thuốc"
                 value={filterOptions.medicineType}
-                onChange={(e) => setFilterOptions(prev => ({
-                  ...prev,
-                  medicineType: e.target.value
-                }))}
+                onChange={(e) =>
+                  setFilterOptions((prev) => ({
+                    ...prev,
+                    medicineType: e.target.value,
+                  }))
+                }
               />
             </Form.Group>
 
@@ -1143,9 +1317,13 @@ const ReceiveMedicine = () => {
                     Thuốc: {filterOptions.medicineType}
                   </Badge>
                 )}
-                {!filterOptions.dateRange.start && !filterOptions.dateRange.end &&
-                  !filterOptions.className && !filterOptions.medicineType && (
-                    <span className="text-muted">Chưa có điều kiện lọc nào</span>
+                {!filterOptions.dateRange.start &&
+                  !filterOptions.dateRange.end &&
+                  !filterOptions.className &&
+                  !filterOptions.medicineType && (
+                    <span className="text-muted">
+                      Chưa có điều kiện lọc nào
+                    </span>
                   )}
               </div>
             </div>

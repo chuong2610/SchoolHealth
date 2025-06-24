@@ -39,66 +39,138 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import "../../styles/admin/medicine-inventory.css";
+import { Modal, Button, Form, Table } from "react-bootstrap";
+import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const MedicineInventory = () => {
-    const [medicines, setMedicines] = useState([
+  const [inventory, setInventory] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [form, setForm] = useState({ id: "", name: "", quantity: "" });
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
+  //debounce search
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearch(searchInput);
+    }, 500);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchInput]);
+
+  const fetchInventory = async () => {
+    try {
+      const respond = await axiosInstance.get(
+        `/MedicalSupply?pageNumber=${currentPage}&pageSize=3${
+          search ? `&search=${search}` : ""
+        } `,
         {
-            id: 1,
-            name: "Paracetamol 500mg",
-            category: "Thuốc giảm đau",
-            quantity: 120,
-            minStock: 50,
-            maxStock: 200,
-            unit: "Viên",
-            price: 500,
-            expiryDate: "2025-12-31",
-            status: "Còn hàng",
-            location: "Kệ A1",
-            barcode: "PMC500001"
-        },
-        {
-            id: 2,
-            name: "Ibuprofen 400mg",
-            category: "Thuốc giảm đau",
-            quantity: 25,
-            minStock: 30,
-            maxStock: 150,
-            unit: "Viên",
-            price: 800,
-            expiryDate: "2024-08-15",
-            status: "Gần hết",
-            location: "Kệ A2",
-            barcode: "IBU400002"
-        },
-        {
-            id: 3,
-            name: "Vitamin C 1000mg",
-            category: "Vitamin",
-            quantity: 0,
-            minStock: 20,
-            maxStock: 100,
-            unit: "Viên",
-            price: 300,
-            expiryDate: "2025-06-30",
-            status: "Hết hàng",
-            location: "Kệ B1",
-            barcode: "VTC100003"
-        },
-        {
-            id: 4,
-            name: "Băng gạc vô trùng",
-            category: "Vật tư y tế",
-            quantity: 80,
-            minStock: 30,
-            maxStock: 120,
-            unit: "Gói",
-            price: 2000,
-            expiryDate: "2026-01-15",
-            status: "Còn hàng",
-            location: "Kệ C1",
-            barcode: "BG001004"
+          headers: { Authorization: `Bearer ${token}` },
         }
-    ]);
+      );
+      const data = respond.data.data || [];
+      console.log("Fetched inventory:", data); // Log toàn bộ dữ liệu
+      setInventory(data.items || []);
+      setCurrentPage(data.currentPage || 1);
+      setTotalPages(data.totalPages || 1);
+    } catch (error) {
+      setError("Failed to fetch inventory.");
+      console.error("Fetch error:", error);
+    }
+  };
+
+  // Fetch danh sách vật tư y tế
+  useEffect(() => {
+    fetchInventory();
+  }, [currentPage, search]);
+
+  //Mở modal thêm mới
+  const handleShowAdd = () => {
+    setForm({ id: "", name: "", quantity: "" });
+    setShowAddModal(true);
+  };
+
+  // Mở modal sửa
+  const handleShowEdit = (item) => {
+    setForm({ id: item.id, name: item.name, quantity: item.quantity });
+    setShowEditModal(true);
+  };
+
+  // Xử lý thay đổi form
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "quantity") {
+      const parsedValue = parseInt(value) || 1; //chuyển đổi thành số mặc định là 1 nếu không hợp lệ
+      setForm((prev) => ({
+        ...prev,
+        [name]: Math.max(1, parsedValue), //đảm bảo không dưới 1
+      }));
+    }
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  //Thêm vật tư
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    if (form.quantity < 1) {
+      setError("Số lượng phải lớn hơn hoặc bằng 1.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.post(
+        "/MedicalSupply",
+        { name: form.name, quantity: form.quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setInventory([...inventory, response.data]);
+      setShowAddModal(false);
+      fetchInventory(); //cập nhật lại danh sách
+    } catch (error) {
+      setError("Faild to add item.");
+      console.log("Add error:", error);
+    }
+  };
+
+  //Cập nhật vật tư
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (form.quantity < 1) {
+      setError("Số lượng phải lớn hơn hoặc bằng 1.");
+      return;
+    }
+    try {
+      const response = await axiosInstance.patch(
+        `/MedicalSupply/${form.id}`,
+        {
+          name: form.name,
+          quantity: form.quantity,
+        },
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setInventory(
+        inventory.map((item) =>
+          item.id === form.id ? { ...item, ...form } : item
+        )
+      );
 
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
@@ -111,161 +183,55 @@ const MedicineInventory = () => {
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterCategory, setFilterCategory] = useState("all");
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+      setShowEditModal(false);
+      fetchInventory(); //cập nhật lại danh sách
+    } catch (error) {
+      setError("Failed to update item.");
+      console.log("Update error:", error);
+    }
+  };
 
-    const [formData, setFormData] = useState({
-        id: null,
-        name: "",
-        category: "",
-        quantity: 0,
-        minStock: 0,
-        maxStock: 0,
-        unit: "Viên",
-        price: 0,
-        expiryDate: "",
-        location: "",
-        barcode: ""
-    });
+  //Xóa vật tư
+  const handleDelete = async (id) => {
+    // Thêm log để kiểm tra id
+    console.log("Received id for delete:", id, "Type:", typeof id); // Log id
+    try {
+      const response = await axiosInstance.delete(
+        `/MedicalSupply/${id}`,
 
-    // Animation variants
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: 0.5,
-                staggerChildren: 0.1
-            }
-        },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.3 }
-        },
-    };
-
-    // Data processing for charts
-    const getInventoryStats = () => {
-        const total = medicines.length;
-        const inStock = medicines.filter(m => m.status === "Còn hàng").length;
-        const lowStock = medicines.filter(m => m.status === "Gần hết").length;
-        const outOfStock = medicines.filter(m => m.status === "Hết hàng").length;
-
-        return { total, inStock, lowStock, outOfStock };
-    };
-
-    const getCategoryData = () => {
-        const categoryCount = {};
-        medicines.forEach(medicine => {
-            categoryCount[medicine.category] = (categoryCount[medicine.category] || 0) + 1;
-        });
-
-        return Object.entries(categoryCount).map(([name, value]) => ({ name, value }));
-    };
-
-    const getStockLevelData = () => {
-        return medicines.map(medicine => ({
-            name: medicine.name.substring(0, 15) + (medicine.name.length > 15 ? '...' : ''),
-            quantity: medicine.quantity,
-            minStock: medicine.minStock,
-            maxStock: medicine.maxStock
-        }));
-    };
-
-    const COLORS = ['#28a745', '#ffc107', '#dc3545', '#6c757d'];
-
-    // Filter và sort medicines
-    const filteredMedicines = medicines
-        .filter(medicine => {
-            const matchesSearch = medicine.name.toLowerCase().includes(search.toLowerCase()) ||
-                medicine.category.toLowerCase().includes(search.toLowerCase()) ||
-                medicine.barcode.toLowerCase().includes(search.toLowerCase());
-            const matchesStatus = filterStatus === "all" || medicine.status === filterStatus;
-            const matchesCategory = filterCategory === "all" || medicine.category === filterCategory;
-            return matchesSearch && matchesStatus && matchesCategory;
-        })
-        .sort((a, b) => {
-            const aValue = a[sortField];
-            const bValue = b[sortField];
-            const modifier = sortDirection === "asc" ? 1 : -1;
-
-            if (typeof aValue === 'string') {
-                return aValue.localeCompare(bValue) * modifier;
-            }
-            return (aValue - bValue) * modifier;
-        });
-
-    const handleShowModal = (type, medicine = null) => {
-        setModalType(type);
-        if (medicine) {
-            setFormData({
-                id: medicine.id,
-                name: medicine.name,
-                category: medicine.category,
-                quantity: medicine.quantity,
-                minStock: medicine.minStock,
-                maxStock: medicine.maxStock,
-                unit: medicine.unit,
-                price: medicine.price,
-                expiryDate: medicine.expiryDate,
-                location: medicine.location,
-                barcode: medicine.barcode
-            });
-        } else {
-            setFormData({
-                id: null,
-                name: "",
-                category: "",
-                quantity: 0,
-                minStock: 0,
-                maxStock: 0,
-                unit: "Viên",
-                price: 0,
-                expiryDate: "",
-                location: "",
-                barcode: ""
-            });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-        setShowModal(true);
-    };
+      );
+      setInventory(inventory.filter((item) => item.id !== id));
+    } catch (error) {
+      setError("Failed to delete item.");
+      console.log("Delete error:", error);
+    }
+  };
 
-    const handleSaveMedicine = () => {
-        if (!formData.name.trim()) {
-            alert("Vui lòng nhập tên thuốc!");
-            return;
-        }
+  //lấy số trang
+  const getPageNumbers = () => {
+    let startPage = Math.max(1, currentPage - 1);
+    let endPage = Math.min(totalPages, currentPage + 1);
 
-        setLoading(true);
+    if (currentPage === 1) {
+      endPage = Math.min(totalPages, 3);
+    }
 
-        setTimeout(() => {
-            if (modalType === "add") {
-                const newMedicine = {
-                    ...formData,
-                    id: Date.now(),
-                    status: getStockStatus(formData.quantity, formData.minStock)
-                };
-                setMedicines([...medicines, newMedicine]);
-            } else {
-                setMedicines(medicines.map(med =>
-                    med.id === formData.id
-                        ? { ...med, ...formData, status: getStockStatus(formData.quantity, formData.minStock) }
-                        : med
-                ));
-            }
+    if (currentPage === totalPages) {
+      startPage = Math.max(1, totalPages - 2);
+    }
 
-            setShowModal(false);
-            setLoading(false);
-        }, 1000);
-    };
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
 
-    const getStockStatus = (quantity, minStock) => {
-        if (quantity === 0) return "Hết hàng";
-        if (quantity <= minStock) return "Gần hết";
-        return "Còn hàng";
-    };
+    return pages;
+  };
 
     const handleDeleteMedicine = () => {
         if (medicineToDelete) {
@@ -668,15 +634,17 @@ const MedicineInventory = () => {
                             Hủy
                         </button>
                         <button
-                            className="admin-primary-btn"
-                            onClick={handleSaveMedicine}
-                            disabled={loading}
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleDelete(item.id)}
                         >
                             {loading && <div className="admin-medicine-loading-spinner"></div>}
                             {modalType === "add" ? "Thêm thuốc" : "Cập nhật"}
                         </button>
-                    </Modal.Footer>
-                </Modal>
+                     
+                  </Modal.Footer>
+                  </Modal>
+                  
+              
 
                 {/* Delete Confirmation Modal */}
                 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="admin-modal">
@@ -713,7 +681,7 @@ const MedicineInventory = () => {
                 </Modal>
             </motion.div>
         </div>
-    );
+  );
 };
 
 export default MedicineInventory;

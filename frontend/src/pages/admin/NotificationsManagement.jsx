@@ -101,6 +101,10 @@ const NotificationsManagement = () => {
     },
   });
   const [notifications, setNotifications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 2;
   const [modalDetail, setModalDetail] = useState({
     status: false,
     notificationDetail: {},
@@ -161,6 +165,8 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {}, [classList]);
 
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
@@ -225,10 +231,10 @@ const NotificationsManagement = () => {
       if (res) {
         setModalDetail({ notificationDetail: { ...res }, status: true });
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
+
+  useEffect(() => {}, [modalDetail]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
     try {
@@ -245,6 +251,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
+  useEffect(() => {}, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
     try {
@@ -261,45 +268,34 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
+  useEffect(() => {}, [modalResultDetail]);
+
+  const fetchNotification = async (pageNumber = 1) => {
+    try {
+      const res = await getNotifications(pageNumber, pageSize); // truyền page, pageSize vào API
+      if (res && res.data) {
+        setNotifications(res.data.items || []);
+        setCurrentPage(res.data.currentPage || 1);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalItems(res.data.totalItems || 0);
+      } else {
+        setNotifications([]);
+        setCurrentPage(1);
+        setTotalPages(1);
+        setTotalItems(0);
+      }
+    } catch (error) {
+      setNotifications([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalItems(0);
+      throw error;
+    }
+  };
 
   useEffect(() => {
-    const fetchNotification = async () => {
-      try {
-        const res = await getNotifications();
-        if (res) {
-          setNotifications([...res]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchNotification();
-  }, [reload]);
-
-  // Filter notifications based on search and filters
-  const filteredNotifications = notifications.filter((notification) => {
-    const matchesSearch = notification.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      notification.message.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = filterType === '' || notification.type === filterType;
-    const matchesTab = selectedTab === 'all' ||
-      (selectedTab === 'vaccination' && notification.type === 'Vaccination') ||
-      (selectedTab === 'healthcheck' && notification.type === 'HealthCheck') ||
-      (selectedTab === 'today' && new Date(notification.createdAt).toDateString() === new Date().toDateString());
-
-    return matchesSearch && matchesType && matchesTab;
-  });
-
-  const todayNotifications = notifications.filter(n =>
-    new Date(n.createdAt).toDateString() === new Date().toDateString()
-  );
-
-  // Reset filters
-  const handleResetFilters = () => {
-    setFilterType('');
-    setSearchTerm('');
-    setSelectedTab('all');
-  };
+    fetchNotification(currentPage);
+  }, [reload, currentPage]);
 
   return (
     <div className="admin-notifications-container">
@@ -515,15 +511,15 @@ const NotificationsManagement = () => {
 
 
       {/* Pagination */}
-      {filteredNotifications.length > 8 && (
-        <div className="admin-notifications-pagination">
-          <PaginationBar
-            currentPage={notificationCurrentPage}
-            totalPages={notificationTotalPages}
-            onPageChange={notificationHandlePageChange}
-          />
-        </div>
-      )}
+      <div
+        style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}
+      >
+        <PaginationBar
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
 
       {/* Add Notification Modal */}
       <Modal

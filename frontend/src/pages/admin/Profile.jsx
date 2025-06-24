@@ -27,38 +27,33 @@ const recentActivities = [
   { id: 4, action: "Xuất báo cáo sức khỏe", time: "2 ngày trước", icon: "📊", type: "info" },
   { id: 5, action: "Cập nhật kho thuốc", time: "3 ngày trước", icon: "🏥", type: "success" }
 ];
+import React, { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 
 const Profile = () => {
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [showPasswordCurrent, setShowPasswordCurrent] = useState(false);
-  const [showPasswordNew, setShowPasswordNew] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [activeTab, setActiveTab] = useState("personal");
+  
+  const [userInfo, setUserInfo] = useState(null);
+  const userId = localStorage.getItem("userId");
 
-  const [formData, setFormData] = useState({
-    name: adminProfile.name,
-    email: adminProfile.email,
-    phone: adminProfile.phone,
-    address: adminProfile.address,
-    language: adminProfile.language,
-    timezone: adminProfile.timezone
-  });
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/User/${userId}`
+        );
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
+  }, [userId]);
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  if (!userInfo) return <div>Loading...</div>;
 
-  const handleSaveProfile = () => {
-    setShowEditModal(false);
-  };
-
-  const handleChangePassword = () => {
-    setShowPasswordModal(false);
-  };
+  console.log("Image URL:", userInfo.imageUrl);
 
   return (
     <div className="admin-profile-container">

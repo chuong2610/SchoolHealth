@@ -14,7 +14,7 @@ import {
   Nav,
   Tab,
   Form,
-  Alert
+  Alert,
 } from "react-bootstrap";
 import { Bar } from "@ant-design/charts";
 import {
@@ -36,8 +36,10 @@ import {
   FaChartBar,
   FaSearch,
   FaTimes,
-  FaClipboardList
+  FaClipboardList,
 } from "react-icons/fa";
+import PaginationBar from "../../components/common/PaginationBar";
+// Styles được import từ main.jsx
 
 const HealthHistory = () => {
   // State quản lý tab hiện tại
@@ -67,36 +69,61 @@ const HealthHistory = () => {
 
   // State phân trang
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 1;
 
   // useEffect: Fetch dữ liệu khi đổi tab
   useEffect(() => {
     if (!parentId) return;
     setLoading(true);
     setError("");
-    let url = "";
+    let baseUrl = "";
     if (activeTab === "checkup" || activeTab === "chart") {
-      url = `/HealthCheck/parent/${parentId}`;
+      baseUrl = `/HealthCheck/parent/${parentId}`;
     } else if (activeTab === "vaccination") {
-      url = `/Vaccination/parent/${parentId}`;
+      baseUrl = `/Vaccination/parent/${parentId}`;
     } else if (activeTab === "medication") {
-      url = `/Medication/parent/${parentId}`;
+      baseUrl = `/Medication/parent/${parentId}`;
     }
 
-    if (!url) return;
+    if (!baseUrl) return;
+
+    const url = `${baseUrl}?pageNumber=${currentPage}&pageSize=${pageSize}`;
 
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(url);
-        setData(response.data.data || []);
+        console.log("API response from", url, response.data);
+
+        const responseData = response.data.data;
+
+        // Handle both paginated responses (object with 'items') and direct array responses
+        const items = Array.isArray(responseData)
+          ? responseData
+          : responseData?.items;
+        const total = responseData?.totalPages ?? 1;
+
+        if (Array.isArray(items)) {
+          setData(items);
+          setTotalPages(total);
+        } else {
+          console.error(
+            "Data from API is not in a recognized format:",
+            responseData
+          );
+          setData([]);
+          setTotalPages(0);
+        }
       } catch (err) {
         setError("Failed to load data!");
+        setData([]);
+        setTotalPages(0);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [parentId, activeTab]);
+  }, [parentId, activeTab, currentPage]);
 
   // Hàm lấy chi tiết
   const handleShowDetail = async (id, type = "checkup") => {
@@ -143,7 +170,8 @@ const HealthHistory = () => {
   function getStatusClass(status) {
     if (!status) return "badge-status";
     const s = status.toLowerCase();
-    if (s === "completed" || s === "đã hoàn thành") return "badge-status completed";
+    if (s === "completed" || s === "đã hoàn thành")
+      return "badge-status completed";
     if (s === "active" || s === "đang sử dụng") return "badge-status active";
     if (s === "pending" || s === "chờ xác nhận") return "badge-status pending";
     if (s === "rejected" || s === "đã từ chối") return "badge-status rejected";
@@ -168,41 +196,51 @@ const HealthHistory = () => {
   }
 
   // Filter và phân trang
-  const filteredData = data.filter(item => {
-    if (!searchTerm) return true;
-    const searchLower = searchTerm.toLowerCase();
+  const filteredData = data.filter((item) => {
+    try {
+      if (!searchTerm) return true;
+      if (!item) return false; // Guard against null/undefined items
 
-    // Common fields
-    if (item.studentName?.toLowerCase().includes(searchLower) ||
-      item.nurseName?.toLowerCase().includes(searchLower)) {
-      return true;
+      const searchLower = searchTerm.toLowerCase();
+
+      // Common fields check
+      if (
+        (item.studentName || "").toLowerCase().includes(searchLower) ||
+        (item.nurseName || "").toLowerCase().includes(searchLower)
+      ) {
+        return true;
+      }
+
+      // Tab-specific fields check
+      if (activeTab === "checkup" || activeTab === "chart") {
+        return (item.conclusion || "").toLowerCase().includes(searchLower);
+      } else if (activeTab === "vaccination") {
+        return (
+          (item.vaccineName || "").toLowerCase().includes(searchLower) ||
+          (item.location || "").toLowerCase().includes(searchLower)
+        );
+      } else if (activeTab === "medication") {
+        const statusMatch = (item.status || "")
+          .toLowerCase()
+          .includes(searchLower);
+        const medicationMatch = item.medications?.some((med) =>
+          (med?.medicationName || "").toLowerCase().includes(searchLower)
+        );
+        return statusMatch || medicationMatch;
+      }
+
+      return false;
+    } catch (e) {
+      console.error("Error filtering item:", item, e);
+      return false; // Exclude item that causes an error from the results
     }
-
-    // Tab-specific fields
-    if (activeTab === "checkup" || activeTab === "chart") {
-      return item.conclusion?.toLowerCase().includes(searchLower);
-    } else if (activeTab === "vaccination") {
-      return (
-        item.vaccineName?.toLowerCase().includes(searchLower) ||
-        item.location?.toLowerCase().includes(searchLower)
-      );
-    } else if (activeTab === "medication") {
-      return (
-        item.status?.toLowerCase().includes(searchLower) ||
-        item.medications?.some(med =>
-          med.medicationName?.toLowerCase().includes(searchLower)
-        )
-      );
-    }
-
-    return false;
   });
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className="parent-container">
@@ -228,7 +266,9 @@ const HealthHistory = () => {
               <div className="parent-stat-icon">
                 <FaStethoscope />
               </div>
-              <div className="parent-stat-value">{data.filter(item => item.height || item.weight).length}</div>
+              <div className="parent-stat-value">
+                {data.filter((item) => item.height || item.weight).length}
+              </div>
               <div className="parent-stat-label">Lượt khám</div>
             </div>
           </Col>
@@ -237,7 +277,9 @@ const HealthHistory = () => {
               <div className="parent-stat-icon" style={{ background: '#8b5cf6' }}>
                 <FaSyringe />
               </div>
-              <div className="parent-stat-value">{data.filter(item => item.vaccineName).length}</div>
+              <div className="parent-stat-value">
+                {data.filter((item) => item.vaccineName).length}
+              </div>
               <div className="parent-stat-label">Lượt tiêm</div>
             </div>
           </Col>
@@ -246,7 +288,13 @@ const HealthHistory = () => {
               <div className="parent-stat-icon" style={{ background: '#2563eb' }}>
                 <FaPills />
               </div>
-              <div className="parent-stat-value">{data.filter(item => item.medications && item.medications.length > 0).length}</div>
+              <div className="parent-stat-value">
+                {
+                  data.filter(
+                    (item) => item.medications && item.medications.length > 0
+                  ).length
+                }
+              </div>
               <div className="parent-stat-label">Lượt gửi thuốc</div>
             </div>
           </Col>
@@ -254,7 +302,13 @@ const HealthHistory = () => {
 
         {/* Main Content */}
         <div className="parent-card parent-animate-scale-in">
-          <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
+          <Tab.Container
+            activeKey={activeTab}
+            onSelect={(k) => {
+              setActiveTab(k);
+              setCurrentPage(1); // Reset page to 1 on tab switch
+            }}
+          >
             {/* Navigation Tabs */}
             <div className="parent-card-header mb-4">
               <div className="d-flex justify-content-between align-items-center flex-wrap">
@@ -349,15 +403,15 @@ const HealthHistory = () => {
                         <FaSearch className="me-2" />
                         Tìm kiếm lịch sử y tế
                       </Form.Label>
-                      <div style={{ position: 'relative' }}>
+                      <div style={{ position: "relative" }}>
                         <FaSearch
                           style={{
-                            position: 'absolute',
-                            left: '1rem',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            color: 'var(--parent-primary)',
-                            zIndex: 2
+                            position: "absolute",
+                            left: "1rem",
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            color: "var(--parent-primary)",
+                            zIndex: 2,
                           }}
                         />
                         <Form.Control
@@ -369,7 +423,7 @@ const HealthHistory = () => {
                             setSearchTerm(e.target.value);
                             setCurrentPage(1);
                           }}
-                          style={{ paddingLeft: '3rem' }}
+                          style={{ paddingLeft: "3rem" }}
                         />
                       </div>
                     </Form.Group>
@@ -392,7 +446,12 @@ const HealthHistory = () => {
               {loading ? (
                 <div className="text-center py-5">
                   <div className="parent-spinner mb-3"></div>
-                  <h5 style={{ color: 'var(--parent-primary)', fontWeight: '600' }}>
+                  <h5
+                    style={{
+                      color: "var(--parent-primary)",
+                      fontWeight: "600",
+                    }}
+                  >
                     Đang tải dữ liệu...
                   </h5>
                   <p className="text-muted">Vui lòng chờ trong giây lát</p>
@@ -408,12 +467,22 @@ const HealthHistory = () => {
                   {activeTab === "chart" && (
                     <div className="parent-card mb-4" style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--parent-border-radius-xl)', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
                       <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="mb-0" style={{ color: 'var(--parent-primary)', fontWeight: '700' }}>
+                        <h5
+                          className="mb-0"
+                          style={{
+                            color: "var(--parent-primary)",
+                            fontWeight: "700",
+                          }}
+                        >
                           <FaChartBar className="me-2" />
                           Biểu đồ phát triển chiều cao
                         </h5>
                         <Button
-                          className={showChart ? "parent-secondary-btn" : "parent-primary-btn"}
+                          className={
+                            showChart
+                              ? "parent-secondary-btn"
+                              : "parent-primary-btn"
+                          }
                           onClick={() => setShowChart(!showChart)}
                         >
                           {showChart ? "Ẩn biểu đồ" : "Hiển thị biểu đồ"}
@@ -424,10 +493,12 @@ const HealthHistory = () => {
                         <div>
                           {data.length > 0 ? (
                             <Bar
-                              data={data.map(item => ({
+                              data={data.map((item) => ({
                                 ...item,
-                                date: new Date(item.date).toLocaleDateString("vi-VN"),
-                                height: Number(item.height)
+                                date: new Date(item.date).toLocaleDateString(
+                                  "vi-VN"
+                                ),
+                                height: Number(item.height),
                               }))}
                               xField="date"
                               yField="height"
@@ -449,21 +520,29 @@ const HealthHistory = () => {
                             />
                           ) : (
                             <div className="text-center py-5">
-                              <div style={{
-                                width: '80px',
-                                height: '80px',
-                                borderRadius: '50%',
-                                background: 'linear-gradient(135deg, #e5e7eb, #f3f4f6)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto 1.5rem',
-                                fontSize: '2rem',
-                                color: '#9ca3af'
-                              }}>
+                              <div
+                                style={{
+                                  width: "80px",
+                                  height: "80px",
+                                  borderRadius: "50%",
+                                  background:
+                                    "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "0 auto 1.5rem",
+                                  fontSize: "2rem",
+                                  color: "#9ca3af",
+                                }}
+                              >
                                 <FaChartBar />
                               </div>
-                              <h5 style={{ color: 'var(--parent-primary)', fontWeight: '700' }}>
+                              <h5
+                                style={{
+                                  color: "var(--parent-primary)",
+                                  fontWeight: "700",
+                                }}
+                              >
                                 Không có dữ liệu để hiển thị biểu đồ
                               </h5>
                             </div>
@@ -476,25 +555,36 @@ const HealthHistory = () => {
                   {/* Data Table */}
                   {filteredData.length === 0 ? (
                     <div className="text-center py-5">
-                      <div style={{
-                        width: '80px',
-                        height: '80px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #e5e7eb, #f3f4f6)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: '0 auto 1.5rem',
-                        fontSize: '2rem',
-                        color: '#9ca3af'
-                      }}>
+                      <div
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          borderRadius: "50%",
+                          background:
+                            "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          margin: "0 auto 1.5rem",
+                          fontSize: "2rem",
+                          color: "#9ca3af",
+                        }}
+                      >
                         <FaClipboardList />
                       </div>
-                      <h5 style={{ color: 'var(--parent-primary)', fontWeight: '700', marginBottom: '0.5rem' }}>
+                      <h5
+                        style={{
+                          color: "var(--parent-primary)",
+                          fontWeight: "700",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
                         Không có dữ liệu
                       </h5>
                       <p className="text-muted">
-                        {searchTerm ? 'Không tìm thấy dữ liệu phù hợp với từ khóa tìm kiếm' : 'Chưa có dữ liệu cho tab này'}
+                        {searchTerm
+                          ? "Không tìm thấy dữ liệu phù hợp với từ khóa tìm kiếm"
+                          : "Chưa có dữ liệu cho tab này"}
                       </p>
                     </div>
                   ) : (
@@ -605,24 +695,41 @@ const HealthHistory = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {paginatedData.map((item, index) => (
+                            {filteredData.map((item, index) => (
                               <tr key={item.id || index}>
                                 {activeTab === "checkup" && (
                                   <>
                                     <td className="text-center">
-                                      {new Date(item.date).toLocaleDateString("vi-VN")}
+                                      {new Date(item.date).toLocaleDateString(
+                                        "vi-VN"
+                                      )}
                                     </td>
-                                    <td className="text-center">{item.studentName}</td>
-                                    <td className="text-center">{item.height} cm</td>
-                                    <td className="text-center">{item.weight} kg</td>
+                                    <td className="text-center">
+                                      {item.studentName}
+                                    </td>
+                                    <td className="text-center">
+                                      {item.height} cm
+                                    </td>
+                                    <td className="text-center">
+                                      {item.weight} kg
+                                    </td>
                                     <td className="text-center">{item.bmi}</td>
                                     <td className="text-center">
-                                      <Badge className={getStatusConclusion(item.conclusion)}>
-                                        {item.conclusion === "Healthy" ? "Khỏe mạnh" :
-                                          item.conclusion === "Sick" ? "Bệnh" : "Cần chú ý"}
+                                      <Badge
+                                        className={getStatusConclusion(
+                                          item.conclusion
+                                        )}
+                                      >
+                                        {item.conclusion === "Healthy"
+                                          ? "Khỏe mạnh"
+                                          : item.conclusion === "Sick"
+                                          ? "Bệnh"
+                                          : "Cần chú ý"}
                                       </Badge>
                                     </td>
-                                    <td className="text-center">{item.nurseName}</td>
+                                    <td className="text-center">
+                                      {item.nurseName}
+                                    </td>
                                     <td className="text-center">
                                       <Button
 
@@ -641,12 +748,24 @@ const HealthHistory = () => {
                                 {activeTab === "vaccination" && (
                                   <>
                                     <td className="text-center">
-                                      {item.date ? new Date(item.date).toLocaleDateString("vi-VN") : "-"}
+                                      {item.date
+                                        ? new Date(
+                                            item.date
+                                          ).toLocaleDateString("vi-VN")
+                                        : "-"}
                                     </td>
-                                    <td className="text-center">{item.studentName}</td>
-                                    <td className="text-center">{item.vaccineName}</td>
-                                    <td className="text-center">{item.location}</td>
-                                    <td className="text-center">{item.nurseName}</td>
+                                    <td className="text-center">
+                                      {item.studentName}
+                                    </td>
+                                    <td className="text-center">
+                                      {item.vaccineName}
+                                    </td>
+                                    <td className="text-center">
+                                      {item.location}
+                                    </td>
+                                    <td className="text-center">
+                                      {item.nurseName}
+                                    </td>
                                     <td className="text-center">
                                       <Button
                                         size="sm"
@@ -663,33 +782,54 @@ const HealthHistory = () => {
 
                                 {activeTab === "chart" && (
                                   <>
-                                    <td className="text-center">{item.studentName}</td>
                                     <td className="text-center">
-                                      {item.date ? new Date(item.date).toLocaleDateString("vi-VN") : ""}
+                                      {item.studentName}
                                     </td>
-                                    <td className="text-center">{item.height}</td>
+                                    <td className="text-center">
+                                      {item.date
+                                        ? new Date(
+                                            item.date
+                                          ).toLocaleDateString("vi-VN")
+                                        : ""}
+                                    </td>
+                                    <td className="text-center">
+                                      {item.height}
+                                    </td>
                                   </>
                                 )}
 
                                 {activeTab === "medication" && (
                                   <>
                                     <td className="text-center">{item.id}</td>
-                                    <td className="text-center">{item.studentName}</td>
+                                    <td className="text-center">
+                                      {item.studentName}
+                                    </td>
                                     <td className="text-center">
                                       {item.medications?.map((med, idx) => (
                                         <div key={idx} className="small">
-                                          <strong>{med.medicationName}</strong> - {med.dosage}
+                                          <strong>{med.medicationName}</strong>{" "}
+                                          - {med.dosage}
                                         </div>
                                       ))}
                                     </td>
                                     <td className="text-center">
-                                      {item.createdDate ? new Date(item.createdDate).toLocaleDateString("vi-VN") : "-"}
+                                      {item.createdDate
+                                        ? new Date(
+                                            item.createdDate
+                                          ).toLocaleDateString("vi-VN")
+                                        : "-"}
                                     </td>
                                     <td className="text-center">
-                                      <Badge className={getStatusClass(item.status)}>
-                                        {item.status === "Active" ? "Đang sử dụng" :
-                                          item.status === "Pending" ? "Chờ xác nhận" :
-                                            item.status === "Completed" ? "Đã hoàn thành" : item.status}
+                                      <Badge
+                                        className={getStatusClass(item.status)}
+                                      >
+                                        {item.status === "Active"
+                                          ? "Đang sử dụng"
+                                          : item.status === "Pending"
+                                          ? "Chờ xác nhận"
+                                          : item.status === "Completed"
+                                          ? "Đã hoàn thành"
+                                          : item.status}
                                       </Badge>
                                     </td>
                                     <td className="text-center">
@@ -713,48 +853,12 @@ const HealthHistory = () => {
 
                       {/* Pagination */}
                       {totalPages > 1 && (
-                        <div style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          gap: '1rem',
-                          marginTop: '2rem',
-                          padding: '1rem',
-                          background: 'white',
-                          borderRadius: 'var(--parent-border-radius-xl)',
-                          boxShadow: 'var(--parent-shadow-md)',
-                          border: '1px solid rgba(37, 99, 235, 0.1)'
-                        }}>
-                          <Button
-                            className="parent-secondary-btn"
-                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
-                            size="sm"
-                            style={{ minWidth: '45px', height: '45px' }}
-                          >
-                            <FaChevronLeft />
-                          </Button>
-
-                          <div style={{
-                            color: 'var(--parent-primary)',
-                            fontWeight: '700',
-                            padding: '0.75rem 1.5rem',
-                            background: '#f8fafc',
-                            borderRadius: 'var(--parent-border-radius-lg)',
-                            border: '2px solid rgba(37, 99, 235, 0.1)'
-                          }}>
-                            Trang {currentPage} / {totalPages}
-                          </div>
-
-                          <Button
-                            className="parent-secondary-btn"
-                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
-                            size="sm"
-                            style={{ minWidth: '45px', height: '45px' }}
-                          >
-                            <FaChevronRight />
-                          </Button>
+                        <div className="d-flex justify-content-center mt-4">
+                          <PaginationBar
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                          />
                         </div>
                       )}
                     </>
@@ -767,18 +871,28 @@ const HealthHistory = () => {
       </Container>
       </div>
       {/* Detail Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered className="parent-modal">
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size="lg"
+        centered
+        className="parent-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             <FaStethoscope className="me-2" />
-            {activeTab === "checkup" ? "Chi tiết khám sức khỏe" : "Chi tiết tiêm chủng"}
+            {activeTab === "checkup"
+              ? "Chi tiết khám sức khỏe"
+              : "Chi tiết tiêm chủng"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {loadingDetail ? (
             <div className="text-center py-5">
               <div className="parent-spinner mb-3"></div>
-              <h5 style={{ color: 'var(--parent-primary)', fontWeight: '600' }}>Đang tải chi tiết...</h5>
+              <h5 style={{ color: "var(--parent-primary)", fontWeight: "600" }}>
+                Đang tải chi tiết...
+              </h5>
             </div>
           ) : errorDetail ? (
             <div className="parent-alert parent-alert-danger">
@@ -809,7 +923,7 @@ const HealthHistory = () => {
                   <Row>
                     <Col md={6}>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaCalendarAlt className="me-2" />
                           Ngày khám:
                         </strong>
@@ -824,87 +938,104 @@ const HealthHistory = () => {
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaUserMd className="me-2" />
                           Bác sĩ:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.nurseName}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaBuilding className="me-2" />
                           Địa điểm:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                          }}
+                        >
                           {detail.location}
                         </div>
                       </div>
                     </Col>
                     <Col md={6}>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaRulerVertical className="me-2" />
                           Chiều cao:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.height ? detail.height + " cm" : "N/A"}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaWeight className="me-2" />
                           Cân nặng:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.weight ? detail.weight + " kg" : "N/A"}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>BMI:</strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          BMI:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.bmi || "N/A"}
                         </div>
                       </div>
                     </Col>
                     <Col xs={12}>
                       <div className="mb-3 text-center">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaCheckCircle className="me-2" />
                           Kết luận:
                         </strong>
@@ -929,15 +1060,20 @@ const HealthHistory = () => {
                       </div>
                       {detail.description && (
                         <div className="mb-3">
-                          <strong style={{ color: 'var(--parent-primary)' }}>Ghi chú:</strong>
-                          <div style={{
-                            marginTop: '0.5rem',
-                            padding: '1rem',
-                            background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                            borderRadius: 'var(--parent-border-radius-md)',
-                            border: '1px solid rgba(107, 70, 193, 0.1)',
-                            lineHeight: '1.6'
-                          }}>
+                          <strong style={{ color: "var(--parent-primary)" }}>
+                            Ghi chú:
+                          </strong>
+                          <div
+                            style={{
+                              marginTop: "0.5rem",
+                              padding: "1rem",
+                              background:
+                                "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                              borderRadius: "var(--parent-border-radius-md)",
+                              border: "1px solid rgba(107, 70, 193, 0.1)",
+                              lineHeight: "1.6",
+                            }}
+                          >
                             {detail.description}
                           </div>
                         </div>
@@ -946,92 +1082,112 @@ const HealthHistory = () => {
                   </Row>
                 </div>
               ) : (
-                <div style={{
-                  background: 'white',
-                  padding: '1.5rem',
-                  borderRadius: 'var(--parent-border-radius-lg)',
-                  border: '1px solid rgba(107, 70, 193, 0.1)',
-                  boxShadow: 'var(--parent-shadow-sm)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: 'var(--parent-gradient-primary)'
-                  }}></div>
+                <div
+                  style={{
+                    background: "white",
+                    padding: "1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    border: "1px solid rgba(107, 70, 193, 0.1)",
+                    boxShadow: "var(--parent-shadow-sm)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "var(--parent-gradient-primary)",
+                    }}
+                  ></div>
 
                   <Row>
                     <Col md={6}>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaCalendarAlt className="me-2" />
                           Ngày tiêm:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)'
-                        }}>
-                          {detail.date ? new Date(detail.date).toLocaleDateString("vi-VN") : ""}
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                          }}
+                        >
+                          {detail.date
+                            ? new Date(detail.date).toLocaleDateString("vi-VN")
+                            : ""}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaUser className="me-2" />
                           Học sinh:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.studentName}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaBuilding className="me-2" />
                           Địa điểm:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                          }}
+                        >
                           {detail.location}
                         </div>
                       </div>
                     </Col>
                     <Col md={6}>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
+                        <strong style={{ color: "var(--parent-primary)" }}>
                           <FaSyringe className="me-2" />
                           Vắc-xin:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.vaccineName}
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>Kết quả:</strong>
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Kết quả:
+                        </strong>
                         <div className="mt-2">
                           <Badge
                             className={`badge-status ${detail.result === "Successful" ? "successful" :
@@ -1052,18 +1208,20 @@ const HealthHistory = () => {
                         </div>
                       </div>
                       <div className="mb-3">
-                        <strong style={{ color: 'var(--parent-primary)' }}>
-                          <FaUserMd className="me-2" />
-                          Y tá/Bác sĩ:
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaUserMd className="me-2" />Y tá/Bác sĩ:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)',
-                          fontWeight: '600'
-                        }}>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
                           {detail.nurseName}
                         </div>
                       </div>
@@ -1071,15 +1229,20 @@ const HealthHistory = () => {
                     {detail.description && (
                       <Col xs={12}>
                         <div className="mb-3">
-                          <strong style={{ color: 'var(--parent-primary)' }}>Ghi chú:</strong>
-                          <div style={{
-                            marginTop: '0.5rem',
-                            padding: '1rem',
-                            background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                            borderRadius: 'var(--parent-border-radius-md)',
-                            border: '1px solid rgba(107, 70, 193, 0.1)',
-                            lineHeight: '1.6'
-                          }}>
+                          <strong style={{ color: "var(--parent-primary)" }}>
+                            Ghi chú:
+                          </strong>
+                          <div
+                            style={{
+                              marginTop: "0.5rem",
+                              padding: "1rem",
+                              background:
+                                "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                              borderRadius: "var(--parent-border-radius-md)",
+                              border: "1px solid rgba(107, 70, 193, 0.1)",
+                              lineHeight: "1.6",
+                            }}
+                          >
                             {detail.description}
                           </div>
                         </div>
@@ -1096,9 +1259,9 @@ const HealthHistory = () => {
             className="parent-secondary-btn"
             onClick={() => setShowModal(false)}
             style={{
-              padding: '0.75rem 1.5rem',
-              fontWeight: '600',
-              borderRadius: 'var(--parent-border-radius-lg)'
+              padding: "0.75rem 1.5rem",
+              fontWeight: "600",
+              borderRadius: "var(--parent-border-radius-lg)",
             }}
           >
             <FaTimes className="me-1" />
@@ -1108,7 +1271,13 @@ const HealthHistory = () => {
       </Modal>
 
       {/* Medication Detail Modal */}
-      <Modal show={showMedicationDetail} onHide={() => setShowMedicationDetail(false)} size="lg" centered className="parent-modal">
+      <Modal
+        show={showMedicationDetail}
+        onHide={() => setShowMedicationDetail(false)}
+        size="lg"
+        centered
+        className="parent-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             <FaPills className="me-2" />
@@ -1119,113 +1288,152 @@ const HealthHistory = () => {
           {loadingMedicationDetail ? (
             <div className="text-center py-5">
               <div className="parent-spinner mb-3"></div>
-              <h5 style={{ color: 'var(--parent-primary)', fontWeight: '600' }}>Đang tải chi tiết...</h5>
+              <h5 style={{ color: "var(--parent-primary)", fontWeight: "600" }}>
+                Đang tải chi tiết...
+              </h5>
             </div>
           ) : medicationDetail ? (
-            <div style={{
-              background: 'white',
-              padding: '1.5rem',
-              borderRadius: 'var(--parent-border-radius-lg)',
-              border: '1px solid rgba(107, 70, 193, 0.1)',
-              boxShadow: 'var(--parent-shadow-sm)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '3px',
-                background: 'var(--parent-gradient-primary)'
-              }}></div>
+            <div
+              style={{
+                background: "white",
+                padding: "1.5rem",
+                borderRadius: "var(--parent-border-radius-lg)",
+                border: "1px solid rgba(107, 70, 193, 0.1)",
+                boxShadow: "var(--parent-shadow-sm)",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: "3px",
+                  background: "var(--parent-gradient-primary)",
+                }}
+              ></div>
 
               <Row>
                 <Col md={6}>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>Mã lớp:</strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
-                    }}>
-                      {medicationDetail.studentClass || medicationDetail.studentClassName || "-"}
+                    <strong style={{ color: "var(--parent-primary)" }}>
+                      Mã lớp:
+                    </strong>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                      }}
+                    >
+                      {medicationDetail.studentClass ||
+                        medicationDetail.studentClassName ||
+                        "-"}
                     </div>
                   </div>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>
+                    <strong style={{ color: "var(--parent-primary)" }}>
                       <FaUser className="me-2" />
                       Học sinh:
                     </strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)',
-                      fontWeight: '600'
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                        fontWeight: "600",
+                      }}
+                    >
                       {medicationDetail.studentName}
                     </div>
                   </div>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>
+                    <strong style={{ color: "var(--parent-primary)" }}>
                       <FaCalendarAlt className="me-2" />
                       Ngày gửi:
                     </strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
-                    }}>
-                      {medicationDetail.createdDate ? new Date(medicationDetail.createdDate).toLocaleDateString("vi-VN") : "-"}
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                      }}
+                    >
+                      {medicationDetail.createdDate
+                        ? new Date(
+                            medicationDetail.createdDate
+                          ).toLocaleDateString("vi-VN")
+                        : "-"}
                     </div>
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>
-                      <FaUserMd className="me-2" />
-                      Y tá phụ trách:
+                    <strong style={{ color: "var(--parent-primary)" }}>
+                      <FaUserMd className="me-2" />Y tá phụ trách:
                     </strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)',
-                      fontWeight: '600'
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                        fontWeight: "600",
+                      }}
+                    >
                       {medicationDetail.nurseName || "-"}
                     </div>
                   </div>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>Phụ huynh:</strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)',
-                      fontWeight: '600'
-                    }}>
+                    <strong style={{ color: "var(--parent-primary)" }}>
+                      Phụ huynh:
+                    </strong>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                        fontWeight: "600",
+                      }}
+                    >
                       {medicationDetail.parentName}
                     </div>
                   </div>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>Ngày nhận:</strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '0.75rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
-                    }}>
-                      {medicationDetail.reviceDate ? new Date(medicationDetail.reviceDate).toLocaleDateString("vi-VN") : "-"}
+                    <strong style={{ color: "var(--parent-primary)" }}>
+                      Ngày nhận:
+                    </strong>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "0.75rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                      }}
+                    >
+                      {medicationDetail.reviceDate
+                        ? new Date(
+                            medicationDetail.reviceDate
+                          ).toLocaleDateString("vi-VN")
+                        : "-"}
                     </div>
                   </div>
                 </Col>
@@ -1251,23 +1459,33 @@ const HealthHistory = () => {
                     </Badge>
                   </div>
                   <div className="mb-3">
-                    <strong style={{ color: 'var(--parent-primary)' }}>
+                    <strong style={{ color: "var(--parent-primary)" }}>
                       <FaPills className="me-2" />
                       Danh sách thuốc:
                     </strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '1rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
-                    }}>
-                      <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-                        {medicationDetail.medications && medicationDetail.medications.length > 0 ? (
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "1rem",
+                        background:
+                          "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        border: "1px solid rgba(107, 70, 193, 0.1)",
+                      }}
+                    >
+                      <ul style={{ margin: 0, paddingLeft: "1rem" }}>
+                        {medicationDetail.medications &&
+                        medicationDetail.medications.length > 0 ? (
                           medicationDetail.medications.map((med, idx) => (
-                            <li key={idx} style={{ marginBottom: '0.5rem' }}>
-                              <strong>{med.medicationName}</strong> - {med.dosage}
-                              {med.note && <span className="text-muted"> ({med.note})</span>}
+                            <li key={idx} style={{ marginBottom: "0.5rem" }}>
+                              <strong>{med.medicationName}</strong> -{" "}
+                              {med.dosage}
+                              {med.note && (
+                                <span className="text-muted">
+                                  {" "}
+                                  ({med.note})
+                                </span>
+                              )}
                             </li>
                           ))
                         ) : (
@@ -1290,9 +1508,9 @@ const HealthHistory = () => {
             className="parent-secondary-btn"
             onClick={() => setShowMedicationDetail(false)}
             style={{
-              padding: '0.75rem 1.5rem',
-              fontWeight: '600',
-              borderRadius: 'var(--parent-border-radius-lg)'
+              padding: "0.75rem 1.5rem",
+              fontWeight: "600",
+              borderRadius: "var(--parent-border-radius-lg)",
             }}
           >
             <FaTimes className="me-1" />
