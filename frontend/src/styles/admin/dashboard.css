@@ -1,0 +1,1130 @@
+/* ===== MODERN ADMIN DASHBOARD - EMERALD THEME WITH ANIMATIONS ===== */
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(-10deg);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05) rotate(5deg);
+    }
+
+    70% {
+        transform: scale(0.95) rotate(-2deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -468px 0;
+    }
+
+    100% {
+        background-position: 468px 0;
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 20px rgba(5, 150, 105, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 8px 30px rgba(5, 150, 105, 0.3);
+    }
+}
+
+@keyframes typewriter {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.admin-dashboard-container {
+    padding: 1.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Modern Header with Animations */
+.admin-dashboard-header {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background-size: 400% 400%;
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.15);
+    position: relative;
+    overflow: hidden;
+    animation: slideInFromTop 0.8s ease-out;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-header:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.2);
+}
+
+.admin-dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.08"/><circle cx="40" cy="70" r="2" fill="white" opacity="0.06"/></svg>') repeat;
+    pointer-events: none;
+    animation: none;
+}
+
+.admin-dashboard-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInLeft 1s ease-out 0.2s both;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-title:hover {
+    transform: scale(1.01);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-dashboard-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin: 0;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+    animation: fadeInLeft 1s ease-out 0.4s both;
+    transition: opacity 0.3s ease;
+}
+
+.admin-dashboard-subtitle:hover {
+    opacity: 1;
+}
+
+/* Modern Stats Cards with Stagger Animation */
+.admin-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.admin-dashboard-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    animation: bounceIn 0.8s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.5s);
+}
+
+.admin-dashboard-stat-card:nth-child(1) {
+    --card-index: 0;
+}
+
+.admin-dashboard-stat-card:nth-child(2) {
+    --card-index: 1;
+}
+
+.admin-dashboard-stat-card:nth-child(3) {
+    --card-index: 2;
+}
+
+.admin-dashboard-stat-card:nth-child(4) {
+    --card-index: 3;
+}
+
+.admin-dashboard-stat-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.12);
+    border-color: #059669;
+}
+
+.admin-dashboard-stat-card:active {
+    transform: translateY(-4px) scale(1.01);
+    transition: all 0.1s ease;
+}
+
+.admin-dashboard-stat-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    transition: all 0.3s ease;
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.7s);
+}
+
+.admin-dashboard-stat-card:hover .admin-dashboard-stat-icon {
+    transform: scale(1.05) rotate(3deg);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+    animation: none;
+}
+
+.admin-dashboard-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.8s);
+}
+
+.admin-dashboard-stat-card:hover .admin-dashboard-stat-value {
+    color: #059669;
+    transform: scale(1.02);
+    text-shadow: 0 1px 2px rgba(5, 150, 105, 0.1);
+}
+
+.admin-dashboard-stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.9s);
+}
+
+.admin-dashboard-stat-card:hover .admin-dashboard-stat-label {
+    color: #374151;
+    font-weight: 600;
+}
+
+.admin-dashboard-stat-change {
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.admin-dashboard-stat-change.positive {
+    color: #059669;
+}
+
+.admin-dashboard-stat-change.negative {
+    color: #dc2626;
+}
+
+/* Modern Chart Container with Animations */
+.admin-dashboard-charts {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease-out 1s both;
+}
+
+.admin-dashboard-chart-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.8s ease-out both;
+    animation-delay: calc(var(--chart-index, 0) * 0.2s + 1.2s);
+    overflow: hidden;
+    position: relative;
+}
+
+.admin-dashboard-chart-card:nth-child(1) {
+    --chart-index: 0;
+}
+
+.admin-dashboard-chart-card:nth-child(2) {
+    --chart-index: 1;
+}
+
+.admin-dashboard-chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-dashboard-chart-card:hover::before {
+    left: 100%;
+}
+
+.admin-dashboard-chart-card:hover {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 10px 30px rgba(5, 150, 105, 0.12);
+    border-color: #059669;
+}
+
+.admin-dashboard-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    animation: fadeInUp 0.6s ease-out both;
+    animation-delay: calc(var(--chart-index, 0) * 0.2s + 1.4s);
+}
+
+.admin-dashboard-chart-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    animation: fadeInLeft 0.6s ease-out both;
+    animation-delay: calc(var(--chart-index, 0) * 0.2s + 1.5s);
+}
+
+.admin-dashboard-chart-title:hover {
+    color: #059669;
+    transform: translateX(3px);
+}
+
+.admin-dashboard-chart-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    animation: fadeInLeft 0.6s ease-out both;
+    animation-delay: calc(var(--chart-index, 0) * 0.2s + 1.6s);
+}
+
+.admin-dashboard-chart-subtitle:hover {
+    color: #374151;
+}
+
+.admin-dashboard-chart-actions {
+    display: flex;
+    gap: 0.5rem;
+    animation: fadeInRight 0.6s ease-out both;
+    animation-delay: calc(var(--chart-index, 0) * 0.2s + 1.7s);
+}
+
+/* Modern Pending Medications Table with Animations */
+.admin-dashboard-pending-medications {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    margin-bottom: 2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 1s ease-out 1.5s both;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-dashboard-pending-medications::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.05), transparent);
+    transition: left 0.8s ease;
+}
+
+.admin-dashboard-pending-medications:hover::before {
+    left: 100%;
+}
+
+.admin-dashboard-pending-medications:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.1);
+    border-color: #059669;
+}
+
+.admin-dashboard-pending-medications-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    animation: fadeInUp 0.6s ease-out 1.7s both;
+}
+
+.admin-dashboard-pending-medications-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    animation: fadeInLeft 0.6s ease-out 1.8s both;
+}
+
+.admin-dashboard-pending-medications-title:hover {
+    color: #059669;
+    transform: translateX(3px);
+}
+
+.admin-dashboard-pending-medications-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+    animation: fadeInLeft 0.6s ease-out 1.9s both;
+    transition: color 0.3s ease;
+}
+
+.admin-dashboard-pending-medications-subtitle:hover {
+    color: #374151;
+}
+
+.admin-dashboard-no-medications {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+}
+
+.admin-dashboard-no-medications-icon {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.admin-dashboard-no-medications-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.admin-dashboard-no-medications-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.admin-dashboard-medications-table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+    animation: scaleIn 0.6s ease-out 2s both;
+}
+
+.admin-dashboard-medications-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 0.875rem;
+    animation: fadeInUp 0.6s ease-out 2.1s both;
+}
+
+.admin-dashboard-medications-table thead {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background-size: 200% 200%;
+    color: white;
+    animation: slideInFromTop 0.6s ease-out 2.2s both;
+}
+
+.admin-dashboard-medications-table thead th {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: none;
+    transition: all 0.3s ease;
+    animation: fadeInDown 0.4s ease-out both;
+    animation-delay: calc(var(--col-index, 0) * 0.1s + 2.3s);
+}
+
+.admin-dashboard-medications-table thead th:nth-child(1) {
+    --col-index: 0;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(2) {
+    --col-index: 1;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(3) {
+    --col-index: 2;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(4) {
+    --col-index: 3;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(5) {
+    --col-index: 4;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(6) {
+    --col-index: 5;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(7) {
+    --col-index: 6;
+}
+
+.admin-dashboard-medications-table thead th:nth-child(8) {
+    --col-index: 7;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-dashboard-medications-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.4s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.1s + 2.5s);
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(1) {
+    --row-index: 0;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(2) {
+    --row-index: 1;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(3) {
+    --row-index: 2;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(4) {
+    --row-index: 3;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(5) {
+    --row-index: 4;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(6) {
+    --row-index: 5;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(7) {
+    --row-index: 6;
+}
+
+.admin-dashboard-medications-table tbody tr:nth-child(8) {
+    --row-index: 7;
+}
+
+.admin-dashboard-medications-table tbody tr:hover {
+    background: linear-gradient(135deg, #f8fffe 0%, #f0fdf4 100%);
+    transform: translateX(3px);
+    box-shadow: 0 2px 10px rgba(5, 150, 105, 0.08);
+}
+
+.admin-dashboard-medications-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.admin-dashboard-medications-table tbody td {
+    padding: 1rem 0.75rem;
+    vertical-align: top;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-medication-stt {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background-size: 200% 200%;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    animation: bounceIn 0.6s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.1s + 2.7s);
+}
+
+.admin-dashboard-medication-stt:hover {
+    background: #dcfce7;
+    transform: scale(1.1);
+}
+
+.admin-dashboard-medication-student-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.admin-dashboard-medication-parent {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.admin-dashboard-medication-class {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    color: #059669;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-align: center;
+    border: 1px solid #bbf7d0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.1s + 2.8s);
+}
+
+.admin-dashboard-medication-class:hover {
+    background: #f0fdf4;
+    transform: scale(1.05);
+}
+
+.admin-dashboard-medication-name {
+    font-weight: 600;
+    color: #1f2937;
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #bfdbfe;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.1s + 2.9s);
+}
+
+.admin-dashboard-medication-name:hover {
+    background: #f0fdf4;
+    transform: scale(1.05);
+}
+
+.admin-dashboard-medication-dosage {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-align: center;
+    border: 1px solid #fbbf24;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.1s + 3s);
+}
+
+.admin-dashboard-medication-dosage:hover {
+    background: #fff7ed;
+    transform: scale(1.05);
+}
+
+.admin-dashboard-medication-note {
+    color: #6b7280;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    max-width: 150px;
+}
+
+.admin-dashboard-medication-date {
+    color: #6b7280;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.admin-dashboard-medication-nurse {
+    color: #1f2937;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.admin-dashboard-medications-table-footer {
+    padding: 1rem;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-dashboard-medications-more {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Modern Recent Activity */
+.admin-dashboard-recent-activity {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-recent-activity:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.12);
+}
+
+.admin-dashboard-recent-activity-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-dashboard-recent-activity-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-dashboard-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-dashboard-activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: #fafafa;
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-activity-item:hover {
+    background: #f0fdf4;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.08);
+}
+
+.admin-dashboard-activity-icon {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+}
+
+.admin-dashboard-activity-content {
+    flex: 1;
+}
+
+.admin-dashboard-activity-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+.admin-dashboard-activity-description {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.admin-dashboard-activity-time {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Modern Buttons with Animations */
+.admin-dashboard-btn-primary {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+    position: relative;
+    overflow: hidden;
+    animation: scaleIn 0.6s ease-out both;
+}
+
+.admin-dashboard-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-dashboard-btn-primary:hover::before {
+    left: 100%;
+}
+
+.admin-dashboard-btn-primary:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
+}
+
+.admin-dashboard-btn-primary:active {
+    transform: translateY(-1px) scale(1.02);
+    transition: all 0.1s ease;
+}
+
+.admin-dashboard-btn-secondary {
+    background: white;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    padding: 0.625rem 1.25rem;
+    color: #059669;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: 0.1s;
+}
+
+.admin-dashboard-btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-dashboard-btn-secondary:hover::before {
+    left: 100%;
+}
+
+.admin-dashboard-btn-secondary:hover {
+    background: #f0fdf4;
+    border-color: #059669;
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.12);
+}
+
+.admin-dashboard-btn-secondary:active {
+    transform: translateY(-1px) scale(1.02);
+    transition: all 0.1s ease;
+}
+
+/* Modern Responsive Design */
+@media (max-width: 1200px) {
+    .admin-dashboard-stats {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .admin-dashboard-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-dashboard-medications-table {
+        font-size: 0.8rem;
+    }
+
+    .admin-dashboard-medications-table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .admin-dashboard-medications-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard-container {
+        padding: 1rem;
+    }
+
+    .admin-dashboard-header {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+
+    .admin-dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .admin-dashboard-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .admin-dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .admin-dashboard-stat-card {
+        padding: 1.25rem;
+    }
+
+    .admin-dashboard-medications-table-container {
+        overflow-x: scroll;
+    }
+
+    .admin-dashboard-medications-table {
+        min-width: 700px;
+        font-size: 0.75rem;
+    }
+
+    .admin-dashboard-medications-table thead th {
+        padding: 0.625rem 0.375rem;
+        font-size: 0.7rem;
+    }
+
+    .admin-dashboard-medications-table tbody td {
+        padding: 0.625rem 0.375rem;
+    }
+
+    .admin-dashboard-medication-note {
+        max-width: 100px;
+    }
+
+    .admin-dashboard-chart-card,
+    .admin-dashboard-quick-actions,
+    .admin-dashboard-recent-activity {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-dashboard-container {
+        padding: 0.75rem;
+    }
+
+    .admin-dashboard-header {
+        padding: 1rem;
+    }
+
+    .admin-dashboard-title {
+        font-size: 1.25rem;
+    }
+
+    .admin-dashboard-stat-value {
+        font-size: 1.75rem;
+    }
+
+    .admin-dashboard-pending-medications {
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .admin-dashboard-medications-table {
+        min-width: 600px;
+        font-size: 0.7rem;
+    }
+
+    .admin-dashboard-medications-table thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.65rem;
+    }
+
+    .admin-dashboard-medications-table tbody td {
+        padding: 0.5rem 0.25rem;
+    }
+
+    .admin-dashboard-medication-stt {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .admin-dashboard-medication-note {
+        max-width: 80px;
+    }
+
+    .admin-dashboard-medications-table-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+}
+
+/* Disable continuous animations that might be annoying */
+
+/* Dashboard background - Remove continuous float animation */
+.admin-dashboard-bg::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 10%;
+    right: 5%;
+    /* animation: float 4s ease-in-out infinite; - REMOVED */
+    animation: none;
+}

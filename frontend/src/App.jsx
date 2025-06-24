@@ -24,10 +24,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminAccounts from "./pages/admin/Accounts";
-import AdminCategories from "./pages/admin/Categories";
+
 import AdminMedicineInventory from "./pages/admin/MedicineInventory";
-import AdminMedicinePlan from "./pages/admin/MedicinePlan";
-import AdminMedicineRequests from "./pages/admin/MedicineRequests";
+
+
 import AdminReports from "./pages/admin/Reports";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
@@ -105,9 +105,9 @@ const App = () => {
                 <Route path="admin">
                   <Route index element={<AdminDashboard />} />
                   <Route path="accounts" element={<AdminAccounts />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                  <Route path="medicines/plan" element={<AdminMedicinePlan />} />
-                  <Route path="medicines/requests" element={<AdminMedicineRequests />} />
+                  
+                  
+                  
                   <Route path="medicines/inventory" element={<AdminMedicineInventory />} />
                   <Route path="notification/management" element={<NotificationsManagement />} />
                   <Route path="reports" element={<AdminReports />} />

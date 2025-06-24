@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 // Styles được import từ main.jsx
 import {
@@ -28,9 +28,61 @@ const Sidebar = (props) => {
     // Không render sidebar cho parent
     if (!user?.role || user.role === 'parent') return null;
 
+    // Responsive state management
     const [internalCollapsed, setInternalCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const collapsed = props.collapsed !== undefined ? props.collapsed : internalCollapsed;
     const setCollapsed = props.setCollapsed !== undefined ? props.setCollapsed : setInternalCollapsed;
+
+    // Check if mobile screen
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth <= 767;
+            setIsMobile(mobile);
+            // On mobile, sidebar should be collapsed by default
+            if (mobile && !collapsed) {
+                setCollapsed(true);
+            }
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, [collapsed, setCollapsed]);
+
+    // Debug: Log state changes (commented out for production)
+    // useEffect(() => {
+    //     console.log('Sidebar state changed:', { 
+    //         collapsed, 
+    //         isMobile, 
+    //         userRole: user?.role,
+    //         windowWidth: window.innerWidth 
+    //     });
+    // }, [collapsed, isMobile, user?.role]);
+
+    // Auto-close sidebar on mobile when clicking overlay
+    const handleOverlayClick = useCallback(() => {
+        if (isMobile && !collapsed) {
+            setCollapsed(true);
+        }
+    }, [isMobile, collapsed, setCollapsed]);
+
+    // Keyboard support for toggle
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Escape' && isMobile && !collapsed) {
+            setCollapsed(true);
+        }
+        // Ctrl/Cmd + B to toggle sidebar
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            setCollapsed(!collapsed);
+        }
+    }, [isMobile, collapsed, setCollapsed]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [handleKeyDown]);
 
     const handleLogout = () => {
         logout();
@@ -43,14 +95,14 @@ const Sidebar = (props) => {
         menuItems = [
             { path: '/admin', icon: <FaHome />, label: 'Dashboard' },
             { path: '/admin/accounts', icon: <FaUserShield />, label: 'Quản lý tài khoản' },
-            { path: '/admin/categories', icon: <FaList />, label: 'Danh mục' },
+
             { path: '/admin/medicines/inventory', icon: <FaBoxes />, label: 'Kho thuốc' },
-            { path: '/admin/medicines/plan', icon: <FaClipboardCheck />, label: 'Kế hoạch thuốc' },
-            { path: '/admin/medicines/requests', icon: <FaMedkit />, label: 'Yêu cầu cấp thuốc' },
+
+            // { path: '/admin/medicines/requests', icon: <FaMedkit />, label: 'Yêu cầu cấp thuốc' },
             { path: '/admin/notification/management', icon: <FaBell />, label: 'Thông báo' },
-            { path: '/admin/reports', icon: <FaFileAlt />, label: 'Báo cáo thống kê' },
+
             { path: '/admin/profile', icon: <FaUserCog />, label: 'Hồ sơ cá nhân' },
-            
+
         ];
     } else if (user.role === 'nurse') {
         menuItems = [
@@ -59,42 +111,77 @@ const Sidebar = (props) => {
             { path: '/nurse/receive-medicine', icon: <FaPills />, label: 'Nhận thuốc' },
             { path: '/nurse/health-events', icon: <FaCalendarAlt />, label: 'Sự kiện sức khỏe' },
             { path: '/nurse/profile', icon: <FaUserCog />, label: 'Hồ sơ cá nhân' },
-            
+
         ];
     }
 
     return (
         <>
-            {/* Toggle button cho admin/nurse */}
-            <button
-                className={`app-sidebar-toggle-btn${collapsed ? '' : ' expanded'}`}
-                onClick={() => setCollapsed(!collapsed)}
-                aria-label={collapsed ? 'Mở rộng sidebar' : 'Thu gọn sidebar'}
-            >
-                <span style={{ fontSize: 22, color: user.role === 'nurse' ? '#ff6b6b' : '#1e3a5f', transition: 'transform 0.3s', transform: collapsed ? 'rotate(0deg)' : 'rotate(180deg)' }}>
-                    <FaChevronLeft />
-                </span>
-            </button>
+            {/* Overlay for mobile - Click to close sidebar */}
+            {isMobile && !collapsed && (
+                <div
+                    className="sidebar-mobile-overlay"
+                    onClick={handleOverlayClick}
+                    aria-hidden="true"
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        background: 'rgba(0, 0, 0, 0.6)',
+                        zIndex: 999,
+                        cursor: 'pointer'
+                    }}
+                />
+            )}
 
-            <div id="sidebar" className={`${user.role} ${collapsed ? '' : 'expand'}`.trim()}>
-                {/* Logo */}
-                <div className="app-sidebar-logo">
-                    <FaHeartbeat style={{ fontSize: '2.2rem', color: '#fff' }} />
-                    {!collapsed && (
-                        <span className="sidebar-logo-text">School Health</span>
-                    )}
+            <div
+                id="sidebar"
+                className={`${user.role} ${collapsed ? '' : 'expand'}`.trim()}
+                role="navigation"
+                aria-label="Navigation chính"
+            >
+                {/* Header with Logo and Toggle */}
+                <div className="app-sidebar-header">
+                    <div className="app-sidebar-logo">
+                        <FaHeartbeat style={{ fontSize: '2.2rem', color: '#fff' }} />
+                        {!collapsed && (
+                            <span className="sidebar-logo-text">School Health</span>
+                        )}
+                    </div>
+
+                    {/* Toggle button inside sidebar */}
+                    <button
+                        className="app-sidebar-toggle-btn"
+                        onClick={() => setCollapsed(!collapsed)}
+                        aria-label={collapsed ? 'Mở rộng sidebar' : 'Thu gọn sidebar'}
+                        title={collapsed ? 'Mở rộng sidebar' : 'Thu gọn sidebar'}
+                        type="button"
+                    >
+                        <div className="hamburger-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </button>
                 </div>
 
-                {/* Menu Items */}
-                <nav className="app-sidebar-nav">
-                    <ul>
+                {/* Menu Items với improved accessibility */}
+                <nav className="app-sidebar-nav" role="menu">
+                    <ul role="none">
                         {menuItems.map((item, idx) => (
-                            <li key={idx}>
+                            <li key={idx} role="none">
                                 <Link
                                     to={item.path}
                                     className={`app-sidebar-link${location.pathname === item.path ? ' active' : ''}`}
+                                    role="menuitem"
+                                    aria-current={location.pathname === item.path ? 'page' : undefined}
+                                    onClick={isMobile ? () => setCollapsed(true) : undefined}
+                                    title={item.label}
+                                    data-tooltip={item.label}
                                 >
-                                    <i className="sidebar-link-icon">{item.icon}</i>
+                                    <i className="sidebar-link-icon" aria-hidden="true">{item.icon}</i>
                                     <span className="sidebar-link-text">{item.label}</span>
                                 </Link>
                             </li>
@@ -102,13 +189,17 @@ const Sidebar = (props) => {
                     </ul>
                 </nav>
 
-                {/* Logout Button */}
+                {/* Enhanced Logout Button */}
                 <div className="app-sidebar-footer">
                     <button
                         className="app-sidebar-link logout-btn"
                         onClick={handleLogout}
+                        aria-label="Đăng xuất khỏi hệ thống"
+                        title="Đăng xuất"
+                        data-tooltip="Đăng xuất"
+                        type="button"
                     >
-                        <i className="sidebar-link-icon"><FaSignOutAlt /></i>
+                        <i className="sidebar-link-icon" aria-hidden="true"><FaSignOutAlt /></i>
                         <span className="sidebar-link-text">Đăng xuất</span>
                     </button>
                 </div>

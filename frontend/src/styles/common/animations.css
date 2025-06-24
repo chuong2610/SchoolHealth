@@ -109,14 +109,14 @@
    HOVER & INTERACTION ANIMATIONS
    ================================================================= */
 
-/* Lift Effect */
+/* Lift Effect - Reduced movement to be less jarring */
 .animate-lift {
     transition: all var(--animation-duration-normal) var(--easing-smooth);
 }
 
 .animate-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Float Effect */
@@ -124,7 +124,7 @@
     animation: float 6s ease-in-out infinite;
 }
 
-/* Pulse Effect */
+/* Pulse Effect - Modified to be less intrusive */
 .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -143,40 +143,23 @@
     transform: rotate(5deg);
 }
 
-/* Scale Hover */
+/* Scale Hover - Reduced scale to be less jarring */
 .animate-scale-hover {
     transition: transform var(--animation-duration-normal) var(--easing-smooth);
 }
 
 .animate-scale-hover:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
-/* Button Hover Effects */
+/* Button Hover Effects - Simplified to reduce complexity */
 .animate-button-hover {
-    position: relative;
-    overflow: hidden;
     transition: all var(--animation-duration-normal) var(--easing-smooth);
 }
 
-.animate-button-hover::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left var(--animation-duration-slow) var(--easing-smooth);
-}
-
-.animate-button-hover:hover::before {
-    left: 100%;
-}
-
 .animate-button-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* =================================================================
@@ -307,15 +290,15 @@
    CARD & CONTAINER ANIMATIONS
    ================================================================= */
 
-/* Card Hover */
+/* Card Hover - Reduced movement and scaling to be less dramatic */
 .animate-card {
     transition: all var(--animation-duration-normal) var(--easing-smooth);
     transform-origin: center;
 }
 
 .animate-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* Card Flip */
@@ -455,7 +438,7 @@
     }
 
     50% {
-        opacity: 0.5;
+        opacity: 0.8;
     }
 }
 

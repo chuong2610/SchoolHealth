@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../api/axiosInstance';
+import './AuthCallback.css';
 
 // API Configuration từ biến môi trường
 const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
@@ -11,6 +12,7 @@ function AuthCallback() {
     const { login } = useAuth();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [progress, setProgress] = useState(0);
 
     useEffect(() => {
         const handleGoogleCallback = async () => {
@@ -34,10 +36,15 @@ function AuthCallback() {
             }
 
             try {
+                // Simulate progress
+                setProgress(20);
+
                 const response = await axiosInstance.post('/auth/login-google', {
                     code: code,
                     redirectUri: GOOGLE_REDIRECT_URI
                 });
+
+                setProgress(60);
 
                 const { success, data, message } = response.data;
 
@@ -45,12 +52,19 @@ function AuthCallback() {
                     throw new Error(message || 'Đăng nhập thất bại!');
                 }
 
+                setProgress(80);
+
                 // Đăng nhập với token nhận được
                 await login(data.token, data.roleName, Number(data.userId), data.email || '');
 
-                // Redirect đến dashboard của role tương ứng
-                const targetPath = `/${data.roleName.toLowerCase()}`;
-                navigate(targetPath, { replace: true });
+                setProgress(100);
+
+                // Small delay for smooth UX
+                setTimeout(() => {
+                    // Redirect đến dashboard của role tương ứng
+                    const targetPath = `/${data.roleName.toLowerCase()}`;
+                    navigate(targetPath, { replace: true });
+                }, 800);
 
             } catch (err) {
                 console.error('❌ Google login failed:', err);
@@ -76,6 +90,16 @@ function AuthCallback() {
         handleGoogleCallback();
     }, [navigate, login]);
 
+    // Progress simulation
+    useEffect(() => {
+        if (loading && progress < 100) {
+            const timer = setTimeout(() => {
+                setProgress(prev => Math.min(prev + Math.random() * 10, 95));
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [loading, progress]);
+
     // Tự động redirect về login sau 5 giây nếu có lỗi
     useEffect(() => {
         if (error) {
@@ -87,80 +111,118 @@ function AuthCallback() {
         }
     }, [error, navigate]);
 
-    // Render loading hoặc error state
+    // Render loading state
     if (loading) {
         return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '100vh',
-                fontFamily: 'Arial, sans-serif'
-            }}>
-                <div style={{
-                    width: '40px',
-                    height: '40px',
-                    border: '4px solid #f3f3f3',
-                    borderTop: '4px solid #F06292',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite',
-                    marginBottom: '20px'
-                }}></div>
-                <h2 style={{ color: '#333', marginBottom: '10px' }}>Đang xử lý đăng nhập...</h2>
-                <p style={{ color: '#666', textAlign: 'center' }}>Vui lòng chờ trong giây lát</p>
+            <div className="auth-callback-container">
+                {/* Background Elements */}
+                <div className="auth-background">
+                    <div className="gradient-orb orb-1"></div>
+                    <div className="gradient-orb orb-2"></div>
+                    <div className="gradient-orb orb-3"></div>
+                    <div className="floating-particles">
+                        {[...Array(12)].map((_, i) => (
+                            <div key={i} className={`particle particle-${i + 1}`}></div>
+                        ))}
+                    </div>
+                </div>
 
-                <style>
-                    {`
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `}
-                </style>
+                {/* Main Content */}
+                <div className="auth-content">
+                    {/* Logo/Icon */}
+                    <div className="auth-icon">
+                        <div className="medical-cross">
+                            <div className="cross-horizontal"></div>
+                            <div className="cross-vertical"></div>
+                        </div>
+                    </div>
+
+                    {/* Loading Animation */}
+                    <div className="loading-container">
+                        <div className="spinner-ring">
+                            <div className="spinner-sector"></div>
+                            <div className="spinner-sector"></div>
+                            <div className="spinner-sector"></div>
+                            <div className="spinner-sector"></div>
+                        </div>
+                        <div className="pulse-ring"></div>
+                    </div>
+
+                    {/* Text Content */}
+                    <div className="auth-text">
+                        <h1 className="auth-title">
+                            <span className="text-line">Đang xử lý đăng nhập</span>
+                            <span className="typing-dots">
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+                            </span>
+                        </h1>
+                        <p className="auth-subtitle">Vui lòng chờ trong giây lát</p>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="progress-container">
+                        <div className="progress-bar">
+                            <div
+                                className="progress-fill"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                            <div className="progress-glow"></div>
+                        </div>
+                        <div className="progress-text">{Math.round(progress)}%</div>
+                    </div>
+
+                    {/* Status Messages */}
+                    <div className="status-messages">
+                        {progress < 30 && <span className="status-item">🔐 Xác thực với Google...</span>}
+                        {progress >= 30 && progress < 70 && <span className="status-item">📝 Xử lý thông tin...</span>}
+                        {progress >= 70 && progress < 100 && <span className="status-item">✨ Hoàn tất đăng nhập...</span>}
+                        {progress === 100 && <span className="status-item success">✅ Đăng nhập thành công!</span>}
+                    </div>
+                </div>
             </div>
         );
     }
 
+    // Render error state
     if (error) {
         return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                minHeight: '100vh',
-                fontFamily: 'Arial, sans-serif',
-                padding: '20px'
-            }}>
-                <div style={{
-                    background: '#ffebee',
-                    border: '1px solid #ffcdd2',
-                    borderRadius: '8px',
-                    padding: '20px',
-                    maxWidth: '400px',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ fontSize: '48px', marginBottom: '15px' }}>❌</div>
-                    <h2 style={{ color: '#c62828', marginBottom: '15px' }}>Đăng nhập thất bại</h2>
-                    <p style={{ color: '#666', marginBottom: '20px' }}>{error}</p>
-                    <button
-                        onClick={() => navigate('/login', { replace: true })}
-                        style={{
-                            background: '#F06292',
-                            color: 'white',
-                            border: 'none',
-                            padding: '10px 20px',
-                            borderRadius: '5px',
-                            cursor: 'pointer',
-                            fontSize: '16px'
-                        }}
-                    >
-                        Quay lại đăng nhập
-                    </button>
-                    <p style={{ color: '#999', fontSize: '14px', marginTop: '15px' }}>
-                        Tự động chuyển hướng sau 5 giây...
-                    </p>
+            <div className="auth-callback-container error-state">
+                {/* Background Elements */}
+                <div className="auth-background">
+                    <div className="gradient-orb orb-1 error-orb"></div>
+                    <div className="gradient-orb orb-2 error-orb"></div>
+                    <div className="gradient-orb orb-3 error-orb"></div>
+                </div>
+
+                {/* Error Content */}
+                <div className="auth-content">
+                    <div className="error-container">
+                        <div className="error-icon">
+                            <div className="error-symbol">
+                                <div className="error-line line-1"></div>
+                                <div className="error-line line-2"></div>
+                            </div>
+                        </div>
+
+                        <div className="error-content">
+                            <h1 className="error-title">Đăng nhập thất bại</h1>
+                            <p className="error-message">{error}</p>
+
+                            <button
+                                onClick={() => navigate('/login', { replace: true })}
+                                className="retry-button"
+                            >
+                                <span className="button-text">Quay lại đăng nhập</span>
+                                <div className="button-ripple"></div>
+                            </button>
+
+                            <p className="auto-redirect">
+                                Tự động chuyển hướng sau <span className="countdown">5</span> giây...
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

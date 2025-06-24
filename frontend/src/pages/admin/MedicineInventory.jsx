@@ -38,8 +38,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-// Styles được import từ main.jsx
-// Styles được import từ main.jsx
+import "../../styles/admin/medicine-inventory.css";
 
 const MedicineInventory = () => {
     const [medicines, setMedicines] = useState([
@@ -111,6 +110,7 @@ const MedicineInventory = () => {
     const [sortDirection, setSortDirection] = useState("asc");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterCategory, setFilterCategory] = useState("all");
+    const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
     const [formData, setFormData] = useState({
         id: null,
@@ -289,6 +289,14 @@ const MedicineInventory = () => {
         return sortDirection === "asc" ? <FaSortUp className="ms-1" /> : <FaSortDown className="ms-1" />;
     };
 
+    // Reset filters
+    const handleResetFilters = () => {
+        setFilterStatus("all");
+        setFilterCategory("all");
+        setSearch("");
+        setShowFilterDropdown(false);
+    };
+
     const getStatusBadge = (status) => {
         const variants = {
             "Còn hàng": "success",
@@ -446,8 +454,8 @@ const MedicineInventory = () => {
                                         <YAxis />
                                         <Tooltip />
                                         <Legend />
-                                        <Bar dataKey="quantity" fill="#FF9500" name="Hiện tại" />
-                                        <Bar dataKey="minStock" fill="#9C27B0" name="Tối thiểu" />
+                                        <Bar dataKey="quantity" fill="#4ECDC4" name="Hiện tại" />
+                                        <Bar dataKey="minStock" fill="#26D0CE" name="Tối thiểu" />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>
@@ -455,43 +463,20 @@ const MedicineInventory = () => {
                     </div>
                 </motion.div>
 
-                {/* Controls */}
-                <motion.div variants={itemVariants} className="admin-medicine-search-bar">
-                    <div style={{ flex: 1 }}>
-                        <input
+                {/* Search and Filter Controls */}
+                <motion.div variants={itemVariants} className="admin-medicine-search-bar d-flex align-items-center gap-2">
+                    <InputGroup style={{ flex: 0.5 }}>
+                        <Form.Control
                             type="text"
-                            placeholder="Tìm kiếm thuốc, mã vạch..."
+                            placeholder="Tìm kiếm theo tên thuốc, danh mục, mã vạch..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="admin-medicine-search-input"
+                            className="admin-search-input"
+                            style={{ borderRadius: '25px', border: '2px solid #10B981' }}
                         />
-                    </div>
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="admin-medicine-search-input"
-                        style={{ flex: '0 0 200px' }}
-                    >
-                        <option value="all">Tất cả trạng thái</option>
-                        <option value="Còn hàng">Còn hàng</option>
-                        <option value="Gần hết">Gần hết</option>
-                        <option value="Hết hàng">Hết hàng</option>
-                    </select>
-                    <select
-                        value={filterCategory}
-                        onChange={(e) => setFilterCategory(e.target.value)}
-                        className="admin-medicine-search-input"
-                        style={{ flex: '0 0 200px' }}
-                    >
-                        <option value="all">Tất cả danh mục</option>
-                        <option value="Thuốc giảm đau">Thuốc giảm đau</option>
-                        <option value="Vitamin">Vitamin</option>
-                        <option value="Vật tư y tế">Vật tư y tế</option>
-                    </select>
-                    <button className="admin-medicine-filter-btn">
-                        <FaFilter />
-                        Lọc nâng cao
-                    </button>
+                    </InputGroup>
+
+                    
                 </motion.div>
 
                 {/* Medicine Table */}
@@ -508,9 +493,6 @@ const MedicineInventory = () => {
                                         Số lượng {getSortIcon('quantity')}
                                     </th>
                                     <th>Mức tồn kho</th>
-                                    <th>Giá</th>
-                                    <th>Vị trí</th>
-                                    <th>Trạng thái</th>
                                     <th>Thao tác</th>
                                 </tr>
                             </thead>
@@ -526,113 +508,58 @@ const MedicineInventory = () => {
                                         >
                                             <td>
                                                 <div className="admin-medicine-item">
-                                                    <div className="admin-medicine-image">
-                                                        {medicine.name?.charAt(0)?.toUpperCase() || 'M'}
-                                                    </div>
+
                                                     <div className="admin-medicine-info">
                                                         <div className="admin-medicine-name">{medicine.name}</div>
-                                                        <div className="admin-medicine-type">{medicine.barcode}</div>
+
                                                     </div>
                                                 </div>
                                             </td>
 
                                             <td>
-                                                <span style={{
-                                                    padding: '0.375rem 0.875rem',
-                                                    borderRadius: '20px',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: '600',
-                                                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
-                                                    color: 'white',
-                                                    display: 'inline-block'
-                                                }}>
+                                                <div className="admin-medicine-category">
                                                     {medicine.category}
-                                                </span>
+                                                </div>
                                             </td>
 
-                                            <td>
-                                                <span style={{
-                                                    fontWeight: '600',
-                                                    color: medicine.quantity <= medicine.minStock ? '#F44336' : '#4CAF50'
-                                                }}>
-                                                    {medicine.quantity} {medicine.unit}
-                                                </span>
-                                            </td>
+
 
                                             <td>
-                                                <div style={{ width: '100%', maxWidth: '120px' }}>
-                                                    <div style={{
-                                                        width: '100%',
-                                                        height: '8px',
-                                                        backgroundColor: '#E0E0E0',
-                                                        borderRadius: '4px',
-                                                        overflow: 'hidden',
-                                                        marginBottom: '0.25rem'
-                                                    }}>
-                                                        <div style={{
-                                                            width: `${Math.min((medicine.quantity / medicine.maxStock) * 100, 100)}%`,
-                                                            height: '100%',
-                                                            background: medicine.quantity === 0
-                                                                ? 'linear-gradient(135deg, #F44336, #EF5350)'
-                                                                : medicine.quantity <= medicine.minStock
-                                                                    ? 'linear-gradient(135deg, #FF9800, #FFB74D)'
-                                                                    : 'linear-gradient(135deg, #4CAF50, #66BB6A)',
-                                                            transition: 'width 0.3s ease'
-                                                        }}></div>
+                                                <div className="admin-medicine-stock-progress">
+                                                    <div className="admin-medicine-progress-bar">
+                                                        <div className={`admin-medicine-progress-fill ${medicine.quantity === 0 ? 'danger' : medicine.quantity <= medicine.minStock ? 'warning' : 'success'}`}
+                                                            style={{ width: `${Math.min((medicine.quantity / medicine.maxStock) * 100, 100)}%` }}>
+                                                        </div>
                                                     </div>
-                                                    <small style={{ color: '#757575', fontSize: '0.75rem' }}>
+                                                    <div className="admin-medicine-stock-text">
                                                         {medicine.quantity}/{medicine.maxStock}
-                                                    </small>
+                                                    </div>
                                                 </div>
                                             </td>
 
                                             <td>
-                                                <span style={{ fontWeight: '600', color: '#424242' }}>
-                                                    {medicine.price.toLocaleString('vi-VN')} ₫
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span style={{
-                                                    display: 'inline-flex',
-                                                    alignItems: 'center',
-                                                    gap: '0.375rem',
-                                                    padding: '0.375rem 0.75rem',
-                                                    borderRadius: '8px',
-                                                    backgroundColor: '#F5F5F5',
-                                                    color: '#757575',
-                                                    fontSize: '0.875rem'
-                                                }}>
-                                                    <FaBoxes />
-                                                    {medicine.location}
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <span className={`admin-stock-badge ${medicine.status === 'Còn hàng' ? 'in-stock' :
-                                                    medicine.status === 'Gần hết' ? 'low-stock' : 'out-of-stock'
-                                                    }`}>
+                                                <div className={`admin-medicine-status ${medicine.status === 'Còn hàng' ? 'success' : medicine.status === 'Gần hết' ? 'warning' : 'danger'}`}>
                                                     {medicine.status === "Còn hàng" && <FaCheckCircle />}
                                                     {medicine.status === "Gần hết" && <FaExclamationTriangle />}
                                                     {medicine.status === "Hết hàng" && <FaTimesCircle />}
                                                     {medicine.status}
-                                                </span>
+                                                </div>
                                             </td>
 
                                             <td>
                                                 <div className="admin-medicine-actions">
-                                                    <button className="admin-medicine-btn view" title="Xem chi tiết">
+                                                    <button className="admin-medicine-action-btn view" title="Xem chi tiết">
                                                         <FaEye />
                                                     </button>
                                                     <button
-                                                        className="admin-medicine-btn edit"
+                                                        className="admin-medicine-action-btn edit"
                                                         title="Chỉnh sửa"
                                                         onClick={() => handleShowModal("edit", medicine)}
                                                     >
                                                         <FaEdit />
                                                     </button>
                                                     <button
-                                                        className="admin-medicine-btn delete"
+                                                        className="admin-medicine-action-btn delete"
                                                         title="Xóa"
                                                         onClick={() => {
                                                             setMedicineToDelete(medicine);
@@ -664,9 +591,9 @@ const MedicineInventory = () => {
                 </motion.div>
 
                 {/* Add/Edit Modal */}
-                <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" className="admin-medicine-modal">
+                <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" className="admin-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title className="admin-medicine-modal-title">
+                        <Modal.Title className="admin-modal-title">
                             <FaPills />
                             {modalType === "add" ? "Thêm thuốc mới" : "Chỉnh sửa thông tin thuốc"}
                         </Modal.Title>
@@ -675,24 +602,24 @@ const MedicineInventory = () => {
                         <Form>
                             <Row>
                                 <Col md={6}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Tên thuốc *</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Tên thuốc *</label>
                                         <input
                                             type="text"
                                             placeholder="Nhập tên thuốc"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="admin-medicine-form-control"
+                                            className="admin-form-control"
                                         />
                                     </div>
                                 </Col>
                                 <Col md={6}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Danh mục</label>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Danh mục</label>
                                         <select
                                             value={formData.category}
                                             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                            className="admin-medicine-form-control"
+                                            className="admin-form-select"
                                         >
                                             <option value="">Chọn danh mục</option>
                                             <option value="Thuốc giảm đau">Thuốc giảm đau</option>
@@ -703,51 +630,26 @@ const MedicineInventory = () => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col md={4}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Số lượng</label>
+                                <Col md={6}>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Số lượng</label>
                                         <input
                                             type="number"
                                             placeholder="0"
                                             value={formData.quantity}
                                             onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 0 })}
-                                            className="admin-medicine-form-control"
+                                            className="admin-form-control"
                                         />
                                     </div>
                                 </Col>
-                                <Col md={4}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Tồn kho tối thiểu</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            value={formData.minStock}
-                                            onChange={(e) => setFormData({ ...formData, minStock: parseInt(e.target.value) || 0 })}
-                                            className="admin-medicine-form-control"
-                                        />
-                                    </div>
-                                </Col>
-                                <Col md={4}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Tồn kho tối đa</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            value={formData.maxStock}
-                                            onChange={(e) => setFormData({ ...formData, maxStock: parseInt(e.target.value) || 0 })}
-                                            className="admin-medicine-form-control"
-                                        />
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={3}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Đơn vị</label>
+
+                                <Col md={6}>
+                                    <div className="admin-form-group">
+                                        <label className="admin-form-label">Đơn vị</label>
                                         <select
                                             value={formData.unit}
                                             onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                                            className="admin-medicine-form-control"
+                                            className="admin-form-select"
                                         >
                                             <option value="Viên">Viên</option>
                                             <option value="Gói">Gói</option>
@@ -756,52 +658,9 @@ const MedicineInventory = () => {
                                         </select>
                                     </div>
                                 </Col>
-                                <Col md={3}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Giá (VND)</label>
-                                        <input
-                                            type="number"
-                                            placeholder="0"
-                                            value={formData.price}
-                                            onChange={(e) => setFormData({ ...formData, price: parseInt(e.target.value) || 0 })}
-                                            className="admin-medicine-form-control"
-                                        />
-                                    </div>
-                                </Col>
-                                <Col md={3}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Vị trí</label>
-                                        <input
-                                            type="text"
-                                            placeholder="VD: Kệ A1"
-                                            value={formData.location}
-                                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                            className="admin-medicine-form-control"
-                                        />
-                                    </div>
-                                </Col>
-                                <Col md={3}>
-                                    <div className="admin-medicine-form-group">
-                                        <label className="admin-medicine-form-label">Hạn sử dụng</label>
-                                        <input
-                                            type="date"
-                                            value={formData.expiryDate}
-                                            onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                                            className="admin-medicine-form-control"
-                                        />
-                                    </div>
-                                </Col>
                             </Row>
-                            <div className="admin-medicine-form-group">
-                                <label className="admin-medicine-form-label">Mã vạch</label>
-                                <input
-                                    type="text"
-                                    placeholder="Nhập mã vạch"
-                                    value={formData.barcode}
-                                    onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
-                                    className="admin-medicine-form-control"
-                                />
-                            </div>
+
+
                         </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -813,16 +672,16 @@ const MedicineInventory = () => {
                             onClick={handleSaveMedicine}
                             disabled={loading}
                         >
-                            {loading && <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>}
+                            {loading && <div className="admin-medicine-loading-spinner"></div>}
                             {modalType === "add" ? "Thêm thuốc" : "Cập nhật"}
                         </button>
                     </Modal.Footer>
                 </Modal>
 
                 {/* Delete Confirmation Modal */}
-                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="admin-medicine-modal">
+                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="admin-modal">
                     <Modal.Header closeButton>
-                        <Modal.Title className="admin-medicine-modal-title">
+                        <Modal.Title className="admin-modal-title">
                             <FaExclamationTriangle />
                             Xác nhận xóa
                         </Modal.Title>
@@ -830,16 +689,10 @@ const MedicineInventory = () => {
                     <Modal.Body>
                         <div className="text-center p-4">
                             <div className="mb-4">
-                                <FaTimesCircle style={{ fontSize: '4rem', color: '#F44336' }} />
+                                <FaTimesCircle style={{ fontSize: '4rem', color: '#dc2626' }} />
                             </div>
                             <h5 className="mb-3">Bạn có chắc chắn muốn xóa thuốc <strong>{medicineToDelete?.name}</strong>?</h5>
-                            <div style={{
-                                padding: '1rem',
-                                backgroundColor: 'rgba(255, 152, 0, 0.1)',
-                                border: '1px solid rgba(255, 152, 0, 0.3)',
-                                borderRadius: '12px',
-                                color: '#FF9800'
-                            }}>
+                            <div className="alert alert-warning">
                                 <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị mất.
                             </div>
                         </div>
@@ -848,7 +701,11 @@ const MedicineInventory = () => {
                         <button className="admin-secondary-btn" onClick={() => setShowDeleteModal(false)}>
                             Hủy
                         </button>
-                        <button className="admin-medicine-btn delete" onClick={handleDeleteMedicine} style={{ padding: '0.75rem 1.5rem', borderRadius: '12px', width: 'auto', height: 'auto' }}>
+                        <button
+                            className="admin-primary-btn"
+                            onClick={handleDeleteMedicine}
+                            style={{ background: 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)' }}
+                        >
                             <FaTrash className="me-2" />
                             Xóa thuốc
                         </button>
