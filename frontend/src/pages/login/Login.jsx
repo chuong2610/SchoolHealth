@@ -5,12 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../api/axiosInstance';
 import axios from 'axios';
 import './Login.css';
-// Styles được import từ main.jsx
-import loginBg from '../../assets/login-bg.png';
-import bagpackSvg from '../../assets/bagpack-svgrepo-com.svg';
-import eLearningSvg from '../../assets/e-learning-svgrepo-com.svg';
-import researchSvg from '../../assets/research-svgrepo-com.svg';
-import studentSvg from '../../assets/student-svgrepo-com.svg';
+// Import ảnh medical mới
+import medicalImage from '../../assets/anhlogin.jpg';
 
 // API Configuration từ biến môi trường
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5182/api';
@@ -224,177 +220,183 @@ const Login = () => {
             case 'phone':
                 return (
                     <>
+                        <div className="brand-header">
+                            <h2>Hệ thống quản lý y tế học đường</h2>
+                            <p>Đăng nhập</p>
+                        </div>
+
+
+
+
+
                         <form onSubmit={handlePhoneSubmit} autoComplete="off">
                             <div className="form-group">
-                                <div className="login-title">Đăng nhập để truy cập hệ thống</div>
-                                {/* <div className="login-subtitle">Đăng nhập để truy cập hệ thống</div> */}
+                                <label className="form-label">Phone Number</label>
                                 <input
                                     type="tel"
                                     className="form-input"
-                                    placeholder="Nhập số điện thoại"
+                                    placeholder="Enter your phone number"
                                     value={phoneNumber}
                                     onChange={handlePhoneInput}
                                     required
                                     pattern="[0-9]*"
                                     inputMode="numeric"
                                 />
-                                <i className="fas fa-phone input-icon" style={{ marginTop: '25px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
                             </div>
-                            <button type="submit" className="btn btn-primary" disabled={loading}>
-                                {loading ? <><span className="spinner"></span>Đang xử lý...</> : 'Tiếp tục'}
+                            <button type="submit" className="login-btn" disabled={loading}>
+                                {loading ? 'Processing...' : 'Continue'}
                             </button>
                         </form>
-                        <div className="divider"><span>Hoặc đăng nhập bằng</span></div>
-                        <button onClick={handleGoogleLogin} className="btn google-btn">
+                        <div className="divider-text">OR SIGN IN</div>
+                        <button onClick={handleGoogleLogin} className="google-signin-btn">
                             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
-                            Đăng nhập bằng Google
+                            Sign in with Google
                         </button>
                     </>
                 );
             case 'otp':
                 return (
-                    <form onSubmit={handleOTPSubmit} autoComplete="off">
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                className="form-input"
-                                placeholder="Nhập mã OTP"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                required
-                            />
-                            <i className="fas fa-key input-icon"></i>
+                    <>
+                        <div className="brand-header">
+                            <h2>Hệ thống quản lý y tế học đường</h2>
+                            <p>Nhập mã OTP</p>
                         </div>
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
-                                Quay lại
-                            </button>
-                            <button type="submit" className="btn btn-primary" disabled={loading}>
-                                {loading ? <><span className="spinner"></span>Đang xác thực...</> : 'Xác thực OTP'}
-                            </button>
-                        </div>
-                    </form>
+
+                        <form onSubmit={handleOTPSubmit} autoComplete="off">
+                            <div className="form-group">
+                                <label className="form-label">OTP Code</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    placeholder="Enter OTP code"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="btn-group">
+                                <button type="button" className="back-btn" onClick={handlebacktoLogin}>
+                                    Back
+                                </button>
+                                <button type="submit" className="login-btn" disabled={loading}>
+                                    {loading ? 'Verifying...' : 'Verify'}
+                                </button>
+                            </div>
+                        </form>
+                    </>
                 );
             case 'password-setup':
                 return (
-                    <form onSubmit={handlePasswordSetup} autoComplete="off">
-                        <div className="form-group">
-                            <input
-                                type="password"
-                                className="form-input"
-                                placeholder="Nhập mật khẩu mới"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <i className="fas fa-lock input-icon"></i>
+                    <>
+                        <div className="brand-header">
+                            <h2>Hệ thống quản lý y tế học đường</h2>
+                            <p>Tạo mật khẩu</p>
                         </div>
-                        <div className="form-group">
-                            <input
-                                type="password"
-                                className="form-input"
-                                placeholder="Xác nhận mật khẩu mới"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                            />
-                            <i className="fas fa-lock input-icon"></i>
-                        </div>
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
-                                Quay lại
-                            </button>
-                            <button type="submit" className="btn btn-primary" disabled={loading}>
-                                {loading ? <><span className="spinner"></span>Đang cập nhật...</> : 'Cập nhật mật khẩu'}
-                            </button>
-                        </div>
-                    </form>
+
+                        <form onSubmit={handlePasswordSetup} autoComplete="off">
+                            <div className="form-group">
+                                <label className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    className="form-input"
+                                    placeholder="Enter new password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Confirm Password</label>
+                                <input
+                                    type="password"
+                                    className="form-input"
+                                    placeholder="Confirm your password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="btn-group">
+                                <button type="button" className="back-btn" onClick={handlebacktoLogin}>
+                                    Back
+                                </button>
+                                <button type="submit" className="login-btn" disabled={loading}>
+                                    {loading ? 'Creating...' : 'Create Password'}
+                                </button>
+                            </div>
+                        </form>
+                    </>
                 );
             case 'login':
                 return (
-                    <form onSubmit={handleLogin} autoComplete="off">
-                        <div className="form-group"><div className="login-title">Vui lòng nhập mật khẩu</div>
-                            <input
-                                type="tel"
-                                className="form-input"
-                                value={phoneNumber}
-                                disabled
-                            />
-                            <i className="fas fa-phone input-icon" style={{ marginTop: '25px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
+                    <>
+                        <div className="brand-header">
+                            <h2>Hệ thống quản lý y tế học đường</h2>
+                            <p>Đăng nhập</p>
                         </div>
-                        <div className="form-group">
-                            <input
-                                type="password"
-                                className="form-input"
-                                placeholder="Nhập mật khẩu"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <i className="fas fa-lock input-icon" style={{ marginTop: '-7px', animation: 'pulse 1s ease-in-out infinite both ' }}></i>
-                        </div>
-                        <div className="btn-group">
-                            <button type="button" className="btn btn-secondary" onClick={handlebacktoLogin}>
-                                Quay lại
-                            </button>
-                            <button type="submit" className="btn btn-primary" disabled={loading}>
-                                {loading ? <><span className="spinner"></span>Đang đăng nhập...</> : 'Đăng nhập'}
-                            </button>
-                        </div>
-                    </form>
+{/* 
+                        <button onClick={handleGoogleLogin} className="google-signin-btn">
+                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
+                            Sign in with Google
+                        </button>
+
+                        <div className="divider-text">OR SIGN IN</div> */}
+
+                        <form onSubmit={handleLogin} autoComplete="off">
+                            <div className="form-group">
+                                <label className="form-label">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    className="form-input"
+                                    value={phoneNumber}
+                                    disabled
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    className="form-input"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="btn-group">
+                                <button type="button" className="back-btn" onClick={handlebacktoLogin}>
+                                    Back
+                                </button>
+                                <button type="submit" className="login-btn" disabled={loading}>
+                                    {loading ? 'Signing in...' : 'Login'}
+                                </button>
+                            </div>
+                        </form>
+                    </>
                 );
         }
     };
 
     return (
-        <div className="login-bg">
-            {/* SVG động nền ở 2 góc */}
-            <svg
-                className="corner-animated-bg top-left-bg"
-                viewBox="0 0 200 200"
-                preserveAspectRatio="none"
+        <div className="template-login-container">
+            {/* Left Side - Image */}
+            <div
+                className="template-left-side"
+                style={{
+                    backgroundImage: `url(${medicalImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center center',
+                    backgroundRepeat: 'no-repeat'
+                }}
             >
-                <circle cx="100" cy="100" r="80" fill="#fee440" opacity="0.6">
-                    <animate attributeName="cx" values="100;150;100" dur="8s" repeatCount="indefinite" />
-                    <animate attributeName="cy" values="100;50;100" dur="10s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="50" cy="150" r="60" fill="#3ddc97" opacity="0.5">
-                    <animate attributeName="cx" values="50;30;50" dur="7s" repeatCount="indefinite" />
-                    <animate attributeName="cy" values="150;120;150" dur="9s" repeatCount="indefinite" />
-                </circle>
-            </svg>
+                <div className="template-image-overlay"></div>
+            </div>
 
-            <svg
-                className="corner-animated-bg bottom-right-bg"
-                viewBox="0 0 200 200"
-                preserveAspectRatio="none"
-            >
-                <circle cx="100" cy="100" r="70" fill="#4361ee" opacity="0.6">
-                    <animate attributeName="cx" values="100;50;100" dur="6s" repeatCount="indefinite" />
-                    <animate attributeName="cy" values="100;150;100" dur="8s" repeatCount="indefinite" />
-                </circle>
-                <circle cx="150" cy="50" r="50" fill="#ff6b6b" opacity="0.5">
-                    <animate attributeName="cx" values="150;170;150" dur="5s" repeatCount="indefinite" />
-                    <animate attributeName="cy" values="50;80;50" dur="7s" repeatCount="indefinite" />
-                </circle>
-            </svg>
-
-            {/* SVG động các góc */}
-            <img src={bagpackSvg} alt="bagpack" className="corner-svg top-left-svg" />
-            <img src={eLearningSvg} alt="e-learning" className="corner-svg top-right-svg" />
-            <img src={researchSvg} alt="research" className="corner-svg bottom-left-svg" />
-            <img src={studentSvg} alt="student" className="corner-svg bottom-right-svg" />
-
-            <div className="login-container">
-                <div className="login-logo">
-                    <i className="fas fa-heartbeat"></i>
-                    <span>School Health</span>
-                </div>
-                <div className="login-title">Hệ thống sức khỏe học đường</div>
-
-                <div className="login-box">
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {successMsg && <div className="alert alert-success" style={{ background: '#E8F5E9', color: '#388E3C', border: '1px solid #C8E6C9' }}>{successMsg}</div>}
+            {/* Right Side - Login Form */}
+            <div className="template-right-side">
+                <div className="template-form-container">
+                    {error && <div className="error-message">{error}</div>}
+                    {successMsg && <div className="success-message">{successMsg}</div>}
                     {renderForm()}
                 </div>
             </div>

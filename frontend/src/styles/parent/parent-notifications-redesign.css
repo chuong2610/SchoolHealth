@@ -2,6 +2,226 @@
    Parent Notifications Redesign - Soft Blue Theme
    ========================================== */
 
+/* Z-INDEX LAYERING SYSTEM:
+   -10: Background image (deepest)
+   -5:  Animated star patterns  
+   -3:  Diagonal pattern overlay
+   0:   Header background patterns
+   1:   Header floating elements
+   5:   Page header container
+   8:   Tables and content within cards
+   10:  Main content cards
+   1050: Bootstrap modals (default)
+   ========================================== */
+
+/* Enhanced Background Container with Multiple Layers */
+div.parent-container {
+    position: relative !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 50%, #f0f9ff 100%) !important;
+    min-height: 100vh !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    overflow-x: hidden !important;
+    /* Ensure proper stacking context */
+    isolation: isolate !important;
+}
+
+/* Background Image Layer (Deepest) */
+div.parent-container::before {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image: url('../../assets/@backgroundparent.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    opacity: 0.1 !important;
+    z-index: -10 !important;
+    pointer-events: none !important;
+    /* Enhanced visibility and blend */
+    filter: brightness(1.1) contrast(1.05) !important;
+}
+
+/* Animated Star Pattern Layer (Middle) */
+div.parent-container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(3px 3px at 25px 35px, rgba(43, 207, 1, 0.8), transparent),
+        radial-gradient(3px 3px at 45px 75px, rgba(206, 38, 15, 0.6), transparent),
+        radial-gradient(3px 3px at 95px 45px, rgba(37, 235, 225, 0.7), transparent),
+        radial-gradient(3px 3px at 135px 85px, rgba(96, 165, 250, 0.5), transparent),
+        radial-gradient(2px 2px at 165px 35px, rgba(238, 5, 199, 0.8), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: healthParallaxStars 25s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+@keyframes healthParallaxStars {
+    from {
+        background-position: 0 0;
+        /* transform: translateY(0) rotate(0deg); */
+    }
+
+    to {
+        background-position: 200px 100px;
+        /* transform: translateY(-100px) rotate(5deg); */
+    }
+}
+
+/* Additional Floating Decorative Elements */
+.parent-container .parent-page-header::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 20% !important;
+    right: 10% !important;
+    width: 60px !important;
+    height: 60px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 50% !important;
+    animation: notificationsFloatRight 20s ease-in-out infinite !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
+.parent-container .parent-page-header::before {
+    z-index: 0 !important;
+}
+
+@keyframes notificationsFloatRight {
+
+    0%,
+    100% {
+        transform: translateY(0px) translateX(0px) scale(1);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translateY(-20px) translateX(10px) scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Additional Background Pattern Layer for depth */
+.parent-container>.container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        repeating-linear-gradient(45deg,
+            transparent,
+            transparent 40px,
+            rgba(37, 99, 235, 0.02) 40px,
+            rgba(37, 99, 235, 0.02) 80px);
+    z-index: -3;
+    pointer-events: none;
+    animation: notificationsSlidePattern 60s linear infinite;
+}
+
+@keyframes notificationsSlidePattern {
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+
+    100% {
+        transform: translateX(-80px) translateY(-80px);
+    }
+}
+
+/* Enhanced Page Header with Layered Effects */
+.parent-page-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+    position: relative;
+    overflow: hidden;
+    z-index: 5;
+    /* Ensure header is above background but below cards */
+    isolation: isolate;
+    box-shadow:
+        0 8px 32px rgba(37, 99, 235, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.parent-page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+    background-size: 25px 25px, 45px 45px;
+    animation: notificationsFloat 25s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@keyframes notificationsFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-15px, -15px) rotate(180deg);
+    }
+}
+
+/* Enhanced Card Wrappers with Proper Layering */
+.parent-card {
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(25px);
+    border-radius: 20px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: none;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 10;
+    /* Ensure cards are always above background layers */
+    isolation: isolate;
+}
+
+.parent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+            rgba(37, 99, 235, 0.8) 0%,
+            rgba(59, 130, 246, 0.6) 50%,
+            rgba(37, 99, 235, 0.8) 100%);
+    z-index: 1;
+}
+
+.parent-card:hover {
+    transform: translateY(-3px) scale(1.002);
+    box-shadow:
+        0 35px 70px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
 /* Tab Navigation Enhancement */
 .nav-pills .nav-link {
     background: transparent !important;
@@ -31,14 +251,21 @@
     transform: translateY(-2px) !important;
 }
 
-/* Notification Table Enhancement */
+/* Enhanced Notification Table with Layering */
 .notification-table-container {
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
     border-radius: var(--parent-border-radius-xl);
     overflow: hidden;
-    box-shadow: var(--parent-shadow-lg);
-    border: 1px solid rgba(37, 99, 235, 0.08);
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(37, 99, 235, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: none;
     position: relative;
+    z-index: 8;
+    /* Ensure table is properly layered within cards */
+    isolation: isolate;
 }
 
 .notification-table-container::before {
@@ -48,13 +275,25 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--parent-gradient-primary);
+    background: linear-gradient(90deg,
+            #2563eb 0%,
+            #3b82f6 50%,
+            #2563eb 100%);
+    z-index: 1;
 }
 
 .notification-table tbody tr:hover {
-    background: linear-gradient(135deg, #E3F2FD 0%, #F8FAFC 100%) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: var(--parent-shadow-sm) !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    transform: translateY(-1px) scale(1.001) !important;
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(37, 99, 235, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.notification-table tbody tr {
+    transition: all 0.3s ease !important;
+    position: relative !important;
 }
 
 /* Status Badges Enhancement */
@@ -76,6 +315,85 @@
 .status-badge:hover {
     transform: translateY(-1px) !important;
     box-shadow: var(--parent-shadow-md) !important;
+}
+
+/* Status Badge Colors - High Specificity Override */
+.parent-container .status-badge.status-pending,
+.parent-card .status-badge.status-pending,
+.parent-modal .status-badge.status-pending,
+.status-badge.status-pending {
+    background: #F59E0B !important;
+    color: white !important;
+}
+
+.parent-container .status-badge.status-confirmed,
+.parent-card .status-badge.status-confirmed,
+.parent-modal .status-badge.status-confirmed,
+.status-badge.status-confirmed {
+    background: #059669 !important;
+    color: white !important;
+}
+
+.parent-container .status-badge.status-rejected,
+.parent-card .status-badge.status-rejected,
+.parent-modal .status-badge.status-rejected,
+.status-badge.status-rejected {
+    background: #dc2626 !important;
+    color: white !important;
+}
+
+/* Additional safety - override any Bootstrap badge classes */
+.parent-container .badge.status-pending,
+.parent-card .badge.status-pending,
+.parent-modal .badge.status-pending {
+    background: #F59E0B !important;
+}
+
+.parent-container .badge.status-confirmed,
+.parent-card .badge.status-confirmed,
+.parent-modal .badge.status-confirmed {
+    background: #059669 !important;
+}
+
+.parent-container .badge.status-rejected,
+.parent-card .badge.status-rejected,
+.parent-modal .badge.status-rejected {
+    background: #dc2626 !important;
+}
+
+/* Force override for inline styles that might conflict */
+.parent-table .badge[style*="#F59E0B"],
+.parent-modal .badge[style*="#F59E0B"] {
+    background: #F59E0B !important;
+}
+
+.parent-table .badge[style*="#059669"],
+.parent-modal .badge[style*="#059669"] {
+    background: #059669 !important;
+}
+
+.parent-table .badge[style*="#dc2626"],
+.parent-modal .badge[style*="#dc2626"] {
+    background: #dc2626 !important;
+}
+
+/* Extra safety for warning/pending status - bright orange visibility */
+.status-pending,
+.parent-container .status-pending,
+.parent-table .status-pending,
+.parent-modal .status-pending {
+    background-color: #F59E0B !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* Ensure proper contrast and visibility for warning badges */
+.parent-table tbody .badge.status-pending,
+.parent-modal .badge.status-pending {
+    background: #F59E0B !important;
+    border: 1px solid #d97706 !important;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Loading State */
@@ -109,14 +427,48 @@
     margin: 0;
 }
 
-/* Modal Enhancement */
+/* Enhanced Modal with Layered Design */
+.notification-modal .modal-content {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(25px) !important;
+    border: none !important;
+    box-shadow:
+        0 50px 100px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}
+
+.notification-modal .modal-header {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    border-bottom: none !important;
+    position: relative !important;
+}
+
+.notification-modal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+}
+
 .notification-modal .modal-info-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
     padding: 1.5rem;
     border-radius: var(--parent-border-radius-lg);
     margin-bottom: 1.5rem;
-    border: 1px solid rgba(37, 99, 235, 0.08);
-    box-shadow: var(--parent-shadow-sm);
+    border: none;
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(37, 99, 235, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     position: relative;
     overflow: hidden;
 }
@@ -128,7 +480,11 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: var(--parent-gradient-primary);
+    background: linear-gradient(90deg,
+            #2563eb 0%,
+            #3b82f6 50%,
+            #2563eb 100%);
+    z-index: 1;
 }
 
 /* Response Section */
@@ -152,19 +508,476 @@
     background: var(--parent-gradient-secondary);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .notification-table-container {
-        overflow-x: auto;
+/* ==========================================
+   Notifications Responsive Design
+   ========================================== */
+
+/* Large Desktops (1200px and up) */
+@media (min-width: 1200px) {
+    .parent-container {
+        padding: 2rem 3rem;
+    }
+
+    .parent-card {
+        padding: 2.5rem;
+    }
+
+    .parent-page-header {
+        height: 25vh;
+    }
+
+    .notification-table thead th {
+        padding: 1.25rem;
+    }
+
+    .notification-table tbody td {
+        padding: 1.25rem;
+    }
+
+    .nav-pills .nav-link {
+        padding: 1rem 2rem !important;
+        font-size: 1rem !important;
+    }
+}
+
+/* Desktops (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .parent-container {
+        padding: 1.5rem 2rem;
+    }
+
+    .parent-page-header {
+        height: 22vh;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.875rem 1.75rem !important;
+    }
+}
+
+/* Tablets (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .parent-container {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .parent-page-header {
+        height: 20vh;
     }
 
     .nav-pills {
+        justify-content: center;
         flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .notification-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .notification-table {
+        min-width: 800px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px to 767px) */
+@media (max-width: 767px) {
+    .parent-container {
+        padding: 1rem;
+    }
+
+    .notification-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .notification-table {
+        min-width: 700px;
+        font-size: 0.875rem;
+    }
+
+    .notification-table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .notification-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .nav-pills {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        text-align: center;
+        border-radius: 12px !important;
+    }
+
+    .parent-page-header {
+        height: 18vh;
+    }
+
+    .parent-card {
+        padding: 1.25rem;
+        border-radius: 16px;
+    }
+
+    .parent-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .parent-card-title {
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    /* Status badges adjustment for mobile */
+    .status-badge {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Search section adjustments */
+    .parent-card-body .row {
+        flex-direction: column;
+    }
+
+    .parent-card-body .col-md-8,
+    .parent-card-body .col-md-4 {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    /* Modal adjustments */
+    .notification-modal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .notification-modal .modal-info-card {
+        padding: 1rem;
+    }
+
+    /* Pagination adjustments */
+    .pagination-controls {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
+    .parent-container {
+        padding: 0.75rem;
+    }
+
+    .parent-page-header {
+        height: 16vh;
+        margin: -0.75rem -0.75rem 0.75rem;
+    }
+
+    .parent-page-header-content {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.75rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .parent-page-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .parent-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .parent-card-title {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.5rem;
     }
 
     .nav-pills .nav-link {
-        padding: 0.5rem 1rem !important;
-        font-size: 0.875rem !important;
+        padding: 0.6rem 0.875rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .notification-table {
+        min-width: 600px;
+        font-size: 0.8rem;
+    }
+
+    .notification-table thead th {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .notification-table tbody td {
+        padding: 0.6rem 0.4rem;
+    }
+
+    .status-badge {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Button adjustments */
+    .parent-primary-btn,
+    .parent-secondary-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Form controls */
+    .parent-form-control {
+        font-size: 0.875rem;
+        padding: 0.6rem;
+    }
+
+    /* Modal adjustments */
+    .notification-modal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .notification-modal .modal-header,
+    .notification-modal .modal-body,
+    .notification-modal .modal-footer {
+        padding: 1rem;
+    }
+
+    .notification-modal .modal-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Small Mobile (360px to 480px) */
+@media (max-width: 480px) {
+    .parent-container {
+        padding: 0.5rem;
+    }
+
+    .parent-page-header {
+        height: 14vh;
+        margin: -0.5rem -0.5rem 0.5rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.5rem;
+    }
+
+    .parent-page-subtitle {
+        font-size: 0.8rem;
+        display: none;
+        /* Hide on very small screens */
+    }
+
+    .parent-card {
+        padding: 0.875rem;
+    }
+
+    .parent-card-title {
+        font-size: 1rem;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .notification-table {
+        min-width: 500px;
+        font-size: 0.75rem;
+    }
+
+    .notification-table thead th {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.65rem;
+    }
+
+    .notification-table tbody td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* Icon adjustments */
+    .notification-table .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .parent-stat-card {
+        padding: 0.75rem;
+        text-align: center;
+    }
+
+    .parent-stat-value {
+        font-size: 1.25rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra Small Mobile (less than 360px) */
+@media (max-width: 359px) {
+    .parent-container {
+        padding: 0.375rem;
+    }
+
+    .parent-page-header {
+        height: 12vh;
+        margin: -0.375rem -0.375rem 0.375rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.25rem;
+    }
+
+    .parent-card {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+
+    .parent-card-title {
+        font-size: 0.9rem;
+    }
+
+    .notification-table {
+        min-width: 450px;
+        font-size: 0.7rem;
+    }
+
+    .nav-pills .nav-link {
+        padding: 0.4rem 0.6rem !important;
+        font-size: 0.7rem !important;
+    }
+
+    .parent-stat-card {
+        padding: 0.6rem;
+    }
+
+    .parent-stat-value {
+        font-size: 1rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.65rem;
+    }
+}
+
+/* Fade-in Animations */
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced focus states */
+.parent-form-control:focus,
+.enhanced-control:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.18);
+    background: #f8fafc;
+}
+
+/* Parent Animation Classes */
+.parent-animate-fade-in {
+    animation: parentFadeIn 0.8s ease-out;
+}
+
+.parent-animate-slide-in {
+    animation: parentSlideIn 1s ease-out;
+}
+
+.parent-animate-scale-in {
+    animation: parentScaleIn 0.6s ease-out;
+}
+
+@keyframes parentFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes parentSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes parentScaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
     }
 }

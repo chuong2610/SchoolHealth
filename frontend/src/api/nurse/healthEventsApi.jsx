@@ -14,15 +14,40 @@ export const getMedicalEvents = async () => {
   }
 };
 
+/**
+ * Lấy chi tiết sự kiện y tế theo ID
+ * API: GET /api/MedicalEvent/{id}
+ * Response: BaseResponse<MedicalEventDetailDTO>
+ * 
+ * MedicalEventDetailDTO structure:
+ * - eventType: string
+ * - location: string
+ * - date: DateTime
+ * - description: string
+ * - studentName: string
+ * - nurseName: string
+ * - supplies: List<MedicationEventSupplyDetailDTO>
+ */
 export const getMedicalEventDetail = async (eventId) => {
   try {
     const res = await axiosInstance.get(`/MedicalEvent/${eventId}`);
     if (res.data.success === true) {
-      return res.data.data;
+      // Map response để đảm bảo tương thích với frontend
+      const data = res.data.data;
+      return {
+        ...data,
+        id: eventId, // Thêm id để component có thể check
+        // Map supplies từ backend format sang frontend format để backward compatibility
+        medicalEventSupplys: data.supplies ? data.supplies.map(supply => ({
+          medicalSupplyName: supply.medicalSupplyName,
+          quantity: supply.quantity
+        })) : []
+      };
     } else {
       return {};
     }
   } catch (error) {
+    console.error('Error fetching medical event detail:', error);
     throw error;
   }
 };

@@ -150,14 +150,14 @@ const SendMedicine = () => {
       {/* Hero Header */}
       <div className="medicine-hero-header animate-slide-in-down">
         <Container>
-          <div className="hero-content">
-            <h1 className="hero-title animate-fade-in-up delay-200">
-              <div className="hero-icon animate-float">
+          <div className="hero-sen-content text-center">
+            <h1 className="hero-sen-title animate-fade-in-up delay-200">
+              <div className="hero-icon ">
                 <FaPills />
               </div>
               Gửi thuốc cho học sinh
             </h1>
-            <p className="hero-subtitle animate-fade-in-up delay-300">
+            <p className="hero-sen-subtitle  animate-fade-in-up delay-300">
               Gửi thông tin thuốc và hướng dẫn sử dụng để nhà trường hỗ trợ tốt nhất cho con bạn
             </p>
           </div>
@@ -165,8 +165,8 @@ const SendMedicine = () => {
       </div>
 
       {/* Main Content */}
-      <Container className="medicine-main-container">
-        <div className="medicine-form-wrapper animate-scale-in-center delay-500 animate-card">
+      <Container className="medicine-main-container ">
+        <div className="medicine-form-wrapper animate-scale-in-center delay-500 animate-card" style={{backgroundColor: 'white', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
           {/* Form Header */}
           <div className="form-header-section">
             <h2 className="form-main-title">
@@ -207,7 +207,7 @@ const SendMedicine = () => {
                     <option value="">-- Chọn học sinh --</option>
                     {students.map((student) => (
                       <option key={student.id} value={student.id}>
-                        {student.studentName} (Mã: {student.id}, Lớp: {student.className})
+                        {student.studentName}
                       </option>
                     ))}
                   </Form.Select>
@@ -364,7 +364,7 @@ const SendMedicine = () => {
         <div className={showConfirmModal ? 'animate-modal-enter' : 'animate-modal-exit'}>
           <Modal.Header closeButton>
             <Modal.Title>
-              <FaCheckCircle style={{ color: '#10b981' }} className="animate-pulse" />
+              <FaCheckCircle style={{ color: '#059669' }} className="animate-pulse" />
               Xác nhận gửi thuốc
             </Modal.Title>
           </Modal.Header>

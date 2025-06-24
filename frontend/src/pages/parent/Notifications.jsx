@@ -33,7 +33,8 @@ import {
   FaClipboardList,
   FaFilter,
   FaEye,
-  FaCheck
+  FaCheck,
+  FaTags
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
@@ -45,7 +46,6 @@ import {
   getVaccinationNotifications,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
-// Styles được import từ main.jsx
 
 const tabList = [
   {
@@ -232,7 +232,7 @@ export default function Notifications() {
           </p>
         </div>
       </div>
-
+      <div style={{backgroundColor: 'rgb(255, 255, 255)', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
       <Container>
         {/* Statistics Cards */}
         <Row className="mb-4 parent-animate-slide-in">
@@ -247,7 +247,7 @@ export default function Notifications() {
           </Col>
           <Col md={3} className="mb-3">
             <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #f59e0b, #fbbf24)' }}>
+              <div className="parent-stat-icon" style={{ background: '#F59E0B' }}>
                 <FaExclamationCircle />
               </div>
               <div className="parent-stat-value">{stats.pending}</div>
@@ -256,7 +256,7 @@ export default function Notifications() {
           </Col>
           <Col md={3} className="mb-3">
             <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #34d399)' }}>
+              <div className="parent-stat-icon" style={{ background: '#059669' }}>
                 <FaCheckCircle />
               </div>
               <div className="parent-stat-value">{stats.confirmed}</div>
@@ -265,7 +265,7 @@ export default function Notifications() {
           </Col>
           <Col md={3} className="mb-3">
             <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #ef4444, #f87171)' }}>
+              <div className="parent-stat-icon" style={{ background: '#dc2626' }}>
                 <FaTimesCircle />
               </div>
               <div className="parent-stat-value">{stats.rejected}</div>
@@ -292,9 +292,9 @@ export default function Notifications() {
                         className="mx-1"
                         onClick={() => setPage(1)}
                         style={{
-                          background: activeTab === tab.key ? 'var(--parent-gradient-primary)' : 'transparent',
+                          background: activeTab === tab.key ? '#2563eb' : 'transparent',
                           color: activeTab === tab.key ? 'white' : 'var(--parent-primary)',
-                          border: `2px solid ${activeTab === tab.key ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                          border: `2px solid ${activeTab === tab.key ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
                           fontWeight: '600',
                           borderRadius: 'var(--parent-border-radius-lg)',
                           padding: '0.75rem 1.5rem',
@@ -332,14 +332,14 @@ export default function Notifications() {
                         />
                         <Form.Control
                           type="text"
-                          className="parent-form-control"
-                          placeholder="Tìm theo tiêu đề, nội dung thông báo..."
+                          className=" "
+                          placeholder="      Tìm theo tiêu đề, nội dung thông báo..."
                           value={search}
                           onChange={(e) => {
                             setSearch(e.target.value);
                             setPage(1);
                           }}
-                          style={{ paddingLeft: '3rem' }}
+                          style={{ paddingLeft: '2rem' }}
                         />
                       </div>
                     </Form.Group>
@@ -399,8 +399,10 @@ export default function Notifications() {
                       <thead>
                         <tr>
                           <th className="text-center" style={{ width: "80px" }}>
-                            <FaBell className="me-1" />
-                            Loại
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                              <FaTags />
+                              Loại
+                            </div>
                           </th>
                           <th>
                             <FaInfoCircle className="me-2" />
@@ -433,10 +435,10 @@ export default function Notifications() {
                                 height: '45px',
                                 borderRadius: '50%',
                                 background: notification.type === 'Vaccination'
-                                  ? 'linear-gradient(135deg, #6b46c1, #8b5cf6)'
+                                  ? 'linear-gradient(135deg,rgba(255, 255, 255, 0.63), #8b5cf6)'
                                   : notification.type === 'HealthCheck'
-                                    ? 'linear-gradient(135deg, #3b82f6, #60a5fa)'
-                                    : 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+                                    ? 'linear-gradient(135deg,rgb(252, 253, 255), #60a5fa)'
+                                    : 'linear-gradient(135deg,rgb(222, 217, 235), #a78bfa)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -478,16 +480,19 @@ export default function Notifications() {
                               <div style={{
                                 fontWeight: '600',
                                 color: 'var(--parent-primary)',
-                                background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
+                                background: '#f8fafc',
                                 padding: '0.5rem',
                                 borderRadius: 'var(--parent-border-radius-md)',
-                                border: '1px solid rgba(107, 70, 193, 0.1)'
+                                border: '1px solid rgba(37, 99, 235, 0.1)'
                               }}>
                                 {notification.studentName || "---"}
                               </div>
                             </td>
                             <td className="text-center">
                               <Badge
+                                className={`status-badge ${notification.status === 'Confirmed' ? 'status-confirmed' :
+                                  notification.status === 'Rejected' ? 'status-rejected' : 'status-pending'
+                                  }`}
                                 style={{
                                   padding: '0.5rem 1rem',
                                   borderRadius: 'var(--parent-border-radius-lg)',
@@ -497,10 +502,10 @@ export default function Notifications() {
                                   alignItems: 'center',
                                   gap: '0.5rem',
                                   background: notification.status === 'Confirmed'
-                                    ? 'linear-gradient(135deg, #10b981, #34d399)' :
+                                    ? '#059669' :
                                     notification.status === 'Rejected'
-                                      ? 'linear-gradient(135deg, #ef4444, #f87171)'
-                                      : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                                      ? '#dc2626'
+                                      : '#F59E0B',
                                   color: 'white',
                                   border: 'none',
                                   textTransform: 'uppercase',
@@ -544,7 +549,7 @@ export default function Notifications() {
                       background: 'white',
                       borderRadius: 'var(--parent-border-radius-xl)',
                       boxShadow: 'var(--parent-shadow-md)',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
+                      border: '1px solid rgba(37, 99, 235, 0.1)'
                     }}>
                       <Button
                         className="parent-secondary-btn"
@@ -560,9 +565,9 @@ export default function Notifications() {
                         color: 'var(--parent-primary)',
                         fontWeight: '700',
                         padding: '0.75rem 1.5rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
+                        background: '#f8fafc',
                         borderRadius: 'var(--parent-border-radius-lg)',
-                        border: '2px solid rgba(107, 70, 193, 0.1)'
+                        border: '2px solid rgba(37, 99, 235, 0.1)'
                       }}>
                         Trang {page} / {totalPage}
                       </div>
@@ -584,7 +589,7 @@ export default function Notifications() {
           </Tab.Container>
         </div>
       </Container>
-
+      </div>
       {/* Detail Modal */}
       <Modal show={modal.show} onHide={closeModal} size="lg" centered className="parent-modal">
         <Modal.Header closeButton>
@@ -602,7 +607,7 @@ export default function Notifications() {
                 padding: '1.5rem',
                 borderRadius: 'var(--parent-border-radius-lg)',
                 marginBottom: '1.5rem',
-                border: '1px solid rgba(107, 70, 193, 0.1)',
+                border: '1px solid rgba(37, 99, 235, 0.1)',
                 boxShadow: 'var(--parent-shadow-sm)',
                 position: 'relative',
                 overflow: 'hidden'
@@ -613,7 +618,7 @@ export default function Notifications() {
                   left: 0,
                   right: 0,
                   height: '3px',
-                  background: 'var(--parent-gradient-primary)'
+                  background: '#2563eb'
                 }}></div>
 
                 <h5 style={{ color: 'var(--parent-primary)', marginBottom: '1rem', fontWeight: '700' }}>
@@ -630,9 +635,9 @@ export default function Notifications() {
                       <div style={{
                         marginTop: '0.5rem',
                         padding: '0.75rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        background: '#f8fafc',
                         borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(107, 70, 193, 0.1)'
+                        border: '1px solid rgba(37, 99, 235, 0.1)'
                       }}>
                         {modal.notification?.createdAt ?
                           new Date(modal.notification.createdAt).toLocaleDateString("vi-VN") : "---"}
@@ -646,9 +651,9 @@ export default function Notifications() {
                       <div style={{
                         marginTop: '0.5rem',
                         padding: '0.75rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        background: '#f8fafc',
                         borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(107, 70, 193, 0.1)',
+                        border: '1px solid rgba(37, 99, 235, 0.1)',
                         fontWeight: '600'
                       }}>
                         {modal.notification?.studentName || "---"}
@@ -664,9 +669,9 @@ export default function Notifications() {
                       <div style={{
                         marginTop: '0.5rem',
                         padding: '0.75rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        background: '#f8fafc',
                         borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(107, 70, 193, 0.1)'
+                        border: '1px solid rgba(37, 99, 235, 0.1)'
                       }}>
                         {modal.notification?.location || "---"}
                       </div>
@@ -679,9 +684,9 @@ export default function Notifications() {
                       <div style={{
                         marginTop: '0.5rem',
                         padding: '0.75rem',
-                        background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                        background: '#f8fafc',
                         borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(107, 70, 193, 0.1)',
+                        border: '1px solid rgba(37, 99, 235, 0.1)',
                         fontWeight: '600'
                       }}>
                         {modal.notification?.nurseName || "---"}
@@ -698,10 +703,10 @@ export default function Notifications() {
                   <div style={{
                     marginTop: '0.5rem',
                     padding: '1rem',
-                    background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                    background: '#f8fafc',
                     borderRadius: 'var(--parent-border-radius-md)',
                     lineHeight: '1.6',
-                    border: '1px solid rgba(107, 70, 193, 0.1)'
+                    border: '1px solid rgba(37, 99, 235, 0.1)'
                   }}>
                     {modal.notification?.message || "Không có nội dung"}
                   </div>
@@ -716,10 +721,10 @@ export default function Notifications() {
                     <div style={{
                       marginTop: '0.5rem',
                       padding: '1rem',
-                      background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                      background: '#f8fafc',
                       borderRadius: 'var(--parent-border-radius-md)',
                       lineHeight: '1.6',
-                      border: '1px solid rgba(107, 70, 193, 0.1)'
+                      border: '1px solid rgba(37, 99, 235, 0.1)'
                     }}>
                       {modal.notification?.note}
                     </div>
@@ -728,6 +733,9 @@ export default function Notifications() {
 
                 <div className="text-center mb-3">
                   <Badge
+                    className={`status-badge ${modal.notification?.status === 'Confirmed' ? 'status-confirmed' :
+                      modal.notification?.status === 'Rejected' ? 'status-rejected' : 'status-pending'
+                      }`}
                     style={{
                       fontSize: '1rem',
                       padding: '0.75rem 1.5rem',
@@ -737,10 +745,10 @@ export default function Notifications() {
                       alignItems: 'center',
                       gap: '0.5rem',
                       background: modal.notification?.status === 'Confirmed'
-                        ? 'linear-gradient(135deg, #10b981, #34d399)' :
+                        ? '#059669' :
                         modal.notification?.status === 'Rejected'
-                          ? 'linear-gradient(135deg, #ef4444, #f87171)'
-                          : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                          ? '#dc2626'
+                          : '#F59E0B',
                       color: 'white',
                       border: 'none',
                       textTransform: 'uppercase',
@@ -763,7 +771,7 @@ export default function Notifications() {
                   background: 'white',
                   padding: '1.5rem',
                   borderRadius: 'var(--parent-border-radius-lg)',
-                  border: '1px solid rgba(107, 70, 193, 0.1)',
+                  border: '1px solid rgba(37, 99, 235, 0.1)',
                   boxShadow: 'var(--parent-shadow-sm)',
                   position: 'relative',
                   overflow: 'hidden'
@@ -774,7 +782,7 @@ export default function Notifications() {
                     left: 0,
                     right: 0,
                     height: '3px',
-                    background: 'var(--parent-gradient-secondary)'
+                    background: '#60A5FA'
                   }}></div>
 
                   <h6 style={{
@@ -823,8 +831,9 @@ export default function Notifications() {
             {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
               <>
                 <Button
+                  className="btn-danger"
                   style={{
-                    background: 'linear-gradient(135deg, #ef4444, #f87171)',
+                    background: '#dc2626',
                     border: 'none',
                     color: 'white',
                     fontWeight: '600',
@@ -836,18 +845,21 @@ export default function Notifications() {
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
                     e.target.style.boxShadow = 'var(--parent-shadow-md)';
+                    e.target.style.background = '#b91c1c';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
                     e.target.style.boxShadow = 'none';
+                    e.target.style.background = '#dc2626';
                   }}
                 >
                   <FaTimesCircle className="me-1" />
                   Từ chối
                 </Button>
                 <Button
+                  className="btn-success"
                   style={{
-                    background: 'linear-gradient(135deg, #10b981, #34d399)',
+                    background: '#059669',
                     border: 'none',
                     color: 'white',
                     fontWeight: '600',
@@ -859,10 +871,12 @@ export default function Notifications() {
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
                     e.target.style.boxShadow = 'var(--parent-shadow-md)';
+                    e.target.style.background = '#047857';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
                     e.target.style.boxShadow = 'none';
+                    e.target.style.background = '#059669';
                   }}
                 >
                   <FaCheckCircle className="me-1" />

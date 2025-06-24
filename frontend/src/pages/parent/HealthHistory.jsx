@@ -38,7 +38,6 @@ import {
   FaTimes,
   FaClipboardList
 } from "react-icons/fa";
-// Styles được import từ main.jsx
 
 const HealthHistory = () => {
   // State quản lý tab hiện tại
@@ -220,11 +219,11 @@ const HealthHistory = () => {
           </p>
         </div>
       </div>
-
+    <div style={{backgroundColor: 'white', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
       <Container>
         {/* Statistics Cards */}
         <Row className="mb-4 parent-animate-slide-in">
-          <Col md={3} className="mb-3">
+          <Col md={4} className="mb-3">
             <div className="parent-stat-card">
               <div className="parent-stat-icon">
                 <FaStethoscope />
@@ -233,33 +232,24 @@ const HealthHistory = () => {
               <div className="parent-stat-label">Lượt khám</div>
             </div>
           </Col>
-          <Col md={3} className="mb-3">
+          <Col md={4} className="mb-3">
             <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #8b5cf6, #a78bfa)' }}>
+              <div className="parent-stat-icon" style={{ background: '#8b5cf6' }}>
                 <FaSyringe />
               </div>
               <div className="parent-stat-value">{data.filter(item => item.vaccineName).length}</div>
               <div className="parent-stat-label">Lượt tiêm</div>
             </div>
           </Col>
-          <Col md={3} className="mb-3">
+          <Col md={4} className="mb-3">
             <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #10b981, #34d399)' }}>
+              <div className="parent-stat-icon" style={{ background: '#2563eb' }}>
                 <FaPills />
               </div>
               <div className="parent-stat-value">{data.filter(item => item.medications && item.medications.length > 0).length}</div>
               <div className="parent-stat-label">Lượt gửi thuốc</div>
             </div>
           </Col>
-          {/* <Col md={3} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
-                <FaChartBar />
-              </div>
-              <div className="parent-stat-value">{filteredData.length}</div>
-              <div className="parent-stat-label">Kết quả lọc</div>
-            </div>
-          </Col> */}
         </Row>
 
         {/* Main Content */}
@@ -277,9 +267,9 @@ const HealthHistory = () => {
                     <Nav.Link
                       eventKey="checkup"
                       style={{
-                        background: activeTab === 'checkup' ? 'var(--parent-gradient-primary)' : 'transparent',
+                        background: activeTab === 'checkup' ? '#2563eb' : 'transparent',
                         color: activeTab === 'checkup' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'checkup' ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                        border: `2px solid ${activeTab === 'checkup' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
                         fontWeight: '600',
                         borderRadius: 'var(--parent-border-radius-lg)',
                         padding: '0.75rem 1.5rem',
@@ -295,9 +285,9 @@ const HealthHistory = () => {
                     <Nav.Link
                       eventKey="vaccination"
                       style={{
-                        background: activeTab === 'vaccination' ? 'var(--parent-gradient-primary)' : 'transparent',
+                        background: activeTab === 'vaccination' ? '#2563eb' : 'transparent',
                         color: activeTab === 'vaccination' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'vaccination' ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                        border: `2px solid ${activeTab === 'vaccination' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
                         fontWeight: '600',
                         borderRadius: 'var(--parent-border-radius-lg)',
                         padding: '0.75rem 1.5rem',
@@ -313,9 +303,9 @@ const HealthHistory = () => {
                     <Nav.Link
                       eventKey="chart"
                       style={{
-                        background: activeTab === 'chart' ? 'var(--parent-gradient-primary)' : 'transparent',
+                        background: activeTab === 'chart' ? '#2563eb' : 'transparent',
                         color: activeTab === 'chart' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'chart' ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                        border: `2px solid ${activeTab === 'chart' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
                         fontWeight: '600',
                         borderRadius: 'var(--parent-border-radius-lg)',
                         padding: '0.75rem 1.5rem',
@@ -331,9 +321,9 @@ const HealthHistory = () => {
                     <Nav.Link
                       eventKey="medication"
                       style={{
-                        background: activeTab === 'medication' ? 'var(--parent-gradient-primary)' : 'transparent',
+                        background: activeTab === 'medication' ? '#2563eb' : 'transparent',
                         color: activeTab === 'medication' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'medication' ? 'transparent' : 'rgba(107, 70, 193, 0.2)'}`,
+                        border: `2px solid ${activeTab === 'medication' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
                         fontWeight: '600',
                         borderRadius: 'var(--parent-border-radius-lg)',
                         padding: '0.75rem 1.5rem',
@@ -372,7 +362,7 @@ const HealthHistory = () => {
                         />
                         <Form.Control
                           type="text"
-                          className="parent-form-control"
+
                           placeholder="Tìm theo tên học sinh, bác sĩ, kết luận, vắc-xin..."
                           value={searchTerm}
                           onChange={(e) => {
@@ -416,7 +406,7 @@ const HealthHistory = () => {
                 <>
                   {/* Chart Section for Chart Tab */}
                   {activeTab === "chart" && (
-                    <div className="parent-card mb-4" style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--parent-border-radius-xl)', border: '1px solid rgba(107, 70, 193, 0.1)' }}>
+                    <div className="parent-card mb-4" style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--parent-border-radius-xl)', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <h5 className="mb-0" style={{ color: 'var(--parent-primary)', fontWeight: '700' }}>
                           <FaChartBar className="me-2" />
@@ -452,7 +442,7 @@ const HealthHistory = () => {
                               height={320}
                               legend={{ position: "top" }}
                               barStyle={{
-                                stroke: "#6b46c1",
+                                stroke: "#2563eb",
                                 lineWidth: 1,
                                 radius: [4, 4, 0, 0],
                               }}
@@ -635,12 +625,14 @@ const HealthHistory = () => {
                                     <td className="text-center">{item.nurseName}</td>
                                     <td className="text-center">
                                       <Button
+
                                         size="sm"
                                         className="action-btn"
                                         onClick={() => handleShowDetail(item.id, "checkup")}
+                                        title="Xem chi tiết"
                                       >
-                                        <FaEye />
-                                        Xem
+                                        <FaEye className="me-1" />
+                                        Chi tiết
                                       </Button>
                                     </td>
                                   </>
@@ -660,9 +652,10 @@ const HealthHistory = () => {
                                         size="sm"
                                         className="action-btn"
                                         onClick={() => handleShowDetail(item.id, "vaccination")}
+                                        title="Xem chi tiết"
                                       >
-                                        <FaEye />
-                                        Xem
+                                        <FaEye className="me-1" />
+                                        Chi tiết
                                       </Button>
                                     </td>
                                   </>
@@ -704,9 +697,10 @@ const HealthHistory = () => {
                                         size="sm"
                                         className="action-btn"
                                         onClick={() => handleShowMedicationDetail(item.id)}
+                                        title="Xem chi tiết"
                                       >
-                                        <FaEye />
-                                        Xem
+                                        <FaEye className="me-1" />
+                                        Chi tiết
                                       </Button>
                                     </td>
                                   </>
@@ -729,7 +723,7 @@ const HealthHistory = () => {
                           background: 'white',
                           borderRadius: 'var(--parent-border-radius-xl)',
                           boxShadow: 'var(--parent-shadow-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)'
+                          border: '1px solid rgba(37, 99, 235, 0.1)'
                         }}>
                           <Button
                             className="parent-secondary-btn"
@@ -745,9 +739,9 @@ const HealthHistory = () => {
                             color: 'var(--parent-primary)',
                             fontWeight: '700',
                             padding: '0.75rem 1.5rem',
-                            background: 'linear-gradient(135deg, #faf7ff 0%, #f0f9ff 100%)',
+                            background: '#f8fafc',
                             borderRadius: 'var(--parent-border-radius-lg)',
-                            border: '2px solid rgba(107, 70, 193, 0.1)'
+                            border: '2px solid rgba(37, 99, 235, 0.1)'
                           }}>
                             Trang {currentPage} / {totalPages}
                           </div>
@@ -771,7 +765,7 @@ const HealthHistory = () => {
           </Tab.Container>
         </div>
       </Container>
-
+      </div>
       {/* Detail Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered className="parent-modal">
         <Modal.Header closeButton>
@@ -798,7 +792,7 @@ const HealthHistory = () => {
                   background: 'white',
                   padding: '1.5rem',
                   borderRadius: 'var(--parent-border-radius-lg)',
-                  border: '1px solid rgba(107, 70, 193, 0.1)',
+                  border: '1px solid rgba(37, 99, 235, 0.1)',
                   boxShadow: 'var(--parent-shadow-sm)',
                   position: 'relative',
                   overflow: 'hidden'
@@ -809,7 +803,7 @@ const HealthHistory = () => {
                     left: 0,
                     right: 0,
                     height: '3px',
-                    background: 'var(--parent-gradient-primary)'
+                    background: '#2563eb'
                   }}></div>
 
                   <Row>
@@ -822,9 +816,9 @@ const HealthHistory = () => {
                         <div style={{
                           marginTop: '0.5rem',
                           padding: '0.75rem',
-                          background: 'linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)',
+                          background: '#f8fafc',
                           borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(107, 70, 193, 0.1)'
+                          border: '1px solid rgba(37, 99, 235, 0.1)'
                         }}>
                           {detail.date ? new Date(detail.date).toLocaleDateString("vi-VN") : ""}
                         </div>
@@ -915,19 +909,19 @@ const HealthHistory = () => {
                           Kết luận:
                         </strong>
                         <div className="mt-2">
-                          <Badge style={{
-                            background: detail.conclusion === "Healthy"
-                              ? 'linear-gradient(135deg, #10b981, #34d399)' :
-                              detail.conclusion === "Sick"
-                                ? 'linear-gradient(135deg, #ef4444, #f87171)'
-                                : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                            color: 'white',
-                            padding: '0.75rem 1.5rem',
-                            borderRadius: 'var(--parent-border-radius-lg)',
-                            fontWeight: '600',
-                            fontSize: '1rem',
-                            border: 'none'
-                          }}>
+                          <Badge
+                            className={`badge-status ${detail.conclusion === "Healthy" ? "healthy" :
+                              detail.conclusion === "Sick" ? "sick" : "pending"}`}
+                            style={{
+                              background: detail.conclusion === "Healthy" ? '#059669' :
+                                detail.conclusion === "Sick" ? '#dc2626' : '#F59E0B',
+                              color: 'white',
+                              padding: '0.75rem 1.5rem',
+                              borderRadius: 'var(--parent-border-radius-lg)',
+                              fontWeight: '600',
+                              fontSize: '1rem',
+                              border: 'none'
+                            }}>
                             {detail.conclusion === "Healthy" ? "Khỏe mạnh" :
                               detail.conclusion === "Sick" ? "Bệnh" : "Cần chú ý"}
                           </Badge>
@@ -1039,18 +1033,18 @@ const HealthHistory = () => {
                       <div className="mb-3">
                         <strong style={{ color: 'var(--parent-primary)' }}>Kết quả:</strong>
                         <div className="mt-2">
-                          <Badge style={{
-                            background: detail.result === "Successful"
-                              ? 'linear-gradient(135deg, #10b981, #34d399)' :
-                              detail.result === "Rejected"
-                                ? 'linear-gradient(135deg, #ef4444, #f87171)'
-                                : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                            color: 'white',
-                            padding: '0.5rem 1rem',
-                            borderRadius: 'var(--parent-border-radius-lg)',
-                            fontWeight: '600',
-                            border: 'none'
-                          }}>
+                          <Badge
+                            className={`badge-status ${detail.result === "Successful" ? "successful" :
+                              detail.result === "Rejected" ? "rejected" : "pending"}`}
+                            style={{
+                              background: detail.result === "Successful" ? '#059669' :
+                                detail.result === "Rejected" ? '#dc2626' : '#F59E0B',
+                              color: 'white',
+                              padding: '0.5rem 1rem',
+                              borderRadius: 'var(--parent-border-radius-lg)',
+                              fontWeight: '600',
+                              border: 'none'
+                            }}>
                             {detail.result === "Successful" ? "Đã tiêm" :
                               detail.result === "Pending" ? "Chờ tiêm" :
                                 detail.result === "Rejected" ? "Đã từ chối" : detail.result}
@@ -1237,19 +1231,20 @@ const HealthHistory = () => {
                 </Col>
                 <Col xs={12}>
                   <div className="mb-3 text-center">
-                    <Badge style={{
-                      background: medicationDetail.status === "Completed"
-                        ? 'linear-gradient(135deg, #10b981, #34d399)' :
-                        medicationDetail.status === "Rejected"
-                          ? 'linear-gradient(135deg, #ef4444, #f87171)'
-                          : 'linear-gradient(135deg, #f59e0b, #fbbf24)',
-                      color: 'white',
-                      padding: '0.75rem 1.5rem',
-                      borderRadius: 'var(--parent-border-radius-lg)',
-                      fontWeight: '600',
-                      fontSize: '1rem',
-                      border: 'none'
-                    }}>
+                    <Badge
+                      className={`badge-status ${medicationDetail.status === "Completed" ? "completed" :
+                        medicationDetail.status === "Rejected" ? "rejected" :
+                          medicationDetail.status === "Active" ? "active" : "pending"}`}
+                      style={{
+                        background: medicationDetail.status === "Completed" ? '#059669' :
+                          medicationDetail.status === "Rejected" ? '#dc2626' : '#F59E0B',
+                        color: 'white',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: 'var(--parent-border-radius-lg)',
+                        fontWeight: '600',
+                        fontSize: '1rem',
+                        border: 'none'
+                      }}>
                       {medicationDetail.status === "Completed" ? "Đã hoàn thành" :
                         medicationDetail.status === "Active" ? "Đang sử dụng" :
                           medicationDetail.status === "Pending" ? "Chờ xác nhận" : medicationDetail.status}
@@ -1306,6 +1301,7 @@ const HealthHistory = () => {
         </Modal.Footer>
       </Modal>
     </div>
+   
   );
 };
 

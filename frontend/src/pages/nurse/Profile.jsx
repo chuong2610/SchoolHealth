@@ -640,12 +640,12 @@ const Profile = () => {
                   Thông tin cá nhân
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              {/* <Nav.Item>
                 <Nav.Link eventKey="professional">
                   <FaUserNurse className="me-2" />
                   Thông tin nghề nghiệp
                 </Nav.Link>
-              </Nav.Item>
+              </Nav.Item> */}
               <Nav.Item>
                 <Nav.Link eventKey="security">
                   <FaShieldAlt className="me-2" />
@@ -787,7 +787,7 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <div className="info-item">
+                    {/* <div className="info-item">
                       <div className="info-icon success">
                         <FaHeart />
                       </div>
@@ -811,9 +811,9 @@ const Profile = () => {
                           <div style={{ color: '#666' }}>{formData.bloodType}</div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="info-item">
+                    {/* <div className="info-item">
                       <div className="info-icon purple">
                         <FaExclamationTriangle />
                       </div>
@@ -831,7 +831,7 @@ const Profile = () => {
                           <div style={{ color: '#666' }}>{formData.allergies}</div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
               </Tab.Pane>
@@ -963,7 +963,7 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <div className="info-item">
+                    {/* <div className="info-item">
                       <div className="info-icon success">
                         <FaHistory />
                       </div>
@@ -975,7 +975,7 @@ const Profile = () => {
                           Xem lịch sử
                         </Button>
                       </div>
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
               </Tab.Pane>
@@ -1010,7 +1010,7 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <div className="info-item">
+                    {/* <div className="info-item">
                       <div className="info-icon success">
                         <FaLanguage />
                       </div>
@@ -1022,9 +1022,9 @@ const Profile = () => {
                           <option value="en">English</option>
                         </Form.Select>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="info-item">
+                    {/* <div className="info-item">
                       <div className="info-icon warning">
                         <FaPalette />
                       </div>
@@ -1042,7 +1042,7 @@ const Profile = () => {
                           </Button>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </Col>
                 </Row>
               </Tab.Pane>

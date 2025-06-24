@@ -41,6 +41,7 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
+import "../../styles/admin/accounts.css";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
@@ -86,16 +87,13 @@ const Accounts = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("student");
+  const [activeTab, setActiveTab] = useState("parent");
 
   const fetchUsers = async () => {
     setLoading(true);
     setError(null);
     let roleName = "";
     switch (activeTab) {
-      case "student":
-        roleName = "student";
-        break;
       case "parent":
         roleName = "parent";
         break;
@@ -203,28 +201,23 @@ const Accounts = () => {
   const handleDownloadTemplate = () => {
     const wsData = [
       ["STT",
-        "StudentNumber",
-        "StudentName",
-        "Gender",
-        "Birthday",
-        "Grade",
-        "ParentName",
-        "ParentBirthday",
-        "ParentGender",
-        "ParentPhone",
-        "ParentEmail",
+        "Name",
+        "Email",
+        "Phone",
         "Address",
+        "Gender",
+        "Role"
       ],
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(wsData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
 
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-    saveAs(data, "Mau_Import_Hoc_Sinh.xlsx");
+    saveAs(data, "Mau_Import_Tai_Khoan.xlsx");
   };
   const [formState, setFormState] = useState({
     name: "",
@@ -236,7 +229,6 @@ const Accounts = () => {
   });
 
   const [permState, setPermState] = useState({
-    viewStudents: false,
     viewReports: false,
     recordEvents: false,
     approveMeds: false,
@@ -286,7 +278,6 @@ const Accounts = () => {
   const handleShowPermModal = (user) => {
     setPermUser(user);
     setPermState({
-      viewStudents: true,
       viewReports: true,
       recordEvents: true,
       approveMeds: true,
@@ -549,18 +540,12 @@ const Accounts = () => {
       const rows = data.slice(1);
       const mappedUsers = rows.map((row, idx) => ({
         id: users.length + idx + 1,
-        studentId: row[1] || "",
-        name: row[2] || "",
-        gender: row[3] || "",
-        birthday: formatExcelDate(row[4]),
-        grade: row[5] || "",
-        parentName: row[6] || "",
-        parentBirth: formatExcelDate(row[7]),
-        parentGender: row[8] || "",
-        parentPhone: row[9] ? String(row[9]) : "",
-        parentEmail: row[10] || "",
-        address: row[11] || "",
-        role: "Học sinh",
+        name: row[1] || "",
+        email: row[2] || "",
+        phone: row[3] ? String(row[3]) : "",
+        address: row[4] || "",
+        gender: row[5] || "",
+        role: row[6] || "",
         status: "Hoạt động",
       }));
       setImportedUsers(mappedUsers);
@@ -576,7 +561,7 @@ const Accounts = () => {
     formData.append('file', importedFile);
     try {
       const res = await axiosInstance.post(
-        '/Excel/import-students-and-parents',
+        '/Excel/import-users',
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
@@ -714,7 +699,6 @@ const Accounts = () => {
                   className="admin-form-select"
                 >
                   <option value="">Chọn vai trò</option>
-                  <option value="student">Học sinh</option>
                   <option value="parent">Phụ huynh</option>
                   <option value="nurse">Nhân viên y tế</option>
                   <option value="admin">Quản trị viên</option>
@@ -912,128 +896,24 @@ const Accounts = () => {
       transition={{ duration: 0.5 }}
       className="admin-accounts-container"
     >
-      <div className="admin-accounts-header">
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h1 className="admin-accounts-title">
+      {/* Header */}
+      <motion.div variants={itemVariants} className="admin-accounts-header">
+        <Row className="align-items-center">
+          <Col>
+            <h1 className="admin-accounts-title mb-2">
               <FaUserShield className="me-3" />
               Quản lý tài khoản
             </h1>
-            <p className="admin-accounts-subtitle">Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt</p>
-          </div>
-          <div className="d-flex gap-3">
-            <button
-              className="admin-secondary-btn"
-              onClick={() => setShowStats(true)}
-            >
-              <FaChartBar />
-              Thống kê
-            </button>
-
-            {/* Add User Dropdown */}
-            <Dropdown>
-              <Dropdown.Toggle
-                className="admin-primary-btn"
-                style={{
-                  background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '0.75rem 1.5rem',
-                  color: 'white',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                <FaPlus />
-                Thêm mới
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu
-                style={{
-                  borderRadius: '12px',
-                  border: '1px solid rgba(78, 205, 196, 0.2)',
-                  boxShadow: '0 8px 32px rgba(78, 205, 196, 0.15)',
-                  padding: '0.5rem 0',
-                  minWidth: '200px'
-                }}
-              >
-                <Dropdown.Item
-                  onClick={() => handleShowModal('add')}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    borderBottom: '1px solid #F0F0F0'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaUserPlus style={{ color: '#4ECDC4' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Thêm tài khoản</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tạo tài khoản mới thủ công</div>
-                  </div>
-                </Dropdown.Item>
-
-                <Dropdown.Item
-                  onClick={() => setShowImportModal(true)}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    borderBottom: '1px solid #F0F0F0'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaFileUpload style={{ color: '#4ECDC4' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Import từ Excel</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Nhập nhiều tài khoản cùng lúc</div>
-                  </div>
-                </Dropdown.Item>
-
-                <Dropdown.Item
-                  onClick={handleDownloadTemplate}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaFileDownload style={{ color: '#4ECDC4' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Tải file mẫu</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tải về file Excel mẫu</div>
-                  </div>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        </div>
-      </div>
+            <p className="admin-accounts-subtitle mb-0">
+              Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt
+            </p>
+          </Col>
+        </Row>
+      </motion.div>
 
       <div className="d-flex">
         <div className="flex-grow-1">
           <Nav variant="pills" className="admin-accounts-nav">
-            <Nav.Item>
-              <Nav.Link
-                active={activeTab === "student"}
-                onClick={() => setActiveTab("student")}
-                data-role="student"
-                className={activeTab === "student" ? "active" : ""}
-              >
-                <FaUserGraduate /> Học sinh
-              </Nav.Link>
-            </Nav.Item>
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "parent"}
@@ -1066,157 +946,20 @@ const Accounts = () => {
             </Nav.Item>
           </Nav>
 
-          <div className="admin-accounts-search-bar">
-            <InputGroup style={{ flex: 1 }}>
-              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '12px 0 0 12px', border: '2px solid rgba(78, 205, 196, 0.2)', borderRight: 0 }}>
-                <FaSearch className="text-muted" />
-              </InputGroup.Text>
+          <div className="admin-accounts-search-bar d-flex align-items-center gap-2">
+            <InputGroup style={{ flex: 0.5 }}>
               <Form.Control
                 type="text"
                 placeholder="Tìm kiếm theo tên, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="admin-search-input border-start-0"
-                style={{ borderRadius: '0 12px 12px 0' }}
+                className="admin-search-input"
+                style={{ borderRadius: '25px', border: '2px solid #10B981' }}
               />
             </InputGroup>
 
             {/* Filter Dropdown */}
-            <Dropdown show={showFilterDropdown} onToggle={setShowFilterDropdown}>
-              <Dropdown.Toggle
-                className="admin-filter-btn"
-                style={{
-                  background: (filterGender || filterStatus) ?
-                    'linear-gradient(135deg, #4ECDC4, #26D0CE)' :
-                    'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '0.75rem 1.5rem',
-                  color: 'white',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  position: 'relative'
-                }}
-              >
-                <FaFilter />
-                Lọc
-                {(filterGender || filterStatus) && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '-6px',
-                      right: '-6px',
-                      width: '16px',
-                      height: '16px',
-                      background: '#F44336',
-                      borderRadius: '50%',
-                      fontSize: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    •
-                  </span>
-                )}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu
-                style={{
-                  minWidth: '280px',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(78, 205, 196, 0.2)',
-                  boxShadow: '0 8px 32px rgba(78, 205, 196, 0.15)',
-                  padding: '1rem'
-                }}
-              >
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontWeight: '600',
-                    marginBottom: '0.5rem',
-                    color: '#424242',
-                    fontSize: '0.875rem'
-                  }}>
-                    <FaVenusMars style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
-                    Lọc theo giới tính
-                  </label>
-                  <Form.Select
-                    value={filterGender}
-                    onChange={(e) => setFilterGender(e.target.value)}
-                    style={{
-                      border: '2px solid rgba(78, 205, 196, 0.2)',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    <option value="">Tất cả giới tính</option>
-                    <option value="male">Nam</option>
-                    <option value="female">Nữ</option>
-                    <option value="other">Khác</option>
-                  </Form.Select>
-                </div>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontWeight: '600',
-                    marginBottom: '0.5rem',
-                    color: '#424242',
-                    fontSize: '0.875rem'
-                  }}>
-                    <i className="fas fa-toggle-on" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
-                    Lọc theo trạng thái
-                  </label>
-                  <Form.Select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    style={{
-                      border: '2px solid rgba(78, 205, 196, 0.2)',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Đã khóa</option>
-                  </Form.Select>
-                </div>
-
-                <div style={{
-                  display: 'flex',
-                  gap: '0.5rem',
-                  paddingTop: '1rem',
-                  borderTop: '1px solid #E0E0E0'
-                }}>
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    onClick={handleResetFilters}
-                    style={{ flex: 1, fontSize: '0.875rem' }}
-                  >
-                    Xóa bộ lọc
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowFilterDropdown(false)}
-                    style={{
-                      flex: 1,
-                      background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                      border: 'none',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    Áp dụng
-                  </Button>
-                </div>
-              </Dropdown.Menu>
-            </Dropdown>
+            
           </div>
 
           {/* Accounts Table */}
@@ -1274,12 +1017,10 @@ const Accounts = () => {
                       <td>{user.id}</td>
                       <td>
                         <div className="admin-user-profile">
-                          <div className="admin-user-avatar">
-                            {user.name?.charAt(0)?.toUpperCase() || 'U'}
-                          </div>
+
                           <div className="admin-user-info">
                             <div className="admin-user-name">{user.name}</div>
-                            <div className="admin-user-email">{user.email}</div>
+                            
                           </div>
                         </div>
                       </td>

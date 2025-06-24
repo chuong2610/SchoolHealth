@@ -1,6 +1,6 @@
 /* Parent Health Declaration Page - Redesigned Styles */
 .health-declaration-page {
-    background: linear-gradient(135deg, #E3F2FD 0%, #F8FAFC 50%, #E3F2FD 100%);
+    background: #f8fafc;
     min-height: 100vh;
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
     position: relative;
@@ -8,28 +8,67 @@
 
 .health-declaration-page::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-        radial-gradient(circle at 15% 75%, rgba(37, 99, 235, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(59, 130, 246, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 45% 45%, rgba(37, 99, 235, 0.1) 0%, transparent 40%);
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/@backgroundparent.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.1;
     pointer-events: none;
-    z-index: 0;
+    z-index: -2;
+}
+
+/* Parallax Star Background for Health Declaration */
+.health-declaration-page::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(3px 3px at 25px 35px, rgba(43, 207, 1, 0.8), transparent),
+        radial-gradient(3px 3px at 45px 75px, rgba(206, 38, 15, 0.6), transparent),
+        radial-gradient(3px 3px at 95px 45px, rgba(37, 235, 225, 0.7), transparent),
+        radial-gradient(3px 3px at 135px 85px, rgba(96, 165, 250, 0.5), transparent),
+        radial-gradient(2px 2px at 165px 35px, rgba(238, 5, 199, 0.8), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: healthParallaxStars 25s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+@keyframes healthParallaxStars {
+    from {
+        background-position: 0 0;
+        /* transform: translateY(0) rotate(0deg); */
+    }
+
+    to {
+        background-position: 200px 100px;
+        /* transform: translateY(-100px) rotate(5deg); */
+    }
 }
 
 /* Header Section */
 .health-hero-header {
-    background: linear-gradient(135deg, #2563EB 0%, #3B82F6 25%, #60A5FA 50%, #93C5FD 75%, #DBEAFE 100%);
+    background: #2563eb;
     color: white;
-    padding: 3rem 2rem;
+    height: 22vh;
     margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .health-hero-header::before {
@@ -73,7 +112,7 @@
 }
 
 .health-hero-title {
-    font-size: 2.75rem;
+    font-size: var(--parent-font-size-3xl);
     font-weight: 800;
     margin-bottom: 1rem;
     text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
@@ -93,12 +132,13 @@
 }
 
 .health-hero-subtitle {
-    font-size: 1.25rem;
+    font-size: var(--parent-font-size-lg);
     opacity: 0.95;
     font-weight: 400;
     max-width: 650px;
     margin: 0 auto;
     line-height: 1.6;
+    margin-top: -1rem;
 }
 
 /* Main Container */
@@ -130,7 +170,7 @@
 
 /* Tab Navigation */
 .health-tab-navigation {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: white;
     padding: 2rem 2rem 1rem 2rem;
     border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 }
@@ -171,7 +211,7 @@
 }
 
 .health-nav-link.active {
-    background: linear-gradient(135deg, #2563EB, #3B82F6);
+    background: #2563eb;
     border-color: #2563EB;
     color: white;
     box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
@@ -188,7 +228,7 @@
 
 /* Section Styling */
 .health-form-section {
-    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    background: white;
     border: 2px solid #e2e8f0;
     border-radius: 20px;
     padding: 2rem;
@@ -197,22 +237,22 @@
     transition: all 0.3s ease;
 }
 
-.health-form-section::before {
+/* .health-form-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #2563EB, #3B82F6);
+    background: #2563eb;
     border-radius: 20px 20px 0 0;
-}
+} */
 
-.health-form-section:hover {
+/* .health-form-section:hover {
     border-color: #2563EB;
     box-shadow: 0 10px 30px rgba(37, 99, 235, 0.1);
     transform: translateY(-1px);
-}
+} */
 
 .health-section-header {
     display: flex;
@@ -226,7 +266,7 @@
 .health-section-icon {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, #2563EB, #3B82F6);
+    background: #2563eb;
     color: white;
     border-radius: 14px;
     display: flex;
@@ -349,7 +389,7 @@
     position: relative;
 }
 
-.health-medical-field::before {
+/* .health-medical-field::before {
     content: '';
     position: absolute;
     top: 0;
@@ -358,7 +398,7 @@
     height: 3px;
     background: linear-gradient(90deg, #2563EB, #3B82F6);
     border-radius: 16px 16px 0 0;
-}
+} */
 
 .health-medical-field:hover {
     border-color: #2563EB;
@@ -370,13 +410,13 @@
 .health-submit-area {
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     padding: 2.5rem;
-    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    /* border-top: 1px solid rgba(226, 232, 240, 0.8); */
     text-align: center;
     position: relative;
     border-radius: 0 0 24px 24px;
 }
 
-.health-submit-area::before {
+/* .health-submit-area::before {
     content: '';
     position: absolute;
     top: 0;
@@ -386,7 +426,7 @@
     height: 3px;
     background: linear-gradient(90deg, #2563EB, #3B82F6);
     border-radius: 2px;
-}
+} */
 
 .health-submit-button {
     background: linear-gradient(135deg, #2563EB, #3B82F6);
@@ -434,7 +474,7 @@
 }
 
 .health-table thead {
-    background: linear-gradient(135deg, #2563EB, #3B82F6);
+    background: #2563eb;
     color: white;
 }
 
@@ -638,10 +678,156 @@
     margin: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* ==========================================
+   Health Declaration Responsive Design
+   ========================================== */
+
+/* Large Desktops (1200px and up) */
+@media (min-width: 1200px) {
+    .health-main-container {
+        padding: 2rem 3rem;
+    }
+
+    .health-form-wrapper {
+        max-width: 1000px;
+        margin: 0 auto 3rem;
+    }
+
     .health-hero-header {
-        padding: 2.5rem 1rem;
+        height: 25vh;
+    }
+
+    .health-hero-title {
+        font-size: 3.5rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .health-tab-navigation,
+    .health-tab-content,
+    .health-submit-area {
+        padding: 2.5rem;
+    }
+
+    .health-form-section {
+        padding: 2rem;
+    }
+
+    .health-medical-field {
+        padding: 2rem;
+    }
+
+    .health-medical-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+}
+
+/* Desktops (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .health-main-container {
+        padding: 1.5rem 2rem;
+    }
+
+    .health-hero-header {
+        height: 22vh;
+    }
+
+    .health-hero-title {
+        font-size: 3rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 1.3rem;
+    }
+
+    .health-tab-navigation,
+    .health-tab-content,
+    .health-submit-area {
+        padding: 2rem;
+    }
+
+    .health-medical-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.75rem;
+    }
+}
+
+/* Tablets (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .health-main-container {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .health-hero-header {
+        height: 20vh;
+    }
+
+    .health-hero-title {
+        font-size: 2.5rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .health-form-wrapper {
+        margin: 0 1rem 2rem;
+    }
+
+    .health-tab-navigation,
+    .health-tab-content,
+    .health-submit-area {
+        padding: 1.875rem;
+    }
+
+    .health-form-section {
+        padding: 1.625rem;
+    }
+
+    .health-nav-pills {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .health-nav-link {
+        padding: 0.875rem 1.5rem;
+        min-width: 140px;
+        text-align: center;
+    }
+
+    .health-medical-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .health-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .health-table {
+        min-width: 700px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px to 767px) */
+@media (max-width: 767px) {
+    .health-main-container {
+        padding: 1rem;
+    }
+
+    .health-hero-header {
+        height: 18vh;
+        margin: -1rem -1rem 1rem;
+    }
+
+    .health-hero-content {
+        padding: 1.5rem 1rem;
+        text-align: center;
     }
 
     .health-hero-title {
@@ -656,6 +842,7 @@
 
     .health-form-wrapper {
         margin: 0 0.5rem 2rem 0.5rem;
+        border-radius: 16px;
     }
 
     .health-tab-navigation,
@@ -666,6 +853,7 @@
 
     .health-form-section {
         padding: 1.5rem;
+        margin-bottom: 1.5rem;
     }
 
     .health-nav-pills {
@@ -676,6 +864,7 @@
     .health-nav-link {
         justify-content: center;
         padding: 0.75rem 1.5rem;
+        border-radius: 12px;
     }
 
     .health-submit-button {
@@ -688,6 +877,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
+        text-align: center;
     }
 
     .health-section-title {
@@ -699,18 +889,116 @@
         gap: 1rem;
     }
 
+    .health-medical-field {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .health-form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .health-form-label {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+    }
+
+    .health-form-control {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .health-student-card {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .health-student-name {
+        font-size: 1.25rem;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .health-student-class {
+        font-size: 1rem;
+        text-align: center;
+        justify-content: center;
+    }
+
     .health-table-container {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
+    }
+
+    .health-table {
+        min-width: 600px;
+        font-size: 0.875rem;
+    }
+
+    .health-table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .health-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .health-status-badge {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .health-view-button {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    /* Modal adjustments */
+    .health-modal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .health-modal .modal-header,
+    .health-modal .modal-body,
+    .health-modal .modal-footer {
+        padding: 1.5rem;
+    }
+
+    .health-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 }
 
-@media (max-width: 576px) {
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
+    .health-main-container {
+        padding: 0.75rem;
+    }
+
     .health-hero-header {
-        padding: 2rem 1rem;
+        height: 16vh;
+        margin: -0.75rem -0.75rem 0.75rem;
+    }
+
+    .health-hero-content {
+        padding: 1.25rem 0.75rem;
     }
 
     .health-hero-title {
         font-size: 1.75rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .health-form-wrapper {
+        margin: 0 0.25rem 1.5rem;
+        border-radius: 12px;
     }
 
     .health-tab-navigation,
@@ -723,8 +1011,257 @@
         padding: 1.25rem;
     }
 
+    .health-section-title {
+        font-size: 1.1rem;
+    }
+
     .health-medical-field {
+        padding: 1.125rem;
+        border-radius: 10px;
+    }
+
+    .health-form-label {
+        font-size: 0.85rem;
+    }
+
+    .health-form-control {
+        padding: 0.6rem;
+        font-size: 0.875rem;
+    }
+
+    .health-student-card {
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .health-student-name {
+        font-size: 1.1rem;
+    }
+
+    .health-student-class {
+        font-size: 0.95rem;
+    }
+
+    .health-submit-button {
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+    }
+
+    .health-nav-link {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    .health-table {
+        min-width: 500px;
+        font-size: 0.8rem;
+    }
+
+    .health-table thead th {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .health-table tbody td {
+        padding: 0.6rem 0.4rem;
+    }
+
+    .health-status-badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+
+    .health-view-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+
+    /* Modal adjustments */
+    .health-modal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .health-modal .modal-header,
+    .health-modal .modal-body,
+    .health-modal .modal-footer {
         padding: 1.25rem;
+    }
+
+    .health-modal .modal-title {
+        font-size: 1.1rem;
+    }
+}
+
+/* Small Mobile (360px to 480px) */
+@media (max-width: 480px) {
+    .health-main-container {
+        padding: 0.5rem;
+    }
+
+    .health-hero-header {
+        height: 14vh;
+        margin: -0.5rem -0.5rem 0.5rem;
+    }
+
+    .health-hero-title {
+        font-size: 1.5rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .health-form-wrapper {
+        margin: 0 0.125rem 1.25rem;
+    }
+
+    .health-tab-navigation,
+    .health-tab-content,
+    .health-submit-area {
+        padding: 1rem;
+    }
+
+    .health-form-section {
+        padding: 1rem;
+    }
+
+    .health-section-title {
+        font-size: 1rem;
+    }
+
+    .health-medical-field {
+        padding: 1rem;
+    }
+
+    .health-form-label {
+        font-size: 0.8rem;
+    }
+
+    .health-form-control {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .health-student-card {
+        padding: 0.875rem;
+    }
+
+    .health-student-name {
+        font-size: 1rem;
+    }
+
+    .health-student-class {
+        font-size: 0.875rem;
+    }
+
+    .health-submit-button {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .health-nav-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .health-table {
+        min-width: 450px;
+        font-size: 0.75rem;
+    }
+
+    .health-table thead th {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.7rem;
+    }
+
+    .health-table tbody td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .health-status-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+    .health-view-button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+    .health-section-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+
+/* Extra Small Mobile (less than 360px) */
+@media (max-width: 359px) {
+    .health-main-container {
+        padding: 0.375rem;
+    }
+
+    .health-hero-header {
+        height: 12vh;
+        margin: -0.375rem -0.375rem 0.375rem;
+    }
+
+    .health-hero-title {
+        font-size: 1.25rem;
+    }
+
+    .health-hero-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .health-form-wrapper {
+        margin: 0 0 1rem;
+        border-radius: 8px;
+    }
+
+    .health-tab-navigation,
+    .health-tab-content,
+    .health-submit-area {
+        padding: 0.875rem;
+    }
+
+    .health-form-section {
+        padding: 0.875rem;
+    }
+
+    .health-section-title {
+        font-size: 0.9rem;
+    }
+
+    .health-medical-field {
+        padding: 0.875rem;
+        border-radius: 8px;
+    }
+
+    .health-form-control {
+        padding: 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .health-submit-button {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    .health-nav-link {
+        padding: 0.4rem 0.875rem;
+        font-size: 0.8rem;
+    }
+
+    .health-table {
+        min-width: 400px;
+        font-size: 0.7rem;
+    }
+
+    .health-section-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
     }
 }
 

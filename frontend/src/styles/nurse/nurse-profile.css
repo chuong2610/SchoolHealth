@@ -528,11 +528,209 @@
     color: var(--nurse-text-secondary);
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+/* ==========================================
+   Nurse Profile Responsive Design
+   ========================================== */
+
+/* Large Desktops (1200px and up) */
+@media (min-width: 1200px) {
+    .nurse-profile {
+        padding: 32px;
+    }
+
+    .nurse-profile-header {
+        padding: 36px;
+    }
+
+    .nurse-profile-title {
+        font-size: 2.2rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .nurse-profile-content {
+        grid-template-columns: 350px 1fr;
+        gap: 32px;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 32px;
+    }
+
+    .nurse-info-form {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .nurse-schedule-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 16px;
+    }
+
+    .nurse-performance-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+
+    .nurse-profile-avatar {
+        width: 140px;
+        height: 140px;
+        font-size: 3.5rem;
+    }
+}
+
+/* Desktops (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .nurse-profile {
+        padding: 28px;
+    }
+
+    .nurse-profile-header {
+        padding: 32px;
+    }
+
+    .nurse-profile-title {
+        font-size: 2rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 1rem;
+    }
+
+    .nurse-profile-content {
+        grid-template-columns: 320px 1fr;
+        gap: 28px;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 28px;
+    }
+
+    .nurse-info-form {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .nurse-schedule-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 14px;
+    }
+
+    .nurse-performance-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .nurse-profile-avatar {
+        width: 130px;
+        height: 130px;
+        font-size: 3.2rem;
+    }
+}
+
+/* Tablets (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .nurse-profile {
+        padding: 24px;
+    }
+
+    .nurse-profile-header {
+        padding: 28px;
+    }
+
+    .nurse-profile-title {
+        font-size: 1.8rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .nurse-profile-content {
+        grid-template-columns: 280px 1fr;
+        gap: 24px;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 24px;
+    }
+
+    .nurse-info-form {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .nurse-schedule-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .nurse-performance-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .nurse-profile-avatar {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+    }
+
+    .nurse-profile-tabs {
+        padding: 4px;
+        gap: 4px;
+    }
+
+    .nurse-profile-tab {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .nurse-cert-item {
+        padding: 18px;
+    }
+
+    .nurse-schedule-day {
+        padding: 14px 6px;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px to 767px) */
+@media (max-width: 767px) {
+    .nurse-profile {
+        padding: 20px;
+    }
+
+    .nurse-profile-header {
+        padding: 24px;
+        text-align: center;
+    }
+
+    .nurse-profile-title {
+        font-size: 1.6rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 0.9rem;
+    }
+
     .nurse-profile-content {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 20px;
     }
 
     .nurse-profile-sidebar {
@@ -542,23 +740,162 @@
     .nurse-profile-main {
         order: 1;
     }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 20px;
+    }
+
+    .nurse-info-form {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .nurse-schedule-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .nurse-performance-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .nurse-profile-avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+
+    .nurse-profile-tabs {
+        flex-direction: column;
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .nurse-profile-tab {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .nurse-info-header,
+    .nurse-certifications-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .nurse-info-edit-btn,
+    .nurse-add-cert-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+    }
+
+    .nurse-cert-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .nurse-cert-dates {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .nurse-schedule-day {
+        padding: 12px 4px;
+    }
+
+    .nurse-schedule-day-name {
+        font-size: 0.75rem;
+    }
+
+    .nurse-schedule-hours {
+        font-size: 0.7rem;
+    }
+
+    .nurse-performance-metric {
+        padding: 16px;
+    }
+
+    .nurse-performance-value {
+        font-size: 1.6rem;
+    }
+
+    .nurse-performance-label {
+        font-size: 0.8rem;
+    }
+
+    .nurse-profile-action-btn {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
 }
 
-@media (max-width: 768px) {
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
     .nurse-profile {
         padding: 16px;
     }
 
     .nurse-profile-header {
-        padding: 24px;
+        padding: 20px;
     }
 
     .nurse-profile-title {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
     }
 
-    .nurse-info-form {
-        grid-template-columns: 1fr;
+    .nurse-profile-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 16px;
+    }
+
+    .nurse-profile-avatar {
+        width: 90px;
+        height: 90px;
+        font-size: 2.2rem;
+        margin-bottom: 16px;
+    }
+
+    .nurse-profile-name {
+        font-size: 1.2rem;
+    }
+
+    .nurse-profile-role {
+        font-size: 0.9rem;
+    }
+
+    .nurse-profile-id {
+        font-size: 0.8rem;
+    }
+
+    .nurse-info-title,
+    .nurse-schedule-header,
+    .nurse-performance-header,
+    .nurse-certifications-title {
+        font-size: 1.1rem;
+    }
+
+    .nurse-info-input {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+
+    .nurse-info-label {
+        font-size: 0.85rem;
     }
 
     .nurse-schedule-grid {
@@ -566,12 +903,342 @@
         gap: 8px;
     }
 
-    .nurse-performance-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .nurse-schedule-day {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
     }
 
-    .nurse-profile-tabs {
-        flex-direction: column;
+    .nurse-schedule-day-name {
+        font-size: 0.8rem;
+    }
+
+    .nurse-schedule-hours {
+        font-size: 0.75rem;
+    }
+
+    .nurse-performance-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .nurse-performance-metric {
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 14px;
+    }
+
+    .nurse-performance-value {
+        font-size: 1.4rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .nurse-performance-content {
+        flex: 1;
+    }
+
+    .nurse-performance-label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+
+    .nurse-cert-item {
+        padding: 14px;
+    }
+
+    .nurse-cert-name {
+        font-size: 0.95rem;
+    }
+
+    .nurse-cert-issuer {
+        font-size: 0.8rem;
+    }
+
+    .nurse-profile-action-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+
+    .nurse-stat-label,
+    .nurse-stat-value {
+        font-size: 0.8rem;
+    }
+}
+
+/* Small Mobile (360px to 480px) */
+@media (max-width: 480px) {
+    .nurse-profile {
+        padding: 12px;
+    }
+
+    .nurse-profile-header {
+        padding: 16px;
+    }
+
+    .nurse-profile-title {
+        font-size: 1.2rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .nurse-profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+        margin-bottom: 14px;
+    }
+
+    .nurse-profile-name {
+        font-size: 1.1rem;
+    }
+
+    .nurse-profile-role {
+        font-size: 0.85rem;
+    }
+
+    .nurse-profile-id {
+        font-size: 0.75rem;
+    }
+
+    .nurse-info-title,
+    .nurse-schedule-header,
+    .nurse-performance-header,
+    .nurse-certifications-title {
+        font-size: 1rem;
+    }
+
+    .nurse-info-input {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 8px;
+    }
+
+    .nurse-info-label {
+        font-size: 0.8rem;
+    }
+
+    .nurse-info-edit-btn,
+    .nurse-add-cert-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .nurse-schedule-day {
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .nurse-schedule-day-name {
+        font-size: 0.75rem;
+    }
+
+    .nurse-schedule-hours {
+        font-size: 0.7rem;
+    }
+
+    .nurse-performance-metric {
+        padding: 12px;
+        gap: 12px;
+        border-radius: 8px;
+    }
+
+    .nurse-performance-value {
+        font-size: 1.2rem;
+    }
+
+    .nurse-performance-label {
+        font-size: 0.75rem;
+    }
+
+    .nurse-performance-trend {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+
+    .nurse-cert-item {
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .nurse-cert-name {
+        font-size: 0.9rem;
+    }
+
+    .nurse-cert-issuer {
+        font-size: 0.75rem;
+    }
+
+    .nurse-cert-status {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+    }
+
+    .nurse-cert-dates {
+        font-size: 0.75rem;
         gap: 4px;
+    }
+
+    .nurse-profile-action-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+        border-radius: 6px;
+    }
+
+    .nurse-profile-tab {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .nurse-stat-label,
+    .nurse-stat-value {
+        font-size: 0.75rem;
+    }
+}
+
+/* Extra Small Mobile (less than 360px) */
+@media (max-width: 359px) {
+    .nurse-profile {
+        padding: 10px;
+    }
+
+    .nurse-profile-header {
+        padding: 14px;
+    }
+
+    .nurse-profile-title {
+        font-size: 1.1rem;
+    }
+
+    .nurse-profile-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .nurse-profile-card,
+    .nurse-personal-info,
+    .nurse-work-schedule,
+    .nurse-performance,
+    .nurse-certifications {
+        padding: 12px;
+    }
+
+    .nurse-profile-avatar {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+
+    .nurse-profile-name {
+        font-size: 1rem;
+    }
+
+    .nurse-profile-role {
+        font-size: 0.8rem;
+    }
+
+    .nurse-profile-id {
+        font-size: 0.7rem;
+    }
+
+    .nurse-info-title,
+    .nurse-schedule-header,
+    .nurse-performance-header,
+    .nurse-certifications-title {
+        font-size: 0.95rem;
+    }
+
+    .nurse-info-input {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-info-label {
+        font-size: 0.75rem;
+    }
+
+    .nurse-info-edit-btn,
+    .nurse-add-cert-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-schedule-day {
+        padding: 6px;
+    }
+
+    .nurse-schedule-day-name {
+        font-size: 0.7rem;
+    }
+
+    .nurse-schedule-hours {
+        font-size: 0.65rem;
+    }
+
+    .nurse-performance-metric {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .nurse-performance-value {
+        font-size: 1.1rem;
+    }
+
+    .nurse-performance-label {
+        font-size: 0.7rem;
+    }
+
+    .nurse-cert-item {
+        padding: 10px;
+    }
+
+    .nurse-cert-name {
+        font-size: 0.85rem;
+    }
+
+    .nurse-cert-issuer {
+        font-size: 0.7rem;
+    }
+
+    .nurse-cert-status {
+        font-size: 0.65rem;
+        padding: 3px 6px;
+    }
+
+    .nurse-cert-dates {
+        font-size: 0.7rem;
+    }
+
+    .nurse-profile-action-btn {
+        padding: 5px 8px;
+        font-size: 0.7rem;
+    }
+
+    .nurse-profile-tab {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-stat-label,
+    .nurse-stat-value {
+        font-size: 0.7rem;
     }
 }
