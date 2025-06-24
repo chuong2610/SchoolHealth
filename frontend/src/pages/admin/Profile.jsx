@@ -1,6 +1,28 @@
-import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col, Tab, Tabs } from "react-bootstrap";
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaEdit, FaKey, FaHistory, FaCog, FaCamera, FaBell, FaLock, FaCalendarAlt, FaUserTie, FaIdCard, FaGlobe, FaEye, FaEyeSlash, FaClock, FaUserShield, FaCheck, FaExclamationTriangle, FaSave } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaEdit,
+  FaKey,
+  FaHistory,
+  FaCog,
+  FaCamera,
+  FaBell,
+  FaLock,
+  FaCalendarAlt,
+  FaUserTie,
+  FaIdCard,
+  FaGlobe,
+  FaEye,
+  FaEyeSlash,
+  FaClock,
+  FaUserShield,
+  FaCheck,
+  FaExclamationTriangle,
+  FaSave,
+} from "react-icons/fa";
 import "../../styles/admin/profile.css";
 
 const adminProfile = {
@@ -17,15 +39,45 @@ const adminProfile = {
   employeeId: "ADM001",
   lastLogin: "2024-01-15 14:30",
   language: "Tiếng Việt",
-  timezone: "Asia/Ho_Chi_Minh"
+  timezone: "Asia/Ho_Chi_Minh",
 };
 
 const recentActivities = [
-  { id: 1, action: "Cập nhật thông tin học sinh", time: "2 giờ trước", icon: "👤", type: "info" },
-  { id: 2, action: "Tạo thông báo tiêm chủng", time: "4 giờ trước", icon: "💉", type: "success" },
-  { id: 3, action: "Phê duyệt đơn thuốc", time: "1 ngày trước", icon: "💊", type: "warning" },
-  { id: 4, action: "Xuất báo cáo sức khỏe", time: "2 ngày trước", icon: "📊", type: "info" },
-  { id: 5, action: "Cập nhật kho thuốc", time: "3 ngày trước", icon: "🏥", type: "success" }
+  {
+    id: 1,
+    action: "Cập nhật thông tin học sinh",
+    time: "2 giờ trước",
+    icon: "👤",
+    type: "info",
+  },
+  {
+    id: 2,
+    action: "Tạo thông báo tiêm chủng",
+    time: "4 giờ trước",
+    icon: "💉",
+    type: "success",
+  },
+  {
+    id: 3,
+    action: "Phê duyệt đơn thuốc",
+    time: "1 ngày trước",
+    icon: "💊",
+    type: "warning",
+  },
+  {
+    id: 4,
+    action: "Xuất báo cáo sức khỏe",
+    time: "2 ngày trước",
+    icon: "📊",
+    type: "info",
+  },
+  {
+    id: 5,
+    action: "Cập nhật kho thuốc",
+    time: "3 ngày trước",
+    icon: "🏥",
+    type: "success",
+  },
 ];
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -33,17 +85,129 @@ import axios from "axios";
 import axiosInstance from "../../api/axiosInstance";
 
 const Profile = () => {
-  
+  const [showEditModal, setShowEditModal] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const userId = localStorage.getItem("userId");
+  const [activeTab, setActiveTab] = useState("personal");
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showPasswordCurrent, setShowPasswordCurrent] = useState(false);
+  const [showPasswordNew, setShowPasswordNew] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
+  const [formData, setFormData] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
+  useEffect(() => {
+    if (showEditModal && userInfo) {
+      setFormData({
+        name: userInfo.name || "",
+        email: userInfo.email || "",
+        phone: userInfo.phone || "",
+        address: userInfo.address || "",
+      });
+      setPreviewImage(userInfo.imageUrl || "");
+      setSelectedImage(null);
+    }
+  }, [showEditModal, userInfo]);
+
+  const uploadAvatar = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("http://localhost:5182/api/Upload/image", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) throw new Error("Upload ảnh thất bại!");
+
+    const data = await response.json();
+    return data.fileName; // hoặc data.filePath nếu backend yêu cầu
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      let imageUrl = userInfo.imageUrl;
+
+      // Nếu userInfo.imageUrl là URL đầy đủ, tách lấy tên file
+      if (imageUrl && imageUrl.startsWith("http")) {
+        // Lấy phần sau cùng của đường dẫn
+        imageUrl = imageUrl.split("/").pop();
+      }
+
+      if (selectedImage) {
+        imageUrl = await uploadAvatar(selectedImage);
+      }
+
+      await axiosInstance.patch(`/User/profile/${userId}`, {
+        ...formData,
+        imageUrl,
+      });
+
+      setShowEditModal(false);
+      // Reload lại userInfo nếu muốn cập nhật giao diện ngay
+      const response = await axiosInstance.get(`/User/${userId}`);
+      setUserInfo(response.data);
+    } catch (error) {
+      alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
+      console.error(error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleChangePassword = async () => {
+    try {
+      // Lấy userId từ localStorage hoặc state
+      const userId = localStorage.getItem("userId");
+
+      // Lấy dữ liệu từ form đổi mật khẩu
+      // Giả sử bạn có 3 state: currentPassword, newPassword, confirmNewPassword
+      const payload = {
+        currentPassword, // mật khẩu hiện tại
+        newPassword, // mật khẩu mới
+        confirmNewPassword, // xác nhận mật khẩu mới
+      };
+
+      await axiosInstance.patch(`/User/change-password/${userId}`, payload);
+
+      alert("Đổi mật khẩu thành công!");
+      setShowPasswordModal(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
+    } catch (error) {
+      alert(
+        "Đổi mật khẩu thất bại: " +
+          (error.response?.data?.message || error.message)
+      );
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axiosInstance.get(
-          `/User/${userId}`
-        );
+        const response = await axiosInstance.get(`/User/${userId}`);
         setUserInfo(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -53,7 +217,7 @@ const Profile = () => {
 
   if (!userInfo) return <div>Loading...</div>;
 
-  console.log("Image URL:", userInfo.imageUrl);
+  // console.log("Image URL:", userInfo.imageUrl);
 
   return (
     <div className="admin-profile-container">
@@ -63,13 +227,13 @@ const Profile = () => {
         <div className="admin-profile-header-content">
           <div className="admin-profile-avatar-section">
             <div className="admin-profile-avatar">
-              <img src={adminProfile.avatar} alt="Avatar" />
+              <img src={userInfo.imageUrl} alt="Avatar" />
               <button className="admin-profile-avatar-edit">
                 <FaCamera />
               </button>
             </div>
             <div className="admin-profile-info">
-              <h2 className="admin-profile-name">{adminProfile.name}</h2>
+              <h2 className="admin-profile-name">{userInfo.name}</h2>
               <p className="admin-profile-position">
                 <FaUserTie className="me-2" />
                 {adminProfile.position} - {adminProfile.department}
@@ -99,228 +263,76 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Profile Stats */}
-      <div className="admin-profile-stats-grid">
-        <div className="admin-profile-stat-card">
-          <div className="admin-profile-stat-icon">
-            <FaUser />
-          </div>
-          <div className="admin-profile-stat-content">
-            <div className="admin-profile-stat-value">15</div>
-            <div className="admin-profile-stat-label">Thông báo đã tạo</div>
-          </div>
+      {/* Personal Information - moved up here */}
+      <div
+        className="admin-profile-section"
+        style={{ width: "100%", margin: "32px 0 0 0" }}
+      >
+        <div className="admin-profile-section-header">
+          <h5 className="admin-profile-section-title">
+            <FaUser className="me-2" />
+            Thông tin cá nhân
+          </h5>
         </div>
-        <div className="admin-profile-stat-card">
-          <div className="admin-profile-stat-icon">
-            <FaHistory />
+        <div className="admin-profile-info-grid">
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaUser className="me-2" />
+              Họ và tên
+            </label>
+            <div className="admin-profile-info-value">{userInfo.name}</div>
           </div>
-          <div className="admin-profile-stat-content">
-            <div className="admin-profile-stat-value">142</div>
-            <div className="admin-profile-stat-label">Hoạt động tháng này</div>
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaCalendarAlt className="me-2" />
+              Ngày sinh
+            </label>
+            <div className="admin-profile-info-value">
+              {userInfo.dateOfBirth.split("-").reverse().join("/")}
+            </div>
           </div>
-        </div>
-        <div className="admin-profile-stat-card">
-          <div className="admin-profile-stat-icon">
-            <FaCalendarAlt />
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaUser className="me-2" />
+              Giới tính
+            </label>
+            <div className="admin-profile-info-value">{userInfo.gender}</div>
           </div>
-          <div className="admin-profile-stat-content">
-            <div className="admin-profile-stat-value">365</div>
-            <div className="admin-profile-stat-label">Ngày làm việc</div>
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaUserTie className="me-2" />
+              Chức vụ
+            </label>
+            <div className="admin-profile-info-value">
+              {adminProfile.position}
+            </div>
           </div>
-        </div>
-        <div className="admin-profile-stat-card">
-          <div className="admin-profile-stat-icon">
-            <FaUserShield />
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaEnvelope className="me-2" />
+              Email
+            </label>
+            <div className="admin-profile-info-value">{userInfo.email}</div>
           </div>
-          <div className="admin-profile-stat-content">
-            <div className="admin-profile-stat-value">98%</div>
-            <div className="admin-profile-stat-label">Độ tin cậy</div>
+          <div className="admin-profile-info-item">
+            <label className="admin-profile-info-label">
+              <FaPhone className="me-2" />
+              Số điện thoại
+            </label>
+            <div className="admin-profile-info-value">{userInfo.phone}</div>
+          </div>
+          <div className="admin-profile-info-item full-width">
+            <label className="admin-profile-info-label">
+              <FaMapMarkerAlt className="me-2" />
+              Địa chỉ
+            </label>
+            <div className="admin-profile-info-value">{userInfo.address}</div>
           </div>
         </div>
       </div>
 
       {/* Profile Content */}
-      <div className="row g-4">
-        {/* Personal Information */}
-        <div className="col-xl-8">
-          <div className="admin-profile-section">
-            <div className="admin-profile-section-header">
-              <h5 className="admin-profile-section-title">
-                <FaUser className="me-2" />
-                Thông tin cá nhân
-              </h5>
-              <button
-                className="admin-profile-edit-btn"
-                onClick={() => setShowEditModal(true)}
-              >
-                <FaEdit className="me-1" />
-                Chỉnh sửa
-              </button>
-            </div>
-            <div className="admin-profile-info-grid">
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaUser className="me-2" />Họ và tên
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.name}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaCalendarAlt className="me-2" />Ngày sinh
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.dob.split("-").reverse().join("/")}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaUser className="me-2" />Giới tính
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.gender}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaUserTie className="me-2" />Chức vụ
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.position}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaEnvelope className="me-2" />Email
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.email}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaPhone className="me-2" />Số điện thoại
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.phone}</div>
-              </div>
-              <div className="admin-profile-info-item full-width">
-                <label className="admin-profile-info-label">
-                  <FaMapMarkerAlt className="me-2" />Địa chỉ
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.address}</div>
-              </div>
-            </div>
-          </div>
-
-          {/* System Settings */}
-          <div className="admin-profile-section">
-            <div className="admin-profile-section-header">
-              <h5 className="admin-profile-section-title">
-                <FaCog className="me-2" />
-                Cài đặt hệ thống
-              </h5>
-              <button
-                className="admin-profile-edit-btn"
-                onClick={() => setShowEditModal(true)}
-              >
-                <FaCog className="me-1" />
-                Cài đặt
-              </button>
-            </div>
-            <div className="admin-profile-info-grid">
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaGlobe className="me-2" />Ngôn ngữ
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.language}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaClock className="me-2" />Múi giờ
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.timezone}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaCalendarAlt className="me-2" />Ngày tham gia
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.joinDate.split("-").reverse().join("/")}</div>
-              </div>
-              <div className="admin-profile-info-item">
-                <label className="admin-profile-info-label">
-                  <FaHistory className="me-2" />Đăng nhập cuối
-                </label>
-                <div className="admin-profile-info-value">{adminProfile.lastLogin}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="col-xl-4">
-          {/* Security Status */}
-          <div className="admin-profile-section">
-            <div className="admin-profile-section-header">
-              <h5 className="admin-profile-section-title">
-                <FaUserShield className="me-2" />
-                Trạng thái bảo mật
-              </h5>
-            </div>
-            <div className="admin-profile-security-list">
-              <div className="admin-profile-security-item">
-                <div className="admin-profile-security-icon success">
-                  <FaLock />
-                </div>
-                <div className="admin-profile-security-content">
-                  <div className="admin-profile-security-title">Mật khẩu mạnh</div>
-                  <div className="admin-profile-security-desc">Cập nhật 30 ngày trước</div>
-                </div>
-                <div className="admin-profile-security-status enabled">
-                  <FaCheck />
-                </div>
-              </div>
-              <div className="admin-profile-security-item">
-                <div className="admin-profile-security-icon success">
-                  <FaBell />
-                </div>
-                <div className="admin-profile-security-content">
-                  <div className="admin-profile-security-title">Thông báo bảo mật</div>
-                  <div className="admin-profile-security-desc">Đã bật</div>
-                </div>
-                <div className="admin-profile-security-status enabled">
-                  <FaCheck />
-                </div>
-              </div>
-              <div className="admin-profile-security-item">
-                <div className="admin-profile-security-icon warning">
-                  <FaExclamationTriangle />
-                </div>
-                <div className="admin-profile-security-content">
-                  <div className="admin-profile-security-title">Xác thực 2 bước</div>
-                  <div className="admin-profile-security-desc">Chưa kích hoạt</div>
-                </div>
-                <div className="admin-profile-security-status disabled">
-                  <FaExclamationTriangle />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Activities */}
-          <div className="admin-profile-section">
-            <div className="admin-profile-section-header">
-              <h5 className="admin-profile-section-title">
-                <FaHistory className="me-2" />
-                Hoạt động gần đây
-              </h5>
-            </div>
-            <div className="admin-profile-activity-list">
-              {recentActivities.map(activity => (
-                <div key={activity.id} className="admin-profile-activity-item">
-                  <div className={`admin-profile-activity-icon ${activity.type}`}>
-                    {activity.icon}
-                  </div>
-                  <div className="admin-profile-activity-content">
-                    <div className="admin-profile-activity-title">{activity.action}</div>
-                    <div className="admin-profile-activity-time">{activity.time}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Đã xoá sidebar và các phần không cần thiết */}
 
       {/* Edit Profile Modal */}
       <Modal
@@ -347,7 +359,8 @@ const Profile = () => {
                   <Col md={6}>
                     <Form.Group className="admin-form-group">
                       <Form.Label className="admin-form-label">
-                        <FaUser className="me-2" />Họ và tên
+                        <FaUser className="me-2" />
+                        Họ và tên
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -361,7 +374,8 @@ const Profile = () => {
                   <Col md={6}>
                     <Form.Group className="admin-form-group">
                       <Form.Label className="admin-form-label">
-                        <FaEnvelope className="me-2" />Email
+                        <FaEnvelope className="me-2" />
+                        Email
                       </Form.Label>
                       <Form.Control
                         type="email"
@@ -375,7 +389,8 @@ const Profile = () => {
                   <Col md={6}>
                     <Form.Group className="admin-form-group">
                       <Form.Label className="admin-form-label">
-                        <FaPhone className="me-2" />Số điện thoại
+                        <FaPhone className="me-2" />
+                        Số điện thoại
                       </Form.Label>
                       <Form.Control
                         type="tel"
@@ -386,26 +401,12 @@ const Profile = () => {
                       />
                     </Form.Group>
                   </Col>
-                  <Col md={6}>
-                    <Form.Group className="admin-form-group">
-                      <Form.Label className="admin-form-label">
-                        <FaGlobe className="me-2" />Ngôn ngữ
-                      </Form.Label>
-                      <Form.Select
-                        name="language"
-                        value={formData.language}
-                        onChange={handleInputChange}
-                        className="admin-form-select"
-                      >
-                        <option value="Tiếng Việt">Tiếng Việt</option>
-                        <option value="English">English</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
+
                   <Col md={12}>
                     <Form.Group className="admin-form-group">
                       <Form.Label className="admin-form-label">
-                        <FaMapMarkerAlt className="me-2" />Địa chỉ
+                        <FaMapMarkerAlt className="me-2" />
+                        Địa chỉ
                       </Form.Label>
                       <Form.Control
                         as="textarea"
@@ -417,69 +418,38 @@ const Profile = () => {
                       />
                     </Form.Group>
                   </Col>
-                </Row>
-              </div>
-            </Tab>
-            <Tab eventKey="system" title="Cài đặt hệ thống">
-              <div className="admin-profile-form-section">
-                <Row>
-                  <Col md={6}>
+                  <Col md={12} className="mb-3">
                     <Form.Group className="admin-form-group">
                       <Form.Label className="admin-form-label">
-                        <FaClock className="me-2" />Múi giờ
+                        <FaCamera className="me-2" />
+                        Ảnh đại diện
                       </Form.Label>
-                      <Form.Select
-                        name="timezone"
-                        value={formData.timezone}
-                        onChange={handleInputChange}
-                        className="admin-form-select"
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 16,
+                        }}
                       >
-                        <option value="Asia/Ho_Chi_Minh">Asia/Ho_Chi_Minh</option>
-                        <option value="Asia/Bangkok">Asia/Bangkok</option>
-                        <option value="UTC">UTC</option>
-                      </Form.Select>
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="admin-form-group">
-                      <Form.Label className="admin-form-label">
-                        <FaBell className="me-2" />Thông báo email
-                      </Form.Label>
-                      <Form.Check
-                        type="switch"
-                        id="email-notifications"
-                        label="Nhận thông báo qua email"
-                        defaultChecked
-                        className="admin-form-switch"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="admin-form-group">
-                      <Form.Label className="admin-form-label">
-                        <FaUserShield className="me-2" />Xác thực 2 bước
-                      </Form.Label>
-                      <Form.Check
-                        type="switch"
-                        id="two-factor"
-                        label="Kích hoạt xác thực 2 bước"
-                        defaultChecked={false}
-                        className="admin-form-switch"
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group className="admin-form-group">
-                      <Form.Label className="admin-form-label">
-                        <FaBell className="me-2" />Thông báo desktop
-                      </Form.Label>
-                      <Form.Check
-                        type="switch"
-                        id="desktop-notifications"
-                        label="Hiển thị thông báo trên desktop"
-                        defaultChecked={true}
-                        className="admin-form-switch"
-                      />
+                        <img
+                          src={previewImage || "/uploads/default.jpg"}
+                          alt="Preview"
+                          style={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "2px solid #eee",
+                            marginRight: 12,
+                          }}
+                        />
+                        <Form.Control
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          style={{ maxWidth: 220 }}
+                        />
+                      </div>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -516,7 +486,9 @@ const Profile = () => {
         <Modal.Body className="admin-modal-body">
           <Form>
             <Form.Group className="admin-form-group">
-              <Form.Label className="admin-form-label">Mật khẩu hiện tại</Form.Label>
+              <Form.Label className="admin-form-label">
+                Mật khẩu hiện tại
+              </Form.Label>
               <div className="admin-password-input-group">
                 <Form.Control
                   type={showPasswordCurrent ? "text" : "password"}
@@ -550,7 +522,9 @@ const Profile = () => {
               </div>
             </Form.Group>
             <Form.Group className="admin-form-group">
-              <Form.Label className="admin-form-label">Xác nhận mật khẩu mới</Form.Label>
+              <Form.Label className="admin-form-label">
+                Xác nhận mật khẩu mới
+              </Form.Label>
               <div className="admin-password-input-group">
                 <Form.Control
                   type={showPasswordConfirm ? "text" : "password"}
@@ -578,7 +552,10 @@ const Profile = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="admin-modal-footer">
-          <Button variant="secondary" onClick={() => setShowPasswordModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowPasswordModal(false)}
+          >
             Hủy
           </Button>
           <Button

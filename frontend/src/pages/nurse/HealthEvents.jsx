@@ -61,6 +61,7 @@ import {
   FaUserMd,
   FaInfoCircle,
 } from "react-icons/fa";
+import PaginationBar from "../../components/common/PaginationBar";
 // CSS được import tự động từ main.jsx
 
 // Force CSS reload with timestamp
@@ -100,7 +101,7 @@ const HealthEvents = () => {
   //phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 10;
+  const pageSize = 2;
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page); // 👈 trigger useEffect để fetch lại dữ liệu
@@ -269,6 +270,9 @@ const HealthEvents = () => {
   const totalEvents = events.length;
   const totalRecent = recentEvents.length;
   const totalToday = todayEvents.length;
+  const totalEmergency = events.filter(
+    (e) => e.eventType === "emergency"
+  ).length;
 
   // Original handlers with enhanced error handling
   const handleChangeSelect = (idx, value) => {
@@ -784,6 +788,8 @@ const HealthEvents = () => {
     </div>
   );
 
+  const [totalItems, setTotalItems] = useState(0);
+
   useEffect(() => {
     const fetchMedicalEvents = async () => {
       try {
@@ -791,8 +797,9 @@ const HealthEvents = () => {
         const res = await getMedicalEvents(currentPage, pageSize, search);
 
         setEvents(Array.isArray(res.items) ? res.items : []);
-        setCurrentPage(res.currentPage); // nếu bạn có biến state currentPage
-        setTotalPages(res.totalPages); // nếu bạn có biến state totalPages
+        setCurrentPage(res.currentPage);
+        setTotalPages(res.totalPages);
+        setTotalItems(res.totalItems);
 
         setTimeout(() => setAnimateStats(true), 100);
       } catch (error) {
@@ -1335,73 +1342,118 @@ const HealthEvents = () => {
               Theo dõi và quản lý các sự kiện y tế trong trường
             </p>
           </div>
-          <div className="header-right">
-            <div className="quick-stats">
-              <div className="stat-item pending">
-                <FaCalendarAlt className="stat-icon" />
-                <span className="stat-value">{totalEvents}</span>
-                <span className="stat-label">Tổng sự kiện</span>
-              </div>
-              <div className="stat-item active">
-                <FaClock className="stat-icon" />
-                <span className="stat-value">{totalRecent}</span>
-                <span className="stat-label">Gần đây</span>
-              </div>
-              <div className="stat-item completed">
-                <FaExclamationTriangle className="stat-icon" />
-                <span className="stat-value">{totalEmergency}</span>
-                <span className="stat-label">Cấp cứu</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="nurse-events-stats">
-        <div className="nurse-events-stat-card">
+      <div
+        className="nurse-events-stats-row"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "stretch",
+          gap: "32px",
+          marginBottom: "32px",
+          flexWrap: "wrap",
+        }}
+      >
+        <div
+          className="nurse-events-stat-card"
+          style={{
+            minWidth: 180,
+            flex: 1,
+            maxWidth: 260,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
+            padding: 24,
+          }}
+        >
           <div className="nurse-events-stat-icon">
             <img
               src={cendal}
               alt="Calendar"
-              style={{ width: "55px", height: "55px" }}
+              style={{ width: 55, height: 55 }}
             />
-
-            <div className="nurse-events-stat-label">Tổng sự kiện</div>
-            <div className="nurse-events-stat-value">{totalEvents}</div>
           </div>
-
-          <div className="nurse-events-stat-card">
-            <div className="nurse-events-stat-icon">
-              <img
-                src={nearly}
-                alt="Nearly"
-                style={{ width: "55px", height: "55px" }}
-              />
-            </div>
-            <div className="nurse-events-stat-label">Gần đây (7 ngày)</div>
-            <div className="nurse-events-stat-value">{totalRecent}</div>
+          <div
+            className="nurse-events-stat-label"
+            style={{ fontWeight: 600, marginTop: 8 }}
+          >
+            Tổng sự kiện
           </div>
-
-          <div className="nurse-events-stat-card">
-            <div className="nurse-events-stat-icon">
-              <img
-                src={Today}
-                alt="Today"
-                style={{ width: "55px", height: "55px" }}
-              />
-            </div>
-            <div className="nurse-events-stat-label">Hôm nay</div>
-            <div className="nurse-events-stat-value">{totalToday}</div>
+          <div
+            className="nurse-events-stat-value"
+            style={{ fontSize: 32, color: "#43a047", fontWeight: 700 }}
+          >
+            {totalItems}
           </div>
-
-          {/* <div className="nurse-events-stat-card">
-                    <div className="nurse-events-stat-icon">
-                        <FaExclamationTriangle />
-                    </div>
-                    <div className="nurse-events-stat-label">Cấp cứu</div>
-                    <div className="nurse-events-stat-value">{totalEmergency}</div>
-                </div> */}
+        </div>
+        <div
+          className="nurse-events-stat-card"
+          style={{
+            minWidth: 180,
+            flex: 1,
+            maxWidth: 260,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
+            padding: 24,
+          }}
+        >
+          <div className="nurse-events-stat-icon">
+            <img src={nearly} alt="Nearly" style={{ width: 55, height: 55 }} />
+          </div>
+          <div
+            className="nurse-events-stat-label"
+            style={{ fontWeight: 600, marginTop: 8 }}
+          >
+            Gần đây (7 ngày)
+          </div>
+          <div
+            className="nurse-events-stat-value"
+            style={{ fontSize: 32, color: "#ffa000", fontWeight: 700 }}
+          >
+            {totalRecent}
+          </div>
+        </div>
+        <div
+          className="nurse-events-stat-card"
+          style={{
+            minWidth: 180,
+            flex: 1,
+            maxWidth: 260,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            background: "#fff",
+            borderRadius: 16,
+            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
+            padding: 24,
+          }}
+        >
+          <div className="nurse-events-stat-icon">
+            <img src={Today} alt="Today" style={{ width: 55, height: 55 }} />
+          </div>
+          <div
+            className="nurse-events-stat-label"
+            style={{ fontWeight: 600, marginTop: 8 }}
+          >
+            Hôm nay
+          </div>
+          <div
+            className="nurse-events-stat-value"
+            style={{ fontSize: 32, color: "#039be5", fontWeight: 700 }}
+          >
+            {totalToday}
+          </div>
         </div>
       </div>
 
@@ -1432,83 +1484,94 @@ const HealthEvents = () => {
             <p>Đang tải dữ liệu...</p>
           </div>
         ) : (
-          <Tabs
-            activeKey={activeTab}
-            onSelect={setActiveTab}
-            className="medicine-tabs"
-          >
-            <Tab
-              eventKey="all"
-              title={
-                <div className="tab-title pending">
-                  <FaList className="tab-icon" />
-                  <span>Tất cả</span>
-                  <Badge bg="primary" className="tab-badge">
-                    {totalEvents}
-                  </Badge>
-                </div>
-              }
+          <>
+            <Tabs
+              activeKey={activeTab}
+              onSelect={setActiveTab}
+              className="medicine-tabs"
             >
-              <div className="tab-content">
-                {renderTable(
-                  allEvents,
-                  "all",
-                  search,
-                  setSearch,
-                  allShowAll,
-                  setAllShowAll
-                )}
-              </div>
-            </Tab>
+              <Tab
+                eventKey="all"
+                title={
+                  <div className="tab-title pending">
+                    <FaList className="tab-icon" />
+                    <span>Tất cả</span>
+                    <Badge bg="primary" className="tab-badge">
+                      {totalItems}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    allEvents,
+                    "all",
+                    search,
+                    setSearch,
+                    allShowAll,
+                    setAllShowAll
+                  )}
+                </div>
+              </Tab>
 
-            <Tab
-              eventKey="recent"
-              title={
-                <div className="tab-title active">
-                  <FaHistory className="tab-icon" />
-                  <span>Gần đây</span>
-                  <Badge bg="info" className="tab-badge">
-                    {totalRecent}
-                  </Badge>
+              <Tab
+                eventKey="recent"
+                title={
+                  <div className="tab-title active">
+                    <FaHistory className="tab-icon" />
+                    <span>Gần đây</span>
+                    <Badge bg="info" className="tab-badge">
+                      {totalRecent}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    recentEvents,
+                    "recent",
+                    search,
+                    setSearch,
+                    recentShowAll,
+                    setRecentShowAll
+                  )}
                 </div>
-              }
-            >
-              <div className="tab-content">
-                {renderTable(
-                  recentEvents,
-                  "recent",
-                  search,
-                  setSearch,
-                  recentShowAll,
-                  setRecentShowAll
-                )}
-              </div>
-            </Tab>
+              </Tab>
 
-            <Tab
-              eventKey="today"
-              title={
-                <div className="tab-title today">
-                  <FaCalendarAlt className="tab-icon" />
-                  <span>Hôm nay</span>
-                  <Badge bg="warning" className="tab-badge">
-                    {totalToday}
-                  </Badge>
+              <Tab
+                eventKey="today"
+                title={
+                  <div className="tab-title today">
+                    <FaCalendarAlt className="tab-icon" />
+                    <span>Hôm nay</span>
+                    <Badge bg="warning" className="tab-badge">
+                      {totalToday}
+                    </Badge>
+                  </div>
+                }
+              >
+                <div className="tab-content">
+                  {renderTable(
+                    todayEvents,
+                    "today",
+                    search,
+                    setSearch,
+                    todayShowAll,
+                    setTodayShowAll
+                  )}
                 </div>
-              }
-            >
-              <div className="tab-content">
-                {renderTable(
-                  todayEvents,
-                  "today",
-                  search,
-                  setSearch,
-                  todayShowAll,
-                  setTodayShowAll
-                )}
+              </Tab>
+            </Tabs>
+            {totalPages > 1 && (
+              <div className="d-flex justify-content-center mt-4">
+                <PaginationBar
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
               </div>
-            </Tab>
-          </Tabs>
+            )}
+          </>
         )}
       </div>
 
@@ -1719,7 +1782,7 @@ const HealthEvents = () => {
                 Đóng
               </Button>
 
-              <div className="action-buttons">
+              {/* <div className="action-buttons">
                 {nurseNote.trim() && (
                   <Button
                     type="submit"
@@ -1730,7 +1793,7 @@ const HealthEvents = () => {
                     Lưu ghi chú
                   </Button>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </Form>

@@ -41,34 +41,34 @@ const ParentDashboard = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const observerRef = useRef();
+  // const observerRef = useRef();
 
-  // Scroll animation observer
-  useEffect(() => {
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-        }
-      });
-    };
+  // // Scroll animation observer
+  // useEffect(() => {
+  //   const observerCallback = (entries) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting) {
+  //         entry.target.classList.add('animate-in');
+  //       }
+  //     });
+  //   };
 
-    observerRef.current = new IntersectionObserver(observerCallback, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
+  //   observerRef.current = new IntersectionObserver(observerCallback, {
+  //     threshold: 0.1,
+  //     rootMargin: '0px 0px -50px 0px'
+  //   });
 
-    const animateElements = document.querySelectorAll('.scroll-animate');
-    animateElements.forEach((el) => {
-      observerRef.current.observe(el);
-    });
+  //   const animateElements = document.querySelectorAll('.scroll-animate');
+  //   animateElements.forEach((el) => {
+  //     observerRef.current.observe(el);
+  //   });
 
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [blogs]); // Re-run when blogs change
+  //   return () => {
+  //     if (observerRef.current) {
+  //       observerRef.current.disconnect();
+  //     }
+  //   };
+  // }, [blogs]); // Re-run when blogs change
   const [animateStats, setAnimateStats] = useState(false);
   const token = localStorage.getItem("token");
   const [currentPage, setCurrentPage] = useState(1);

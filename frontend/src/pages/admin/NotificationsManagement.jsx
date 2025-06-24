@@ -341,7 +341,7 @@ const NotificationsManagement = () => {
           <div className="admin-notifications-stat-icon">
             <i className="fas fa-calendar-day"></i>
           </div>
-          <div className="admin-notifications-stat-value">{todayNotifications.length}</div>
+          <div className="admin-notifications-stat-value">0</div>
           <div className="admin-notifications-stat-label">Hôm nay</div>
         </div>
       </div>
@@ -409,7 +409,7 @@ const NotificationsManagement = () => {
 
       {/* Notifications Table */}
       <div className="admin-notifications-table-container">
-        {filteredNotifications.length === 0 ? (
+        {notifications.length === 0 ? (
           <div className="admin-notifications-empty">
             <div className="admin-notifications-empty-icon">
               <i className="fas fa-bell-slash"></i>

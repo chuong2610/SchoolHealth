@@ -110,15 +110,8 @@ const App = () => {
                 <Route path="admin">
                   <Route index element={<AdminDashboard />} />
                   <Route path="accounts" element={<AdminAccounts />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                  <Route
-                    path="medicines/plan"
-                    element={<AdminMedicinePlan />}
-                  />
-                  <Route
-                    path="medicines/requests"
-                    element={<AdminMedicineRequests />}
-                  />
+              
+                  
                   <Route
                     path="medicines/inventory"
                     element={<AdminMedicineInventory />}
