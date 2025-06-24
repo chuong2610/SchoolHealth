@@ -44,12 +44,14 @@ const Sidebar = (props) => {
             { path: '/admin', icon: <FaHome />, label: 'Dashboard' },
             { path: '/admin/accounts', icon: <FaUserShield />, label: 'Quản lý tài khoản' },
             { path: '/admin/categories', icon: <FaList />, label: 'Danh mục' },
-            { path: '/admin/medicines/inventory', icon: <FaBoxes />, label: 'Kho thuốc' },
-            { path: '/admin/medicines/plan', icon: <FaClipboardCheck />, label: 'Kế hoạch thuốc' },
+            { path: '/admin/medicines/inventory', icon: <FaBoxes />, label: 'Quản lý Kho thuốc' },
+            { path: '/admin/medicines/plan', icon: <FaClipboardCheck />, label: 'Kế hoạch sử dụng thuốc' },
             { path: '/admin/medicines/requests', icon: <FaMedkit />, label: 'Yêu cầu cấp thuốc' },
             { path: '/admin/notification/management', icon: <FaBell />, label: 'Thông báo' },
             { path: '/admin/reports', icon: <FaFileAlt />, label: 'Báo cáo thống kê' },
             { path: '/admin/profile', icon: <FaUserCog />, label: 'Hồ sơ cá nhân' },
+            { path: '/admin/blog-posts', icon: <FaUserCog />, label: 'Quản lý Blog' },
+
             
         ];
     } else if (user.role === 'nurse') {

@@ -102,6 +102,10 @@ const NotificationsManagement = () => {
     },
   });
   const [notifications, setNotifications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 2;
   const [modalDetail, setModalDetail] = useState({
     status: false,
     notificationDetail: {},
@@ -159,8 +163,7 @@ const NotificationsManagement = () => {
     }
   };
 
-  useEffect(() => {
-  }, [classList]);
+  useEffect(() => {}, [classList]);
 
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
@@ -230,12 +233,10 @@ const NotificationsManagement = () => {
       if (res) {
         setModalDetail({ notificationDetail: { ...res }, status: true });
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
-  useEffect(() => {
-  }, [modalDetail]);
+  useEffect(() => {}, [modalDetail]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
     // const healthCheckId = 5;
@@ -253,8 +254,7 @@ const NotificationsManagement = () => {
       throw error;
     }
   };
-  useEffect(() => {
-  }, [modalResultDetail]);
+  useEffect(() => {}, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
     // const vaccinationId = 1;
@@ -272,25 +272,34 @@ const NotificationsManagement = () => {
       throw error;
     }
   };
-  useEffect(() => {
-  }, [modalResultDetail]);
+  useEffect(() => {}, [modalResultDetail]);
 
-  useEffect(() => {
-    const fetchNotification = async () => {
-      try {
-        const res = await getNotifications();
-        if (res) {
-          setNotifications([...res]);
-        }
-      } catch (error) {
-        throw error;
+  const fetchNotification = async (pageNumber = 1) => {
+    try {
+      const res = await getNotifications(pageNumber, pageSize); // truyền page, pageSize vào API
+      if (res && res.data) {
+        setNotifications(res.data.items || []);
+        setCurrentPage(res.data.currentPage || 1);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalItems(res.data.totalItems || 0);
+      } else {
+        setNotifications([]);
+        setCurrentPage(1);
+        setTotalPages(1);
+        setTotalItems(0);
       }
-    };
+    } catch (error) {
+      setNotifications([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalItems(0);
+      throw error;
+    }
+  };
 
-    fetchNotification();
-  }, [reload]);
   useEffect(() => {
-  }, [notifications]);
+    fetchNotification(currentPage);
+  }, [reload, currentPage]);
 
   return (
     <div className="admin-notifications-container">
@@ -302,7 +311,8 @@ const NotificationsManagement = () => {
               Quản lý thông báo
             </h1>
             <p className="admin-notifications-subtitle mb-0">
-              Tạo và quản lý thông báo cho học sinh và phụ huynh với giao diện gradient cam tím
+              Tạo và quản lý thông báo cho học sinh và phụ huynh với giao diện
+              gradient cam tím
             </p>
           </div>
           <div className="col-auto">
@@ -333,7 +343,9 @@ const NotificationsManagement = () => {
           <div className="admin-notification-stat-icon">
             <i className="fas fa-bell"></i>
           </div>
-          <div className="admin-notification-stat-value">{notifications.length}</div>
+          <div className="admin-notification-stat-value">
+            {notifications.length}
+          </div>
           <div className="admin-notification-stat-label">Tổng thông báo</div>
         </div>
         <div className="admin-notification-stat-card">
@@ -341,7 +353,7 @@ const NotificationsManagement = () => {
             <i className="fas fa-syringe"></i>
           </div>
           <div className="admin-notification-stat-value">
-            {notifications.filter(n => n.type === 'Vaccination').length}
+            {notifications.filter((n) => n.type === "Vaccination").length}
           </div>
           <div className="admin-notification-stat-label">Tiêm chủng</div>
         </div>
@@ -350,7 +362,7 @@ const NotificationsManagement = () => {
             <i className="fas fa-stethoscope"></i>
           </div>
           <div className="admin-notification-stat-value">
-            {notifications.filter(n => n.type === 'HealthCheck').length}
+            {notifications.filter((n) => n.type === "HealthCheck").length}
           </div>
           <div className="admin-notification-stat-label">Kiểm tra sức khỏe</div>
         </div>
@@ -359,7 +371,13 @@ const NotificationsManagement = () => {
             <i className="fas fa-clock"></i>
           </div>
           <div className="admin-notification-stat-value">
-            {notifications.filter(n => new Date(n.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)).length}
+            {
+              notifications.filter(
+                (n) =>
+                  new Date(n.createdAt) >
+                  new Date(Date.now() - 24 * 60 * 60 * 1000)
+              ).length
+            }
           </div>
           <div className="admin-notification-stat-label">Hôm nay</div>
         </div>
@@ -400,7 +418,10 @@ const NotificationsManagement = () => {
           placeholder="Tìm kiếm thông báo..."
           className="admin-notifications-search-input"
         />
-        <select className="admin-notifications-search-input" style={{ flex: '0 0 200px' }}>
+        <select
+          className="admin-notifications-search-input"
+          style={{ flex: "0 0 200px" }}
+        >
           <option value="">Tất cả loại</option>
           <option value="Vaccination">Tiêm chủng</option>
           <option value="HealthCheck">Kiểm tra sức khỏe</option>
@@ -414,31 +435,59 @@ const NotificationsManagement = () => {
       {/* Notifications Grid */}
       <div className="admin-notifications-grid">
         {notificationsCurrentItems?.length === 0 ? (
-          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#757575' }}>
-            <i className="fas fa-bell" style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }}></i>
+          <div
+            style={{
+              gridColumn: "1 / -1",
+              textAlign: "center",
+              padding: "4rem",
+              color: "#757575",
+            }}
+          >
+            <i
+              className="fas fa-bell"
+              style={{ fontSize: "4rem", marginBottom: "1rem", opacity: 0.3 }}
+            ></i>
             <h4>Không có thông báo nào</h4>
             <p>Chưa có thông báo nào được tạo</p>
           </div>
         ) : (
           notificationsCurrentItems?.map((notification, idx) => (
-            <div key={idx} className={`admin-notification-card ${idx % 3 === 0 ? 'unread' : 'read'}`}>
+            <div
+              key={idx}
+              className={`admin-notification-card ${
+                idx % 3 === 0 ? "unread" : "read"
+              }`}
+            >
               <div className="admin-notification-header">
-                <div className={`admin-notification-icon ${notification.type === 'Vaccination' ? 'info' : 'success'}`}>
-                  {notification.type === "Vaccination" ?
-                    <i className="fas fa-syringe"></i> :
+                <div
+                  className={`admin-notification-icon ${
+                    notification.type === "Vaccination" ? "info" : "success"
+                  }`}
+                >
+                  {notification.type === "Vaccination" ? (
+                    <i className="fas fa-syringe"></i>
+                  ) : (
                     <i className="fas fa-stethoscope"></i>
-                  }
+                  )}
                 </div>
                 <div className="admin-notification-content">
-                  <h5 className="admin-notification-title">{notification.title}</h5>
-                  <p className="admin-notification-description">{notification.message}</p>
+                  <h5 className="admin-notification-title">
+                    {notification.title}
+                  </h5>
+                  <p className="admin-notification-description">
+                    {notification.message}
+                  </p>
                   <div className="admin-notification-meta">
                     <div className="admin-notification-time">
                       <i className="fas fa-calendar me-1"></i>
                       {formatDateTime(notification.createdAt)}
                     </div>
-                    <div className={`admin-notification-status ${idx % 3 === 0 ? 'unread' : 'read'}`}>
-                      {idx % 3 === 0 ? 'Chưa xem' : 'Đã xem'}
+                    <div
+                      className={`admin-notification-status ${
+                        idx % 3 === 0 ? "unread" : "read"
+                      }`}
+                    >
+                      {idx % 3 === 0 ? "Chưa xem" : "Đã xem"}
                     </div>
                   </div>
                 </div>
@@ -465,22 +514,23 @@ const NotificationsManagement = () => {
               </div>
 
               {/* Additional Info */}
-              <div style={{
-                padding: '1rem 1.5rem 0',
-                fontSize: '0.8rem',
-                color: '#757575',
-                borderTop: '1px solid #F0F0F0',
-                marginTop: '1rem',
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}>
+              <div
+                style={{
+                  padding: "1rem 1.5rem 0",
+                  fontSize: "0.8rem",
+                  color: "#757575",
+                  borderTop: "1px solid #F0F0F0",
+                  marginTop: "1rem",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 <span>
                   <i className="fas fa-graduation-cap me-1"></i>
                   Lớp {notification.className}
                 </span>
                 <span>
-                  <i className="fas fa-hashtag me-1"></i>
-                  #{notification.id}
+                  <i className="fas fa-hashtag me-1"></i>#{notification.id}
                 </span>
               </div>
             </div>
@@ -489,11 +539,13 @@ const NotificationsManagement = () => {
       </div>
 
       {/* Pagination */}
-      <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+      <div
+        style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}
+      >
         <PaginationBar
-          currentPage={notificationCurrentPage}
-          totalPages={notificationTotalPages}
-          onPageChange={notificationHandlePageChange}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
       </div>
 
@@ -605,7 +657,9 @@ const NotificationsManagement = () => {
                   </Col>
                   <Col>
                     <Form.Label>
-                      <h6 data-field="vaccine">Tên vắc-xin {"(Chỉ tiêm chủng)"}</h6>
+                      <h6 data-field="vaccine">
+                        Tên vắc-xin {"(Chỉ tiêm chủng)"}
+                      </h6>
                     </Form.Label>
                     <Form.Control
                       disabled={
@@ -765,7 +819,7 @@ const NotificationsManagement = () => {
               variant="success"
               className="px-4"
               type="submit"
-            // onClick={() => handleSubmitModalAdd()}
+              // onClick={() => handleSubmitModalAdd()}
             >
               Tạo
             </Button>
