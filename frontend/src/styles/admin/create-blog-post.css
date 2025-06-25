@@ -1,14 +1,14 @@
 /* ==================== CREATE BLOG POST ADMIN STYLING ==================== */
 
 .admin-create-blog-container {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #f8fafc;
     min-height: 100vh;
     padding: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .admin-create-blog-header {
-    background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
     padding: 2rem 2.5rem;
     border-radius: 20px;
     margin-bottom: 2rem;
@@ -76,7 +76,7 @@
     transform: translateY(-50%);
     width: 4px;
     height: 20px;
-    background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
     border-radius: 2px;
 }
 
@@ -212,7 +212,7 @@
 }
 
 .admin-create-blog-btn-primary {
-    background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
     color: white;
     box-shadow: 0 6px 15px rgba(78, 205, 196, 0.3);
 }

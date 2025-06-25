@@ -444,7 +444,7 @@ const Accounts = () => {
         } else {
           alert(
             "Dữ liệu không hợp lệ: " +
-              (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
+            (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
           );
         }
       } else if (err.response?.status === 409) {
@@ -454,9 +454,9 @@ const Accounts = () => {
       } else {
         alert(
           "Lỗi: " +
-            (err.response?.data?.title ||
-              err.response?.data?.message ||
-              err.message)
+          (err.response?.data?.title ||
+            err.response?.data?.message ||
+            err.message)
         );
       }
     } finally {
@@ -473,13 +473,13 @@ const Accounts = () => {
       } else {
         toast.error(
           "Lỗi khi xóa người dùng: " +
-            (response.data.message || "Lỗi không xác định")
+          (response.data.message || "Lỗi không xác định")
         );
       }
     } catch (err) {
       toast.error(
         "Lỗi khi xóa người dùng: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
     setShowDeleteModal(false);
@@ -1029,7 +1029,7 @@ const Accounts = () => {
 
       <div className="d-flex">
         <div className="flex-grow-1">
-          <Nav variant="pills" className="admin-accounts-nav">
+          <Nav  className="admin-accounts-nav">
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "parent"}
@@ -1075,7 +1075,7 @@ const Accounts = () => {
             </InputGroup>
 
             {/* Filter Dropdown */}
-            
+
           </div>
 
           {/* Accounts Table */}
@@ -1134,7 +1134,7 @@ const Accounts = () => {
                         <div className="admin-user-profile">
                           <div className="admin-user-info">
                             <div className="admin-user-name">{user.name}</div>
-                            
+
                           </div>
                         </div>
                       </td>
@@ -1146,18 +1146,17 @@ const Accounts = () => {
                       </td>
                       <td>
                         <div
-                          className={`admin-role-badge ${
-                            user.gender?.toLowerCase() === "male" ||
-                            user.gender === "Nam"
+                          className={`admin-role-badge ${user.gender?.toLowerCase() === "male" ||
+                              user.gender === "Nam"
                               ? "parent"
                               : user.gender?.toLowerCase() === "female" ||
                                 user.gender === "Nữ"
-                              ? "parent"
-                              : "nurse"
-                          }`}
+                                ? "parent"
+                                : "nurse"
+                            }`}
                         >
                           {user.gender?.toLowerCase() === "male" ||
-                          user.gender === "Nam" ? (
+                            user.gender === "Nam" ? (
                             <FaMars />
                           ) : user.gender?.toLowerCase() === "female" ||
                             user.gender === "Nữ" ? (

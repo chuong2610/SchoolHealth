@@ -33,6 +33,8 @@ import {
   FaStickyNote,
   FaTimes,
   FaUserGraduate,
+  FaUserNurse,
+  FaHistory,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 // CSS được import tự động từ main.jsx
@@ -85,7 +87,7 @@ const ReceiveMedicine = () => {
   // Fetch danh sách đơn thuốc chờ xác nhận
   const fetchPending = async () => {
     try {
-      const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`);
+      const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`);
       const data = res.data;
       setPendingRequests(
         (data.data || []).map((item) => {
@@ -104,8 +106,8 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if(data.data.totalPages ){
-          setTotalPages(data.data.totalPages);
+      if (data.data.totalPages) {
+        setTotalPages(data.data.totalPages);
       }
     } catch (error) {
       showNotification("Failed to load pending medication requests!", "error");
@@ -117,7 +119,7 @@ const ReceiveMedicine = () => {
     if (!nurseId) return;
     try {
       const res = await axiosInstance.get(
-        `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`
+        `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setActiveRequests(
@@ -135,10 +137,10 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if(data.data.totalPages ){
-          setTotalPages(data.data.totalPages);
+      if (data.data.totalPages) {
+        setTotalPages(data.data.totalPages);
       }
-      
+
     } catch (error) {
       showNotification("Failed to load active medication requests!", "error");
     }
@@ -149,7 +151,7 @@ const ReceiveMedicine = () => {
     if (!nurseId) return;
     try {
       const res = await axiosInstance.get(
-        `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}`: ""}`
+        `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setCompletedRequests(
@@ -167,8 +169,8 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if(data.data.totalPages ){
-          setTotalPages(data.data.totalPages);
+      if (data.data.totalPages) {
+        setTotalPages(data.data.totalPages);
       }
     } catch (error) {
       showNotification(
@@ -181,14 +183,14 @@ const ReceiveMedicine = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
   useEffect(() => {
-  const handler = setTimeout(() => {
-    setDebouncedSearch(search); // cập nhật sau 500ms nếu không gõ nữa
-  }, 500);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search); // cập nhật sau 500ms nếu không gõ nữa
+    }, 500);
 
-  return () => {
-    clearTimeout(handler); // clear timeout nếu user vẫn đang gõ
-  };
-}, [search]);
+    return () => {
+      clearTimeout(handler); // clear timeout nếu user vẫn đang gõ
+    };
+  }, [search]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -202,7 +204,7 @@ const ReceiveMedicine = () => {
       }
     };
     loadData();
-  }, [nurseId, currentPage,debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nurseId, currentPage, debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -214,7 +216,7 @@ const ReceiveMedicine = () => {
   const exportToExcel = (data, filename) => {
     try {
       // Create CSV content
-      const headers = ["Mã đơn", "Lớp", "Học sinh",  "Loại thuốc", "Liều lượng", "Ngày", "Trạng thái"];
+      const headers = ["Mã đơn", "Lớp", "Học sinh", "Loại thuốc", "Liều lượng", "Ngày", "Trạng thái"];
       const csvContent = [
         headers.join(","),
         ...data.map((row) =>
@@ -229,8 +231,8 @@ const ReceiveMedicine = () => {
             activeTab === "pending"
               ? "Chờ xác nhận"
               : activeTab === "active"
-              ? "Đang sử dụng"
-              : "Đã hoàn thành",
+                ? "Đang sử dụng"
+                : "Đã hoàn thành",
           ].join(",")
         ),
       ].join("\n");
@@ -635,8 +637,8 @@ const ReceiveMedicine = () => {
                   type === "pending"
                     ? "don-thuoc-cho-xac-nhan"
                     : type === "active"
-                    ? "don-thuoc-dang-su-dung"
-                    : "don-thuoc-hoan-thanh";
+                      ? "don-thuoc-dang-su-dung"
+                      : "don-thuoc-hoan-thanh";
                 exportToExcel(data, filename);
               }}
             >
@@ -1002,57 +1004,65 @@ const ReceiveMedicine = () => {
             setNurseNote("");
           }}
         >
-
           <div className="enhanced-modal-header">
             <div className="header-content">
               <div className="modal-icon">
-              <FaPills />
-            </div>
+                <FaPills />
+              </div>
               <div className="header-text">
                 <h2>Chi tiết Đơn Thuốc</h2>
                 <p>Xem và xử lý thông tin đơn thuốc từ phụ huynh</p>
+              </div>
             </div>
-          </div>
-          {detailData && (
+            {detailData && (
               <div className="status-indicator">
                 <div className={`status-badge-enhanced ${detailData.status === "Pending" ? "pending" :
                   detailData.status === "Active" ? "active" : "completed"
-                }`}>
-                {detailData.status === "Pending" ? "⏳ Chờ xác nhận" :
-                  detailData.status === "Active" ? "🔄 Đang sử dụng" : "✅ Đã hoàn thành"}
+                  }`}>
+                  {detailData.status === "Pending" ? "⏳ Chờ xác nhận" :
+                    detailData.status === "Active" ? "🔄 Đang sử dụng" : "✅ Đã hoàn thành"}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
           <div className="enhanced-modal-body">
-          {detailLoading && (
+            {detailLoading && (
               <div className="loading-state">
                 <FaSpinner className="fa-spin loading-spinner" />
                 <h4>Đang tải chi tiết đơn thuốc...</h4>
                 <p>Vui lòng chờ trong giây lát</p>
-            </div>
-          )}
+              </div>
+            )}
 
-          {!detailLoading && !detailData && (
+            {!detailLoading && !detailData && (
               <div className="error-state">
                 <FaExclamationTriangle className="error-icon" />
                 <h4>Không tìm thấy chi tiết đơn thuốc</h4>
                 <p>Dữ liệu có thể đã bị xóa hoặc không tồn tại</p>
-            </div>
-          )}
+              </div>
+            )}
 
-          {!detailLoading && detailData && (
+            {!detailLoading && detailData && (
               <div className="form-content">
                 {/* Section 1: Prescription Info */}
                 <fieldset className="form-section">
                   <legend>
-                      <FaClipboardList />
+                    <FaClipboardList />
                     Thông tin đơn thuốc
                   </legend>
                   <div className="info-card">
-                    <div className="info-item" >
-                      <label >
+                    <div className="info-item">
+                      <label>
+                        <FaHashtag />
+                        Mã đơn thuốc
+                      </label>
+                      <div className="info-value prescription-id">
+                        #{detailData.id}
+                      </div>
+                    </div>
+                    <div className="info-item">
+                      <label>
                         <FaCalendarAlt />
                         Ngày tạo đơn
                       </label>
@@ -1065,14 +1075,22 @@ const ReceiveMedicine = () => {
                         })}
                       </div>
                     </div>
-                    
+                    <div className="info-item">
+                      <label>
+                        <FaClock />
+                        Số ngày sử dụng
+                      </label>
+                      <div className="info-value">
+                        {detailData.days || "Không xác định"} ngày
+                      </div>
+                    </div>
                   </div>
                 </fieldset>
 
                 {/* Section 2: Student Info */}
                 <fieldset className="form-section">
                   <legend>
-                      <FaUserGraduate />
+                    <FaUserGraduate />
                     Thông tin học sinh
                   </legend>
                   <div className="info-card">
@@ -1082,7 +1100,7 @@ const ReceiveMedicine = () => {
                         Họ và tên
                       </label>
                       <div className="info-value">{detailData.studentName}</div>
-                      </div>
+                    </div>
                     <div className="info-item">
                       <label>
                         <FaGraduationCap />
@@ -1096,60 +1114,133 @@ const ReceiveMedicine = () => {
                         Phụ huynh
                       </label>
                       <div className="info-value">{detailData.parentName}</div>
-                      </div>
                     </div>
+                  </div>
                 </fieldset>
 
                 {/* Section 3: Medication Info */}
                 <fieldset className="form-section">
                   <legend>
-                      <FaCapsules />
+                    <FaCapsules />
                     Thông tin thuốc
                   </legend>
                   <div className="medications-list">
-                  {detailData.medications && detailData.medications.length > 0 ? (
-                    detailData.medications.map((medication, index) => (
+                    {detailData.medications && detailData.medications.length > 0 ? (
+                      detailData.medications.map((medication, index) => (
                         <div key={index} className="medication-item">
-                        <div className="medication-header">
+                          <div className="medication-header">
                             <div className="med-icon">
-                            <FaPills />
-                          </div>
+                              <FaPills />
+                            </div>
                             <div className="med-details">
                               <h4>{medication.medicationName}</h4>
                               <div className="dosage-info">
                                 <span className="dosage-label">Liều lượng:</span>
                                 <span className="dosage-value">{medication.dosage}</span>
-                        </div>
-                        </div>
+                              </div>
+                            </div>
                           </div>
-                        {medication.note && (
+                          {medication.note && (
                             <div className="medication-note">
                               <FaStickyNote />
                               <div>
                                 <strong>Ghi chú từ phụ huynh:</strong>
                                 <p>"{medication.note}"</p>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  ) : (
+                          )}
+                        </div>
+                      ))
+                    ) : (
                       <div className="no-medication">
                         <FaExclamationTriangle />
                         <p>Không có thông tin thuốc</p>
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
                 </fieldset>
 
+                {/* Section 4: Nurse Actions/Notes */}
+                {modalDetail?.type === "pending" && (
+                  <fieldset className="form-section">
+                    <legend>
+                      <FaUserNurse />
+                      Ghi chú của y tá
+                    </legend>
+                    <div className="nurse-section">
+                      <Form.Group controlId="nurseNote">
+                        <Form.Label>
+                          <FaStickyNote />
+                          Ghi chú thêm (không bắt buộc)
+                        </Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          placeholder="Nhập ghi chú về việc xác nhận đơn thuốc..."
+                          value={nurseNote}
+                          onChange={(e) => setNurseNote(e.target.value)}
+                          className="form-control-enhanced"
+                        />
+                        <div className="form-help">
+                          <FaStethoscope />
+                          Ghi chú sẽ được lưu vào hồ sơ theo dõi thuốc của học sinh
+                        </div>
+                      </Form.Group>
+                    </div>
+                  </fieldset>
+                )}
 
-            </div>
-          )}
-        </div>
+                {/* Section 5: Action History */}
+                {(detailData.receivedDate || detailData.completedDate) && (
+                  <fieldset className="form-section">
+                    <legend>
+                      <FaHistory />
+                      Lịch sử xử lý
+                    </legend>
+                    <div className="history-timeline">
+                      <div className="timeline-item">
+                        <div className="timeline-icon created">
+                          <FaCalendarAlt />
+                        </div>
+                        <div className="timeline-content">
+                          <h6>Tạo đơn thuốc</h6>
+                          <p>{new Date(detailData.createdDate).toLocaleString('vi-VN')}</p>
+                        </div>
+                      </div>
+
+                      {detailData.receivedDate && (
+                        <div className="timeline-item">
+                          <div className="timeline-icon received">
+                            <FaCheckCircle />
+                          </div>
+                          <div className="timeline-content">
+                            <h6>Đã xác nhận nhận thuốc</h6>
+                            <p>{new Date(detailData.receivedDate).toLocaleString('vi-VN')}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {detailData.completedDate && (
+                        <div className="timeline-item">
+                          <div className="timeline-icon completed">
+                            <FaCheckDouble />
+                          </div>
+                          <div className="timeline-content">
+                            <h6>Đã hoàn thành sử dụng</h6>
+                            <p>{new Date(detailData.completedDate).toLocaleString('vi-VN')}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </fieldset>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="enhanced-modal-footer">
-          <div className="footer-actions">
-            <Button
+            <div className="footer-actions">
+              <Button
                 type="button"
                 variant="secondary"
                 className="btn-close"
@@ -1157,50 +1248,50 @@ const ReceiveMedicine = () => {
                   setModalDetail(null);
                   setNurseNote("");
                 }}
-            >
-              <FaTimes />
-              Đóng
-            </Button>
+              >
+                <FaTimes />
+                Đóng
+              </Button>
 
               <div className="action-buttons">
-              {modalDetail?.type === "pending" && (
-                <>
-                  <Button
+                {modalDetail?.type === "pending" && (
+                  <>
+                    <Button
                       type="button"
                       variant="danger"
                       className="btn-reject"
-                    onClick={() => {
-                      handleReject(modalDetail.data);
-                      setModalDetail(null);
+                      onClick={() => {
+                        handleReject(modalDetail.data);
+                        setModalDetail(null);
                         setNurseNote("");
-                    }}
-                  >
-                    <FaTimesCircle />
-                    Từ chối
-                  </Button>
-                  <Button
+                      }}
+                    >
+                      <FaTimesCircle />
+                      Từ chối
+                    </Button>
+                    <Button
                       type="submit"
                       variant="success"
                       className="btn-confirm"
-                  >
-                    <FaCheckCircle />
+                    >
+                      <FaCheckCircle />
                       Xác nhận nhận thuốc
-                  </Button>
-                </>
-              )}
-              {modalDetail?.type === "active" && (
-                <Button
+                    </Button>
+                  </>
+                )}
+                {modalDetail?.type === "active" && (
+                  <Button
                     type="submit"
                     variant="primary"
                     className="btn-complete"
-                >
-                  <FaCheckDouble />
+                  >
+                    <FaCheckDouble />
                     Hoàn thành sử dụng
-                </Button>
-              )}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         </Form>
       </Modal>
 
