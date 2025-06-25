@@ -13,7 +13,7 @@ import {
   formatDDMMYYYY,
   formatTime,
 } from "../../utils/dateFormatter";
-// Styles được import từ main.jsx
+import "../../styles/admin/notifications-management.css";
 import { exportExcelFile, importExcelFile } from "../../api/admin/excelApi";
 import { toast } from "react-toastify";
 import PaginationBar from "../../components/common/PaginationBar";
@@ -27,7 +27,6 @@ import {
   getVaccinationResultDeltail,
   postNotification,
 } from "../../api/admin/notification";
-import { use } from "react";
 
 const icons = [
   {
@@ -98,10 +97,14 @@ const NotificationsManagement = () => {
       date: "",
       message: "",
       note: "",
-      assignedToId: null, // Y tá phụ trách
+      assignedToId: null,
     },
   });
   const [notifications, setNotifications] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 2;
   const [modalDetail, setModalDetail] = useState({
     status: false,
     notificationDetail: {},
@@ -111,25 +114,29 @@ const NotificationsManagement = () => {
     healthCheck: {},
     vaccination: {},
   });
+  const [selectedTab, setSelectedTab] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('');
   const [importFile, setImportFile] = useState();
   const fileInputRef = useRef(null);
+
   const {
     currentPage: modalDetailCurrentPage,
     totalPages: modalDetailTotalPages,
     currentItems: modalDetailCurrentItems,
     handlePageChange: modalDetailHandlePageChange,
-  } = usePagination(modalDetail?.notificationDetail?.results); // Dữ liệu phân trang cho chi tiết thông báo
+  } = usePagination(modalDetail?.notificationDetail?.results);
 
   const {
     currentPage: notificationCurrentPage,
     totalPages: notificationTotalPages,
     currentItems: notificationsCurrentItems,
     handlePageChange: notificationHandlePageChange,
-  } = usePagination(notifications, 10); // Dữ liệu phân trang cho danh sách thông báo
+  } = usePagination(notifications, 8);
 
   const getMinDateTime = () => {
     const now = new Date();
-    const tzOffset = now.getTimezoneOffset() * 60000; // điều chỉnh theo timezone
+    const tzOffset = now.getTimezoneOffset() * 60000;
     return new Date(Date.now() - tzOffset).toISOString().slice(0, 16);
   };
 
@@ -144,7 +151,7 @@ const NotificationsManagement = () => {
         setClassList([...res]);
       }
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   };
 
@@ -155,12 +162,11 @@ const NotificationsManagement = () => {
         setNurseList([...res]);
       }
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   };
 
-  useEffect(() => {
-  }, [classList]);
+  useEffect(() => {}, [classList]);
 
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
@@ -168,7 +174,7 @@ const NotificationsManagement = () => {
     e.stopPropagation();
     if (form.checkValidity() === false) {
       setValidated(true);
-      return; // Dừng nếu form không hợp lệ
+      return;
     }
     const notificationData = { ...modalAdd?.notification };
     try {
@@ -185,39 +191,35 @@ const NotificationsManagement = () => {
           date: "",
           message: "",
           note: "",
-          assignedToId: null, // Y tá phụ trách
+          assignedToId: null,
         },
         status: false,
       });
-      setValidated(false); // Reset validated state
+      setValidated(false);
     } catch (error) {
       toast.error("Tạo và gửi thông báo thất bại");
-      throw error;
+      console.error(error);
     }
   };
 
   const handleClickImport = () => {
-    // Khi bấm button, kích hoạt click trên input file ẩn
     fileInputRef.current.click();
   };
 
   const handleImport = async (e, notificationId) => {
-    // const notificationId = 1;
     const file = e.target.files[0];
     try {
       await importExcelFile(notificationId, file);
       toast.success("Thêm tệp kết quả thành công");
-      fetchNotificationDetail();
+      fetchNotificationDetail(notificationId);
     } catch (error) {
       toast.error("Thêm tệp kết quả thất bại");
     }
   };
 
   const handleExport = async (notificationId) => {
-    // const notificationId = 2;
     try {
       await exportExcelFile(notificationId);
-      // toast.success("Lấy tệp mẫu thành công");
     } catch (error) {
       toast.error("Lấy tệp mẫu thất bại");
     }
@@ -226,19 +228,15 @@ const NotificationsManagement = () => {
   const fetchNotificationDetail = async (notificationId) => {
     try {
       const res = await getNotificationDetail(notificationId);
-
       if (res) {
         setModalDetail({ notificationDetail: { ...res }, status: true });
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
-  useEffect(() => {
-  }, [modalDetail]);
+  useEffect(() => {}, [modalDetail]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
-    // const healthCheckId = 5;
     try {
       const res = await getHealthCheckResultDeltail(healthCheckId);
       if (res) {
@@ -250,14 +248,12 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      throw error;
+      console.error(error);
     }
   };
-  useEffect(() => {
-  }, [modalResultDetail]);
+  useEffect(() => {}, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
-    // const vaccinationId = 1;
     try {
       const res = await getVaccinationResultDeltail(vaccinationId);
       if (res) {
@@ -269,322 +265,349 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {}, [modalResultDetail]);
+
+  const fetchNotification = async (pageNumber = 1) => {
+    try {
+      const res = await getNotifications(pageNumber, pageSize); // truyền page, pageSize vào API
+      if (res && res.data) {
+        setNotifications(res.data.items || []);
+        setCurrentPage(res.data.currentPage || 1);
+        setTotalPages(res.data.totalPages || 1);
+        setTotalItems(res.data.totalItems || 0);
+      } else {
+        setNotifications([]);
+        setCurrentPage(1);
+        setTotalPages(1);
+        setTotalItems(0);
+      }
+    } catch (error) {
+      setNotifications([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalItems(0);
       throw error;
     }
   };
-  useEffect(() => {
-  }, [modalResultDetail]);
 
   useEffect(() => {
-    const fetchNotification = async () => {
-      try {
-        const res = await getNotifications();
-        if (res) {
-          setNotifications([...res]);
-        }
-      } catch (error) {
-        throw error;
-      }
-    };
-
-    fetchNotification();
-  }, [reload]);
-  useEffect(() => {
-  }, [notifications]);
+    fetchNotification(currentPage);
+  }, [reload, currentPage]);
 
   return (
     <div className="admin-notifications-container">
+      {/* Modern Header */}
       <div className="admin-notifications-header">
-        <div className="row align-items-center">
-          <div className="col">
-            <h1 className="admin-notifications-title mb-2">
-              <i className="fas fa-bell me-3"></i>
-              Quản lý thông báo
-            </h1>
-            <p className="admin-notifications-subtitle mb-0">
-              Tạo và quản lý thông báo cho học sinh và phụ huynh với giao diện gradient cam tím
-            </p>
-          </div>
-          <div className="col-auto">
-            <div className="d-flex gap-3">
-              <button
-                className="admin-primary-btn"
-                onClick={() => {
-                  fetchClassList();
-                  fetchNurseList();
-                  setModalAdd({ ...modalAdd, status: true });
-                }}
-              >
-                <i className="fa-solid fa-circle-plus me-2"></i>
-                Tạo thông báo mới
-              </button>
-              <button className="admin-secondary-btn">
-                <i className="fas fa-download me-2"></i>
-                Xuất báo cáo
-              </button>
-            </div>
-          </div>
-        </div>
+        <h1 className="admin-notifications-title">
+          <i className="fas fa-bell"></i>
+          Quản lý thông báo
+        </h1>
+        <p className="admin-notifications-subtitle">
+          Tạo và quản lý thông báo cho học sinh và phụ huynh
+        </p>
       </div>
 
       {/* Stats Cards */}
       <div className="admin-notifications-stats">
-        <div className="admin-notification-stat-card">
-          <div className="admin-notification-stat-icon">
+        <div className="admin-notifications-stat-card">
+          <div className="admin-notifications-stat-icon">
             <i className="fas fa-bell"></i>
           </div>
-          <div className="admin-notification-stat-value">{notifications.length}</div>
-          <div className="admin-notification-stat-label">Tổng thông báo</div>
+          <div className="admin-notifications-stat-value">{notifications.length}</div>
+          <div className="admin-notifications-stat-label">Tổng thông báo</div>
         </div>
-        <div className="admin-notification-stat-card">
-          <div className="admin-notification-stat-icon">
+        <div className="admin-notifications-stat-card">
+          <div className="admin-notifications-stat-icon">
             <i className="fas fa-syringe"></i>
           </div>
-          <div className="admin-notification-stat-value">
+          <div className="admin-notifications-stat-value">
             {notifications.filter(n => n.type === 'Vaccination').length}
           </div>
-          <div className="admin-notification-stat-label">Tiêm chủng</div>
+          <div className="admin-notifications-stat-label">Tiêm chủng</div>
         </div>
-        <div className="admin-notification-stat-card">
-          <div className="admin-notification-stat-icon">
+        <div className="admin-notifications-stat-card">
+          <div className="admin-notifications-stat-icon">
             <i className="fas fa-stethoscope"></i>
           </div>
-          <div className="admin-notification-stat-value">
+          <div className="admin-notifications-stat-value">
             {notifications.filter(n => n.type === 'HealthCheck').length}
           </div>
-          <div className="admin-notification-stat-label">Kiểm tra sức khỏe</div>
+          <div className="admin-notifications-stat-label">Kiểm tra sức khỏe</div>
         </div>
-        <div className="admin-notification-stat-card">
-          <div className="admin-notification-stat-icon">
-            <i className="fas fa-clock"></i>
+        <div className="admin-notifications-stat-card">
+          <div className="admin-notifications-stat-icon">
+            <i className="fas fa-calendar-day"></i>
           </div>
-          <div className="admin-notification-stat-value">
-            {notifications.filter(n => new Date(n.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000)).length}
-          </div>
-          <div className="admin-notification-stat-label">Hôm nay</div>
+          <div className="admin-notifications-stat-value">0</div>
+          <div className="admin-notifications-stat-label">Hôm nay</div>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="admin-notifications-quick-actions">
-        <button className="admin-notifications-quick-btn active">
-          <i className="fas fa-list me-1"></i>
+      {/* Tabs */}
+      <div className="admin-notifications-tabs">
+        <button
+          className={`admin-notifications-tab ${selectedTab === 'all' ? 'active' : ''}`}
+          onClick={() => setSelectedTab('all')}
+        >
+          <i className="fas fa-list me-2"></i>
           Tất cả
         </button>
-        <button className="admin-notifications-quick-btn">
-          <i className="fas fa-syringe me-1"></i>
+        <button
+          className={`admin-notifications-tab ${selectedTab === 'vaccination' ? 'active' : ''}`}
+          onClick={() => setSelectedTab('vaccination')}
+        >
+          <i className="fas fa-syringe me-2"></i>
           Tiêm chủng
         </button>
-        <button className="admin-notifications-quick-btn">
-          <i className="fas fa-stethoscope me-1"></i>
+        <button
+          className={`admin-notifications-tab ${selectedTab === 'healthcheck' ? 'active' : ''}`}
+          onClick={() => setSelectedTab('healthcheck')}
+        >
+          <i className="fas fa-stethoscope me-2"></i>
           Kiểm tra sức khỏe
         </button>
-        <button className="admin-notifications-quick-btn">
-          <i className="fas fa-clock me-1"></i>
+        <button
+          className={`admin-notifications-tab ${selectedTab === 'today' ? 'active' : ''}`}
+          onClick={() => setSelectedTab('today')}
+        >
+          <i className="fas fa-calendar-day me-2"></i>
           Hôm nay
         </button>
-        <button className="admin-notifications-quick-btn">
-          <i className="fas fa-check-circle me-1"></i>
-          Đã xem
-        </button>
-        <button className="admin-notifications-quick-btn">
-          <i className="fas fa-circle-dot me-1"></i>
-          Chưa xem
+      </div>
+
+      {/* Search and Filter Controls */}
+      <div className="admin-notifications-controls d-flex align-items-center gap-2">
+        <div style={{ flex: 0.5 }}>
+          <Form.Control
+            type="text"
+            placeholder="Tìm kiếm theo tiêu đề, nội dung..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="admin-search-input"
+            style={{ borderRadius: '25px', border: '2px solid #10B981' }}
+          />
+        </div>
+
+        {/* Filter Dropdown */}
+
+
+        <button
+          className="admin-notifications-btn-primary"
+          onClick={() => {
+            fetchClassList();
+            fetchNurseList();
+            setModalAdd({ ...modalAdd, status: true });
+          }}
+        >
+          <i className="fas fa-plus"></i>
+          Tạo thông báo
         </button>
       </div>
 
-      {/* Search Bar */}
-      <div className="admin-notifications-search-bar">
-        <input
-          type="text"
-          placeholder="Tìm kiếm thông báo..."
-          className="admin-notifications-search-input"
-        />
-        <select className="admin-notifications-search-input" style={{ flex: '0 0 200px' }}>
-          <option value="">Tất cả loại</option>
-          <option value="Vaccination">Tiêm chủng</option>
-          <option value="HealthCheck">Kiểm tra sức khỏe</option>
-        </select>
-        <button className="admin-medicine-filter-btn">
-          <i className="fas fa-filter"></i>
-          Lọc nâng cao
-        </button>
-      </div>
-
-      {/* Notifications Grid */}
-      <div className="admin-notifications-grid">
-        {notificationsCurrentItems?.length === 0 ? (
-          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#757575' }}>
-            <i className="fas fa-bell" style={{ fontSize: '4rem', marginBottom: '1rem', opacity: 0.3 }}></i>
-            <h4>Không có thông báo nào</h4>
-            <p>Chưa có thông báo nào được tạo</p>
+      {/* Notifications Table */}
+      <div className="admin-notifications-table-container">
+        {notifications.length === 0 ? (
+          <div className="admin-notifications-empty">
+            <div className="admin-notifications-empty-icon">
+              <i className="fas fa-bell-slash"></i>
+            </div>
+            <h3 className="admin-notifications-empty-title">Không có thông báo</h3>
+            <p className="admin-notifications-empty-description">
+              Chưa có thông báo nào phù hợp với tiêu chí tìm kiếm
+            </p>
+            <button
+              className="admin-notifications-btn-primary"
+              onClick={() => {
+                fetchClassList();
+                fetchNurseList();
+                setModalAdd({ ...modalAdd, status: true });
+              }}
+            >
+              <i className="fas fa-plus"></i>
+              Tạo thông báo đầu tiên
+            </button>
           </div>
         ) : (
-          notificationsCurrentItems?.map((notification, idx) => (
-            <div key={idx} className={`admin-notification-card ${idx % 3 === 0 ? 'unread' : 'read'}`}>
-              <div className="admin-notification-header">
-                <div className={`admin-notification-icon ${notification.type === 'Vaccination' ? 'info' : 'success'}`}>
-                  {notification.type === "Vaccination" ?
-                    <i className="fas fa-syringe"></i> :
-                    <i className="fas fa-stethoscope"></i>
-                  }
-                </div>
-                <div className="admin-notification-content">
-                  <h5 className="admin-notification-title">{notification.title}</h5>
-                  <p className="admin-notification-description">{notification.message}</p>
-                  <div className="admin-notification-meta">
-                    <div className="admin-notification-time">
-                      <i className="fas fa-calendar me-1"></i>
+          <Table className="admin-notifications-table" responsive hover>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Tiêu đề</th>
+                <th>Loại</th>
+                <th>Nội dung</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {notificationsCurrentItems?.map((notification, idx) => (
+                <tr key={notification.id || idx}>
+                  <td>{(notificationCurrentPage - 1) * 8 + idx + 1}</td>
+                  <td>
+                    <div className="admin-table-title">
+                      {notification.title}
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`admin-notification-type ${notification.type === 'Vaccination' ? 'health' : 'event'}`}>
+                      <i className={notification.type === 'Vaccination' ? 'fas fa-syringe' : 'fas fa-stethoscope'}></i>
+                      {notification.type === 'Vaccination' ? 'Tiêm chủng' : 'Kiểm tra sức khỏe'}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="admin-table-content">
+                      {notification.message && notification.message.length > 80
+                        ? `${notification.message.substring(0, 80)}...`
+                        : notification.message}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="admin-table-date">
                       {formatDateTime(notification.createdAt)}
                     </div>
-                    <div className={`admin-notification-status ${idx % 3 === 0 ? 'unread' : 'read'}`}>
-                      {idx % 3 === 0 ? 'Chưa xem' : 'Đã xem'}
+                  </td>
+                  <td>
+                    <span className={`admin-notification-status ${notification.status || 'sent'}`}>
+                      <i className="fas fa-check-circle"></i>
+                      Đã gửi
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className="admin-table-actions">
+                      <button
+                        className="admin-notification-action-btn view"
+                        onClick={() => fetchNotificationDetail(notification.id)}
+                        title="Xem chi tiết"
+                      >
+                        <i className="fas fa-eye"></i>
+                      </button>
+                      <button
+                        className="admin-notification-action-btn edit"
+                        title="Chỉnh sửa"
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button
+                        className="admin-notification-action-btn delete"
+                        title="Xóa"
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="admin-notification-actions">
-                <button
-                  className="admin-notification-btn view"
-                  onClick={() => fetchNotificationDetail(notification.id)}
-                >
-                  <i className="fas fa-eye"></i>
-                  Chi tiết
-                </button>
-                {idx % 3 === 0 && (
-                  <button className="admin-notification-btn mark-read">
-                    <i className="fas fa-check"></i>
-                    Đánh dấu đã xem
-                  </button>
-                )}
-                <button className="admin-notification-btn delete">
-                  <i className="fas fa-trash"></i>
-                  Xóa
-                </button>
-              </div>
-
-              {/* Additional Info */}
-              <div style={{
-                padding: '1rem 1.5rem 0',
-                fontSize: '0.8rem',
-                color: '#757575',
-                borderTop: '1px solid #F0F0F0',
-                marginTop: '1rem',
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}>
-                <span>
-                  <i className="fas fa-graduation-cap me-1"></i>
-                  Lớp {notification.className}
-                </span>
-                <span>
-                  <i className="fas fa-hashtag me-1"></i>
-                  #{notification.id}
-                </span>
-              </div>
-            </div>
-          ))
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         )}
       </div>
 
+
+
       {/* Pagination */}
-      <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+      <div
+        style={{ marginTop: "2rem", display: "flex", justifyContent: "center" }}
+      >
         <PaginationBar
-          currentPage={notificationCurrentPage}
-          totalPages={notificationTotalPages}
-          onPageChange={notificationHandlePageChange}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
       </div>
 
-      {/* ModalAdd */}
-      {modalAdd && (
-        <Modal
-          size="xl"
-          show={modalAdd.status}
-          onHide={() => setModalAdd({ ...modalAdd, status: false })}
-          className="admin-modal-notification"
+      {/* Add Notification Modal */}
+      <Modal
+        show={modalAdd.status}
+        onHide={() => setModalAdd({ ...modalAdd, status: false })}
+        size="xl"
+        className="admin-modal"
+        centered
+      >
+        <Modal.Header
+          closeButton
+          style={{
+            background: 'linear-gradient(135deg, #059669, #10b981)',
+            color: 'white',
+            borderBottom: 'none',
+            padding: '2rem 2.5rem 1.5rem'
+          }}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <h5>Tạo thông báo mới</h5>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form
-              id="formAddNotification"
-              noValidate
-              validated={validated}
-              onSubmit={handleSubmitModalAdd}
-            >
-              <Form.Group>
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="class">Lớp</h6>
-                    </Form.Label>
-                    <Form.Select
-                      required
-                      value={modalAdd?.notification?.classId ?? ""}
-                      onChange={(e) => {
-                        setModalAdd({
-                          ...modalAdd,
-                          notification: {
-                            ...modalAdd.notification,
-                            classId: Number(e.target.value),
-                          },
-                        });
-                      }}
-                    >
-                      <option value="">--Chọn lớp--</option>
-                      {classList?.map((cls) => (
-                        <option key={cls.classId} value={cls.classId}>
-                          {cls.className}
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn lớp
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="nurse">Y tá</h6>
-                    </Form.Label>
-                    <Form.Select
-                      required
-                      value={modalAdd?.notification?.assignedToId ?? ""}
-                      onChange={(e) => {
-                        setModalAdd({
-                          ...modalAdd,
-                          notification: {
-                            ...modalAdd.notification,
-                            assignedToId: Number(e.target.value),
-                          },
-                        });
-                      }}
-                    >
-                      <option value="">--Chọn y tá phụ trách--</option>
-                      {nurseList?.map((nurse) => (
-                        <option key={nurse.id} value={nurse.id}>
-                          {nurse.nurseName}
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn y tá phụ trách
-                    </Form.Control.Feedback>
-                  </Col>
-                </Row>
+          <Modal.Title style={{
+            fontSize: '1.75rem',
+            fontWeight: '700',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            margin: 0
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.5rem'
+            }}>
+              <i className="fas fa-bell"></i>
+            </div>
+            Tạo thông báo mới
+          </Modal.Title>
+        </Modal.Header>
 
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="type">Loại thông báo</h6>
-                    </Form.Label>
+        <Modal.Body style={{ padding: '2.5rem', background: '#fafafa' }}>
+          <Form noValidate validated={validated} onSubmit={handleSubmitModalAdd}>
+            {/* Section 1: Basic Information */}
+            <fieldset className="admin-form-section" style={{
+              border: '2px solid #e5e7eb',
+              borderRadius: '16px',
+              padding: '2rem',
+              marginBottom: '2rem',
+              background: 'white',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <legend style={{
+                background: 'linear-gradient(135deg, #059669, #10b981)',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                width: 'auto',
+                margin: '0 0 1.5rem 0'
+              }}>
+                <i className="fas fa-info-circle"></i>
+                Thông tin cơ bản
+              </legend>
+
+              <Row>
+                <Col md={6}>
+                  <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="admin-form-label" style={{
+                      display: 'block',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.95rem'
+                    }}>
+                      <i className="fas fa-tag" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                      Loại thông báo
+                    </label>
                     <Form.Select
+                      className="admin-form-control"
                       required
-                      value={modalAdd?.notification?.type ?? ""}
+                      value={modalAdd.notification.type}
                       onChange={(e) =>
                         setModalAdd({
                           ...modalAdd,
@@ -594,103 +617,224 @@ const NotificationsManagement = () => {
                           },
                         })
                       }
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '2px solid #e5e7eb',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        background: 'white'
+                      }}
                     >
-                      <option value="">--Chọn loại--</option>
-                      <option value="Vaccination">Tiêm chủng</option>
-                      <option value="HealthCheck">Kiểm tra sức khỏe</option>
+                      <option value="">Chọn loại thông báo</option>
+                      <option value="Vaccination">💉 Tiêm chủng</option>
+                      <option value="HealthCheck">🩺 Kiểm tra sức khỏe</option>
                     </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn loại thông báo
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="vaccine">Tên vắc-xin {"(Chỉ tiêm chủng)"}</h6>
-                    </Form.Label>
-                    <Form.Control
-                      disabled={
-                        modalAdd?.notification?.type === "Vaccination"
-                          ? false
-                          : true
-                      }
-                      required={
-                        modalAdd?.notification?.type === "Vaccination"
-                          ? true
-                          : false
-                      }
-                      value={modalAdd?.notification?.vaccineName}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="admin-form-label" style={{
+                      display: 'block',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.95rem'
+                    }}>
+                      <i className="fas fa-graduation-cap" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                      Lớp học
+                    </label>
+                    <Form.Select
+                      className="admin-form-control"
+                      required
+                      value={modalAdd.notification.classId || ""}
                       onChange={(e) =>
                         setModalAdd({
                           ...modalAdd,
                           notification: {
-                            ...modalAdd?.notification,
-                            vaccineName: e.target.value,
+                            ...modalAdd.notification,
+                            classId: e.target.value,
                           },
                         })
                       }
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên vắc-xin
-                    </Form.Control.Feedback>
-                  </Col>
-                </Row>
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '2px solid #e5e7eb',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        background: 'white'
+                      }}
+                    >
+                      <option style={{ color: 'blackhay' }} value="">Chọn lớp học</option>
+                      {classList.map((cls) => (
+                        <option key={cls.id} value={cls.id}>
+                          🎓 {cls.name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </div>
+                </Col>
+              </Row>
 
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="title">Tiêu đề</h6>
-                    </Form.Label>
+              <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                <label className="admin-form-label" style={{
+                  display: 'block',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontSize: '0.95rem'
+                }}>
+                  <i className="fas fa-heading" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                  Tiêu đề thông báo
+                </label>
+                <Form.Control
+                  type="text"
+                  className="admin-form-control"
+                  placeholder="Nhập tiêu đề thông báo rõ ràng, dễ hiểu..."
+                  required
+                  value={modalAdd.notification.title}
+                  onChange={(e) =>
+                    setModalAdd({
+                      ...modalAdd,
+                      notification: {
+                        ...modalAdd.notification,
+                        title: e.target.value,
+                      },
+                    })
+                  }
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    background: 'white'
+                  }}
+                />
+              </div>
+
+              <div className="admin-form-group" style={{ marginBottom: '0' }}>
+                <label className="admin-form-label" style={{
+                  display: 'block',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontSize: '0.95rem'
+                }}>
+                  <i className="fas fa-syringe" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                  Tên Vắc Xin
+                </label>
+                <Form.Control
+                  type="text"
+                  className="admin-form-control"
+                  placeholder="Nhập tên vắc xin cụ thể (ví dụ: Vaccine COVID-19, Vaccine cúm mùa)..."
+                  value={modalAdd.notification.vaccineName}
+                  onChange={(e) =>
+                    setModalAdd({
+                      ...modalAdd,
+                      notification: {
+                        ...modalAdd.notification,
+                        vaccineName: e.target.value,
+                      },
+                    })
+                  }
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    background: 'white'
+                  }}
+                />
+              </div>
+            </fieldset>
+
+            {/* Section 2: Notification Details */}
+            <fieldset className="admin-form-section" style={{
+              border: '2px solid #e5e7eb',
+              borderRadius: '16px',
+              padding: '2rem',
+              marginBottom: '2rem',
+              background: 'white',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <legend style={{
+                background: 'linear-gradient(135deg, #059669, #10b981)',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                width: 'auto',
+                margin: '0 0 1.5rem 0'
+              }}>
+                <i className="fas fa-file-text"></i>
+                Chi tiết thông báo
+              </legend>
+
+              <Row>
+                <Col md={6}>
+                  <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="admin-form-label" style={{
+                      display: 'block',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.95rem'
+                    }}>
+                      <i className="fas fa-calendar-alt" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                      Ngày và giờ thực hiện
+                    </label>
                     <Form.Control
+                      type="datetime-local"
+                      className="admin-form-control"
                       required
-                      value={modalAdd?.notification?.title}
+                      min={datetime}
+                      value={modalAdd.notification.date}
                       onChange={(e) =>
                         setModalAdd({
                           ...modalAdd,
                           notification: {
-                            ...modalAdd?.notification,
-                            title: e.target.value,
-                          },
-                        })
-                      }
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tiêu đề thông báo
-                    </Form.Control.Feedback>
-                  </Col>
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="time">Thời gian</h6>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="datetime-local"
-                      value={modalAdd?.notification?.date ?? datetime}
-                      min={getMinDateTime()}
-                      onChange={(e) => {
-                        setDatetime(e.target.value);
-                        setModalAdd({
-                          ...modalAdd,
-                          notification: {
-                            ...modalAdd?.notification,
+                            ...modalAdd.notification,
                             date: e.target.value,
                           },
-                        });
+                        })
+                      }
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '2px solid #e5e7eb',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        background: 'white'
                       }}
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn thời gian
-                    </Form.Control.Feedback>
-                  </Col>
-                </Row>
-
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="location">Địa điểm</h6>
-                    </Form.Label>
+                    />
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                    <label className="admin-form-label" style={{
+                      display: 'block',
+                      fontWeight: '600',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.95rem'
+                    }}>
+                      <i className="fas fa-map-marker-alt" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                      Địa điểm thực hiện
+                    </label>
                     <Form.Control
+                      type="text"
+                      className="admin-form-control"
+                      placeholder="Ví dụ: Phòng y tế trường, Sân trường..."
                       required
-                      value={modalAdd?.notification?.location}
+                      value={modalAdd.notification.location}
                       onChange={(e) =>
                         setModalAdd({
                           ...modalAdd,
@@ -700,460 +844,463 @@ const NotificationsManagement = () => {
                           },
                         })
                       }
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập địa điểm
-                    </Form.Control.Feedback>
-                  </Col>
-                </Row>
-
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="description">Mô tả</h6>
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={modalAdd?.notification?.message}
-                      onChange={(e) => {
-                        setModalAdd({
-                          ...modalAdd,
-                          notification: {
-                            ...modalAdd?.notification,
-                            message: e.target.value,
-                          },
-                        });
+                      style={{
+                        padding: '0.75rem 1rem',
+                        borderRadius: '12px',
+                        border: '2px solid #e5e7eb',
+                        fontSize: '0.95rem',
+                        transition: 'all 0.3s ease',
+                        background: 'white'
                       }}
-                    ></Form.Control>
-                  </Col>
-                </Row>
-
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Label>
-                      <h6 data-field="note">Ghi chú</h6>
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={modalAdd?.notification?.note}
-                      onChange={(e) => {
-                        setModalAdd({
-                          ...modalAdd,
-                          notification: {
-                            ...modalAdd?.notification,
-                            note: e.target.value,
-                          },
-                        });
-                      }}
-                    ></Form.Control>
-                  </Col>
-                </Row>
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => setModalAdd({ ...modalAdd, status: false })}
-            >
-              Đóng
-            </Button>
-            <Button
-              form="formAddNotification"
-              variant="success"
-              className="px-4"
-              type="submit"
-            // onClick={() => handleSubmitModalAdd()}
-            >
-              Tạo
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
-
-      {/* ModalDetail */}
-      {modalDetail && (
-        <Modal
-          size="xl"
-          show={modalDetail.status}
-          onHide={() => setModalDetail({ ...modalDetail, status: false })}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <h5>Chi tiết thông báo</h5>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h6>Thông tin:</h6>
-            {/* Render thong tin detail */}
-            <Row>
-              <Col md={1}>
-                <i
-                  className={icons.find((icon) => icon.type === "date")?.icon}
-                ></i>
-              </Col>
-              <Col>
-                Ngày: {/* {modalDetail?.notificationDetail?.date} */}
-                {formatDDMMYYYY(modalDetail?.notificationDetail?.date)}
-              </Col>
-            </Row>
-            <Row>
-              <Col md={1}>
-                <i
-                  className={icons.find((icon) => icon.type === "time")?.icon}
-                ></i>
-              </Col>
-              <Col>
-                Thời gian:{" "}
-                {/* {new Date(modal.notification?.date).toLocaleTimeString()} */}
-                {formatTime(modalDetail?.notificationDetail?.date)}
-              </Col>
-            </Row>
-            <Row>
-              <Col md={1}>
-                <i
-                  className={
-                    icons.find((icon) => icon.type === "address")?.icon
-                  }
-                ></i>
-              </Col>
-              <Col>Địa điểm: {modalDetail?.notificationDetail?.location}</Col>
-            </Row>
-            {modalDetail.notificationDetail?.type === "Vaccination" && (
-              <Row>
-                <Col md={1}>
-                  <i
-                    className={
-                      icons.find((icon) => icon.type === "hospital")?.icon
-                    }
-                  ></i>
+                    />
+                  </div>
                 </Col>
-                <Col>Vắc-xin: {modalDetail.notificationDetail?.name} </Col>
               </Row>
-            )}
 
-            <h6 className="mt-3 mb-3">Ghi chú:</h6>
 
-            <ul>
-              <li>{modalDetail.notificationDetail?.note}</li>
-            </ul>
 
-            <Row className="border-top mb-3 mt-3"></Row>
-
-            {/* Render table ket qua */}
-            <h4 className="mt-3">Kết quả</h4>
-            {modalDetail?.notificationDetail?.type === "HealthCheck" && (
-              <div className="rounded-3 overflow-hidden border">
-                <Table
-                  hover
-                  // responsive
-                  size="sm"
-                  className="justify-content-center"
-                >
-                  <thead>
-                    <tr>
-                      <th>Tên học sinh</th>
-                      <th>Chiều cao</th>
-                      <th>Cân nặng</th>
-                      <th>Chỉ số cơ thể {`(BMI)`}</th>
-                      <th>Kết luận</th>
-                      <th>Y tá</th>
-                      <th>Chi tiết</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {modalDetail?.notificationDetail?.results?.length == 0 ? (
-                      <tr>
-                        <td colSpan={7} className="text-center">
-                          Không có dữ liệu
-                        </td>
-                      </tr>
-                    ) : (
-                      modalDetail?.notificationDetail?.results?.map(
-                        (result, idx) => (
-                          <tr key={idx}>
-                            <td>{result.studentName}</td>
-                            <td>{result.height}</td>
-                            <td>{result.weight}</td>
-                            <td>{result.bmi}</td>
-                            <td>{result.conclusion}</td>
-                            <td>{result.nurseName}</td>
-                            <td>
-                              <Button
-                                variant="outline-info"
-                                onClick={() =>
-                                  fetchHealthCheckResultDetail(result.id)
-                                }
-                              >
-                                <i className="fa-solid fa-eye"></i>
-                              </Button>
-                            </td>
-                          </tr>
-                        )
-                      )
-                    )}
-                  </tbody>
-                </Table>
+              <div className="admin-form-group" style={{ marginBottom: '0' }}>
+                <label className="admin-form-label" style={{
+                  display: 'block',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontSize: '0.95rem'
+                }}>
+                  <i className="fas fa-edit" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                  Nội dung thông báo
+                </label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  className="admin-form-control"
+                  placeholder="Nhập nội dung chi tiết của thông báo để phụ huynh và học sinh hiểu rõ về hoạt động..."
+                  required
+                  value={modalAdd.notification.message}
+                  onChange={(e) =>
+                    setModalAdd({
+                      ...modalAdd,
+                      notification: {
+                        ...modalAdd.notification,
+                        message: e.target.value,
+                      },
+                    })
+                  }
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    background: 'white',
+                    resize: 'vertical',
+                    minHeight: '120px'
+                  }}
+                />
               </div>
-            )}
-            {modalDetail?.notificationDetail?.type === "Vaccination" && (
-              <div className="rounded-3 overflow-hidden border">
-                <Table
-                  hover
-                  // responsive
-                  size="sm"
-                  className="justify-content-center"
+            </fieldset>
+
+            {/* Section 3: Nurse Assignment */}
+            <fieldset className="admin-form-section" style={{
+              border: '2px solid #e5e7eb',
+              borderRadius: '16px',
+              padding: '2rem',
+              marginBottom: '2rem',
+              background: 'white',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <legend style={{
+                background: 'linear-gradient(135deg, #059669, #10b981)',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                width: 'auto',
+                margin: '0 0 1.5rem 0'
+              }}>
+                <i className="fas fa-user-nurse"></i>
+                Phân công y tá
+              </legend>
+
+              <div className="admin-form-group" style={{ marginBottom: '1.5rem' }}>
+                <label className="admin-form-label" style={{
+                  display: 'block',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontSize: '0.95rem'
+                }}>
+                  <i className="fas fa-user-md" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                  Y tá phụ trách
+                </label>
+                <Form.Select
+                  className="admin-form-control"
+                  required
+                  value={modalAdd.notification.assignedToId || ""}
+                  onChange={(e) =>
+                    setModalAdd({
+                      ...modalAdd,
+                      notification: {
+                        ...modalAdd.notification,
+                        assignedToId: e.target.value,
+                      },
+                    })
+                  }
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    background: 'white'
+                  }}
                 >
-                  <thead>
-                    <tr>
-                      <th>Tên học sinh</th>
-                      <th>Tên Vắc-xin</th>
-                      <th>Địa điểm</th>
-                      <th>Ngày</th>
-                      <th>Y tá</th>
-                      <th>Chi tiết</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {modalDetailCurrentItems?.length == 0 ? (
-                      <tr>
-                        <td colSpan={6} className="text-center">
-                          Không có dữ liệu
-                        </td>
-                      </tr>
-                    ) : (
-                      modalDetailCurrentItems?.map((result, idx) => (
-                        <tr key={idx}>
-                          <td>{result.studentName}</td>
-                          <td>{result.vaccineName}</td>
-                          <td>{result.location}</td>
-                          <td>{formatDDMMYYYY(result.date)}</td>
-                          <td>{result.nurseName}</td>
-                          <td>
-                            <Button
-                              variant="outline-info"
-                              onClick={() =>
-                                fetchVaccinationResultDetail(result.id)
-                              }
-                            >
-                              <i className="fa-solid fa-eye"></i>
-                            </Button>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </Table>
+                  <option value="">Chọn y tá phụ trách</option>
+                  {nurseList.map((nurse) => (
+                    <option key={nurse.id} value={nurse.id}>
+                      👩‍⚕️ {nurse.fullName}
+                    </option>
+                  ))}
+                </Form.Select>
               </div>
-            )}
-            <div className="d-flex justify-content-end mt-3 me-3">
-              <PaginationBar
-                currentPage={modalDetailCurrentPage}
-                totalPages={modalDetailTotalPages}
-                onPageChange={modalDetailHandlePageChange}
-              />
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Row className="w-100">
-              <Col
-                className="text-start"
+
+              <div className="admin-form-group" style={{ marginBottom: '0' }}>
+                <label className="admin-form-label" style={{
+                  display: 'block',
+                  fontWeight: '600',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontSize: '0.95rem'
+                }}>
+                  <i className="fas fa-sticky-note" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                  Ghi chú thêm
+                  <span style={{
+                    fontSize: '0.8rem',
+                    color: '#6b7280',
+                    fontWeight: '400',
+                    marginLeft: '0.5rem'
+                  }}>(không bắt buộc)</span>
+                </label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  className="admin-form-control"
+                  placeholder="Ghi chú thêm cho y tá về cách thực hiện, lưu ý đặc biệt..."
+                  value={modalAdd.notification.note}
+                  onChange={(e) =>
+                    setModalAdd({
+                      ...modalAdd,
+                      notification: {
+                        ...modalAdd.notification,
+                        note: e.target.value,
+                      },
+                    })
+                  }
+                  style={{
+                    padding: '0.75rem 1rem',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '0.95rem',
+                    transition: 'all 0.3s ease',
+                    background: 'white',
+                    resize: 'vertical',
+                    minHeight: '90px'
+                  }}
+                />
+              </div>
+            </fieldset>
+
+            {/* Form Actions */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              paddingTop: '1.5rem',
+              borderTop: '2px solid #e5e7eb'
+            }}>
+              <button
+                type="button"
+                onClick={() => setModalAdd({ ...modalAdd, status: false })}
                 style={{
-                  display:
-                    modalDetail?.notificationDetail?.results?.length > 0
-                      ? "none"
-                      : "block",
+                  padding: '0.75rem 2rem',
+                  borderRadius: '12px',
+                  border: '2px solid #d1d5db',
+                  background: 'white',
+                  color: '#6b7280',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = '#f3f4f6';
+                  e.target.style.borderColor = '#9ca3af';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'white';
+                  e.target.style.borderColor = '#d1d5db';
                 }}
               >
-                <Button variant="info" onClick={() => handleClickImport()}>
-                  <i className="fa-solid fa-upload"></i> Thêm tệp kết quả
-                </Button>
-                <input
-                  type="file"
-                  accept=".xlsx"
-                  ref={fileInputRef}
-                  onChange={(e) =>
-                    handleImport(e, modalDetail?.notificationDetail?.id)
-                  }
-                  style={{ display: "none" }} // Ẩn input file
-                />
+                <i className="fas fa-times"></i>
+                Hủy bỏ
+              </button>
+              <button
+                type="submit"
+                style={{
+                  padding: '0.75rem 2rem',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #059669, #10b981)',
+                  color: 'white',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 8px 20px rgba(5, 150, 105, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                }}
+              >
+                <i className="fas fa-paper-plane"></i>
+                Tạo và gửi thông báo
+              </button>
+            </div>
+          </Form>
+        </Modal.Body>
+      </Modal>
 
-                <Button
-                  variant="success"
-                  className="px-3 ms-2"
-                  onClick={() =>
-                    handleExport(modalDetail?.notificationDetail?.id)
-                  }
-                >
-                  <i className="fa-solid fa-download"></i> Lấy tệp mẫu
-                </Button>
-              </Col>
-              <Col className="text-end">
-                <Button
-                  variant="secondary"
-                  onClick={() =>
-                    setModalDetail({ ...modalDetail, status: false })
-                  }
-                >
-                  Đóng
-                </Button>
-                {/* <Button variant="success" className="px-4 ms-2">
-                  Tạo
-                </Button> */}
-              </Col>
-            </Row>
-          </Modal.Footer>
-        </Modal>
-      )}
+      {/* Detail Modal */}
+      <Modal
+        show={modalDetail.status}
+        onHide={() => setModalDetail({ ...modalDetail, status: false })}
+        size="xl"
+        className="admin-modal"
+      >
+        <Modal.Header closeButton className="admin-modal-header">
+          <Modal.Title>
+            <i className="fas fa-eye me-2"></i>
+            Chi tiết thông báo
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="admin-modal-body">
+          {modalDetail.notificationDetail && (
+            <div className="admin-notification-detail">
+              <div className="admin-detail-section">
+                <h5 className="admin-detail-title">Thông tin thông báo</h5>
+                <div className="admin-detail-grid">
+                  <div className="admin-detail-item">
+                    <label>Tiêu đề:</label>
+                    <span>{modalDetail.notificationDetail.title}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Loại:</label>
+                    <span className={`admin-notification-type ${modalDetail.notificationDetail.type === 'Vaccination' ? 'health' : 'event'}`}>
+                      {modalDetail.notificationDetail.type === 'Vaccination' ? 'Tiêm chủng' : 'Kiểm tra sức khỏe'}
+                    </span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Ngày tạo:</label>
+                    <span>{formatDateTime(modalDetail.notificationDetail.createdAt)}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Địa điểm:</label>
+                    <span>{modalDetail.notificationDetail.location}</span>
+                  </div>
+                </div>
+                <div className="admin-detail-content">
+                  <label>Nội dung:</label>
+                  <p>{modalDetail.notificationDetail.message}</p>
+                </div>
+              </div>
 
-      {/* ModalResultDetail */}
-      {modalResultDetail && (
-        <Modal
-          size="xl"
-          show={modalResultDetail?.status}
-          onHide={() => {
-            setModalDetail({ ...modalDetail, status: true });
-            setModalResultDetail({ ...modalResultDetail, status: false });
-          }}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <h5>Kết quả chi tiết</h5>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {Object.keys(modalResultDetail?.healthCheck)?.length > 0 && (
-              <>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Tên học sinh: </strong>
-                    {modalResultDetail?.healthCheck?.studentName}
-                  </Col>
-                  <Col>
-                    <strong>Tên y tá: </strong>
-                    {modalResultDetail?.healthCheck?.nurseName}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Chiều cao: </strong>
-                    {modalResultDetail?.healthCheck?.height}
-                  </Col>
-                  <Col>
-                    <strong>Cân nặng: </strong>
-                    {modalResultDetail?.healthCheck?.weight}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Thị lực mắt trái: </strong>
-                    {modalResultDetail?.healthCheck?.visionLeft}
-                  </Col>
-                  <Col>
-                    <strong>Thị lực mắt phải: </strong>
-                    {modalResultDetail?.healthCheck?.visionRight}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Nhịp tim: </strong>
-                    {modalResultDetail?.healthCheck?.heartRate}
-                  </Col>
-                  <Col>
-                    <strong>Huyết áp: </strong>
-                    {modalResultDetail?.healthCheck?.bloodPressure}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Chỉ số cơ thể {`(BMI)`}: </strong>
-                    {modalResultDetail?.healthCheck?.bmi}
-                  </Col>
-                  <Col>
-                    <strong>Kết luận: </strong>
-                    {modalResultDetail?.healthCheck?.conclusion}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Thời gian: </strong>
-                    {formatDateTime(modalResultDetail?.healthCheck?.date)}
-                  </Col>
-                  <Col>
-                    <strong>Địa điểm: </strong>
-                    {modalResultDetail?.healthCheck?.location}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Mô tả: </strong>
-                    {modalResultDetail?.healthCheck?.description}
-                  </Col>
-                </Row>
-              </>
-            )}
+              {modalDetail.notificationDetail.results && modalDetail.notificationDetail.results.length > 0 && (
+                <div className="admin-detail-section">
+                  <div className="admin-detail-header">
+                    <h5 className="admin-detail-title">Kết quả thực hiện</h5>
+                    <div className="admin-detail-actions">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        accept=".xlsx,.xls"
+                        onChange={(e) => handleImport(e, modalDetail.notificationDetail.id)}
+                      />
+                      <button
+                        className="admin-notifications-btn-secondary"
+                        onClick={() => handleExport(modalDetail.notificationDetail.id)}
+                      >
+                        <i className="fas fa-download me-2"></i>
+                        Tải mẫu
+                      </button>
+                      <button
+                        className="admin-notifications-btn-primary"
+                        onClick={handleClickImport}
+                      >
+                        <i className="fas fa-upload me-2"></i>
+                        Nhập kết quả
+                      </button>
+                    </div>
+                  </div>
 
-            {Object.keys(modalResultDetail?.vaccination)?.length > 0 && (
-              <>
-                <Row className="mb-3">
-                  <Col>
-                    vaccineName
-                    <strong>Tên học sinh: </strong>
-                    {modalResultDetail?.vaccination?.studentName}
-                  </Col>
-                  <Col>
-                    <strong>Tên y tá: </strong>
-                    {modalResultDetail?.vaccination?.nurseName}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Tên vắc-xin: </strong>
-                    {modalResultDetail?.vaccination?.vaccineName}
-                  </Col>
-                  <Col>
-                    <strong>Kết quả: </strong>
-                    {modalResultDetail?.vaccination?.result}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Thời gian: </strong>
-                    {formatDateTime(modalResultDetail?.vaccination?.date)}
-                  </Col>
-                  <Col>
-                    <strong>Địa điểm: </strong>
-                    {modalResultDetail?.vaccination?.location}
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <strong>Mô tả: </strong>
-                    {modalResultDetail?.vaccination?.description}
-                  </Col>
-                  <Col>
-                    <strong>Trạng thái: </strong>
-                    {modalResultDetail?.vaccination?.status}
-                  </Col>
-                </Row>
-              </>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setModalDetail({ ...modalDetail, status: true });
-                setModalResultDetail({ ...modalResultDetail, status: false });
-              }}
-            >
-              Đóng
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      )}
+                  <div className="admin-table-container">
+                    <Table className="admin-table" responsive>
+                      <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th>Họ tên học sinh</th>
+                          <th>Lớp</th>
+                          <th>Ngày thực hiện</th>
+                          <th>Trạng thái</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {modalDetailCurrentItems?.map((result, idx) => (
+                          <tr key={result.id || idx}>
+                            <td>{(modalDetailCurrentPage - 1) * 10 + idx + 1}</td>
+                            <td>{result.studentName}</td>
+                            <td>{result.className}</td>
+                            <td>{formatDDMMYYYY(result.date)}</td>
+                            <td>
+                              <span className={`admin-status-badge ${result.healthCheckId || result.vaccinationId ? 'completed' : 'pending'}`}>
+                                {result.healthCheckId || result.vaccinationId ? 'Đã hoàn thành' : 'Chưa thực hiện'}
+                              </span>
+                            </td>
+                            <td>
+                              {(result.healthCheckId || result.vaccinationId) && (
+                                <button
+                                  className="admin-action-btn view"
+                                  onClick={() => {
+                                    if (result.healthCheckId) {
+                                      fetchHealthCheckResultDetail(result.healthCheckId);
+                                    } else if (result.vaccinationId) {
+                                      fetchVaccinationResultDetail(result.vaccinationId);
+                                    }
+                                  }}
+                                >
+                                  <i className="fas fa-eye"></i>
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
+
+                  {modalDetailTotalPages > 1 && (
+                    <div className="admin-pagination-wrapper">
+                      <PaginationBar
+                        currentPage={modalDetailCurrentPage}
+                        totalPages={modalDetailTotalPages}
+                        onPageChange={modalDetailHandlePageChange}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
+
+      {/* Result Detail Modal */}
+      <Modal
+        show={modalResultDetail.status}
+        onHide={() => setModalResultDetail({ ...modalResultDetail, status: false })}
+        size="lg"
+        className="admin-modal"
+      >
+        <Modal.Header closeButton className="admin-modal-header">
+          <Modal.Title>
+            <i className="fas fa-file-medical me-2"></i>
+            Chi tiết kết quả
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="admin-modal-body">
+          {modalResultDetail.healthCheck?.id && (
+            <div className="admin-result-detail">
+              <h5 className="admin-detail-title">Kết quả kiểm tra sức khỏe</h5>
+              <div className="admin-detail-grid">
+                <div className="admin-detail-item">
+                  <label>Học sinh:</label>
+                  <span>{modalResultDetail.healthCheck.studentName}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Ngày kiểm tra:</label>
+                  <span>{formatDDMMYYYY(modalResultDetail.healthCheck.date)}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Chiều cao:</label>
+                  <span>{modalResultDetail.healthCheck.height} cm</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Cân nặng:</label>
+                  <span>{modalResultDetail.healthCheck.weight} kg</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>BMI:</label>
+                  <span>{modalResultDetail.healthCheck.bmi}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Y tá thực hiện:</label>
+                  <span>{modalResultDetail.healthCheck.nurseName}</span>
+                </div>
+              </div>
+              <div className="admin-detail-content">
+                <label>Kết luận:</label>
+                <p>{modalResultDetail.healthCheck.conclusion}</p>
+              </div>
+            </div>
+          )}
+
+          {modalResultDetail.vaccination?.id && (
+            <div className="admin-result-detail">
+              <h5 className="admin-detail-title">Kết quả tiêm chủng</h5>
+              <div className="admin-detail-grid">
+                <div className="admin-detail-item">
+                  <label>Học sinh:</label>
+                  <span>{modalResultDetail.vaccination.studentName}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Ngày tiêm:</label>
+                  <span>{formatDDMMYYYY(modalResultDetail.vaccination.date)}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Vaccine:</label>
+                  <span>{modalResultDetail.vaccination.vaccineName}</span>
+                </div>
+                <div className="admin-detail-item">
+                  <label>Y tá thực hiện:</label>
+                  <span>{modalResultDetail.vaccination.nurseName}</span>
+                </div>
+              </div>
+              <div className="admin-detail-content">
+                <label>Ghi chú:</label>
+                <p>{modalResultDetail.vaccination.note || 'Không có ghi chú'}</p>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

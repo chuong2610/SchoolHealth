@@ -105,7 +105,7 @@ const Profile = () => {
   return (
     <div className="parent-container">
       {/* Profile Header */}
-      <div className="parent-page-header parent-animate-fade-in">
+      <div className="parent-page-header-profile">
         <div className="parent-page-header-bg"></div>
         <div className="parent-page-header-content">
           <div style={{ position: 'relative', display: 'inline-block', marginBottom: '1.5rem' }}>

@@ -41,8 +41,8 @@
     background: #f8fafc !important;
 }
 
-.admin-theme .sidebar.collapsed ~ .main-content,
-.admin-theme .sidebar.collapsed ~ .admin-container {
+.admin-theme .sidebar.collapsed~.main-content,
+.admin-theme .sidebar.collapsed~.admin-container {
     margin-left: var(--sidebar-collapsed-width) !important;
     width: calc(100% - var(--sidebar-collapsed-width)) !important;
 }
@@ -69,8 +69,8 @@
     transition: left 0.3s ease !important;
 }
 
-.admin-theme .sidebar.collapsed ~ .topbar,
-.admin-theme .sidebar.collapsed ~ .header {
+.admin-theme .sidebar.collapsed~.topbar,
+.admin-theme .sidebar.collapsed~.header {
     left: var(--sidebar-collapsed-width) !important;
 }
 
@@ -135,7 +135,7 @@
 
 /* Button Fixes */
 .admin-theme .btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    background: linear-gradient(135deg, #34d399, #10b981) !important;
     border: none !important;
     border-radius: 8px !important;
     padding: 0.75rem 1.5rem !important;
@@ -145,9 +145,9 @@
 }
 
 .admin-theme .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    background: linear-gradient(135deg, #10b981, #059669) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
 }
 
 /* Table Fixes */
@@ -309,30 +309,30 @@
         transform: translateX(-100%) !important;
         transition: transform 0.3s ease !important;
     }
-    
+
     .admin-theme .sidebar.mobile-open {
         transform: translateX(0) !important;
     }
-    
+
     .admin-theme .main-content,
     .admin-theme .admin-container {
         margin-left: 0 !important;
         width: 100% !important;
     }
-    
+
     .admin-theme .topbar,
     .admin-theme .header {
         left: 0 !important;
     }
-    
+
     .admin-theme .accounts-header {
         padding: 1.5rem !important;
     }
-    
+
     .admin-theme .accounts-title {
         font-size: 1.75rem !important;
     }
-    
+
     .admin-theme .admin-container {
         padding: 1rem !important;
     }
@@ -375,4 +375,4 @@
 .admin-theme .col,
 .admin-theme [class*="col-"] {
     padding: 0.75rem !important;
-} 
+}
