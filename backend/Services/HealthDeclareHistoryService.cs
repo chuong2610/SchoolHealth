@@ -22,12 +22,14 @@ namespace backend.Services
             var result = histories.Select(h => new HealthDeclareHistoryDTO
             {
                 Id = h.Id,
-                DeclarationDate = h.DeclarationDate,
                 StudentId = h.StudentProfileId,
-                Allergys = h.StudentProfile.Allergys,
-                ChronicIllnesss = h.StudentProfile.ChronicIllnesss,
-                LongTermMedications = h.StudentProfile.LongTermMedications,
-                OtherMedicalConditions = h.StudentProfile.OtherMedicalConditions
+                StudentName = h.StudentProfile?.Student?.Name ?? string.Empty,
+                ClassName = h.StudentProfile?.Student?.Class?.ClassName ?? string.Empty,
+                Allergys = h.StudentProfile?.Allergys ?? string.Empty,
+                ChronicIllnesss = h.StudentProfile?.ChronicIllnesss ?? string.Empty,
+                LongTermMedications = h.StudentProfile?.LongTermMedications ?? string.Empty,
+                OtherMedicalConditions = h.StudentProfile?.OtherMedicalConditions ?? string.Empty,
+                DeclarationDate = h.DeclarationDate
             }).ToList();
 
             return new PageResult<HealthDeclareHistoryDTO>

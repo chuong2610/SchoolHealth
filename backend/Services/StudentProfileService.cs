@@ -13,14 +13,16 @@ namespace backend.Services
     {
         private readonly IStudentProfileRepository _profileRepo;
         private readonly ILogger<StudentProfileService> _logger;
+        private readonly IHealthDeclareHistoryRepository _historyRepo;
 
-        public StudentProfileService(IStudentProfileRepository profileRepo, ILogger<StudentProfileService> logger)
+        public StudentProfileService(IStudentProfileRepository profileRepo, ILogger<StudentProfileService> logger, IHealthDeclareHistoryRepository historyRepo)
         {
             _profileRepo = profileRepo;
             _logger = logger;
+            _historyRepo = historyRepo;
         }
 
-        public async Task<bool> CreateStudentProfileAsync(StudentProfileRequest request)
+        public async Task<bool> CreateStudentProfileAsync(StudentProfileRequest request, int parentId)
         {
             if (request == null)
             {
@@ -51,8 +53,19 @@ namespace backend.Services
                     LongTermMedications = request.LongTermMedications ?? string.Empty,
                     OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
                 };
-
                 createdOrUpdated = await _profileRepo.CreateOrUpdateAsync(newProfile);
+            }
+
+            // ✅ Nếu profile OK thì thêm HealthDeclareHistory
+            if (createdOrUpdated)
+            {
+                var history = new HealthDeclareHistory
+                {
+                    StudentProfileId = request.StudentId,
+                    DeclarationDate = DateTime.UtcNow,
+                    ParentId = parentId
+                };
+                await _historyRepo.AddAsync(history);
             }
 
             return createdOrUpdated;

@@ -15,8 +15,9 @@ public class HealthDeclareHistoryRepository : IHealthDeclareHistoryRepository
     int parentId, int pageNumber, int pageSize, string? search)
     {
         var query = _context.HealthDeclareHistories
-            .Include(h => h.StudentProfile.Student)
             .Include(h => h.StudentProfile)
+                .ThenInclude(sp => sp.Student)
+                .ThenInclude(s => s.Class)   // <-- thêm ThenInclude này
             .Include(h => h.Parent)
             .AsNoTracking()
             .Where(h => h.ParentId == parentId);
@@ -65,5 +66,11 @@ public class HealthDeclareHistoryRepository : IHealthDeclareHistoryRepository
             TotalVaccinations = totalVaccinations,
             TotalMedicationsSent = totalMedicationsSent
         };
+    }
+
+    public async Task<bool> AddAsync(HealthDeclareHistory history)
+    {
+        _context.HealthDeclareHistories.Add(history);
+        return await _context.SaveChangesAsync() > 0;
     }
 }
