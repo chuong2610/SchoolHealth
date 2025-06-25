@@ -162,7 +162,11 @@ namespace backend.Repositories
 
         public async Task<int> CountNotificationsAsync(string? search)
         {
-            var query = _context.Notifications.AsQueryable().Where(n => n.IsActive);
+            var query = _context.Notifications
+               .Include(n => n.NotificationStudents)
+                   .ThenInclude(ns => ns.Student)
+                       .ThenInclude(s => s.Class)
+               .Where(n => n.IsActive);
 
             if (!string.IsNullOrEmpty(search))
             {

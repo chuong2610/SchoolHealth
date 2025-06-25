@@ -59,11 +59,17 @@ namespace backend.Services
             // ✅ Nếu profile OK thì thêm HealthDeclareHistory
             if (createdOrUpdated)
             {
+                var profileWithIncludes = await _profileRepo.GetByIdWithIncludesAsync(request.StudentId);
+
                 var history = new HealthDeclareHistory
                 {
                     StudentProfileId = request.StudentId,
                     DeclarationDate = DateTime.UtcNow,
-                    ParentId = parentId
+                    ParentId = parentId,
+                    Allergys = profileWithIncludes.Allergys,
+                    ChronicIllnesss = profileWithIncludes.ChronicIllnesss,
+                    LongTermMedications = profileWithIncludes.LongTermMedications,
+                    OtherMedicalConditions = profileWithIncludes.OtherMedicalConditions,
                 };
                 await _historyRepo.AddAsync(history);
             }

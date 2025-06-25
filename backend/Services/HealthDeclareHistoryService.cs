@@ -25,10 +25,10 @@ namespace backend.Services
                 StudentId = h.StudentProfileId,
                 StudentName = h.StudentProfile?.Student?.Name ?? string.Empty,
                 ClassName = h.StudentProfile?.Student?.Class?.ClassName ?? string.Empty,
-                Allergys = h.StudentProfile?.Allergys ?? string.Empty,
-                ChronicIllnesss = h.StudentProfile?.ChronicIllnesss ?? string.Empty,
-                LongTermMedications = h.StudentProfile?.LongTermMedications ?? string.Empty,
-                OtherMedicalConditions = h.StudentProfile?.OtherMedicalConditions ?? string.Empty,
+                Allergys = h.Allergys ?? string.Empty,
+                ChronicIllnesss = h.ChronicIllnesss ?? string.Empty,
+                LongTermMedications = h.LongTermMedications ?? string.Empty,
+                OtherMedicalConditions = h.OtherMedicalConditions ?? string.Empty,
                 DeclarationDate = h.DeclarationDate
             }).ToList();
 
