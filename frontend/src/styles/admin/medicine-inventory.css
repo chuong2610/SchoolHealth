@@ -1,0 +1,1052 @@
+/* ===== MODERN ADMIN MEDICINE INVENTORY - EMERALD THEME WITH ANIMATIONS ===== */
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes slideInStagger {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.admin-medicine-container {
+    padding: 1.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Modern Header with Enhanced Animation */
+.admin-medicine-header {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    background-size: 200% 200%;
+    color: white;
+    padding: 1.75rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(5, 150, 105, 0.15);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out 0.2s both, gradient 3s ease infinite;
+    transition: all 0.3s ease;
+}
+
+.admin-medicine-header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.2);
+}
+
+.admin-medicine-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="1" fill="white" opacity="0.08"/><circle cx="75" cy="35" r="1.5" fill="white" opacity="0.06"/><circle cx="45" cy="75" r="2" fill="white" opacity="0.04"/></svg>') repeat;
+    pointer-events: none;
+    animation: none;
+}
+
+.admin-medicine-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeInLeft 0.6s ease-out 0.4s both;
+}
+
+.admin-medicine-title i {
+    animation: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-medicine-title:hover i {
+    transform: scale(1.1) rotate(5deg);
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.admin-medicine-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin: 0;
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+    animation: fadeInLeft 0.6s ease-out 0.6s both;
+}
+
+/* Modern Stats Cards with Stagger Animation */
+.admin-medicine-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.admin-medicine-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    animation: bounceIn 0.8s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.5s);
+}
+
+.admin-medicine-stat-card:nth-child(1) {
+    --card-index: 0;
+}
+
+.admin-medicine-stat-card:nth-child(2) {
+    --card-index: 1;
+}
+
+.admin-medicine-stat-card:nth-child(3) {
+    --card-index: 2;
+}
+
+.admin-medicine-stat-card:nth-child(4) {
+    --card-index: 3;
+}
+
+.admin-medicine-stat-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.12);
+    border-color: #d1fae5;
+}
+
+.admin-medicine-stat-card:active {
+    transform: translateY(-4px) scale(1.01);
+    transition: all 0.1s ease;
+}
+
+.admin-medicine-stat-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    transition: all 0.3s ease;
+    animation: none;
+}
+
+.admin-medicine-stat-icon:hover {
+    transform: rotate(5deg) scale(1.05);
+    animation: none;
+}
+
+.admin-medicine-stat-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+    animation: fadeInUp 0.6s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 0.9s);
+}
+
+.admin-medicine-stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+    animation: fadeInUp 0.6s ease-out both;
+    animation-delay: calc(var(--card-index, 0) * 0.1s + 1.1s);
+}
+
+/* Modern Card with Enhanced Hover */
+.admin-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.6s ease-out 1s both;
+}
+
+.admin-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(5, 150, 105, 0.1);
+    border-color: #d1fae5;
+}
+
+.admin-card-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+    animation: slideIn 0.6s ease-out 1.2s both;
+}
+
+.admin-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-card-title i {
+    animation: none;
+}
+
+.admin-card-body {
+    padding: 1.25rem;
+    animation: fadeInUp 0.6s ease-out 1.4s both;
+}
+
+/* Enhanced Search Bar */
+.admin-medicine-search-bar {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideIn 0.6s ease-out 0.8s both;
+}
+
+.admin-medicine-search-bar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.1);
+    border-color: #d1fae5;
+}
+
+.admin-medicine-search-input {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    flex: 1;
+}
+
+.admin-medicine-search-input:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    outline: none;
+    background: white;
+    transform: scale(1.01);
+}
+
+.admin-medicine-filter-btn {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-medicine-filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-medicine-filter-btn:hover::before {
+    left: 100%;
+}
+
+.admin-medicine-filter-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+}
+
+.admin-medicine-filter-btn:active {
+    transform: translateY(-1px) scale(1.02);
+}
+
+/* Enhanced Table with Row Animations */
+.admin-medicine-table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    margin-bottom: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: scaleIn 0.8s ease-out 1.2s both;
+}
+
+.admin-medicine-table-container:hover {
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.1);
+    border-color: #d1fae5;
+}
+
+.admin-medicine-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.admin-medicine-table thead {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+    animation: slideIn 0.6s ease-out 1.4s both;
+}
+
+.admin-medicine-table th {
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    animation: slideInStagger 0.6s ease-out both;
+    animation-delay: calc(var(--col-index, 0) * 0.1s + 1.6s);
+}
+
+.admin-medicine-table th:nth-child(1) {
+    --col-index: 0;
+}
+
+.admin-medicine-table th:nth-child(2) {
+    --col-index: 1;
+}
+
+.admin-medicine-table th:nth-child(3) {
+    --col-index: 2;
+}
+
+.admin-medicine-table th:nth-child(4) {
+    --col-index: 3;
+}
+
+.admin-medicine-table th:nth-child(5) {
+    --col-index: 4;
+}
+
+.admin-medicine-table th:nth-child(6) {
+    --col-index: 5;
+}
+
+.admin-medicine-table th:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.admin-medicine-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+    vertical-align: middle;
+}
+
+.admin-medicine-table tbody tr {
+    animation: slideInStagger 0.6s ease-out both;
+    animation-delay: calc(var(--row-index, 0) * 0.05s + 1.8s);
+    transition: all 0.3s ease;
+}
+
+.admin-medicine-table tbody tr:nth-child(1) {
+    --row-index: 0;
+}
+
+.admin-medicine-table tbody tr:nth-child(2) {
+    --row-index: 1;
+}
+
+.admin-medicine-table tbody tr:nth-child(3) {
+    --row-index: 2;
+}
+
+.admin-medicine-table tbody tr:nth-child(4) {
+    --row-index: 3;
+}
+
+.admin-medicine-table tbody tr:nth-child(5) {
+    --row-index: 4;
+}
+
+.admin-medicine-table tbody tr:nth-child(6) {
+    --row-index: 5;
+}
+
+.admin-medicine-table tbody tr:nth-child(7) {
+    --row-index: 6;
+}
+
+.admin-medicine-table tbody tr:nth-child(8) {
+    --row-index: 7;
+}
+
+.admin-medicine-table tbody tr:hover {
+    background-color: #f0fdf4;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.06);
+}
+
+.admin-medicine-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Enhanced Medicine Info with Micro-animations */
+.admin-medicine-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.admin-medicine-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.admin-medicine-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    transition: color 0.3s ease;
+}
+
+.admin-medicine-name:hover {
+    color: #059669;
+}
+
+.admin-medicine-type {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+}
+
+.admin-medicine-category {
+    display: inline-block;
+    padding: 0.375rem 0.875rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-medicine-category::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-medicine-category:hover::before {
+    left: 100%;
+}
+
+.admin-medicine-category:hover {
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+}
+
+.admin-medicine-barcode {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-family: 'Courier New', monospace;
+}
+
+/* Enhanced Status Badges */
+.admin-medicine-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-medicine-status::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-medicine-status:hover::before {
+    left: 100%;
+}
+
+.admin-medicine-status:hover {
+    transform: scale(1.02);
+}
+
+.admin-medicine-status.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.admin-medicine-status.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+.admin-medicine-status.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+}
+
+/* Enhanced Stock Progress */
+.admin-medicine-stock-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-medicine-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #E5E7EB;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.admin-medicine-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-medicine-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
+    animation: none;
+}
+
+.admin-medicine-progress-fill.success {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+.admin-medicine-progress-fill.warning {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+}
+
+.admin-medicine-progress-fill.danger {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+}
+
+.admin-medicine-stock-text {
+    font-size: 0.75rem;
+    color: #6B7280;
+}
+
+/* Enhanced Action Buttons */
+.admin-medicine-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.admin-medicine-action-btn {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: scaleIn 0.6s ease-out both;
+    animation-delay: calc(var(--btn-index, 0) * 0.1s + 2s);
+}
+
+.admin-medicine-action-btn:nth-child(1) {
+    --btn-index: 0;
+}
+
+.admin-medicine-action-btn:nth-child(2) {
+    --btn-index: 1;
+}
+
+.admin-medicine-action-btn:nth-child(3) {
+    --btn-index: 2;
+}
+
+.admin-medicine-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-medicine-action-btn:hover::before {
+    left: 100%;
+}
+
+.admin-medicine-action-btn.view {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.admin-medicine-action-btn.edit {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+}
+
+.admin-medicine-action-btn.delete {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    color: white;
+}
+
+.admin-medicine-action-btn:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.admin-medicine-action-btn:active {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Icon Hover Effects for Medicine Action Buttons */
+.admin-medicine-action-btn.view:hover i {
+    transform: scale(1.1) rotate(3deg);
+    text-shadow: 0 0 4px rgba(37, 99, 235, 0.6);
+    filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.4));
+}
+
+.admin-medicine-action-btn.edit:hover i {
+    transform: scale(1.1) rotate(5deg);
+    text-shadow: 0 0 4px rgba(5, 150, 105, 0.6);
+    filter: drop-shadow(0 0 3px rgba(5, 150, 105, 0.4));
+}
+
+.admin-medicine-action-btn.delete:hover i {
+    transform: scale(1.1) rotate(-5deg);
+    text-shadow: 0 0 4px rgba(220, 38, 38, 0.6);
+    filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.4));
+}
+
+/* Enhanced Primary Button */
+.admin-primary-btn {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out 0.6s both;
+}
+
+.admin-primary-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-primary-btn:hover::before {
+    left: 100%;
+}
+
+.admin-primary-btn:hover {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.25);
+    background: linear-gradient(135deg, #047857 0%, #059669 100%);
+}
+
+.admin-primary-btn:active {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
+.admin-primary-btn i {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-primary-btn:hover i {
+    transform: scale(1.1) rotate(5deg);
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3));
+}
+
+.admin-secondary-btn {
+    background: white;
+    border: 1px solid #d1fae5;
+    border-radius: 10px;
+    padding: 0.75rem 1.25rem;
+    color: #059669;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out 0.8s both;
+}
+
+.admin-secondary-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.admin-secondary-btn:hover::before {
+    left: 100%;
+}
+
+.admin-secondary-btn:hover {
+    background: #f0fdf4;
+    border-color: #059669;
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.12);
+}
+
+.admin-secondary-btn:active {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.1);
+}
+
+.admin-secondary-btn i {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-secondary-btn:hover i {
+    transform: scale(1.1) rotate(-5deg);
+    color: #047857;
+    text-shadow: 0 0 3px rgba(4, 120, 87, 0.4);
+    filter: drop-shadow(0 0 2px rgba(4, 120, 87, 0.3));
+}
+
+/* Enhanced Loading States */
+.admin-medicine-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem;
+    color: #64748b;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.admin-medicine-loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f1f5f9;
+    border-top: 2px solid #059669;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modern Responsive Design */
+@media (max-width: 1200px) {
+    .admin-medicine-stats {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 1024px) {
+    .admin-medicine-search-bar {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-medicine-container {
+        padding: 1rem;
+    }
+
+    .admin-medicine-header {
+        padding: 1.25rem;
+        border-radius: 10px;
+    }
+
+    .admin-medicine-title {
+        font-size: 1.5rem;
+    }
+
+    .admin-medicine-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .admin-medicine-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .admin-medicine-stat-card {
+        padding: 1.25rem;
+    }
+
+    .admin-medicine-search-bar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+
+    .admin-medicine-table-container {
+        overflow-x: auto;
+        border-radius: 10px;
+    }
+
+    .admin-card-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-medicine-container {
+        padding: 0.75rem;
+    }
+
+    .admin-medicine-header {
+        padding: 1rem;
+    }
+
+    .admin-medicine-title {
+        font-size: 1.25rem;
+    }
+
+    .admin-medicine-stat-value {
+        font-size: 1.5rem;
+    }
+
+    .admin-medicine-actions {
+        gap: 0.25rem;
+    }
+
+    .admin-medicine-action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,728 @@
+/* ===== MODERN AUTH CALLBACK DESIGN ===== */
+
+/* Container */
+.auth-callback-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+}
+
+/* Background Elements */
+.auth-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    animation: float 8s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    top: -150px;
+    left: -150px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(45deg, #a8edea, #fed6e3);
+    bottom: -125px;
+    right: -125px;
+    animation-delay: 2s;
+}
+
+.orb-3 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #ffecd2, #fcb69f);
+    top: 20%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+.error-orb {
+    background: linear-gradient(45deg, #ff416c, #ff4757) !important;
+}
+
+.floating-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: particleFloat 15s linear infinite;
+}
+
+.particle-1 {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.particle-2 {
+    top: 20%;
+    left: 80%;
+    animation-delay: 2s;
+}
+
+.particle-3 {
+    top: 30%;
+    left: 30%;
+    animation-delay: 4s;
+}
+
+.particle-4 {
+    top: 40%;
+    left: 70%;
+    animation-delay: 6s;
+}
+
+.particle-5 {
+    top: 50%;
+    left: 20%;
+    animation-delay: 8s;
+}
+
+.particle-6 {
+    top: 60%;
+    left: 90%;
+    animation-delay: 10s;
+}
+
+.particle-7 {
+    top: 70%;
+    left: 50%;
+    animation-delay: 12s;
+}
+
+.particle-8 {
+    top: 80%;
+    left: 15%;
+    animation-delay: 14s;
+}
+
+.particle-9 {
+    top: 90%;
+    left: 85%;
+    animation-delay: 1s;
+}
+
+.particle-10 {
+    top: 25%;
+    left: 60%;
+    animation-delay: 3s;
+}
+
+.particle-11 {
+    top: 75%;
+    left: 40%;
+    animation-delay: 5s;
+}
+
+.particle-12 {
+    top: 35%;
+    left: 5%;
+    animation-delay: 7s;
+}
+
+/* Main Content */
+.auth-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 2;
+    animation: slideInUp 0.8s ease-out;
+}
+
+/* Medical Icon */
+.auth-icon {
+    margin-bottom: 2rem;
+    animation: scaleIn 0.6s ease-out 0.2s both;
+}
+
+.medical-cross {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin: 0 auto;
+}
+
+.cross-horizontal,
+.cross-vertical {
+    position: absolute;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.cross-horizontal {
+    width: 60px;
+    height: 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.cross-vertical {
+    width: 15px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Loading Container */
+.loading-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 2rem auto;
+    animation: scaleIn 0.6s ease-out 0.4s both;
+}
+
+.spinner-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.spinner-sector {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+.spinner-sector:nth-child(1) {
+    border-top-color: #667eea;
+    animation-delay: 0s;
+}
+
+.spinner-sector:nth-child(2) {
+    border-right-color: #764ba2;
+    animation-delay: 0.5s;
+}
+
+.spinner-sector:nth-child(3) {
+    border-bottom-color: #667eea;
+    animation-delay: 1s;
+}
+
+.spinner-sector:nth-child(4) {
+    border-left-color: #764ba2;
+    animation-delay: 1.5s;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Text Content */
+.auth-text {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.6s both;
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.text-line {
+    white-space: nowrap;
+}
+
+.typing-dots {
+    display: inline-flex;
+    gap: 0.1rem;
+}
+
+.typing-dots span {
+    animation: typingDot 1.5s ease-in-out infinite;
+}
+
+.typing-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.auth-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.6s ease-out 0.8s both;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.75rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 50px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+.progress-glow {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 50px;
+    filter: blur(8px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #667eea;
+    text-align: center;
+}
+
+/* Status Messages */
+.status-messages {
+    animation: fadeInUp 0.6s ease-out 1s both;
+}
+
+.status-item {
+    display: block;
+    font-size: 0.95rem;
+    color: #4b5563;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    animation: slideInLeft 0.4s ease-out;
+}
+
+.status-item.success {
+    color: #059669;
+    font-weight: 600;
+}
+
+/* Error State */
+.error-state .auth-content {
+    background: rgba(254, 242, 242, 0.95);
+    border-color: rgba(252, 165, 165, 0.5);
+}
+
+.error-container {
+    text-align: center;
+}
+
+.error-icon {
+    margin-bottom: 2rem;
+    animation: scaleIn 0.6s ease-out;
+}
+
+.error-symbol {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #ff416c, #ff4757);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-line {
+    position: absolute;
+    width: 30px;
+    height: 4px;
+    background: white;
+    border-radius: 2px;
+}
+
+.line-1 {
+    transform: rotate(45deg);
+}
+
+.line-2 {
+    transform: rotate(-45deg);
+}
+
+.error-content {
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.error-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #dc2626;
+    margin: 0 0 1rem 0;
+}
+
+.error-message {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0 0 2rem 0;
+    line-height: 1.5;
+}
+
+.retry-button {
+    background: linear-gradient(135deg, #ff416c, #ff4757);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 1.5rem;
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(255, 65, 108, 0.4);
+}
+
+.retry-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.retry-button:hover::before {
+    left: 100%;
+}
+
+.button-text {
+    position: relative;
+    z-index: 2;
+}
+
+.auto-redirect {
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.countdown {
+    font-weight: 600;
+    color: #ff4757;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.1;
+    }
+}
+
+@keyframes glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    33% {
+        transform: translateY(-20px) rotate(120deg);
+    }
+
+    66% {
+        transform: translateY(10px) rotate(240deg);
+    }
+}
+
+@keyframes particleFloat {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes typingDot {
+
+    0%,
+    20% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+    100% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-callback-container {
+        padding: 1rem;
+    }
+
+    .auth-content {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .auth-title {
+        font-size: 1.6rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .auth-subtitle {
+        font-size: 1rem;
+    }
+
+    .loading-container {
+        width: 100px;
+        height: 100px;
+    }
+
+    .medical-cross {
+        width: 60px;
+        height: 60px;
+    }
+
+    .cross-horizontal {
+        width: 45px;
+        height: 12px;
+    }
+
+    .cross-vertical {
+        width: 12px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-content {
+        padding: 1.5rem 1rem;
+        border-radius: 16px;
+    }
+
+    .auth-title {
+        font-size: 1.4rem;
+    }
+
+    .retry-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .loading-container {
+        width: 80px;
+        height: 80px;
+    }
+
+    .orb-1,
+    .orb-2,
+    .orb-3 {
+        width: 200px;
+        height: 200px;
+    }
+}

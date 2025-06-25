@@ -14,6 +14,11 @@ namespace backend.Interfaces
                 Task<int> GetNumberOfStudents();
                 Task<List<Student>> GetStudentsByClassIdAsync(int classId);
                 Task<User> GetParentByStudentIdAsync(int studentId);
+                Task<List<Student>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search);
+                Task<int> CountStudentsAsync(int classId, string? search);
+                Task<bool> CreateStudentAsync(Student student);
+                Task<bool> UpdateStudentAsync(Student student);
+                Task<bool> DeleteStudentAsync(Student student);
         }
 }
 

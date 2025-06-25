@@ -81,30 +81,81 @@ namespace backend.Repositories
                 return false;
             }
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)
         {
-            return await _context.Users
+            var query = _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.IsActive)
+                .Where(u => u.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search) ||
+                    u.Phone.Contains(search));
+            }
+
+            var items = await query
+                .OrderBy(u => u.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return items;
         }
-        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
+        public async Task<int> CountUsersAsync(string? search)
         {
-            return await _context.Users
+            var query = _context.Users
+                .Where(u => u.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search) ||
+                    u.Phone.Contains(search));
+            }
+
+            return await query.CountAsync();
+        }
+
+        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search)
+        {
+            var query = _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.Role.Name == role && u.IsActive) // Chỉ lấy user active
+                .Where(u => u.Role.Name == role && u.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search) ||
+                    u.Phone.Contains(search));
+            }
+
+            return await query
                 .OrderBy(u => u.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountUsersByRoleAsync(string role)
+        public async Task<int> CountUsersByRoleAsync(string role, string? search)
         {
-            return await _context.Users
+            var query = _context.Users
                 .Include(u => u.Role)
-                .Where(u => u.Role.Name == role && u.IsActive)
-                .CountAsync();
+                .Where(u => u.Role.Name == role && u.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u =>
+                    u.Name.Contains(search) ||
+                    u.Email.Contains(search) ||
+                    u.Phone.Contains(search));
+            }
+
+            return await query.CountAsync();
+
         }
 
         public Task<int> GetNumberOfUsersAsync(string role)

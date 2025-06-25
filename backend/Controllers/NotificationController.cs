@@ -59,7 +59,7 @@ namespace backend.Controllers
         {
             try
             {
-                var notifications = await _notificationService.GetVaccinationNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+                var notifications = await _notificationService.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo tiêm chủng thành công", true));
             }
             catch (Exception ex)
@@ -87,12 +87,12 @@ namespace backend.Controllers
             }
         }
         [HttpGet("admin/{id}")]
-        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id, int pageNumber, int pageSize)
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id, int pageNumber, int pageSize, string? search)
         {
             try
             {
                 var notification = await _notificationService
-                    .GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize);
+                    .GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize, search);
 
                 if (notification == null)
                 {
@@ -112,12 +112,11 @@ namespace backend.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<BaseResponse<PageResult<NotificationClassDTO>>>> GetAll(int pageNumber, int pageSize)
+        public async Task<ActionResult<BaseResponse<PageResult<NotificationClassDTO>>>> GetAll(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var notificationsPage = await _notificationService
-                    .GetAllNotificationAsync(pageNumber, pageSize);
+                var notificationsPage = await _notificationService.GetAllNotificationsAsync(pageNumber, pageSize, search);
 
                 return Ok(new BaseResponse<PageResult<NotificationClassDTO>>(
                     notificationsPage,
@@ -206,6 +205,50 @@ namespace backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+        [HttpGet("notification-count")]
+        public async Task<ActionResult<BaseResponse<object>>> GetNotificationCounts(int parentId)
+        {
+            try
+            {
+                var result = await _notificationService.GetNotificationCountsAsync(parentId);
+                return Ok(new BaseResponse<object>(
+                    result,
+                    "Lấy số lượng thông báo thành công",
+                    true
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false
+                ));
+            }
+        }
+
+        [HttpGet("notification-admin-count")]
+        public async Task<ActionResult<BaseResponse<object>>> GetNotificationAdminCount()
+        {
+            try
+            {
+                var result = await _notificationService.GetNotificationAdminCountsAsync();
+                return Ok(new BaseResponse<object>(
+                    result,
+                    "Lấy thống kê thông báo thành công",
+                    true
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(
+                    null,
+                    $"Lỗi: {ex.Message}",
+                    false
+                ));
             }
         }
     }

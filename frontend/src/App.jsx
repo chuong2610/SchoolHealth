@@ -6,7 +6,7 @@ import {
   BrowserRouter as Router,
 } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer } from "react-toastify";
 
 // Layouts
@@ -24,10 +24,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Admin Pages
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminAccounts from "./pages/admin/Accounts";
-import AdminCategories from "./pages/admin/Categories";
+
 import AdminMedicineInventory from "./pages/admin/MedicineInventory";
-import AdminMedicinePlan from "./pages/admin/MedicinePlan";
-import AdminMedicineRequests from "./pages/admin/MedicineRequests";
+
+
 import AdminReports from "./pages/admin/Reports";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
@@ -60,9 +60,15 @@ import Privacy from "./pages/Privacy";
 
 // Styles
 import "react-toastify/dist/ReactToastify.css";
+import BlogPostList from "./pages/admin/BlogPostList";
+import CreateBlogPost from "./pages/admin/CreateBlogPost";
+import EditBlogPost from "./pages/admin/EditBlogPost";
+import EditProfile from "./pages/admin/EditProfile";
 
 // Google OAuth Configuration
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  "1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com";
 
 const App = () => {
   return (
@@ -100,25 +106,36 @@ const App = () => {
             {/* Protected Routes with MainLayout */}
             <Route element={<ProtectedRoute />}>
               <Route element={<MainLayout />}>
-
                 {/* Admin Routes */}
                 <Route path="admin">
                   <Route index element={<AdminDashboard />} />
                   <Route path="accounts" element={<AdminAccounts />} />
-                  <Route path="categories" element={<AdminCategories />} />
-                  <Route path="medicines/plan" element={<AdminMedicinePlan />} />
-                  <Route path="medicines/requests" element={<AdminMedicineRequests />} />
-                  <Route path="medicines/inventory" element={<AdminMedicineInventory />} />
-                  <Route path="notification/management" element={<NotificationsManagement />} />
+              
+                  
+                  <Route
+                    path="medicines/inventory"
+                    element={<AdminMedicineInventory />}
+                  />
+                  <Route
+                    path="notification/management"
+                    element={<NotificationsManagement />}
+                  />
                   <Route path="reports" element={<AdminReports />} />
                   <Route path="profile" element={<AdminProfile />} />
                   <Route path="settings" element={<AdminSettings />} />
+                  <Route path="blog-posts" element={<BlogPostList />} />
+                  <Route path="create-blog" element={<CreateBlogPost />} />
+                  <Route path="edit-blog/:id" element={<EditBlogPost />} />
+                  <Route path="edit-profile" element={<EditProfile />} />
                 </Route>
 
                 {/* Nurse Routes */}
                 <Route path="nurse">
                   <Route index element={<NurseDashboard />} />
-                  <Route path="receive-medicine" element={<NurseReceiveMedicine />} />
+                  <Route
+                    path="receive-medicine"
+                    element={<NurseReceiveMedicine />}
+                  />
                   <Route path="health-events" element={<NurseHealthEvents />} />
                   <Route path="profile" element={<NurseProfile />} />
                   <Route path="settings" element={<NurseSettings />} />
@@ -127,10 +144,22 @@ const App = () => {
                 {/* Parent Routes */}
                 <Route path="parent">
                   <Route index element={<ParentDashboard />} />
-                  <Route path="health-declaration" element={<ParentHealthDeclaration />} />
-                  <Route path="notifications" element={<ParentNotifications />} />
-                  <Route path="health-history" element={<ParentHealthHistory />} />
-                  <Route path="send-medicine" element={<ParentSendMedicine />} />
+                  <Route
+                    path="health-declaration"
+                    element={<ParentHealthDeclaration />}
+                  />
+                  <Route
+                    path="notifications"
+                    element={<ParentNotifications />}
+                  />
+                  <Route
+                    path="health-history"
+                    element={<ParentHealthHistory />}
+                  />
+                  <Route
+                    path="send-medicine"
+                    element={<ParentSendMedicine />}
+                  />
                   <Route path="profile" element={<ParentProfile />} />
                   <Route path="settings" element={<ParentSettings />} />
                   <Route path="blog/:id" element={<BlogDetail />} />
@@ -143,7 +172,6 @@ const App = () => {
                 <Route path="contact" element={<Contact />} />
                 <Route path="faq" element={<FAQ />} />
                 <Route path="privacy" element={<Privacy />} />
-
               </Route>
             </Route>
 

@@ -7,8 +7,8 @@ namespace backend.Interfaces
     public interface IUserService
     {
 
-        Task<List<UserDTO>> GetAllUsersAsync();
-        Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize);
+        Task<PageResult<UserDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? search);
+        Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search);
         Task<bool> CreateUserAsync(CreateUserRequest request);
         Task<User?> GetUserByEmailAsync(string email);
         Task<User?> GetUserByPhoneAsync(string phone);

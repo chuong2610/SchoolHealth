@@ -127,7 +127,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
-        public async Task<IActionResult> GetMedicationsByParentId(int parentId, int pageNumber, int pageSize, string search)
+        public async Task<IActionResult> GetMedicationsByParentId(int parentId, int pageNumber, int pageSize, string? search)
         {
             try
             {
@@ -137,6 +137,20 @@ namespace backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+        [HttpGet("medication-count")]
+        public async Task<IActionResult> GetMedicationCounts()
+        {
+            try
+            {
+                var result = await _medicationService.GetMedicationCountsAsync();
+                return Ok(new BaseResponse<MedicationCountDTO>(result, "Lấy thống kê gửi thuốc thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Có lỗi xảy ra: {ex.Message}", false));
             }
         }
     }

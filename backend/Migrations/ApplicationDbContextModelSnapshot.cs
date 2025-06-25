@@ -17,7 +17,7 @@ namespace backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -174,6 +174,32 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("HealthChecks");
+                });
+
+            modelBuilder.Entity("backend.Models.HealthDeclareHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DeclarationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("StudentProfileId");
+
+                    b.ToTable("HealthDeclareHistories");
                 });
 
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>
@@ -641,6 +667,25 @@ namespace backend.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("backend.Models.HealthDeclareHistory", b =>
+                {
+                    b.HasOne("backend.Models.User", "Parent")
+                        .WithMany("HealthDeclareHistories")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.StudentProfile", "StudentProfile")
+                        .WithMany("HealthDeclareHistories")
+                        .HasForeignKey("StudentProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("StudentProfile");
+                });
+
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>
                 {
                     b.HasOne("backend.Models.Student", "Student")
@@ -852,6 +897,11 @@ namespace backend.Migrations
                     b.Navigation("Vaccinations");
                 });
 
+            modelBuilder.Entity("backend.Models.StudentProfile", b =>
+                {
+                    b.Navigation("HealthDeclareHistories");
+                });
+
             modelBuilder.Entity("backend.Models.User", b =>
                 {
                     b.Navigation("AssignedNotifications");
@@ -861,6 +911,8 @@ namespace backend.Migrations
                     b.Navigation("CreatedNotifications");
 
                     b.Navigation("HealthChecks");
+
+                    b.Navigation("HealthDeclareHistories");
 
                     b.Navigation("MedicalEvents");
 

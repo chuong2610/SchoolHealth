@@ -49,11 +49,11 @@ namespace backend.Controllers
         }
         [HttpGet("parent/{parentId}")]
         [Authorize(Policy = "ParentOnly")]
-        public async Task<IActionResult> GetVaccinationsByParentId(int parentId, int pageNumber, int pageSize)
+        public async Task<IActionResult> GetVaccinationsByParentId(int parentId, int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var vaccinations = await _vaccinationService.GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize);
+                var vaccinations = await _vaccinationService.GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<VaccinationDTO>>(vaccinations, "Lấy danh sách tiêm chủng theo phụ huynh thành công", true));
             }
             catch (Exception ex)

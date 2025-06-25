@@ -26,38 +26,82 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<List<Vaccination>> GetVaccinationsByNotificationIdAsync(int notificationId, int pageNumber, int pageSize)
+        public async Task<List<Vaccination>> GetVaccinationsByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
         {
-            return await _context.Vaccinations
+            var query = _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
-                .Where(v => v.NotificationId == notificationId)
+                .Where(v => v.NotificationId == notificationId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(v =>
+                    v.Nurse.Name.Contains(search) ||
+                    v.Student.Name.Contains(search) ||
+                    v.VaccineName.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(v => v.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountVaccinationsByNotificationIdAsync(int notificationId)
+        public async Task<int> CountVaccinationsByNotificationIdAsync(int notificationId, string? search)
         {
-            return await _context.Vaccinations
-                .CountAsync(v => v.NotificationId == notificationId);
-        }
-
-        public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize)
-        {
-            return await _context.Vaccinations
+            var query = _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
-                .Where(v => v.Student.ParentId == parentId)
-                .OrderByDescending(v => v.Id) // hoặc OrderBy nào bạn muốn
+                .Where(v => v.NotificationId == notificationId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(v =>
+                    v.Nurse.Name.Contains(search) ||
+                    v.Student.Name.Contains(search) ||
+                    v.VaccineName.Contains(search));
+            }
+
+            return await query.CountAsync();
+        }
+
+        public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            var query = _context.Vaccinations
+                .Include(v => v.Nurse)
+                .Include(v => v.Student)
+                .Where(v => v.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(v =>
+                    v.Nurse.Name.Contains(search) ||
+                    v.Student.Name.Contains(search) ||
+                    v.VaccineName.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(v => v.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountVaccinationsByParentIdAsync(int parentId)
+        public async Task<int> CountVaccinationsByParentIdAsync(int parentId, string? search)
         {
-            return await _context.Vaccinations.CountAsync(v => v.Student.ParentId == parentId);
+            var query = _context.Vaccinations
+                .Where(v => v.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(v =>
+                    v.Nurse.Name.Contains(search) ||
+                    v.Student.Name.Contains(search) ||
+                    v.VaccineName.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
         public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
         {

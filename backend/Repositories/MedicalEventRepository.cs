@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -32,22 +33,43 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(me => me.Id == id);
         }
 
-        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize)
+        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
         {
-            return await _context.MedicalEvents
+            var query = _context.MedicalEvents
                 .Include(me => me.Student)
                 .Include(me => me.Nurse)
                 .Include(me => me.MedicalEventSupplys)
                     .ThenInclude(mes => mes.MedicalSupply)
-                .OrderBy(me => me.Id) // Sắp xếp để phân trang ổn định
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Status.Contains(search));
+            }
+
+            return await query
+                .OrderByDescending(me => me.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicalEventsAsync()
+        public async Task<int> CountMedicalEventsAsync(string? search)
         {
-            return await _context.MedicalEvents.CountAsync();
+            var query = _context.MedicalEvents.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Status.Contains(search));
+            }
+
+            return await query.CountAsync();
         }
 
         public async Task<List<MedicalEvent>> GetMedicalEventsTodayAsync()
@@ -94,6 +116,25 @@ namespace backend.Repositories
             }
 
             return result;
+        }
+
+        public async Task<MedicalEventCountDTO> GetMedicalEventCountsAsync()
+        {
+            var today = DateTime.UtcNow.Date;
+            var sevenDaysAgo = today.AddDays(-7);
+
+            var total = await _context.MedicalEvents.CountAsync();
+            var last7Days = await _context.MedicalEvents.CountAsync(m =>
+                m.Date >= sevenDaysAgo && m.Date < today.AddDays(1));
+            var todayCount = await _context.MedicalEvents.CountAsync(m =>
+                m.Date >= today && m.Date < today.AddDays(1));
+
+            return new MedicalEventCountDTO
+            {
+                TotalCount = total,
+                Last7DaysCount = last7Days,
+                TodayCount = todayCount
+            };
         }
     }
 }

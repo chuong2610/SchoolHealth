@@ -69,16 +69,26 @@ namespace backend.Services
         {
             return await _userRepository.DeleteUserAsync(id);
         }
-        public async Task<List<UserDTO>> GetAllUsersAsync()
+        public async Task<PageResult<UserDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)
         {
-            var users = await _userRepository.GetAllUsersAsync();
-            return users.Select(MapToUserDTO).ToList();
-        }
-        public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize)
-        {
-            var totalItems = await _userRepository.CountUsersByRoleAsync(role);
+            var totalItems = await _userRepository.CountUsersAsync(search);
+            var users = await _userRepository.GetAllUsersAsync(pageNumber, pageSize, search);
 
-            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize);
+            var userDtos = users.Select(MapToUserDTO).ToList();
+
+            return new PageResult<UserDTO>
+            {
+                Items = userDtos,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                CurrentPage = pageNumber
+            };
+        }
+        public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search)
+        {
+            var totalItems = await _userRepository.CountUsersByRoleAsync(role, search);
+
+            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize, search);
 
             var userDtos = users.Select(MapToUserDTO).ToList();
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col, Card, Dropdown, Badge } from "react-bootstrap";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { FaChartLine, FaFileAlt, FaDownload, FaFilter, FaPlus, FaEye, FaEdit, FaTrash, FaFilePdf, FaFileCsv, FaFileExcel, FaPrint, FaCalendarAlt, FaUser, FaChartBar, FaChartPie, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import "../../styles/admin/reports.css";
 
 // Mock data for charts
 const monthlyHealthData = [
