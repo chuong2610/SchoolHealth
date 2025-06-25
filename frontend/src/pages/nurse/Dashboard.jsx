@@ -165,19 +165,19 @@ const HealthSvg = () => (
   </svg>
 );
 
-// Mock nurse profile
-const nurseProfile = {
-  name: "Nguyễn Thị B",
-  role: "Y tá",
-  email: "nurse.b@school.edu.vn",
-  avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-};
-
 const Dashboard = () => {
   const { user } = useAuth();
   const nurseId = user?.id;
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Use real nurse profile from user context instead of hardcoded data
+  const nurseProfile = {
+    name: user?.fullName || user?.name || "Chưa cập nhật",
+    role: user?.role || "Y tá",
+    email: user?.email || "Chưa cập nhật",
+    avatar: user?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user?.fullName || user?.name || "Nurse") + "&background=F06292&color=fff&size=200"
+  };
 
   useEffect(() => {
     if (!nurseId) return;
@@ -404,7 +404,7 @@ const Dashboard = () => {
             value: medicineToTake,
             icon: FaPills,
             color: 'success',
-            
+
             gradient: 'linear-gradient(135deg, #A3D8A0 0%, #81C784 100%)',
             svgComponent: MedicineSvg
           },

@@ -868,7 +868,7 @@
 
 /* Modal Header cho form tạo sự kiện - Redesigned */
 .add-event-modal-header {
-    background: linear-gradient(135deg, #F06292 0%, #E91E63 100%) !important;
+    background: #E57373;
     border: none !important;
     border-radius: 12px 12px 0 0 !important;
     padding: 24px 32px !important;
@@ -1617,9 +1617,9 @@
     }
 }
 
-/* Enhanced Health Event Modal Form - Single Form Design */
+/* Enhanced Health Event Modal Form - Single Form Design - Smaller Size */
 .enhanced-health-event-modal .modal-dialog {
-    max-width: 85% !important;
+    max-width: 75% !important;
     margin: 1rem auto !important;
 }
 
@@ -1631,11 +1631,11 @@
     background: white !important;
 }
 
-/* Enhanced Modal Header - Health Event Theme */
+/* Enhanced Modal Header - Health Event Theme - Compact */
 .enhanced-health-event-modal .enhanced-modal-header {
-    background: linear-gradient(135deg, #F06292 0%, #E91E63 100%) !important;
+    background: #E57373 !important;
     color: white !important;
-    padding: 2rem !important;
+    padding: 1.5rem !important;
     position: relative !important;
     overflow: hidden !important;
     display: flex !important;
@@ -1711,16 +1711,16 @@
     color: white !important;
 }
 
-/* Enhanced Modal Body */
+/* Enhanced Modal Body - Compact */
 .enhanced-health-event-modal .enhanced-modal-body {
     padding: 0 !important;
     background: #ffffff !important;
-    max-height: 70vh !important;
+    max-height: 65vh !important;
     overflow-y: auto !important;
 }
 
 .enhanced-health-event-modal .form-content {
-    padding: 2rem !important;
+    padding: 1.5rem !important;
 }
 
 /* Form Sections */
@@ -2042,10 +2042,10 @@
     margin: 0 !important;
 }
 
-/* Enhanced Modal Footer */
+/* Enhanced Modal Footer - Compact */
 .enhanced-health-event-modal .enhanced-modal-footer {
     background: linear-gradient(135deg, #f8fafc, #e2e8f0) !important;
-    padding: 1.5rem 2rem !important;
+    padding: 1rem 1.5rem !important;
     border-top: 1px solid #e2e8f0 !important;
 }
 
@@ -2062,9 +2062,10 @@
 }
 
 .enhanced-health-event-modal .enhanced-modal-footer .btn {
-    padding: 0.75rem 1.5rem !important;
+    padding: 0.55rem 2.5rem !important;
     border-radius: 10px !important;
-    font-weight: 600 !important;
+
+    font-weight: 700 !important;
     font-size: 1rem !important;
     display: flex !important;
     align-items: center !important;
@@ -2105,10 +2106,10 @@
     color: white !important;
 }
 
-/* Responsive Design for Enhanced Health Event Modal */
+/* Responsive Design for Enhanced Health Event Modal - Compact */
 @media (max-width: 1199px) {
     .enhanced-health-event-modal .modal-dialog {
-        max-width: 90% !important;
+        max-width: 85% !important;
     }
 
     .enhanced-health-event-modal .info-card {
@@ -2130,7 +2131,7 @@
 
 @media (max-width: 767px) {
     .enhanced-health-event-modal .modal-dialog {
-        max-width: 95% !important;
+        max-width: 92% !important;
         margin: 0.5rem !important;
     }
 
@@ -2193,9 +2194,9 @@
     }
 }
 
-/* Enhanced Add Health Event Modal Form - Single Form Design */
+/* Enhanced Add Health Event Modal Form - Single Form Design - Smaller Size */
 .enhanced-add-event-modal .modal-dialog {
-    max-width: 85% !important;
+    max-width: 70% !important;
     margin: 1rem auto !important;
 }
 
@@ -2207,11 +2208,11 @@
     background: white !important;
 }
 
-/* Enhanced Modal Header - Add Event Theme */
+/* Enhanced Modal Header - Add Event Theme - Compact */
 .enhanced-add-event-modal .enhanced-modal-header {
-    background: linear-gradient(135deg, #F06292 0%, #E91E63 100%) !important;
+    background: #E57373 !important;
     color: white !important;
-    padding: 2rem !important;
+    padding: 1.5rem !important;
     position: relative !important;
     overflow: hidden !important;
     display: flex !important;
@@ -2239,21 +2240,21 @@
 }
 
 .enhanced-add-event-modal .enhanced-modal-header .modal-icon {
-    width: 60px !important;
-    height: 60px !important;
+    width: 48px !important;
+    height: 48px !important;
     background: rgba(255, 255, 255, 0.2) !important;
-    border-radius: 15px !important;
+    border-radius: 12px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 1.8rem !important;
+    font-size: 1.5rem !important;
     backdrop-filter: blur(10px) !important;
     animation: pulse 2s infinite !important;
 }
 
 .enhanced-add-event-modal .enhanced-modal-header .header-text h2 {
     margin: 0 !important;
-    font-size: 1.75rem !important;
+    font-size: 1.5rem !important;
     font-weight: 700 !important;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
@@ -2261,7 +2262,7 @@
 .enhanced-add-event-modal .enhanced-modal-header .header-text p {
     margin: 0.5rem 0 0 0 !important;
     opacity: 0.9 !important;
-    font-size: 1rem !important;
+    font-size: 0.9rem !important;
     font-weight: 400 !important;
 }
 
@@ -2289,21 +2290,21 @@
     border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
-/* Enhanced Modal Body */
+/* Enhanced Modal Body - Compact Size */
 .enhanced-add-event-modal .enhanced-modal-body {
     padding: 0 !important;
     background: #ffffff !important;
-    max-height: 70vh !important;
+    max-height: 65vh !important;
     overflow-y: auto !important;
 }
 
 .enhanced-add-event-modal .form-content {
-    padding: 2rem !important;
+    padding: 1.5rem !important;
 }
 
-/* Form Sections */
+/* Form Sections - Compact */
 .enhanced-add-event-modal .form-section {
-    margin-bottom: 2.5rem !important;
+    margin-bottom: 2rem !important;
     border: none !important;
     padding: 0 !important;
 }
@@ -2311,11 +2312,11 @@
 .enhanced-add-event-modal .form-section legend {
     display: flex !important;
     align-items: center !important;
-    gap: 0.75rem !important;
-    font-size: 1.3rem !important;
+    gap: 0.6rem !important;
+    font-size: 1.1rem !important;
     font-weight: 700 !important;
     color: #1e293b !important;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 1.2rem !important;
     padding: 0 !important;
     border: none !important;
     width: auto !important;
@@ -2327,15 +2328,15 @@
     color: #F06292 !important;
 }
 
-/* Input Grid Layout */
+/* Input Grid Layout - Compact */
 .enhanced-add-event-modal .input-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 1.5rem !important;
+    gap: 1.2rem !important;
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
-    border-radius: 15px !important;
-    padding: 1.5rem !important;
+    border-radius: 12px !important;
+    padding: 1.2rem !important;
 }
 
 .enhanced-add-event-modal .input-group {
@@ -2570,10 +2571,10 @@
     font-style: italic !important;
 }
 
-/* Enhanced Modal Footer */
+/* Enhanced Modal Footer - Compact */
 .enhanced-add-event-modal .enhanced-modal-footer {
     background: linear-gradient(135deg, #f8fafc, #e2e8f0) !important;
-    padding: 1.5rem 2rem !important;
+    padding: 1rem 1.5rem !important;
     border-top: 1px solid #e2e8f0 !important;
 }
 
@@ -2645,10 +2646,10 @@
     color: white !important;
 }
 
-/* Responsive Design for Enhanced Add Event Modal */
+/* Responsive Design for Enhanced Add Event Modal - Compact */
 @media (max-width: 1199px) {
     .enhanced-add-event-modal .modal-dialog {
-        max-width: 90% !important;
+        max-width: 80% !important;
     }
 
     .enhanced-add-event-modal .input-grid {
@@ -2656,21 +2657,21 @@
     }
 
     .enhanced-add-event-modal .enhanced-modal-header {
-        padding: 1.5rem !important;
+        padding: 1.2rem !important;
         flex-direction: column !important;
         text-align: center !important;
-        gap: 1rem !important;
+        gap: 0.8rem !important;
     }
 
     .enhanced-add-event-modal .enhanced-modal-header .header-content {
         flex-direction: column !important;
-        gap: 1rem !important;
+        gap: 0.8rem !important;
     }
 }
 
 @media (max-width: 767px) {
     .enhanced-add-event-modal .modal-dialog {
-        max-width: 95% !important;
+        max-width: 92% !important;
         margin: 0.5rem !important;
     }
 
@@ -3098,10 +3099,10 @@
 }
 
 .table th {
-    background: #f8fafc !important;
+    background: rgba(248, 187, 217, 0.15) !important;
     border: none !important;
     font-weight: 700 !important;
-    color: #374151 !important;
+    color: #1a1a1a !important;
     padding: 1rem 0.75rem !important;
     text-align: center !important;
     white-space: nowrap !important;
@@ -3861,4 +3862,1149 @@
 
 .table-responsive::-webkit-scrollbar-thumb:hover {
     background: #64748b !important;
+}
+
+/* ==========================================
+   ENHANCED RESPONSIVE DESIGN - HEALTH EVENTS
+   ========================================== */
+
+/* Extra Large Screens (1400px and up) */
+@media (min-width: 1400px) {
+    .nurse-health-events-redesigned {
+        padding: 32px !important;
+        max-width: 1800px !important;
+        margin: 0 auto !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 48px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 2.5rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 1.2rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 40px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 32px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 20px !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 3fr 1fr 1fr 1fr 1fr auto !important;
+        gap: 20px !important;
+    }
+
+    .nurse-events-stats {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 32px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 32px !important;
+        min-height: 200px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 2rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 3rem !important;
+    }
+}
+
+/* Large Desktops (1200px to 1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .nurse-health-events-redesigned {
+        padding: 28px !important;
+        max-width: 1400px !important;
+        margin: 0 auto !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 40px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 2.2rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 36px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 28px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 18px !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 2.5fr 1fr 1fr 1fr auto !important;
+        gap: 18px !important;
+    }
+
+    .nurse-events-stats {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 28px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 28px !important;
+        min-height: 180px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.8rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 2.5rem !important;
+    }
+}
+
+/* Standard Desktops (1024px to 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .nurse-health-events-redesigned {
+        padding: 26px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 36px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 2rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 1rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 32px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 24px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 2fr 1fr 1fr auto !important;
+        gap: 16px !important;
+    }
+
+    .nurse-events-stats {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 24px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 24px !important;
+        min-height: 160px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 1.6rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 2.2rem !important;
+    }
+}
+
+/* Tablets (768px to 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .nurse-health-events-redesigned {
+        padding: 20px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 28px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.8rem !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        text-align: center !important;
+    }
+
+    .nurse-events-title-icon-redesigned {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 0.95rem !important;
+        text-align: center !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 24px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .nurse-timeline-header-redesigned {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px !important;
+        text-align: center !important;
+    }
+
+    .nurse-timeline-title-redesigned {
+        justify-content: center !important;
+        font-size: 1.3rem !important;
+    }
+
+    .nurse-add-event-btn-redesigned {
+        align-self: center !important;
+        width: fit-content !important;
+    }
+
+    .nurse-timeline-container-redesigned {
+        padding-left: 24px !important;
+    }
+
+    .nurse-timeline-container-redesigned::before {
+        left: 12px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 20px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .nurse-timeline-item-redesigned::before {
+        left: -32px !important;
+        top: 28px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+
+    .nurse-event-actions-redesigned {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        padding: 10px 16px !important;
+        font-size: 0.8rem !important;
+        min-width: 120px !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .nurse-filter-group-redesigned {
+        width: 100% !important;
+    }
+
+    .nurse-events-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 20px !important;
+        min-height: 140px !important;
+        text-align: center !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.4rem !important;
+        margin: 0 auto 12px !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 1.8rem !important;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.85rem !important;
+    }
+
+    /* Enhanced table scrolling for tablets */
+    .medicine-table-container .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 12px !important;
+    }
+
+    .table {
+        min-width: 800px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px 10px !important;
+    }
+
+    .medicine-action-buttons {
+        justify-content: center !important;
+        gap: 6px !important;
+    }
+
+    .btn-action {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px to 767px) */
+@media (max-width: 767px) {
+    .nurse-health-events-redesigned {
+        padding: 16px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+        text-align: center !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.5rem !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: center !important;
+    }
+
+    .nurse-events-title-icon-redesigned {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 0.9rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+    }
+
+    .nurse-timeline-header-redesigned {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 16px !important;
+        text-align: center !important;
+    }
+
+    .nurse-timeline-title-redesigned {
+        font-size: 1.2rem !important;
+        justify-content: center !important;
+    }
+
+    .nurse-timeline-title-icon-redesigned {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .nurse-add-event-btn-redesigned {
+        width: 100% !important;
+        max-width: 250px !important;
+        padding: 12px 20px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .nurse-timeline-container-redesigned {
+        padding-left: 20px !important;
+    }
+
+    .nurse-timeline-container-redesigned::before {
+        left: 10px !important;
+        width: 1px !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 16px !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+    }
+
+    .nurse-timeline-item-redesigned::before {
+        left: -26px !important;
+        top: 24px !important;
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    .nurse-event-header-redesigned {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .nurse-event-status-redesigned {
+        align-self: flex-start !important;
+    }
+
+    .nurse-event-title-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .nurse-event-student-redesigned,
+    .nurse-event-class-redesigned {
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-event-description-redesigned {
+        padding: 12px !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 12px !important;
+    }
+
+    .nurse-event-meta-redesigned {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .nurse-event-meta-item-redesigned {
+        padding: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .nurse-event-meta-icon-redesigned {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.7rem !important;
+        margin-bottom: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .nurse-event-meta-content {
+        flex: 1 !important;
+    }
+
+    .nurse-event-meta-label-redesigned {
+        font-size: 0.7rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .nurse-event-meta-value-redesigned {
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-event-actions-redesigned {
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        padding: 8px 14px !important;
+        font-size: 0.75rem !important;
+        min-width: 100px !important;
+    }
+
+    .nurse-filter-row-redesigned {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .nurse-filter-input-redesigned,
+    .nurse-filter-select-redesigned {
+        padding: 10px 14px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .nurse-filter-btn-redesigned {
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+    }
+
+    .nurse-events-stats {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
+        text-align: left !important;
+        min-height: auto !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .nurse-events-stat-content {
+        flex: 1 !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 1.5rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.8rem !important;
+        margin: 0 !important;
+    }
+
+    /* Enhanced mobile table */
+    .medicine-table-container .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 10px !important;
+        margin: 0 -16px !important;
+        padding: 0 16px !important;
+    }
+
+    .table {
+        min-width: 600px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px 6px !important;
+    }
+
+    .table th {
+        font-size: 0.75rem !important;
+    }
+
+    .medicine-action-buttons {
+        justify-content: center !important;
+        gap: 4px !important;
+    }
+
+    .btn-action {
+        width: 26px !important;
+        height: 26px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Modal adjustments */
+    .add-event-modal .modal-dialog {
+        margin: 16px !important;
+        max-width: calc(100vw - 32px) !important;
+    }
+
+    .add-event-modal .modal-body {
+        padding: 16px !important;
+    }
+
+    .add-event-modal .event-form-section {
+        margin-bottom: 20px !important;
+        padding: 16px !important;
+    }
+
+    .add-event-modal-header {
+        padding: 16px !important;
+    }
+
+    .add-event-modal-title {
+        font-size: 1.1rem !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        text-align: center !important;
+    }
+
+    .form-label-enhanced {
+        font-size: 0.8rem !important;
+    }
+
+    .form-control-enhanced {
+        padding: 10px 12px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .btn-save,
+    .btn-cancel,
+    .btn-reset {
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+        margin-bottom: 8px !important;
+    }
+
+    .footer-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 16px !important;
+    }
+}
+
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
+    .nurse-health-events-redesigned {
+        padding: 12px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.3rem !important;
+    }
+
+    .nurse-events-title-icon-redesigned {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 0.85rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .nurse-timeline-title-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .nurse-event-title-redesigned {
+        font-size: 1rem !important;
+    }
+
+    .nurse-event-student-redesigned,
+    .nurse-event-class-redesigned {
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-event-description-redesigned {
+        padding: 10px !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .nurse-event-meta-item-redesigned {
+        padding: 8px !important;
+        gap: 8px !important;
+    }
+
+    .nurse-event-meta-icon-redesigned {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .nurse-event-meta-label-redesigned {
+        font-size: 0.65rem !important;
+    }
+
+    .nurse-event-meta-value-redesigned {
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+        min-width: 80px !important;
+    }
+
+    .nurse-events-stats {
+        gap: 12px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 1.2rem !important;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-filter-input-redesigned,
+    .nurse-filter-select-redesigned {
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-filter-btn-redesigned {
+        padding: 8px 14px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Enhanced mobile table for small screens */
+    .medicine-table-container .table-responsive {
+        margin: 0 -12px !important;
+        padding: 0 12px !important;
+    }
+
+    .table {
+        min-width: 500px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px 4px !important;
+    }
+
+    .table th {
+        font-size: 0.7rem !important;
+    }
+
+    .btn-action {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Modal adjustments for small mobile */
+    .add-event-modal .modal-dialog {
+        margin: 12px !important;
+        max-width: calc(100vw - 24px) !important;
+    }
+
+    .add-event-modal .modal-body {
+        padding: 12px !important;
+    }
+
+    .add-event-modal .event-form-section {
+        padding: 12px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .add-event-modal-header {
+        padding: 12px !important;
+    }
+
+    .add-event-modal-title {
+        font-size: 1rem !important;
+    }
+
+    .add-event-modal-title .modal-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .form-label-enhanced {
+        font-size: 0.75rem !important;
+    }
+
+    .form-control-enhanced {
+        padding: 8px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .section-header h5 {
+        font-size: 0.9rem !important;
+    }
+
+    .btn-save,
+    .btn-cancel,
+    .btn-reset {
+        padding: 8px 14px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Small Mobile (360px to 480px) */
+@media (max-width: 480px) {
+    .nurse-health-events-redesigned {
+        padding: 10px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 14px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.2rem !important;
+    }
+
+    .nurse-events-title-icon-redesigned {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-events-timeline-redesigned {
+        padding: 14px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .nurse-timeline-title-redesigned {
+        font-size: 1rem !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 12px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .nurse-event-title-redesigned {
+        font-size: 0.95rem !important;
+    }
+
+    .nurse-event-student-redesigned,
+    .nurse-event-class-redesigned {
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-event-description-redesigned {
+        padding: 8px !important;
+        font-size: 0.75rem !important;
+        margin-bottom: 8px !important;
+    }
+
+    .nurse-event-meta-item-redesigned {
+        padding: 6px !important;
+        gap: 6px !important;
+    }
+
+    .nurse-event-meta-icon-redesigned {
+        width: 16px !important;
+        height: 16px !important;
+        font-size: 0.6rem !important;
+    }
+
+    .nurse-event-meta-label-redesigned {
+        font-size: 0.6rem !important;
+    }
+
+    .nurse-event-meta-value-redesigned {
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        padding: 5px 10px !important;
+        font-size: 0.65rem !important;
+        min-width: 70px !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 10px !important;
+        gap: 10px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 1.1rem !important;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-filter-input-redesigned,
+    .nurse-filter-select-redesigned {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-filter-btn-redesigned {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .table {
+        min-width: 450px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 6px 3px !important;
+    }
+
+    .table th {
+        font-size: 0.65rem !important;
+    }
+
+    .btn-action {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* Modal adjustments for very small screens */
+    .add-event-modal .modal-dialog {
+        margin: 8px !important;
+        max-width: calc(100vw - 16px) !important;
+    }
+
+    .add-event-modal .modal-body {
+        padding: 10px !important;
+    }
+
+    .add-event-modal .event-form-section {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .add-event-modal-header {
+        padding: 10px !important;
+    }
+
+    .add-event-modal-title {
+        font-size: 0.95rem !important;
+    }
+
+    .form-control-enhanced {
+        padding: 6px 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .btn-save,
+    .btn-cancel,
+    .btn-reset {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Extra Small Mobile (less than 360px) */
+@media (max-width: 359px) {
+    .nurse-health-events-redesigned {
+        padding: 8px !important;
+    }
+
+    .nurse-events-header-redesigned {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .nurse-events-title-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .nurse-events-title-icon-redesigned {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-events-subtitle-redesigned {
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-timeline-title-redesigned {
+        font-size: 0.95rem !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        padding: 10px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .nurse-event-title-redesigned {
+        font-size: 0.9rem !important;
+    }
+
+    .nurse-event-student-redesigned,
+    .nurse-event-class-redesigned {
+        font-size: 0.65rem !important;
+    }
+
+    .nurse-events-stat-card {
+        padding: 8px !important;
+        gap: 8px !important;
+    }
+
+    .nurse-events-stat-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 1rem !important;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.65rem !important;
+    }
+
+    .add-event-modal-title {
+        font-size: 0.9rem !important;
+    }
+
+    .form-control-enhanced {
+        padding: 5px 6px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .btn-save,
+    .btn-cancel,
+    .btn-reset {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-filter-input-redesigned,
+    .nurse-filter-select-redesigned {
+        padding: 5px 8px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .nurse-filter-btn-redesigned {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Enhanced touch targets and accessibility */
+@media (max-width: 767px) {
+
+    .nurse-event-action-btn-redesigned,
+    .nurse-add-event-btn-redesigned,
+    .nurse-filter-btn-redesigned {
+        min-height: 44px !important;
+        touch-action: manipulation !important;
+    }
+
+    .btn-action {
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+
+    .nurse-timeline-item-redesigned,
+    .nurse-events-stat-card,
+    .nurse-event-meta-item-redesigned {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+
+    .nurse-timeline-item-redesigned,
+    .nurse-events-stat-card,
+    .nurse-events-header-redesigned {
+        border: 2px solid var(--nurse-primary) !important;
+    }
+
+    .nurse-event-action-btn-redesigned {
+        border: 2px solid currentColor !important;
+    }
+}
+
+/* Print styles for health events */
+@media print {
+    .nurse-health-events-redesigned {
+        padding: 0 !important;
+        background: white !important;
+    }
+
+    .nurse-events-header-redesigned {
+        background: white !important;
+        color: black !important;
+        border: 1px solid black !important;
+    }
+
+    .nurse-event-action-btn-redesigned,
+    .nurse-add-event-btn-redesigned,
+    .nurse-filter-btn-redesigned {
+        display: none !important;
+    }
+
+    .nurse-timeline-item-redesigned {
+        break-inside: avoid !important;
+        border: 1px solid black !important;
+    }
 }

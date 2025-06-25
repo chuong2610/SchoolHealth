@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
       if (shouldRedirect) {
         const targetPath = `/${normalizedRole}`;
+        console.log(`🔄 Redirecting to: ${targetPath}`);
         navigate(targetPath, { replace: true });
       }
     },
@@ -65,8 +66,26 @@ export const AuthProvider = ({ children }) => {
           userEmail,
         });
 
-        if (!token || !hasValidToken()) {
-          console.log("❌ No valid token found");
+        // Improved token validation
+        if (!token) {
+          console.log("❌ No token found");
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        if (!hasValidToken()) {
+          console.log("❌ Invalid or expired token found - clearing data");
+          clearAuthToken();
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        // Validate other required data
+        if (!role || !userId) {
+          console.log("❌ Missing role or userId - clearing invalid session");
+          clearAuthToken();
           setUser(null);
           setLoading(false);
           return;
@@ -75,7 +94,7 @@ export const AuthProvider = ({ children }) => {
         // Tạo user object từ localStorage
         const userData = {
           id: parseInt(userId) || userId,
-          email: userEmail,
+          email: userEmail || '',
           role: role?.toLowerCase(),
         };
 
@@ -116,19 +135,24 @@ export const AuthProvider = ({ children }) => {
           userEmail,
         });
 
+        // Validate input parameters
+        if (!token || !role || !userId) {
+          throw new Error("Missing required login parameters");
+        }
+
         const normalizedRole = role.toLowerCase();
 
         // Lưu vào localStorage
         localStorage.setItem("token", token);
         localStorage.setItem("role", normalizedRole);
         localStorage.setItem("userId", userId.toString());
-        localStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("userEmail", userEmail || '');
 
         console.log("💾 Saved to localStorage:", {
           token: "saved",
           role: normalizedRole,
           userId: userId.toString(),
-          userEmail,
+          userEmail: userEmail || '',
         });
 
         // Set token vào axios instance
@@ -137,7 +161,7 @@ export const AuthProvider = ({ children }) => {
         // Create user object
         const userData = {
           id: parseInt(userId) || userId,
-          email: userEmail,
+          email: userEmail || '',
           role: normalizedRole,
         };
 
@@ -161,9 +185,9 @@ export const AuthProvider = ({ children }) => {
    * Hàm đăng xuất: xóa tất cả auth data và chuyển về login
    */
   const logout = useCallback(() => {
+    console.log("🚪 Logging out user");
     // Clear all auth data
     clearAuthToken();
-    localStorage.removeItem("userEmail");
     setUser(null);
 
     // Redirect to login
@@ -175,8 +199,14 @@ export const AuthProvider = ({ children }) => {
    * @returns {boolean}
    */
   const isAuthenticated = useCallback(() => {
-    return !!user && hasValidToken();
-  }, [user]);
+    const result = !!user && hasValidToken();
+    if (!result && user) {
+      // User exists but token is invalid - auto logout
+      console.warn("🔒 User exists but token invalid - auto logout");
+      logout();
+    }
+    return result;
+  }, [user, logout]);
 
   /**
    * Lấy role của user hiện tại

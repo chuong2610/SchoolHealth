@@ -78,7 +78,7 @@ const ReceiveMedicine = () => {
   const handlePageChange = (pageNumber) => {
     // setLoading(true);
     // fetchActive(pageNumber);
-    if (pageNumber >= 1 || pageNumber <= totalPages) return;
+    if (pageNumber >= 1 && pageNumber <= totalPages) return;
     setCurrentPage(pageNumber);
   };
 

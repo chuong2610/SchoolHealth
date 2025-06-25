@@ -2,30 +2,47 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
+import {
+  FaList,
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaCalendarAlt,
+  FaExclamationTriangle,
+  FaSpinner,
+  FaFileAlt,
+  FaChevronLeft,
+  FaChevronRight
+} from "react-icons/fa";
+import "../../styles/admin/blog-post-list.css";
 
 const BlogPostList = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 3;
-  const [isDeleting, setIsDeleting] = useState(false); // ✅ NEW
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchBlogPost = async () => {
     try {
+      setLoading(true);
       const response = await axiosInstance.get(
         `/BlogPosts?pageNumber=${currentPage}&pageSize=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // setBlogPosts(response.data.items || []);
       setBlogPosts(response.data.items || []);
       setTotalPages(response.data.totalPages);
       setError("");
     } catch (error) {
-      setError("Không thể tải danh sách blog.");
+      setError("Không thể tải danh sách blog posts. Vui lòng thử lại.");
       console.error("Error fetching blog posts:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,8 +61,8 @@ const BlogPostList = () => {
     return pages;
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Bạn có chắc muốn xóa blog này không?")) return;
+  const handleDelete = async (id, title) => {
+    if (!window.confirm(`Bạn có chắc muốn xóa blog "${title}" không?\n\nThao tác này không thể hoàn tác.`)) return;
 
     try {
       setIsDeleting(true);
@@ -61,7 +78,7 @@ const BlogPostList = () => {
           fetchBlogPost();
           setIsDeleting(false);
         }, 200); // Delay nhẹ cho React cập nhật xong state
-        return; // // ✅ Sau dòng này, code không chạy tiếp xuống dưới nữa
+        return;
       }
 
       await fetchBlogPost();
@@ -73,118 +90,197 @@ const BlogPostList = () => {
         if (currentPage > 1) setCurrentPage((prev) => prev - 1);
         else fetchBlogPost();
       } else {
-        setError("Không thể xóa blog.");
+        setError("Không thể xóa blog post. Vui lòng thử lại.");
       }
       setIsDeleting(false);
     }
   };
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "";
+    if (!dateStr) return "Không xác định";
     const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    if (isNaN(date.getTime())) return "Không xác định";
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(date);
   };
 
-  return (
-    <div className="container mt-4">
-      <h2 className="d-flex justify-content-center mb-5">Quản lí Blog Posts</h2>
+  if (loading) {
+    return (
+      <div className="admin-blog-list-container">
+        <div className="admin-blog-list-loading">
+          <div className="admin-blog-list-spinner"></div>
+          <p style={{ color: "white", marginLeft: "1rem", fontSize: "1.2rem" }}>
+            Đang tải danh sách blog posts...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <Link to="/admin/create-blog" className="btn btn-primary me-2">
-            Tạo Blog Post
+  return (
+    <div className="admin-blog-list-container">
+      {/* Header */}
+      <div className="admin-blog-list-header">
+        <h1 className="admin-blog-list-title">
+          <FaList />
+          Quản lý Blog Posts
+        </h1>
+        <p className="admin-blog-list-subtitle">
+          Xem, chỉnh sửa và quản lý tất cả các bài viết blog của hệ thống
+        </p>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="admin-blog-list-actions">
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <Link to="/admin/create-blog" className="admin-blog-list-btn admin-blog-list-btn-primary">
+            <FaPlus />
+            Tạo bài viết mới
           </Link>
-          <Link to="/admin/blog-posts" className="btn btn-primary">
-            Xem danh sách Blog Posts
+          <Link to="/admin/blog-posts" className="admin-blog-list-btn admin-blog-list-btn-secondary">
+            <FaList />
+            Danh sách bài viết
           </Link>
         </div>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {/* Alert */}
+      {error && (
+        <div className="admin-blog-list-alert admin-blog-list-alert-danger">
+          <FaExclamationTriangle />
+          {error}
+        </div>
+      )}
 
-      <div className="table-responsive">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Mã</th>
-              <th>Tiêu đề</th>
-              <th>Thời gian tạo</th>
-              <th>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {blogPosts.map((post, index) => (
-              <tr key={post.id}>
-                <td>{(currentPage - 1) * pageSize + index + 1}</td>
-                <td>{post.title}</td>
-                <td>{formatDate(post.createdAt)}</td>
-                <td>
-                  <Link
-                    to={`/admin/edit-blog/${post.id}`}
-                    className="btn btn-success btn-sm me-2"
-                  >
-                    Cập nhật
-                  </Link>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(post.id)}
-                  >
-                    Xóa
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {totalPages > 1 && (
-          <div className="mt-4 d-flex justify-content-center">
-            <nav>
-              <ul className="pagination">
-                {currentPage > 1 && (
-                  <li className="page-item">
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                    >
-                      &laquo;
-                    </button>
-                  </li>
-                )}
-
-                {getPageNumbers().map((page) => (
-                  <li
-                    key={page}
-                    className={`page-item ${
-                      page === currentPage ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(page)}
-                    >
-                      {page}
-                    </button>
-                  </li>
-                ))}
-
-                {currentPage < totalPages && (
-                  <li className="page-item">
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                    >
-                      &raquo;
-                    </button>
-                  </li>
-                )}
-              </ul>
-            </nav>
+      {/* Table */}
+      <div className="admin-blog-list-table-container">
+        {blogPosts.length === 0 ? (
+          <div className="admin-blog-list-empty-state">
+            <FaFileAlt className="admin-blog-list-empty-icon" />
+            <h3 className="admin-blog-list-empty-title">Chưa có bài viết nào</h3>
+            <p className="admin-blog-list-empty-subtitle">
+              Hãy tạo bài viết đầu tiên của bạn để bắt đầu chia sẻ nội dung!
+            </p>
+            <Link to="/admin/create-blog" className="admin-blog-list-btn admin-blog-list-btn-primary" style={{ marginTop: "1rem" }}>
+              <FaPlus />
+              Tạo bài viết đầu tiên
+            </Link>
           </div>
+        ) : (
+          <>
+            <table className="admin-blog-list-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tiêu đề</th>
+                  <th>Tác giả</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {blogPosts.map((post, index) => (
+                  <tr key={post.id}>
+                    <td>
+                      <strong>#{(currentPage - 1) * pageSize + index + 1}</strong>
+                    </td>
+                    <td>
+                      <div style={{
+                        maxWidth: "300px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        fontWeight: "600",
+                        color: "#2d3748"
+                      }}>
+                        {post.title}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: "500", color: "#4a5568" }}>
+                        {post.author || "Không xác định"}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <FaCalendarAlt style={{ color: "#4ECDC4" }} />
+                        {formatDate(post.createdAt)}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-blog-list-action-btns">
+                        <Link
+                          to={`/admin/edit-blog/${post.id}`}
+                          className="admin-blog-list-action-btn admin-blog-list-action-btn-edit"
+                          title="Chỉnh sửa bài viết"
+                        >
+                          <FaEdit />
+                          Sửa
+                        </Link>
+                        <button
+                          className="admin-blog-list-action-btn admin-blog-list-action-btn-delete"
+                          onClick={() => handleDelete(post.id, post.title)}
+                          disabled={isDeleting}
+                          title="Xóa bài viết"
+                        >
+                          {isDeleting ? <FaSpinner className="fa-spin" /> : <FaTrash />}
+                          Xóa
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="admin-blog-list-pagination-container">
+                <ul className="admin-blog-list-pagination">
+                  {currentPage > 1 && (
+                    <li className="admin-blog-list-pagination-item">
+                      <button
+                        className="admin-blog-list-pagination-link"
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        title="Trang trước"
+                      >
+                        <FaChevronLeft />
+                      </button>
+                    </li>
+                  )}
+
+                  {getPageNumbers().map((page) => (
+                    <li
+                      key={page}
+                      className={`admin-blog-list-pagination-item ${page === currentPage ? "active" : ""
+                        }`}
+                    >
+                      <button
+                        className="admin-blog-list-pagination-link"
+                        onClick={() => setCurrentPage(page)}
+                      >
+                        {page}
+                      </button>
+                    </li>
+                  ))}
+
+                  {currentPage < totalPages && (
+                    <li className="admin-blog-list-pagination-item">
+                      <button
+                        className="admin-blog-list-pagination-link"
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        title="Trang sau"
+                      >
+                        <FaChevronRight />
+                      </button>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -4,6 +4,20 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import axiosInstance from "../../api/axiosInstance";
+import {
+  FaPlus,
+  FaUser,
+  FaPen,
+  FaImage,
+  FaSave,
+  FaArrowLeft,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaSpinner,
+  FaList,
+  FaFileAlt
+} from "react-icons/fa";
+import "../../styles/admin/create-blog-post.css";
 
 const CreateBlogPost = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +29,8 @@ const CreateBlogPost = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -33,18 +49,31 @@ const CreateBlogPost = () => {
     }));
   };
 
-  
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError("Vui lòng chọn file ảnh hợp lệ (JPG, PNG, GIF)");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Kích thước ảnh không được vượt quá 5MB");
+      return;
+    }
+
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", file);
 
     try {
+      setImageUploading(true);
+      setError("");
       const res = await fetch("http://localhost:5182/api/Upload/image", {
         method: "POST",
-        body: formData,
+        body: uploadFormData,
       });
 
       const data = await res.json();
@@ -54,20 +83,36 @@ const CreateBlogPost = () => {
       setFormData((prev) => ({
         ...prev,
         imageUrl: data.fileName, // Ví dụ: "abc123.jpg"
-        // imageUrl: `http://localhost:5182${data.filePath}`,
       }));
+      setSuccess("Upload ảnh thành công!");
     } catch (error) {
       console.error("Lỗi upload ảnh:", error);
-      alert("Tải ảnh thất bại!");
+      setError("Tải ảnh thất bại! Vui lòng thử lại.");
+    } finally {
+      setImageUploading(false);
     }
   };
-
-  //kết thúc sử lí upload ảnh
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    // Validation
+    if (!formData.title.trim()) {
+      setError("Tiêu đề không được để trống");
+      return;
+    }
+
+    if (!formData.author.trim()) {
+      setError("Tác giả không được để trống");
+      return;
+    }
+
+    if (!formData.content.trim()) {
+      setError("Nội dung không được để trống");
+      return;
+    }
 
     // Sử dụng object JSON thay vì FormData
     const data = {
@@ -78,6 +123,7 @@ const CreateBlogPost = () => {
     };
 
     try {
+      setLoading(true);
       const response = await axiosInstance.post(
         "/BlogPosts",
         data,
@@ -88,7 +134,7 @@ const CreateBlogPost = () => {
           },
         }
       );
-      setSuccess("Blog post have created successfully!!!");
+      setSuccess("Tạo bài viết thành công!");
       setFormData({
         title: "",
         content: "",
@@ -99,116 +145,191 @@ const CreateBlogPost = () => {
     } catch (error) {
       setError(
         error.response?.data?.message ||
-          "Failed to create blog post. Try again."
+        "Tạo bài viết thất bại. Vui lòng thử lại."
       );
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // const handleImageChange = (e) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     image: e.target.files[0], //lấy file đầu tiên
-  //   }));
-  // };
-
   return (
-    <div className="container mt-4">
-      <h2 className="d-flex justify-content-center mb-5">Tạo Blog Post</h2>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <Link to="/admin/createBlogPost" className="btn btn-primary me-2">
-            Thêm Blog Post
-          </Link>
-          <Link to="/admin/blog-posts" className="btn btn-primary">
-            Quản lí Blog Posts
-          </Link>
-        </div>
-
-        <div></div>
+    <div className="admin-create-blog-container">
+      {/* Header */}
+      <div className="admin-create-blog-header">
+        <h1 className="admin-create-blog-title">
+          <FaPlus />
+          Tạo bài viết mới
+        </h1>
+        <p className="admin-create-blog-subtitle">
+          Tạo và chia sẻ nội dung hữu ích với cộng đồng
+        </p>
       </div>
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            type="text"
-            className="form-control"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
-        </div>
 
-        <div className="mb-3">
-          <label className="form-label">Author</label>
-          <input
-            className="form-control"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-          />
+      {/* Action Buttons */}
+      <div className="admin-create-blog-actions">
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <Link to="/admin/create-blog" className="admin-create-blog-btn admin-create-blog-btn-primary">
+            <FaPlus />
+            Tạo bài viết
+          </Link>
+          <Link to="/admin/blog-posts" className="admin-create-blog-btn admin-create-blog-btn-secondary">
+            <FaList />
+            Quản lý bài viết
+          </Link>
         </div>
+      </div>
 
-        <div className="mb-3">
-          <label className="form-label">Content</label>
-          <ReactQuill
-            value={formData.content}
-            onChange={handleContentChange}
-            placeholder="Write your post here..."
-            modules={{
-              toolbar: [
-                [{ header: [1, 2, false] }],
-                ["bold", "italic", "underline", "strike"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["link", "image"],
-                ["clean"],
-              ],
-            }}
-            formats={[
-              "header",
-              "bold",
-              "italic",
-              "underline",
-              "strike",
-              "list",
-              "bullet",
-              "link",
-              "image",
-            ]}
-          />
+      {/* Alerts */}
+      {error && (
+        <div className="admin-create-blog-alert admin-create-blog-alert-danger">
+          <FaExclamationTriangle />
+          {error}
         </div>
+      )}
+      {success && (
+        <div className="admin-create-blog-alert admin-create-blog-alert-success">
+          <FaCheckCircle />
+          {success}
+        </div>
+      )}
 
-        <div className="mb-3">
-          <label className="form-label">Upload ảnh</label>
-          <input
-            type="file"
-            className="form-control"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-          {/* {formData.imageUrl && (
-            <div className="mt-3">
-              <p>Preview ảnh:</p>
-              <img
-                src={`http://localhost:5182/uploads/${formData.imageUrl}`}
-                alt="Uploaded preview"
-                style={{
-                  maxWidth: "300px",
-                  maxHeight: "300px",
-                  objectFit: "cover",
+      {/* Form */}
+      <div className="admin-create-blog-form-container">
+        <form onSubmit={handleSubmit}>
+          <div className="admin-create-blog-form-group">
+            <label className="admin-create-blog-label required">
+              <FaPen style={{ marginRight: "0.5rem" }} />
+              Tiêu đề bài viết
+            </label>
+            <input
+              type="text"
+              className="admin-create-blog-input"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Nhập tiêu đề bài viết..."
+              required
+            />
+          </div>
+
+          <div className="admin-create-blog-form-group">
+            <label className="admin-create-blog-label required">
+              <FaUser style={{ marginRight: "0.5rem" }} />
+              Tác giả
+            </label>
+            <input
+              type="text"
+              className="admin-create-blog-input"
+              name="author"
+              value={formData.author}
+              onChange={handleChange}
+              placeholder="Nhập tên tác giả..."
+              required
+            />
+          </div>
+
+          <div className="admin-create-blog-form-group">
+            <label className="admin-create-blog-label required">
+              <FaFileAlt style={{ marginRight: "0.5rem" }} />
+              Nội dung bài viết
+            </label>
+            <div className="admin-create-blog-editor">
+              <ReactQuill
+                value={formData.content}
+                onChange={handleContentChange}
+                placeholder="Viết nội dung bài viết của bạn tại đây..."
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ color: [] }, { background: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    [{ align: [] }],
+                    ["link", "image"],
+                    ["clean"],
+                  ],
                 }}
+                formats={[
+                  "header",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "strike",
+                  "color",
+                  "background",
+                  "list",
+                  "bullet",
+                  "align",
+                  "link",
+                  "image",
+                ]}
               />
-            </div> */}
-          {/* )} */}
-        </div>
+            </div>
+          </div>
 
-        <button type="submit" className="btn btn-primary mt-3 mb-5">
-          Lưu
-        </button>
-      </form>
+          <div className="admin-create-blog-form-group">
+            <label className="admin-create-blog-label">
+              <FaImage style={{ marginRight: "0.5rem" }} />
+              Ảnh đại diện
+            </label>
+            <input
+              type="file"
+              className="admin-create-blog-file-input"
+              accept="image/*"
+              onChange={handleImageChange}
+              disabled={imageUploading}
+            />
+            <small className="admin-create-blog-file-hint">
+              Chấp nhận các định dạng: JPG, PNG, GIF. Kích thước tối đa: 5MB
+            </small>
+
+            {imageUploading && (
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginTop: "1rem",
+                color: "#4ECDC4"
+              }}>
+                <FaSpinner className="fa-spin" />
+                Đang upload ảnh...
+              </div>
+            )}
+
+            {formData.imageUrl && (
+              <div className="admin-create-blog-image-preview">
+                <label className="admin-create-blog-image-label">Ảnh đã chọn:</label>
+                <img
+                  src={`http://localhost:5182/uploads/${formData.imageUrl}`}
+                  alt="Preview"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="admin-create-blog-btn admin-create-blog-btn-submit"
+            disabled={loading || imageUploading}
+          >
+            {loading ? (
+              <div className="admin-create-blog-loading">
+                <div className="admin-create-blog-spinner"></div>
+                Đang tạo bài viết...
+              </div>
+            ) : (
+              <>
+                <FaSave />
+                Tạo bài viết
+              </>
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
