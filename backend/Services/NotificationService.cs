@@ -284,7 +284,7 @@ namespace backend.Services
                 }).ToList()
             };
             var isSussess = await _notificationRepository.CreateNotificationAsync(notification);
-            await _hub.Clients.All.SendAsync("ReceiveNotification", new
+            await _hub.Clients.Group(classEntity.ClassName).SendAsync("ReceiveNotification", new
             {
                 title = notification.Title,
                 content = notification.Message,
