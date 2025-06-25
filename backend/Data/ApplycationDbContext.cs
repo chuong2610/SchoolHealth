@@ -24,6 +24,7 @@ namespace backend.Data
         public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<HealthDeclareHistory> HealthDeclareHistories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +32,17 @@ namespace backend.Data
             modelBuilder.Entity<Student>()
            .HasIndex(s => s.StudentNumber)
            .IsUnique();
+
+            modelBuilder.Entity<HealthDeclareHistory>()
+                .HasOne(h => h.StudentProfile)
+                .WithMany(p => p.HealthDeclareHistories)
+                .HasForeignKey(h => h.StudentProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<HealthDeclareHistory>()
+                .HasOne(h => h.Parent)
+                .WithMany(u => u.HealthDeclareHistories)
+                .HasForeignKey(h => h.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NotificationStudent>()
                 .HasKey(nr => new { nr.NotificationId, nr.StudentId });

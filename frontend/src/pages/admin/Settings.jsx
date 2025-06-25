@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Form, Button } from "react-bootstrap";
+import "../../styles/admin/settings.css";
 
 const Settings = () => {
   const [key, setKey] = useState("account");

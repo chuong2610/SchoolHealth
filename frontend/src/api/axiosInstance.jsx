@@ -9,17 +9,59 @@ const axiosInstance = axios.create({
   },
 });
 
+// Helper function để decode JWT token
+const decodeJWT = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('❌ Token decode error:', error);
+    return null;
+  }
+};
+
+// Helper function để check token có hợp lệ và chưa expired
+export const hasValidToken = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  try {
+    const decoded = decodeJWT(token);
+    if (!decoded) return false;
+
+    // Check if token is expired (exp is in seconds, Date.now() is in milliseconds)
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp && decoded.exp < currentTime) {
+      console.warn('🕐 Token has expired');
+      // Auto cleanup expired token
+      clearAuthToken();
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('❌ Token validation error:', error);
+    return false;
+  }
+};
+
 // Request interceptor - Tự động thêm token mới nhất vào mọi request
 axiosInstance.interceptors.request.use(
   (config) => {
     // Lấy token mới nhất từ localStorage
     const token = localStorage.getItem('token');
 
-    if (token) {
+    if (token && hasValidToken()) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else if (token) {
+      // Token exists but invalid - clear it
+      console.warn('🔒 Invalid token detected - clearing auth data');
+      clearAuthToken();
     }
-
-    // Request logging disabled for security
 
     return config;
   },
@@ -32,7 +74,6 @@ axiosInstance.interceptors.request.use(
 // Response interceptor - Handle responses và errors
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Response logging disabled for security
     return response;
   },
   (error) => {
@@ -50,10 +91,8 @@ axiosInstance.interceptors.response.use(
       switch (response.status) {
         case 401:
           // Token expired hoặc invalid - Auto logout
-          console.warn('🔒 Unauthorized - Redirecting to login');
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          localStorage.removeItem('userId');
+          console.warn('🔒 Unauthorized - Clearing auth data');
+          clearAuthToken();
 
           // Redirect to login if not already there
           if (!window.location.pathname.includes('/login')) {
@@ -107,13 +146,8 @@ export const clearAuthToken = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('role');
   localStorage.removeItem('userId');
+  localStorage.removeItem('userEmail');
   delete axiosInstance.defaults.headers.common['Authorization'];
-};
-
-// Helper function để check nếu có token
-export const hasValidToken = () => {
-  const token = localStorage.getItem('token');
-  return !!token;
 };
 
 export default axiosInstance;

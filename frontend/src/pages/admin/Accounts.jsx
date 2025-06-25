@@ -41,10 +41,12 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
+import "../../styles/admin/accounts.css";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import axiosInstance from "../../api/axiosInstance";
+import PaginationBar from "../../components/common/PaginationBar";
 
 // Animation variants for framer-motion
 const containerVariants = {
@@ -53,8 +55,8 @@ const containerVariants = {
     opacity: 1,
     transition: {
       duration: 0.5,
-      staggerChildren: 0.1
-    }
+      staggerChildren: 0.1,
+    },
   },
 };
 
@@ -63,7 +65,7 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3 }
+    transition: { duration: 0.3 },
   },
 };
 
@@ -71,31 +73,33 @@ const Accounts = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalPage, setTotalPage] = useState(0);
 
   // Helper function để chuyển đổi giới tính từ tiếng Anh sang tiếng Việt
   const translateGender = (gender) => {
     switch (gender?.toLowerCase()) {
-      case 'male':
-        return 'Nam';
-      case 'female':
-        return 'Nữ';
-      case 'other':
-        return 'Khác';
+      case "male":
+        return "Nam";
+      case "female":
+        return "Nữ";
+      case "other":
+        return "Khác";
       default:
-        return gender || 'Không xác định';
+        return gender || "Không xác định";
     }
   };
 
-  const [activeTab, setActiveTab] = useState("student");
+  const [activeTab, setActiveTab] = useState("parent");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(2);
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchUsers = async () => {
     setLoading(true);
     setError(null);
     let roleName = "";
     switch (activeTab) {
-      case "student":
-        roleName = "student";
-        break;
       case "parent":
         roleName = "parent";
         break;
@@ -110,16 +114,24 @@ const Accounts = () => {
         break;
     }
 
+    console.log("Gọi API với roleName:", roleName);
+
     try {
-      const response = await axiosInstance.get(`/User/role/${roleName}`);
+      const response = await axiosInstance.get(
+        `/User/role/${roleName}?pageNumber=${currentPage}&pageSize=${pageSize}`
+      );
+      console.log(response.data);
       if (response.data.success) {
-        setUsers(response.data.data || []);
+        setUsers(response.data.data.items || []);
+        setTotalPages(response.data.data.totalPages || 1);
       } else {
         setError(response.data.message || "Failed to fetch users.");
         setUsers([]);
       }
     } catch (err) {
-      setError("Error fetching data: " + (err.response?.data?.message || err.message));
+      setError(
+        "Error fetching data: " + (err.response?.data?.message || err.message)
+      );
       setUsers([]);
     } finally {
       setLoading(false);
@@ -128,7 +140,7 @@ const Accounts = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [activeTab]);
+  }, [activeTab, currentPage]);
 
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -153,16 +165,13 @@ const Accounts = () => {
   const [filterStatus, setFilterStatus] = useState("");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
-  // Thêm state phân trang
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 6;
-
   // Lọc danh sách theo tìm kiếm, giới tính và trạng thái
   const filteredUsers = users.filter((user) => {
     // Search filter
     if (search.trim()) {
       const searchLower = search.toLowerCase();
-      const matchesSearch = user.name.toLowerCase().includes(searchLower) ||
+      const matchesSearch =
+        user.name.toLowerCase().includes(searchLower) ||
         user.email.toLowerCase().includes(searchLower);
       if (!matchesSearch) return false;
     }
@@ -191,10 +200,6 @@ const Accounts = () => {
     setShowFilterDropdown(false);
   };
 
-  // Phân trang dựa trên kết quả đã lọc
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-  const paginatedUsers = filteredUsers.slice((currentPage - 1) * usersPerPage, currentPage * usersPerPage);
-
   // Reset trang về 1 khi search thay đổi
   useEffect(() => {
     setCurrentPage(1);
@@ -203,28 +208,26 @@ const Accounts = () => {
   const handleDownloadTemplate = () => {
     const wsData = [
       ["STT",
-        "StudentNumber",
-        "StudentName",
-        "Gender",
-        "Birthday",
-        "Grade",
-        "ParentName",
-        "ParentBirthday",
-        "ParentGender",
-        "ParentPhone",
-        "ParentEmail",
+        "Name",
+        "Email",
+        "Phone",
         "Address",
+        "Gender",
+        "Role"
       ],
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(wsData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Users");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-    saveAs(data, "Mau_Import_Hoc_Sinh.xlsx");
+    saveAs(data, "Mau_Import_Tai_Khoan.xlsx");
   };
   const [formState, setFormState] = useState({
     name: "",
@@ -236,7 +239,6 @@ const Accounts = () => {
   });
 
   const [permState, setPermState] = useState({
-    viewStudents: false,
     viewReports: false,
     recordEvents: false,
     approveMeds: false,
@@ -286,7 +288,6 @@ const Accounts = () => {
   const handleShowPermModal = (user) => {
     setPermUser(user);
     setPermState({
-      viewStudents: true,
       viewReports: true,
       recordEvents: true,
       approveMeds: true,
@@ -346,10 +347,14 @@ const Accounts = () => {
       // Convert gender to English for API
       const convertGenderToEnglish = (gender) => {
         switch (gender) {
-          case 'Nam': return 'Male';
-          case 'Nữ': return 'Female';
-          case 'Khác': return 'Other';
-          default: return gender;
+          case "Nam":
+            return "Male";
+          case "Nữ":
+            return "Female";
+          case "Khác":
+            return "Other";
+          default:
+            return gender;
         }
       };
 
@@ -372,11 +377,10 @@ const Accounts = () => {
         userPayload.id = newUser.id;
       }
 
-
       const config = {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       };
 
       let response;
@@ -386,13 +390,20 @@ const Accounts = () => {
         response = await axiosInstance.put(`/User`, userPayload);
       }
 
-
       if (response.data.success) {
         // Success notification
-        if (typeof toast !== 'undefined') {
-          toast.success(modalType === "add" ? "Thêm tài khoản thành công!" : "Cập nhật tài khoản thành công!");
+        if (typeof toast !== "undefined") {
+          toast.success(
+            modalType === "add"
+              ? "Thêm tài khoản thành công!"
+              : "Cập nhật tài khoản thành công!"
+          );
         } else {
-          alert(modalType === "add" ? "Thêm tài khoản thành công!" : "Cập nhật tài khoản thành công!");
+          alert(
+            modalType === "add"
+              ? "Thêm tài khoản thành công!"
+              : "Cập nhật tài khoản thành công!"
+          );
         }
 
         setShowModal(false);
@@ -410,34 +421,43 @@ const Accounts = () => {
           confirmPassword: "",
         });
       } else {
-        if (typeof toast !== 'undefined') {
-          toast.error("Lỗi: " + (response.data.message || "Không thể lưu thông tin"));
+        if (typeof toast !== "undefined") {
+          toast.error(
+            "Lỗi: " + (response.data.message || "Không thể lưu thông tin")
+          );
         } else {
           alert("Lỗi: " + (response.data.message || "Không thể lưu thông tin"));
         }
       }
     } catch (err) {
-
       if (err.response?.status === 400) {
         // Handle validation errors
         const errors = err.response.data?.errors;
         if (errors) {
           let errorMessage = "Dữ liệu không hợp lệ:\n";
-          Object.keys(errors).forEach(field => {
+          Object.keys(errors).forEach((field) => {
             if (errors[field] && Array.isArray(errors[field])) {
-              errorMessage += `- ${errors[field].join(', ')}\n`;
+              errorMessage += `- ${errors[field].join(", ")}\n`;
             }
           });
           alert(errorMessage);
         } else {
-          alert("Dữ liệu không hợp lệ: " + (err.response.data.title || "Vui lòng kiểm tra lại thông tin"));
+          alert(
+            "Dữ liệu không hợp lệ: " +
+            (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
+          );
         }
       } else if (err.response?.status === 409) {
         alert("Email này đã được sử dụng!");
       } else if (err.response?.status === 500) {
         alert("Lỗi server, vui lòng thử lại sau!");
       } else {
-        alert("Lỗi: " + (err.response?.data?.title || err.response?.data?.message || err.message));
+        alert(
+          "Lỗi: " +
+          (err.response?.data?.title ||
+            err.response?.data?.message ||
+            err.message)
+        );
       }
     } finally {
       setSaving(false);
@@ -451,10 +471,16 @@ const Accounts = () => {
         toast.success("Xóa người dùng thành công!");
         fetchUsers(); // Refresh the user list
       } else {
-        toast.error("Lỗi khi xóa người dùng: " + (response.data.message || "Lỗi không xác định"));
+        toast.error(
+          "Lỗi khi xóa người dùng: " +
+          (response.data.message || "Lỗi không xác định")
+        );
       }
     } catch (err) {
-      toast.error("Lỗi khi xóa người dùng: " + (err.response?.data?.message || err.message));
+      toast.error(
+        "Lỗi khi xóa người dùng: " +
+        (err.response?.data?.message || err.message)
+      );
     }
     setShowDeleteModal(false);
   };
@@ -466,25 +492,31 @@ const Accounts = () => {
 
   const handleBulkAction = (action) => {
     switch (action) {
-      case 'activate':
-        setUsers(users.map(user =>
-          selectedUsers.includes(user.id)
-            ? { ...user, status: 'Hoạt động' }
-            : user
-        ));
+      case "activate":
+        setUsers(
+          users.map((user) =>
+            selectedUsers.includes(user.id)
+              ? { ...user, status: "Hoạt động" }
+              : user
+          )
+        );
         break;
-      case 'deactivate':
-        setUsers(users.map(user =>
-          selectedUsers.includes(user.id)
-            ? { ...user, status: 'Đã khóa' }
-            : user
-        ));
+      case "deactivate":
+        setUsers(
+          users.map((user) =>
+            selectedUsers.includes(user.id)
+              ? { ...user, status: "Đã khóa" }
+              : user
+          )
+        );
         break;
-      case 'delete':
+      case "delete":
         // This part needs to be updated to call the API for bulk delete
         // For now, I'm commenting it out as handleDeleteUser handles individual deletion.
         // setUsers(users.filter(user => !selectedUsers.includes(user.id)));
-        alert("Bulk delete not yet implemented via API. Please delete individually.");
+        alert(
+          "Bulk delete not yet implemented via API. Please delete individually."
+        );
         break;
       default:
         break;
@@ -493,18 +525,18 @@ const Accounts = () => {
   };
 
   const handleSelectUser = (userId) => {
-    setSelectedUsers(prev =>
+    setSelectedUsers((prev) =>
       prev.includes(userId)
-        ? prev.filter(id => id !== userId)
+        ? prev.filter((id) => id !== userId)
         : [...prev, userId]
     );
   };
 
   const handleSelectAll = () => {
-    setSelectedUsers(prev =>
+    setSelectedUsers((prev) =>
       prev.length === filteredUsers.length
         ? []
-        : filteredUsers.map(user => user.id)
+        : filteredUsers.map((user) => user.id)
     );
   };
 
@@ -515,12 +547,14 @@ const Accounts = () => {
       const date = XLSX.SSF.parse_date_code(excelDate);
       if (!date) return "";
       // yyyy-MM-dd
-      return `${date.y}-${date.m.toString().padStart(2, "0")}-${date.d.toString().padStart(2, "0")}`;
+      return `${date.y}-${date.m.toString().padStart(2, "0")}-${date.d
+        .toString()
+        .padStart(2, "0")}`;
     }
     // Nếu là chuỗi dd/MM/yyyy hoặc d/M/yyyy
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(excelDate)) {
-      const [d, m, y] = excelDate.split('/');
-      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+      const [d, m, y] = excelDate.split("/");
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
     }
     // Nếu là chuỗi yyyy-MM-dd thì giữ nguyên
     if (/^\d{4}-\d{2}-\d{2}$/.test(excelDate)) {
@@ -549,18 +583,12 @@ const Accounts = () => {
       const rows = data.slice(1);
       const mappedUsers = rows.map((row, idx) => ({
         id: users.length + idx + 1,
-        studentId: row[1] || "",
-        name: row[2] || "",
-        gender: row[3] || "",
-        birthday: formatExcelDate(row[4]),
-        grade: row[5] || "",
-        parentName: row[6] || "",
-        parentBirth: formatExcelDate(row[7]),
-        parentGender: row[8] || "",
-        parentPhone: row[9] ? String(row[9]) : "",
-        parentEmail: row[10] || "",
-        address: row[11] || "",
-        role: "Học sinh",
+        name: row[1] || "",
+        email: row[2] || "",
+        phone: row[3] ? String(row[3]) : "",
+        address: row[4] || "",
+        gender: row[5] || "",
+        role: row[6] || "",
         status: "Hoạt động",
       }));
       setImportedUsers(mappedUsers);
@@ -573,29 +601,40 @@ const Accounts = () => {
   const handleConfirmImport = async () => {
     if (!importedFile) return;
     const formData = new FormData();
-    formData.append('file', importedFile);
+    formData.append("file", importedFile);
     try {
       const res = await axiosInstance.post(
-        '/Excel/import-students-and-parents',
+        '/Excel/import-users',
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       if (res.data && res.data.success) {
-        toast.success('Import thành công!');
+        toast.success("Import thành công!");
         fetchUsers(); // Refresh user list
         setShowImportModal(false);
         setImportedUsers([]);
         setImportedFile(null);
       } else {
-        toast.error('Import thất bại: ' + (res.data.message || 'Lỗi không xác định'));
+        toast.error(
+          "Import thất bại: " + (res.data.message || "Lỗi không xác định")
+        );
       }
     } catch (err) {
-      toast.error('Import thất bại: ' + (err.response?.data?.message || err.message));
+      toast.error(
+        "Import thất bại: " + (err.response?.data?.message || err.message)
+      );
     }
   };
 
   const renderActivityLogModal = () => (
-    <Modal show={showActivityLog} onHide={() => setShowActivityLog(false)} size="lg" dialogClassName="dashboard-card-effect" contentClassName="bg-dark text-light" style={{ borderRadius: '20px' }}>
+    <Modal
+      show={showActivityLog}
+      onHide={() => setShowActivityLog(false)}
+      size="lg"
+      dialogClassName="dashboard-card-effect"
+      contentClassName="bg-dark text-light"
+      style={{ borderRadius: "20px" }}
+    >
       <Modal.Header closeButton>
         <Modal.Title>
           Lịch sử hoạt động - {selectedUserActivity?.name}
@@ -604,10 +643,10 @@ const Accounts = () => {
       <Modal.Body>
         <div className="activity-timeline">
           {[
-            { date: '2024-03-15 14:30', action: 'Đăng nhập hệ thống' },
-            { date: '2024-03-15 13:45', action: 'Cập nhật thông tin cá nhân' },
-            { date: '2024-03-14 16:20', action: 'Xem báo cáo sức khỏe' },
-            { date: '2024-03-14 10:15', action: 'Đăng nhập hệ thống' },
+            { date: "2024-03-15 14:30", action: "Đăng nhập hệ thống" },
+            { date: "2024-03-15 13:45", action: "Cập nhật thông tin cá nhân" },
+            { date: "2024-03-14 16:20", action: "Xem báo cáo sức khỏe" },
+            { date: "2024-03-14 10:15", action: "Đăng nhập hệ thống" },
           ].map((activity, index) => (
             <div key={index} className="activity-item">
               <div className="activity-date">{activity.date}</div>
@@ -620,14 +659,29 @@ const Accounts = () => {
   );
 
   const renderStatsModal = () => (
-    <Modal show={showStats} onHide={() => setShowStats(false)} size="lg" dialogClassName="dashboard-card-effect" contentClassName="bg-dark text-light" style={{ borderRadius: '20px' }}>
+    <Modal
+      show={showStats}
+      onHide={() => setShowStats(false)}
+      size="lg"
+      dialogClassName="dashboard-card-effect"
+      contentClassName="bg-dark text-light"
+      style={{ borderRadius: "20px" }}
+    >
       <Modal.Header closeButton>
         <Modal.Title>Thống kê người dùng</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Row className="g-4">
           <Col md={4}>
-            <Card className="dashboard-card-effect mb-3" style={{ background: 'var(--secondary-dark)', color: 'var(--text-light)', borderRadius: '20px', border: 'none' }}>
+            <Card
+              className="dashboard-card-effect mb-3"
+              style={{
+                background: "var(--secondary-dark)",
+                color: "var(--text-light)",
+                borderRadius: "20px",
+                border: "none",
+              }}
+            >
               <Card.Body>
                 <h6 className="stat-title">Tổng số người dùng</h6>
                 <h3 className="stat-value">{users.length}</h3>
@@ -638,11 +692,19 @@ const Accounts = () => {
             </Card>
           </Col>
           <Col md={4}>
-            <Card className="dashboard-card-effect mb-3" style={{ background: 'var(--secondary-dark)', color: 'var(--text-light)', borderRadius: '20px', border: 'none' }}>
+            <Card
+              className="dashboard-card-effect mb-3"
+              style={{
+                background: "var(--secondary-dark)",
+                color: "var(--text-light)",
+                borderRadius: "20px",
+                border: "none",
+              }}
+            >
               <Card.Body>
                 <h6 className="stat-title">Người dùng hoạt động</h6>
                 <h3 className="stat-value">
-                  {users.filter(u => u.status === 'Hoạt động').length}
+                  {users.filter((u) => u.status === "Hoạt động").length}
                 </h3>
                 <div className="stat-chart">
                   {/* Thêm biểu đồ mini ở đây */}
@@ -651,7 +713,15 @@ const Accounts = () => {
             </Card>
           </Col>
           <Col md={4}>
-            <Card className="dashboard-card-effect mb-3" style={{ background: 'var(--secondary-dark)', color: 'var(--text-light)', borderRadius: '20px', border: 'none' }}>
+            <Card
+              className="dashboard-card-effect mb-3"
+              style={{
+                background: "var(--secondary-dark)",
+                color: "var(--text-light)",
+                borderRadius: "20px",
+                border: "none",
+              }}
+            >
               <Card.Body>
                 <h6 className="stat-title">Người dùng mới (30 ngày)</h6>
                 <h3 className="stat-value">12</h3>
@@ -667,7 +737,11 @@ const Accounts = () => {
   );
 
   const renderAddUserModal = () => (
-    <Modal show={showModal} onHide={() => setShowModal(false)} className="admin-modal">
+    <Modal
+      show={showModal}
+      onHide={() => setShowModal(false)}
+      className="admin-modal"
+    >
       <Modal.Header closeButton>
         <Modal.Title className="admin-modal-title">
           {modalType === "add" ? (
@@ -697,7 +771,9 @@ const Accounts = () => {
                   type="text"
                   placeholder="Nhập họ và tên"
                   value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, name: e.target.value })
+                  }
                   className="admin-form-control"
                 />
               </div>
@@ -710,11 +786,12 @@ const Accounts = () => {
                 </label>
                 <select
                   value={newUser.role}
-                  onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, role: e.target.value })
+                  }
                   className="admin-form-select"
                 >
                   <option value="">Chọn vai trò</option>
-                  <option value="student">Học sinh</option>
                   <option value="parent">Phụ huynh</option>
                   <option value="nurse">Nhân viên y tế</option>
                   <option value="admin">Quản trị viên</option>
@@ -732,7 +809,9 @@ const Accounts = () => {
               type="email"
               placeholder="Nhập email"
               value={newUser.email}
-              onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+              onChange={(e) =>
+                setNewUser({ ...newUser, email: e.target.value })
+              }
               className="admin-form-control"
             />
           </div>
@@ -748,7 +827,9 @@ const Accounts = () => {
                   type="tel"
                   placeholder="Nhập số điện thoại"
                   value={newUser.phone}
-                  onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, phone: e.target.value })
+                  }
                   className="admin-form-control"
                 />
               </div>
@@ -761,7 +842,9 @@ const Accounts = () => {
                 </label>
                 <select
                   value={newUser.gender}
-                  onChange={(e) => setNewUser({ ...newUser, gender: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, gender: e.target.value })
+                  }
                   className="admin-form-select"
                 >
                   <option value="">Chọn giới tính</option>
@@ -782,7 +865,9 @@ const Accounts = () => {
               type="text"
               placeholder="Nhập địa chỉ"
               value={newUser.address}
-              onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
+              onChange={(e) =>
+                setNewUser({ ...newUser, address: e.target.value })
+              }
               className="admin-form-control"
             />
           </div>
@@ -806,7 +891,7 @@ const Accounts = () => {
                   fontSize: '0.875rem',
                   fontWeight: '600'
                 }}>
-                  <FaKey style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  <FaKey style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                   Thông tin bảo mật
                 </span>
               </div>
@@ -822,7 +907,9 @@ const Accounts = () => {
                       type="password"
                       placeholder="Nhập mật khẩu"
                       value={newUser.password}
-                      onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, password: e.target.value })
+                      }
                       className="admin-form-control"
                     />
                   </div>
@@ -837,7 +924,12 @@ const Accounts = () => {
                       type="password"
                       placeholder="Nhập lại mật khẩu"
                       value={newUser.confirmPassword}
-                      onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                      onChange={(e) =>
+                        setNewUser({
+                          ...newUser,
+                          confirmPassword: e.target.value,
+                        })
+                      }
                       className="admin-form-control"
                     />
                   </div>
@@ -847,17 +939,17 @@ const Accounts = () => {
               {/* Password Requirements */}
               <div style={{
                 background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-                border: '1px solid rgba(255, 149, 0, 0.2)',
+                border: '1px solid rgba(78, 205, 196, 0.2)',
                 borderRadius: '8px',
                 padding: '0.875rem',
                 fontSize: '0.8rem',
                 color: '#757575'
               }}>
                 <div style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
-                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
                   Yêu cầu mật khẩu:
                 </div>
-                <ul style={{ margin: '0', paddingLeft: '1.25rem' }}>
+                <ul style={{ margin: "0", paddingLeft: "1.25rem" }}>
                   <li>Ít nhất 6 ký tự</li>
                   <li>Bao gồm chữ hoa và chữ thường</li>
                   <li>Ít nhất 1 số</li>
@@ -870,21 +962,24 @@ const Accounts = () => {
           {modalType === "edit" && (
             <div style={{
               background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-              border: '1px solid rgba(255, 149, 0, 0.2)',
+              border: '1px solid rgba(78, 205, 196, 0.2)',
               borderRadius: '8px',
               padding: '0.875rem',
               fontSize: '0.875rem',
               color: '#757575',
               marginTop: '1rem'
             }}>
-              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
+              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
               Để thay đổi mật khẩu, vui lòng sử dụng chức năng "Đặt lại mật khẩu" riêng biệt.
             </div>
           )}
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <button className="admin-secondary-btn" onClick={() => setShowModal(false)}>
+        <button
+          className="admin-secondary-btn"
+          onClick={() => setShowModal(false)}
+        >
           Hủy
         </button>
         <button
@@ -894,11 +989,16 @@ const Accounts = () => {
         >
           {saving ? (
             <>
-              <div className="admin-loading-spinner" style={{ width: '16px', height: '16px', marginRight: '0.5rem' }}></div>
+              <div
+                className="admin-loading-spinner"
+                style={{ width: "16px", height: "16px", marginRight: "0.5rem" }}
+              ></div>
               Đang lưu...
             </>
+          ) : modalType === "add" ? (
+            "Thêm tài khoản"
           ) : (
-            modalType === "add" ? "Thêm tài khoản" : "Cập nhật"
+            "Cập nhật"
           )}
         </button>
       </Modal.Footer>
@@ -912,128 +1012,24 @@ const Accounts = () => {
       transition={{ duration: 0.5 }}
       className="admin-accounts-container"
     >
-      <div className="admin-accounts-header">
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h1 className="admin-accounts-title">
+      {/* Header */}
+      <motion.div variants={itemVariants} className="admin-accounts-header">
+        <Row className="align-items-center">
+          <Col>
+            <h1 className="admin-accounts-title mb-2">
               <FaUserShield className="me-3" />
               Quản lý tài khoản
             </h1>
-            <p className="admin-accounts-subtitle">Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt</p>
-          </div>
-          <div className="d-flex gap-3">
-            <button
-              className="admin-secondary-btn"
-              onClick={() => setShowStats(true)}
-            >
-              <FaChartBar />
-              Thống kê
-            </button>
-
-            {/* Add User Dropdown */}
-            <Dropdown>
-              <Dropdown.Toggle
-                className="admin-primary-btn"
-                style={{
-                  background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '0.75rem 1.5rem',
-                  color: 'white',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}
-              >
-                <FaPlus />
-                Thêm mới
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu
-                style={{
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 149, 0, 0.2)',
-                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
-                  padding: '0.5rem 0',
-                  minWidth: '200px'
-                }}
-              >
-                <Dropdown.Item
-                  onClick={() => handleShowModal('add')}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    borderBottom: '1px solid #F0F0F0'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaUserPlus style={{ color: '#FF9500' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Thêm tài khoản</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tạo tài khoản mới thủ công</div>
-                  </div>
-                </Dropdown.Item>
-
-                <Dropdown.Item
-                  onClick={() => setShowImportModal(true)}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem',
-                    borderBottom: '1px solid #F0F0F0'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaFileUpload style={{ color: '#FF9500' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Import từ Excel</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Nhập nhiều tài khoản cùng lúc</div>
-                  </div>
-                </Dropdown.Item>
-
-                <Dropdown.Item
-                  onClick={handleDownloadTemplate}
-                  style={{
-                    padding: '0.75rem 1rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    fontSize: '0.875rem'
-                  }}
-                  className="dropdown-item-hover"
-                >
-                  <FaFileDownload style={{ color: '#FF9500' }} />
-                  <div>
-                    <div style={{ fontWeight: '600', color: '#424242' }}>Tải file mẫu</div>
-                    <div style={{ fontSize: '0.75rem', color: '#757575' }}>Tải về file Excel mẫu</div>
-                  </div>
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        </div>
-      </div>
+            <p className="admin-accounts-subtitle mb-0">
+              Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt
+            </p>
+          </Col>
+        </Row>
+      </motion.div>
 
       <div className="d-flex">
         <div className="flex-grow-1">
-          <Nav variant="pills" className="admin-accounts-nav">
-            <Nav.Item>
-              <Nav.Link
-                active={activeTab === "student"}
-                onClick={() => setActiveTab("student")}
-                data-role="student"
-                className={activeTab === "student" ? "active" : ""}
-              >
-                <FaUserGraduate /> Học sinh
-              </Nav.Link>
-            </Nav.Item>
+          <Nav  className="admin-accounts-nav">
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "parent"}
@@ -1066,157 +1062,20 @@ const Accounts = () => {
             </Nav.Item>
           </Nav>
 
-          <div className="admin-accounts-search-bar">
-            <InputGroup style={{ flex: 1 }}>
-              <InputGroup.Text className="bg-white border-end-0" style={{ borderRadius: '12px 0 0 12px', border: '2px solid rgba(255, 149, 0, 0.2)', borderRight: 0 }}>
-                <FaSearch className="text-muted" />
-              </InputGroup.Text>
+          <div className="admin-accounts-search-bar d-flex align-items-center gap-2">
+            <InputGroup style={{ flex: 0.5 }}>
               <Form.Control
                 type="text"
                 placeholder="Tìm kiếm theo tên, email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="admin-search-input border-start-0"
-                style={{ borderRadius: '0 12px 12px 0' }}
+                className="admin-search-input"
+                style={{ borderRadius: '25px', border: '2px solid #10B981' }}
               />
             </InputGroup>
 
             {/* Filter Dropdown */}
-            <Dropdown show={showFilterDropdown} onToggle={setShowFilterDropdown}>
-              <Dropdown.Toggle
-                className="admin-filter-btn"
-                style={{
-                  background: (filterGender || filterStatus) ?
-                    'linear-gradient(135deg, #FF9500, #9C27B0)' :
-                    'linear-gradient(135deg, #FF9500, #9C27B0)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '0.75rem 1.5rem',
-                  color: 'white',
-                  fontWeight: '600',
-                  fontSize: '0.95rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  position: 'relative'
-                }}
-              >
-                <FaFilter />
-                Lọc
-                {(filterGender || filterStatus) && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: '-6px',
-                      right: '-6px',
-                      width: '16px',
-                      height: '16px',
-                      background: '#F44336',
-                      borderRadius: '50%',
-                      fontSize: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    •
-                  </span>
-                )}
-              </Dropdown.Toggle>
 
-              <Dropdown.Menu
-                style={{
-                  minWidth: '280px',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 149, 0, 0.2)',
-                  boxShadow: '0 8px 32px rgba(255, 149, 0, 0.15)',
-                  padding: '1rem'
-                }}
-              >
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontWeight: '600',
-                    marginBottom: '0.5rem',
-                    color: '#424242',
-                    fontSize: '0.875rem'
-                  }}>
-                    <FaVenusMars style={{ marginRight: '0.5rem', color: '#FF9500' }} />
-                    Lọc theo giới tính
-                  </label>
-                  <Form.Select
-                    value={filterGender}
-                    onChange={(e) => setFilterGender(e.target.value)}
-                    style={{
-                      border: '2px solid rgba(255, 149, 0, 0.2)',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    <option value="">Tất cả giới tính</option>
-                    <option value="male">Nam</option>
-                    <option value="female">Nữ</option>
-                    <option value="other">Khác</option>
-                  </Form.Select>
-                </div>
-
-                <div style={{ marginBottom: '1rem' }}>
-                  <label style={{
-                    display: 'block',
-                    fontWeight: '600',
-                    marginBottom: '0.5rem',
-                    color: '#424242',
-                    fontSize: '0.875rem'
-                  }}>
-                    <i className="fas fa-toggle-on" style={{ marginRight: '0.5rem', color: '#FF9500' }} />
-                    Lọc theo trạng thái
-                  </label>
-                  <Form.Select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                    style={{
-                      border: '2px solid rgba(255, 149, 0, 0.2)',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Đã khóa</option>
-                  </Form.Select>
-                </div>
-
-                <div style={{
-                  display: 'flex',
-                  gap: '0.5rem',
-                  paddingTop: '1rem',
-                  borderTop: '1px solid #E0E0E0'
-                }}>
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    onClick={handleResetFilters}
-                    style={{ flex: 1, fontSize: '0.875rem' }}
-                  >
-                    Xóa bộ lọc
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowFilterDropdown(false)}
-                    style={{
-                      flex: 1,
-                      background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
-                      border: 'none',
-                      fontSize: '0.875rem'
-                    }}
-                  >
-                    Áp dụng
-                  </Button>
-                </div>
-              </Dropdown.Menu>
-            </Dropdown>
           </div>
 
           {/* Accounts Table */}
@@ -1240,7 +1099,6 @@ const Accounts = () => {
                 </tr>
               </thead>
               <tbody>
-
                 {loading ? (
                   <tr>
                     <td colSpan="7" className="text-center">
@@ -1259,7 +1117,7 @@ const Accounts = () => {
                       </div>
                     </td>
                   </tr>
-                ) : paginatedUsers.length === 0 ? (
+                ) : users.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center">
                       <div className="p-4 text-muted">
@@ -1269,17 +1127,14 @@ const Accounts = () => {
                     </td>
                   </tr>
                 ) : (
-                  paginatedUsers.map((user) => (
+                  users.map((user) => (
                     <tr key={user.id}>
                       <td>{user.id}</td>
                       <td>
                         <div className="admin-user-profile">
-                          <div className="admin-user-avatar">
-                            {user.name?.charAt(0)?.toUpperCase() || 'U'}
-                          </div>
                           <div className="admin-user-info">
                             <div className="admin-user-name">{user.name}</div>
-                            <div className="admin-user-email">{user.email}</div>
+
                           </div>
                         </div>
                       </td>
@@ -1290,31 +1145,51 @@ const Accounts = () => {
                         {user.address}
                       </td>
                       <td>
-                        <div className={`admin-role-badge ${(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ? 'student' :
-                          (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ? 'parent' : 'nurse'
-                          }`}>
-                          {(user.gender?.toLowerCase() === 'male' || user.gender === 'Nam') ?
-                            <FaMars /> :
-                            (user.gender?.toLowerCase() === 'female' || user.gender === 'Nữ') ?
-                              <FaVenus /> :
-                              <FaVenusMars />}
+                        <div
+                          className={`admin-role-badge ${user.gender?.toLowerCase() === "male" ||
+                              user.gender === "Nam"
+                              ? "parent"
+                              : user.gender?.toLowerCase() === "female" ||
+                                user.gender === "Nữ"
+                                ? "parent"
+                                : "nurse"
+                            }`}
+                        >
+                          {user.gender?.toLowerCase() === "male" ||
+                            user.gender === "Nam" ? (
+                            <FaMars />
+                          ) : user.gender?.toLowerCase() === "female" ||
+                            user.gender === "Nữ" ? (
+                            <FaVenus />
+                          ) : (
+                            <FaVenusMars />
+                          )}
                           {translateGender(user.gender)}
                         </div>
                       </td>
                       <td>
                         <div className="admin-table-actions">
-                          <OverlayTrigger placement="top" overlay={<Tooltip>Chỉnh sửa</Tooltip>}>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip>Chỉnh sửa</Tooltip>}
+                          >
                             <button
                               className="admin-table-btn edit"
-                              onClick={() => handleShowModal('edit', user)}
+                              onClick={() => handleShowModal("edit", user)}
                             >
                               <FaEdit />
                             </button>
                           </OverlayTrigger>
-                          <OverlayTrigger placement="top" overlay={<Tooltip>Xóa</Tooltip>}>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={<Tooltip>Xóa</Tooltip>}
+                          >
                             <button
                               className="admin-table-btn delete"
-                              onClick={() => { setUserToDelete(user); setShowDeleteModal(true); }}
+                              onClick={() => {
+                                setUserToDelete(user);
+                                setShowDeleteModal(true);
+                              }}
                             >
                               <FaTrash />
                             </button>
@@ -1331,31 +1206,13 @@ const Accounts = () => {
           {/* Pagination */}
           <div className="admin-pagination-container">
             <div className="text-muted">
-              Hiển thị {paginatedUsers.length} / {filteredUsers.length} kết quả
+              Hiển thị {users.length} / {filteredUsers.length} kết quả
             </div>
-            <Pagination className="admin-pagination">
-              <Pagination.Prev
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              >
-                <FaChevronLeft />
-              </Pagination.Prev>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Pagination.Item
-                  key={i + 1}
-                  active={currentPage === i + 1}
-                  onClick={() => setCurrentPage(i + 1)}
-                >
-                  {i + 1}
-                </Pagination.Item>
-              ))}
-              <Pagination.Next
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              >
-                <FaChevronRight />
-              </Pagination.Next>
-            </Pagination>
+            <PaginationBar
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </div>
@@ -1364,7 +1221,11 @@ const Accounts = () => {
       {renderAddUserModal()}
 
       {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} className="accounts-delete-modal">
+      <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        className="accounts-delete-modal"
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             <i className="fas fa-exclamation-triangle"></i>
@@ -1374,7 +1235,9 @@ const Accounts = () => {
         <Modal.Body>
           <i className="fas fa-user-times"></i>
           <h5>Bạn có chắc chắn muốn xóa tài khoản?</h5>
-          <p><strong>{userToDelete?.name}</strong></p>
+          <p>
+            <strong>{userToDelete?.name}</strong>
+          </p>
           <p className="text-muted">Hành động này không thể hoàn tác!</p>
         </Modal.Body>
         <Modal.Footer>
@@ -1389,7 +1252,12 @@ const Accounts = () => {
       </Modal>
 
       {/* Permissions Modal */}
-      <Modal show={showPermModal} onHide={() => setShowPermModal(false)} className="accounts-permissions-modal" size="lg">
+      <Modal
+        show={showPermModal}
+        onHide={() => setShowPermModal(false)}
+        className="accounts-permissions-modal"
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>
             <i className="fas fa-user-shield"></i>
@@ -1485,7 +1353,7 @@ const Accounts = () => {
       {/* Import User Modal */}
       <Modal show={showImportModal} onHide={() => setShowImportModal(false)} className="admin-modal" size="lg">
         <Modal.Header closeButton style={{
-          background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+          background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
           color: 'white',
           borderBottom: 'none',
           padding: '2rem'
@@ -1502,41 +1370,45 @@ const Accounts = () => {
             Nhập tài khoản từ Excel
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ padding: '2rem', background: 'white' }}>
+        <Modal.Body style={{ padding: "2rem", background: "white" }}>
           <div className="admin-form-group">
             <label className="admin-form-label">
-              <i className="fas fa-file-excel" style={{ color: '#FF9500' }}></i>
+              <i className="fas fa-file-excel" style={{ color: '#4ECDC4' }}></i>
               Chọn file Excel
             </label>
             <div style={{
-              border: '2px dashed rgba(255, 149, 0, 0.3)',
+              border: '2px dashed rgba(78, 205, 196, 0.3)',
               borderRadius: '12px',
               padding: '2rem',
               textAlign: 'center',
-              background: 'linear-gradient(135deg, rgba(255, 149, 0, 0.05), rgba(156, 39, 176, 0.05))',
+              background: 'linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(38, 208, 206, 0.05))',
               position: 'relative',
               transition: 'all 0.3s ease',
               cursor: 'pointer'
             }}>
               <div style={{
                 marginBottom: '1rem',
-                color: '#FF9500',
+                color: '#4ECDC4',
                 fontSize: '3rem'
               }}>
                 <i className="fas fa-cloud-upload-alt"></i>
               </div>
-              <h6 style={{
-                fontWeight: '600',
-                color: '#424242',
-                marginBottom: '0.5rem'
-              }}>
+              <h6
+                style={{
+                  fontWeight: "600",
+                  color: "#424242",
+                  marginBottom: "0.5rem",
+                }}
+              >
                 Kéo thả file hoặc click để chọn
               </h6>
-              <p style={{
-                color: '#757575',
-                fontSize: '0.875rem',
-                marginBottom: '1rem'
-              }}>
+              <p
+                style={{
+                  color: "#757575",
+                  fontSize: "0.875rem",
+                  marginBottom: "1rem",
+                }}
+              >
                 Hỗ trợ file .xlsx, .xls (tối đa 10MB)
               </p>
               <Form.Control
@@ -1544,18 +1416,18 @@ const Accounts = () => {
                 accept=".xlsx,.xls"
                 onChange={handleImportExcel}
                 style={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: 0,
                   left: 0,
-                  width: '100%',
-                  height: '100%',
+                  width: "100%",
+                  height: "100%",
                   opacity: 0,
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
               />
               <div style={{
                 display: 'inline-block',
-                background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                 color: 'white',
                 padding: '0.5rem 1rem',
                 borderRadius: '8px',
@@ -1568,35 +1440,46 @@ const Accounts = () => {
           </div>
 
           {importError && (
-            <Alert variant="danger" style={{
-              borderRadius: '8px',
-              border: '1px solid #F44336',
-              background: 'linear-gradient(135deg, #FFEBEE, #FCE4EC)',
-              marginTop: '1rem'
-            }}>
-              <i className="fas fa-exclamation-triangle" style={{ marginRight: '0.5rem' }}></i>
+            <Alert
+              variant="danger"
+              style={{
+                borderRadius: "8px",
+                border: "1px solid #F44336",
+                background: "linear-gradient(135deg, #FFEBEE, #FCE4EC)",
+                marginTop: "1rem",
+              }}
+            >
+              <i
+                className="fas fa-exclamation-triangle"
+                style={{ marginRight: "0.5rem" }}
+              ></i>
               {importError}
             </Alert>
           )}
 
           {importedUsers.length > 0 && (
-            <div style={{ marginTop: '1.5rem' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                marginBottom: '1rem',
-                padding: '0.75rem',
-                background: 'linear-gradient(135deg, #E8F5E8, #F3E5F5)',
-                borderRadius: '8px',
-                border: '1px solid rgba(76, 175, 80, 0.2)'
-              }}>
-                <i className="fas fa-check-circle" style={{ color: '#4CAF50', fontSize: '1.25rem' }}></i>
+            <div style={{ marginTop: "1.5rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                  marginBottom: "1rem",
+                  padding: "0.75rem",
+                  background: "linear-gradient(135deg, #E8F5E8, #F3E5F5)",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(76, 175, 80, 0.2)",
+                }}
+              >
+                <i
+                  className="fas fa-check-circle"
+                  style={{ color: "#4CAF50", fontSize: "1.25rem" }}
+                ></i>
                 <div>
-                  <div style={{ fontWeight: '600', color: '#2E7D32' }}>
+                  <div style={{ fontWeight: "600", color: "#2E7D32" }}>
                     Phát hiện {importedUsers.length} tài khoản
                   </div>
-                  <div style={{ fontSize: '0.875rem', color: '#757575' }}>
+                  <div style={{ fontSize: "0.875rem", color: "#757575" }}>
                     Xem trước dữ liệu trước khi import
                   </div>
                 </div>
@@ -1605,22 +1488,22 @@ const Accounts = () => {
               <div style={{
                 maxHeight: '300px',
                 overflowY: 'auto',
-                border: '1px solid rgba(255, 149, 0, 0.2)',
+                border: '1px solid rgba(78, 205, 196, 0.2)',
                 borderRadius: '8px'
               }}>
                 <Table style={{ margin: 0, fontSize: '0.875rem' }}>
                   <thead style={{
-                    background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                    background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                     color: 'white',
                     position: 'sticky',
                     top: 0
                   }}>
                     <tr>
-                      <th style={{ padding: '0.75rem' }}>STT</th>
-                      <th style={{ padding: '0.75rem' }}>Họ tên</th>
-                      <th style={{ padding: '0.75rem' }}>Email</th>
-                      <th style={{ padding: '0.75rem' }}>SĐT</th>
-                      <th style={{ padding: '0.75rem' }}>Vai trò</th>
+                      <th style={{ padding: "0.75rem" }}>STT</th>
+                      <th style={{ padding: "0.75rem" }}>Họ tên</th>
+                      <th style={{ padding: "0.75rem" }}>Email</th>
+                      <th style={{ padding: "0.75rem" }}>SĐT</th>
+                      <th style={{ padding: "0.75rem" }}>Vai trò</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1634,7 +1517,7 @@ const Accounts = () => {
                         <td style={{ padding: '0.75rem' }}>{u.phone}</td>
                         <td style={{ padding: '0.75rem' }}>
                           <span style={{
-                            background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
+                            background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
                             color: 'white',
                             padding: '0.25rem 0.5rem',
                             borderRadius: '4px',
@@ -1647,12 +1530,15 @@ const Accounts = () => {
                     ))}
                     {importedUsers.length > 10 && (
                       <tr>
-                        <td colSpan="5" style={{
-                          padding: '0.75rem',
-                          textAlign: 'center',
-                          fontStyle: 'italic',
-                          color: '#757575'
-                        }}>
+                        <td
+                          colSpan="5"
+                          style={{
+                            padding: "0.75rem",
+                            textAlign: "center",
+                            fontStyle: "italic",
+                            color: "#757575",
+                          }}
+                        >
                           ... và {importedUsers.length - 10} tài khoản khác
                         </td>
                       </tr>
@@ -1663,11 +1549,13 @@ const Accounts = () => {
             </div>
           )}
         </Modal.Body>
-        <Modal.Footer style={{
-          background: '#FAFAFA',
-          borderTop: '1px solid #E0E0E0',
-          padding: '1.5rem 2rem'
-        }}>
+        <Modal.Footer
+          style={{
+            background: "#FAFAFA",
+            borderTop: "1px solid #E0E0E0",
+            padding: "1.5rem 2rem",
+          }}
+        >
           <button
             className="admin-secondary-btn"
             onClick={() => setShowImportModal(false)}
@@ -1679,10 +1567,10 @@ const Accounts = () => {
             onClick={handleConfirmImport}
             disabled={importedUsers.length === 0}
             style={{
-              opacity: importedUsers.length === 0 ? 0.5 : 1
+              opacity: importedUsers.length === 0 ? 0.5 : 1,
             }}
           >
-            <FaFileUpload style={{ marginRight: '0.5rem' }} />
+            <FaFileUpload style={{ marginRight: "0.5rem" }} />
             Nhập {importedUsers.length} tài khoản
           </button>
         </Modal.Footer>
@@ -1691,13 +1579,13 @@ const Accounts = () => {
       {/* FAB - Floating Action Button */}
       <div
         style={{
-          position: 'fixed',
+          position: "fixed",
           bottom: 32,
           right: 32,
           zIndex: 1000,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
         onMouseEnter={() => setFabOpen(true)}
         onMouseLeave={() => setFabOpen(false)}
@@ -1707,18 +1595,20 @@ const Accounts = () => {
           style={{
             width: 56,
             height: 56,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-            color: '#fff',
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+            color: "#fff",
             fontSize: 22,
-            border: 'none',
-            boxShadow: '0 4px 16px rgba(59, 130, 246, 0.25)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            transform: fabOpen ? 'rotate(45deg) scale(1.05)' : 'rotate(0deg) scale(1)',
+            border: "none",
+            boxShadow: "0 4px 16px rgba(59, 130, 246, 0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            transform: fabOpen
+              ? "rotate(45deg) scale(1.05)"
+              : "rotate(0deg) scale(1)",
             marginBottom: 12,
           }}
         >
@@ -1728,45 +1618,45 @@ const Accounts = () => {
         {/* Menu các chức năng */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             gap: 8,
             opacity: fabOpen ? 1 : 0,
-            transform: fabOpen ? 'translateY(0)' : 'translateY(-16px)',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            pointerEvents: fabOpen ? 'auto' : 'none',
+            transform: fabOpen ? "translateY(0)" : "translateY(-16px)",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            pointerEvents: fabOpen ? "auto" : "none",
           }}
         >
           {/* Thêm tài khoản */}
           <button
-            onClick={() => handleShowModal('add')}
+            onClick={() => handleShowModal("add")}
             style={{
               width: 44,
               height: 44,
-              borderRadius: '50%',
-              background: '#fff',
-              color: '#3b82f6',
+              borderRadius: "50%",
+              background: "#fff",
+              color: "#3b82f6",
               fontSize: 16,
-              border: '1px solid #e5e7eb',
-              boxShadow: '0 2px 8px rgba(59, 130, 246, 0.12)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 2px 8px rgba(59, 130, 246, 0.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#3b82f6';
-              e.target.style.color = '#fff';
-              e.target.style.transform = 'scale(1.08)';
-              e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.2)';
+              e.target.style.background = "#3b82f6";
+              e.target.style.color = "#fff";
+              e.target.style.transform = "scale(1.08)";
+              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.2)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#fff';
-              e.target.style.color = '#3b82f6';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.12)';
+              e.target.style.background = "#fff";
+              e.target.style.color = "#3b82f6";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.12)";
             }}
             title="Thêm tài khoản"
           >
@@ -1779,29 +1669,29 @@ const Accounts = () => {
             style={{
               width: 44,
               height: 44,
-              borderRadius: '50%',
-              background: '#fff',
-              color: '#3b82f6',
+              borderRadius: "50%",
+              background: "#fff",
+              color: "#3b82f6",
               fontSize: 16,
-              border: '1px solid #e5e7eb',
-              boxShadow: '0 2px 8px rgba(59, 130, 246, 0.12)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 2px 8px rgba(59, 130, 246, 0.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#3b82f6';
-              e.target.style.color = '#fff';
-              e.target.style.transform = 'scale(1.08)';
-              e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.2)';
+              e.target.style.background = "#3b82f6";
+              e.target.style.color = "#fff";
+              e.target.style.transform = "scale(1.08)";
+              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.2)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#fff';
-              e.target.style.color = '#3b82f6';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.12)';
+              e.target.style.background = "#fff";
+              e.target.style.color = "#3b82f6";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.12)";
             }}
             title="Nhập từ file"
           >
@@ -1814,29 +1704,29 @@ const Accounts = () => {
             style={{
               width: 44,
               height: 44,
-              borderRadius: '50%',
-              background: '#fff',
-              color: '#3b82f6',
+              borderRadius: "50%",
+              background: "#fff",
+              color: "#3b82f6",
               fontSize: 16,
-              border: '1px solid #e5e7eb',
-              boxShadow: '0 2px 8px rgba(59, 130, 246, 0.12)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 2px 8px rgba(59, 130, 246, 0.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#3b82f6';
-              e.target.style.color = '#fff';
-              e.target.style.transform = 'scale(1.08)';
-              e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.2)';
+              e.target.style.background = "#3b82f6";
+              e.target.style.color = "#fff";
+              e.target.style.transform = "scale(1.08)";
+              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.2)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#fff';
-              e.target.style.color = '#3b82f6';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.12)';
+              e.target.style.background = "#fff";
+              e.target.style.color = "#3b82f6";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.12)";
             }}
             title="Tải file mẫu"
           >

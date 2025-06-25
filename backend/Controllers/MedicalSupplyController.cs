@@ -18,11 +18,11 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMedicalSupplies(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllMedicalSupplies(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var supplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize);
+                var supplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<MedicalSupplyDTO>>(supplies, "Lấy danh sách vật tư y tế thành công", true));
             }
             catch (Exception ex)
@@ -85,6 +85,20 @@ namespace backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<bool>(false, $"Lỗi: {ex.Message}", false));
+            }
+        }
+
+        [HttpGet("medical-supplies-count")]
+        public async Task<IActionResult> GetMedicalSuppliesCounts()
+        {
+            try
+            {
+                var result = await _medicalSupplyService.GetInventoryCountsAsync();
+                return Ok(new BaseResponse<MedicalSuppliesCountDTO>(result, "Lấy thống kê thuốc thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponse<MedicalSuppliesCountDTO>(null, $"Có lỗi xảy ra: {ex.Message}", false));
             }
         }
     }

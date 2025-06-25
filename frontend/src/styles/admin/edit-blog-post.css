@@ -1,0 +1,377 @@
+/* ==================== EDIT BLOG POST ADMIN STYLING ==================== */
+
+.admin-edit-blog-container {
+    background: #f8fafc;    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-edit-blog-header {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    padding: 2rem 2.5rem;
+    border-radius: 20px;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 35px rgba(78, 205, 196, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-edit-blog-title {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-edit-blog-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin: 0.5rem 0 0 0;
+    font-weight: 400;
+}
+
+.admin-edit-blog-form-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
+}
+
+.admin-edit-blog-form-group {
+    margin-bottom: 2rem;
+}
+
+.admin-edit-blog-label {
+    display: block;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.admin-edit-blog-label::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-radius: 2px;
+}
+
+.admin-edit-blog-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2d3748;
+    background: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-edit-blog-input:focus {
+    outline: none;
+    border-color: #4ECDC4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+    transform: translateY(-1px);
+}
+
+.admin-edit-blog-input:hover {
+    border-color: #cbd5e0;
+    transform: translateY(-1px);
+}
+
+/* ReactQuill Editor Styling */
+.admin-edit-blog-editor {
+    margin-bottom: 1rem;
+}
+
+.admin-edit-blog-editor .ql-container {
+    border-radius: 0 0 12px 12px;
+    border: 2px solid #e2e8f0;
+    border-top: none;
+    min-height: 300px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-edit-blog-editor .ql-toolbar {
+    border-radius: 12px 12px 0 0;
+    border: 2px solid #e2e8f0;
+    border-bottom: none;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.admin-edit-blog-editor .ql-toolbar:hover {
+    border-color: #cbd5e0;
+}
+
+.admin-edit-blog-editor:focus-within .ql-container,
+.admin-edit-blog-editor:focus-within .ql-toolbar {
+    border-color: #4ECDC4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+/* Image Upload Styling */
+.admin-edit-blog-image-upload {
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-edit-blog-file-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px dashed #4ECDC4;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #4a5568;
+    background: linear-gradient(135deg, #f0fdfa 0%, #f0f9ff 100%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-edit-blog-file-input:hover {
+    border-color: #44A08D;
+    background: linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 100%);
+    transform: translateY(-1px);
+}
+
+.admin-edit-blog-current-image {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.admin-edit-blog-current-image img {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border: 3px solid white;
+    transition: transform 0.3s ease;
+}
+
+.admin-edit-blog-current-image img:hover {
+    transform: scale(1.02);
+}
+
+.admin-edit-blog-image-label {
+    display: block;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+/* Action Buttons */
+.admin-edit-blog-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.admin-edit-blog-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-edit-blog-btn-primary {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+}
+
+.admin-edit-blog-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(78, 205, 196, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.admin-edit-blog-btn-secondary {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(100, 116, 139, 0.3);
+}
+
+.admin-edit-blog-btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(100, 116, 139, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Alert Styling */
+.admin-edit-blog-alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.admin-edit-blog-alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+    border-left: 4px solid #10b981;
+}
+
+.admin-edit-blog-alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+}
+
+/* Loading State */
+.admin-edit-blog-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-edit-blog-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-edit-blog-container {
+        padding: 15px;
+    }
+
+    .admin-edit-blog-header {
+        padding: 1.5rem 2rem;
+    }
+
+    .admin-edit-blog-title {
+        font-size: 2rem;
+    }
+
+    .admin-edit-blog-form-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .admin-edit-blog-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-edit-blog-btn {
+        text-align: center;
+        justify-content: center;
+    }
+
+    .admin-edit-blog-current-image img {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-edit-blog-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .admin-edit-blog-title {
+        font-size: 1.75rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .admin-edit-blog-form-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .admin-edit-blog-editor .ql-container {
+        min-height: 200px;
+    }
+}
+
+/* Animation for form load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-edit-blog-form-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.admin-edit-blog-header {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+/* Enhanced focus states */
+.admin-edit-blog-input:focus,
+.admin-edit-blog-file-input:focus {
+    outline: none;
+    border-color: #4ECDC4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+/* Button hover effects */
+.admin-edit-blog-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.admin-edit-blog-btn:hover::before {
+    left: 100%;
+}

@@ -93,12 +93,20 @@ header.app-header {
     transition: all 0.3s ease !important;
 }
 
+.app-header-logo .header-logo-icon {
+    color: #2563eb !important;
+}
+
 .header-logo-text {
     color: #2563eb !important;
     font-size: 1.25rem !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
     transition: all 0.3s ease !important;
+}
+
+.app-header-logo .header-logo-text {
+    color: #2563eb !important;
 }
 
 /* Header Center - Parent Menu */
@@ -141,6 +149,10 @@ header.app-header {
     font-size: 1.8rem !important;
     color: #2563eb !important;
     transition: all 0.3s ease !important;
+}
+
+.app-header-account .account-avatar {
+    color: #2563eb !important;
 }
 
 .account-arrow {
@@ -401,4 +413,79 @@ header.app-header {
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
     appearance: none !important;
+}
+
+/* Header Emergency Override - Đảm bảo màu xanh nước biển cho header */
+.app-header .header-logo-icon,
+.app-header .app-header-logo .header-logo-icon,
+.app-header-left .header-logo-icon,
+.header-logo-icon {
+    color: #2563eb !important;
+}
+
+.app-header .header-logo-text,
+.app-header .app-header-logo .header-logo-text,
+.app-header-left .header-logo-text,
+.header-logo-text {
+    color: #2563eb !important;
+}
+
+.app-header .account-avatar,
+.app-header .app-header-account .account-avatar,
+.app-header-right .account-avatar,
+.account-avatar {
+    color: #2563eb !important;
+}
+
+/* Override parent theme variables cho header */
+.app-header .parent-menu-link:hover,
+.app-header .parent-menu-link.active {
+    color: #2563eb !important;
+}
+
+.app-header .mobile-dropdown-item:hover,
+.app-header .mobile-dropdown-item.active {
+    color: #2563eb !important;
+}
+
+.app-header .account-dropdown-item:hover {
+    color: #2563eb !important;
+}
+
+/* Ultra high specificity override - Đảm bảo header luôn màu xanh nước biển */
+body .app-header .header-logo-icon,
+html body .app-header .header-logo-icon,
+body .app-header .app-header-logo .header-logo-icon {
+    color: #2563eb !important;
+}
+
+body .app-header .header-logo-text,
+html body .app-header .header-logo-text,
+body .app-header .app-header-logo .header-logo-text {
+    color: #2563eb !important;
+}
+
+body .app-header .account-avatar,
+html body .app-header .account-avatar,
+body .app-header .app-header-account .account-avatar {
+    color: #2563eb !important;
+}
+
+/* Brand identity protection - School Health luôn màu xanh nước biển */
+[class*="header"] .header-logo-icon,
+[class*="app-header"] .header-logo-icon,
+.header-logo-icon[class*="fa"] {
+    color: #2563eb !important;
+}
+
+[class*="header"] .header-logo-text,
+[class*="app-header"] .header-logo-text {
+    color: #2563eb !important;
+}
+
+/* Force override cho mọi theme */
+.parent-theme .app-header .header-logo-icon,
+.parent-theme .app-header .header-logo-text,
+.parent-theme .app-header .account-avatar {
+    color: #2563eb !important;
 }

@@ -44,9 +44,11 @@ export const getNurseList = async () => {
   }
 };
 
-export const getNotifications = async () => {
+export const getNotifications = async (pageNumber = 1, pageSize = 10) => {
   try {
-    const res = await axiosInstance.get("/Notification");
+    const res = await axiosInstance.get(
+      `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
     if (res.data) {
       return res.data;
     } else {

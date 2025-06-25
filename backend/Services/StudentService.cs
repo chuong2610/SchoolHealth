@@ -3,6 +3,7 @@ using backend.Interfaces;
 using backend.Models.DTO;
 
 using backend.Models;
+using backend.Models.Request;
 
 
 namespace backend.Services
@@ -83,6 +84,117 @@ namespace backend.Services
                 ClassName = student.Class.ClassName,
                 DateOfBirth = student.DateOfBirth
             };
+        }
+
+        public async Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
+        {
+            var students = await _studentRepository
+                .GetAllStudentAsync(classId, pageNumber, pageSize, search);
+
+            var totalItems = await _studentRepository
+                .CountStudentsAsync(classId, search);
+
+            var studentDtos = students.Select(s => new StudentsDTO
+            {
+                Id = s.Id,
+                StudentName = s.Name,
+                StudentNumber = s.StudentNumber,
+                Gender = s.Gender,
+                DateOfBirth = s.DateOfBirth,
+                ParentName = s.Parent.Name,
+                ClassName = s.Class.ClassName
+            }).ToList();
+
+            return new PageResult<StudentsDTO>
+            {
+                Items = studentDtos,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+            };
+        }
+
+        public async Task<bool> CreateStudentAsync(StudentRequest request)
+        {
+            // Kiểm tra student number đã tồn tại chưa
+            var existing = await _studentRepository.GetStudentByStudentNumberAsync(request.StudentNumber);
+            if (existing != null)
+            {
+                // Nếu đã tồn tại thì trả false hoặc throw exception
+                return false;
+            }
+            var defaultDate = DateOnly.FromDateTime(DateTime.Today);
+
+            var newStudent = new Student
+            {
+                Name = request.Name,
+                StudentNumber = request.StudentNumber,
+                Gender = request.Gender,
+                DateOfBirth = request.DateOfBirth ?? defaultDate,
+                ClassId = request.ClassId ?? 0,
+                ParentId = request.ParentId ?? 0,
+                IsActive = true
+            };
+            return await _studentRepository.CreateStudentAsync(newStudent);
+        }
+
+        public async Task<bool> UpdateStudentAsync(int id, StudentRequest request)
+        {
+            var existingStudent = await _studentRepository.GetByIdAsync(id);
+            if (existingStudent == null)
+            {
+                return false;
+            }
+
+            // Cập nhật Name
+            if (!string.IsNullOrWhiteSpace(request.Name))
+            {
+                existingStudent.Name = request.Name;
+            }
+
+            // Cập nhật StudentNumber
+            if (!string.IsNullOrWhiteSpace(request.StudentNumber))
+            {
+                existingStudent.StudentNumber = request.StudentNumber;
+            }
+
+            // Cập nhật Gender
+            if (!string.IsNullOrWhiteSpace(request.Gender))
+            {
+                existingStudent.Gender = request.Gender;
+            }
+
+            // Cập nhật DateOfBirth
+            if (request.DateOfBirth.HasValue)
+            {
+                existingStudent.DateOfBirth = request.DateOfBirth.Value;
+            }
+
+            // Cập nhật ClassId
+            if (request.ClassId.HasValue)
+            {
+                existingStudent.ClassId = request.ClassId.Value;
+            }
+
+            // Cập nhật ParentId
+            if (request.ParentId.HasValue)
+            {
+                existingStudent.ParentId = request.ParentId.Value;
+            }
+
+            var updated = await _studentRepository.UpdateStudentAsync(existingStudent);
+            return updated;
+        }
+
+        public async Task<bool> DeleteStudentAsync(int id)
+        {
+            var user = await _studentRepository.GetByIdAsync(id);
+            if (user == null || !user.IsActive)
+            {
+                return false;
+            }
+
+            return await _studentRepository.DeleteStudentAsync(user);
         }
     }
 

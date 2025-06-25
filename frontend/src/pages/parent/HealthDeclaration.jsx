@@ -12,6 +12,7 @@ import {
   Tab,
   Nav
 } from "react-bootstrap";
+import healthBgImage from '../../assets/nenkhaibaoyte.jpg';
 import {
   FaUser,
   FaCheckCircle,
@@ -210,13 +211,20 @@ const HealthDeclaration = () => {
   };
 
   return (
-    <div className="health-declaration-page animate-fade-in">
+    <div className="health-declaration-page animate-fade-in" style={{
+      // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.925), rgba(255, 255, 255, 0.2)), url(${healthBgImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
+      minHeight: '100vh'
+    }}>
       {/* Hero Header */}
       <div className="health-hero-header animate-slide-in-down">
         <Container>
           <div className="health-hero-content">
             <h1 className="health-hero-title animate-fade-in-up delay-200">
-              <div className="hero-medical-icon animate-float">
+              <div className="hero-medical-icon ">
                 <FaClipboardList />
               </div>
               Khai báo sức khỏe học sinh
@@ -232,7 +240,7 @@ const HealthDeclaration = () => {
       <Container className="health-main-container">
         <Row className="justify-content-center">
           <Col lg={10}>
-            <div className="health-form-wrapper animate-scale-in-center delay-500 animate-card">
+            <div className="health-form-wrapper animate-scale-in-center delay-500 animate-card" style={{backgroundColor: 'white', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
               {/* Tab Navigation */}
               <div className="health-tab-navigation">
                 <div className="health-nav-pills">
@@ -288,7 +296,7 @@ const HealthDeclaration = () => {
                           <option value="">-- Chọn học sinh --</option>
                           {students.map((student) => (
                             <option key={student.id} value={student.id}>
-                              {student.studentName} - {student.className}
+                              {student.studentName} 
                             </option>
                           ))}
                         </Form.Select>

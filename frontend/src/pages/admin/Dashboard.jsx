@@ -21,6 +21,12 @@ import {
   FaCog,
   FaSpinner
 } from 'react-icons/fa';
+
+// Custom SVG Icon component for male student studying  
+import MaleStudentIcon from '../../assets/male-student-studying-svgrepo-com.svg';
+import parent from '../../assets/person-feeding-baby-medium-dark-skin-tone-svgrepo-com.svg';
+import nurse from '../../assets/health-worker-svgrepo-com.svg';
+import medicine from '../../assets/pill-svgrepo-com.svg';
 import {
   LineChart,
   Line,
@@ -39,7 +45,24 @@ import {
 } from 'recharts';
 
 // Import admin dashboard specific CSS
-// Styles được import từ main.jsx
+import "../../styles/admin/dashboard.css";
+
+/* 
+ * HƯỚNG DẪN THÊM ẢNH VÀO STATS CARDS:
+ * 
+ * 1. Thêm ảnh vào thư mục assets hoặc public
+ * 2. Import ảnh: import myIcon from '../../assets/my-icon.png';
+ * 3. Cập nhật statsData: 
+ *    - imageSrc: myIcon (thay vì null)
+ *    - imageAlt: 'Mô tả ảnh'
+ * 
+ * Ví dụ:
+ * {
+ *   imageSrc: myIcon,
+ *   imageAlt: 'Student Icon',
+ *   icon: FaUserGraduate // Vẫn giữ icon làm fallback
+ * }
+ */
 
 const AdminDashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('7days');
@@ -53,10 +76,19 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get('/Home/admin');
+      // Add required parameters for medical supplies data
+      const response = await axiosInstance.get('/Home/admin', {
+        params: {
+          pageNumber: 1,
+          pageSize: 100, // Get more medical supplies for chart
+          search: '' // Empty search to get all
+        }
+      });
       setDashboardData(response.data.data);
+      console.log('Dashboard data loaded:', response.data.data); // Debug log
     } catch (err) {
       setError('Failed to load dashboard data');
+      console.error('Dashboard API error:', err); // Debug log
     } finally {
       setLoading(false);
     }
@@ -71,51 +103,51 @@ const AdminDashboard = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Enhanced stats data with real data from API
+  // Enhanced stats data with real data from API - Support both icons and images
   const statsData = dashboardData ? [
     {
       id: 1,
       title: 'Tổng số học sinh',
       value: dashboardData.numberOfStudents?.toLocaleString() || '0',
-      change: '+12.5%',
       isPositive: true,
-      icon: FaUserGraduate,
+      icon: FaUserGraduate, // React icon fallback
+      imageSrc: MaleStudentIcon, // Demo: Using the imported SVG as example
+      imageAlt: 'Students',
       color: 'primary',
-      description: 'Học sinh đang học',
-      trend: [2400, 2500, 2650, 2750, dashboardData.numberOfStudents || 0]
+
     },
     {
       id: 2,
       title: 'Tổng số phụ huynh',
       value: dashboardData.numberOfParents?.toLocaleString() || '0',
-      change: '+8.2%',
       isPositive: true,
-      icon: FaUsers,
+      icon: FaUsers, // React icon fallback
+      imageSrc: parent, // Add image source here when needed
+      imageAlt: 'Parents',
       color: 'success',
-      description: 'Phụ huynh đã đăng ký',
-      trend: [2100, 2150, 2180, 2200, dashboardData.numberOfParents || 0]
+
     },
     {
       id: 3,
       title: 'Tổng số y tá',
       value: dashboardData.numberOfNurses?.toLocaleString() || '0',
-      change: '+2.1%',
       isPositive: true,
-      icon: FaUserMd,
+      icon: FaUserMd, // React icon fallback
+      imageSrc: nurse, // Add image source here when needed
+      imageAlt: 'Nurses',
       color: 'info',
-      description: 'Y tá đã đăng ký',
-      trend: [82, 84, 85, 86, dashboardData.numberOfNurses || 0]
+
     },
     {
       id: 4,
       title: 'Đơn thuốc chờ xử lý',
       value: dashboardData.pendingMedicationsNumber?.toLocaleString() || '0',
-      change: '-5.2%',
       isPositive: false,
-      icon: FaPills,
+      icon: FaPills, // React icon fallback
+      imageSrc: medicine, // Add image source here when needed
+      imageAlt: 'Medicines',
       color: 'warning',
-      description: 'Đơn thuốc chờ xác nhận',
-      trend: [180, 165, 155, 150, dashboardData.pendingMedicationsNumber || 0]
+
     }
   ] : [];
 
@@ -142,26 +174,45 @@ const AdminDashboard = () => {
     {
       name: 'Chờ xử lý',
       value: dashboardData.pendingMedicationsNumber || 0,
-      color: '#FF9800',
+      color: '#f59e0b',
       percentage: dashboardData.pendingMedicationsNumber ? ((dashboardData.pendingMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
     },
     {
       name: 'Đang xử lý',
       value: dashboardData.activeMedicationsNumber || 0,
-      color: '#2196F3',
+      color: '#10b981',
       percentage: dashboardData.activeMedicationsNumber ? ((dashboardData.activeMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
     },
     {
       name: 'Hoàn thành',
       value: dashboardData.completedMedicationsNumber || 0,
-      color: '#4CAF50',
+      color: '#059669',
       percentage: dashboardData.completedMedicationsNumber ? ((dashboardData.completedMedicationsNumber / (dashboardData.pendingMedicationsNumber + dashboardData.activeMedicationsNumber + dashboardData.completedMedicationsNumber)) * 100).toFixed(1) : 0
     }
   ] : [
-    { name: 'Chờ xử lý', value: 0, color: '#FF9800', percentage: 0 },
-    { name: 'Đang xử lý', value: 0, color: '#2196F3', percentage: 0 },
-    { name: 'Hoàn thành', value: 0, color: '#4CAF50', percentage: 0 }
+    { name: 'Chờ xử lý', value: 0, color: '#f59e0b', percentage: 0 },
+    { name: 'Đang xử lý', value: 0, color: '#10b981', percentage: 0 },
+    { name: 'Hoàn thành', value: 0, color: '#059669', percentage: 0 }
   ];
+
+  // Generate pending medications data - students waiting to take medicine
+  const pendingMedications = dashboardData ?
+    dashboardData.medications?.filter(medication =>
+      medication.status === 'Active' || medication.status === 'active'
+    ).map((medication, index) => ({
+      id: medication.id || index + 1,
+      studentName: medication.studentName || 'Không xác định',
+      studentClass: medication.studentClass || medication.studentClassName || 'Không xác định',
+      medicationName: medication.medicationName || 'Không xác định',
+      dosage: medication.dosage || 'Không xác định',
+      note: medication.note || 'Không có ghi chú',
+      createdDate: medication.createdDate ? new Date(medication.createdDate).toLocaleDateString('vi-VN') : 'Không xác định',
+      nurseName: medication.nurseName || 'Chưa phân công',
+      parentName: medication.parentName || 'Không xác định'
+    })) || []
+    : [
+
+    ];
 
   // Generate recent activities from real data
   const recentActivities = dashboardData ? [
@@ -192,50 +243,7 @@ const AdminDashboard = () => {
     }
   ];
 
-  const quickActions = [
-    {
-      id: 1,
-      title: 'Thêm người dùng mới',
-      description: 'Tạo tài khoản học sinh, phụ huynh hoặc nhân viên',
-      icon: FaPlus,
-      route: '/admin/accounts'
-    },
-    {
-      id: 2,
-      title: 'Tạo báo cáo',
-      description: 'Tạo báo cáo sức khỏe hoặc hoạt động',
-      icon: FaFileAlt,
-      route: '/admin/reports'
-    },
-    {
-      id: 3,
-      title: 'Gửi thông báo',
-      description: 'Gửi thông báo đến người dùng',
-      icon: FaBell,
-      route: '/admin/notification/management'
-    },
-    {
-      id: 4,
-      title: 'Quản lý thuốc',
-      description: 'Cập nhật tồn kho thuốc',
-      icon: FaPills,
-      route: '/admin/medicines/inventory'
-    },
-    {
-      id: 5,
-      title: 'Xem thống kê',
-      description: 'Thống kê chi tiết hệ thống',
-      icon: FaChartLine,
-      route: '/admin/reports'
-    },
-    {
-      id: 6,
-      title: 'Cấu hình hệ thống',
-      description: 'Cấu hình hệ thống',
-      icon: FaCog,
-      route: '/admin/settings'
-    }
-  ];
+
 
   const getColorClasses = (color) => {
     const colors = {
@@ -270,18 +278,14 @@ const AdminDashboard = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="admin-container">
-        <div className="admin-page-header">
-          <div className="row align-items-center">
-            <div className="col-lg-12 text-center">
-              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
-                <div className="text-center">
-                  <FaSpinner className="fa-spin mb-3" size={48} style={{ color: '#FF9500' }} />
-                  <h4>Đang tải dữ liệu dashboard...</h4>
-                  <p className="text-muted">Vui lòng chờ trong giây lát</p>
-                </div>
-              </div>
-            </div>
+      <div className="admin-dashboard-container">
+        <div className="admin-dashboard-header">
+          <div className="admin-dashboard-title">
+            <FaSpinner className="fa-spin" />
+            Đang tải dữ liệu dashboard...
+          </div>
+          <div className="admin-dashboard-subtitle">
+            Vui lòng chờ trong giây lát
           </div>
         </div>
       </div>
@@ -291,371 +295,453 @@ const AdminDashboard = () => {
   // Show error state
   if (error) {
     return (
-      <div className="admin-container">
-        <div className="admin-page-header">
-          <div className="row align-items-center">
-            <div className="col-lg-12 text-center">
-              <div className="alert alert-danger">
-                <h4>Lỗi tải dữ liệu</h4>
-                <p>{error}</p>
-                <button className="btn btn-primary" onClick={fetchDashboardData}>
-                  Thử lại
-                </button>
-              </div>
-            </div>
+      <div className="admin-dashboard-container">
+        <div className="admin-dashboard-header">
+          <div className="admin-dashboard-title">
+            ❌ Lỗi tải dữ liệu
           </div>
+          <div className="admin-dashboard-subtitle">
+            {error}
+          </div>
+          <button className="admin-dashboard-btn-primary" onClick={fetchDashboardData}>
+            Thử lại
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="admin-container">
-      {/* Enhanced Header */}
-      <div className="admin-page-header">
-        <div className="row align-items-center">
-          <div className="col-lg-8">
-            <h1 className="admin-page-title">
-              🎯 Trang chủ quản trị viên
-            </h1>
-            <p className="admin-page-subtitle">
-              Chào mừng bạn đến với hệ thống quản lý sức khỏe của trường
-            </p>
-          </div>
-          <div className="col-lg-4 text-end">
-            <div className="d-flex gap-3 justify-content-end align-items-center">
-              <select
-                value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="form-select admin-btn-secondary"
-                style={{
-                  width: 'auto',
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: 'black'
-                }}
-              >
-                <option value="7days">7 ngày qua</option>
-                <option value="30days">30 ngày qua</option>
-                <option value="90days">3 tháng qua</option>
-                <option value="year">Năm nay</option>
-              </select>
-
-            </div>
-          </div>
+    <div className="admin-dashboard-container">
+      {/* Modern Header */}
+      <div className="admin-dashboard-header">
+        <div className="admin-dashboard-title">
+          🎯 Trang chủ quản trị viên
+        </div>
+        <div className="admin-dashboard-subtitle">
+          Chào mừng bạn đến với hệ thống quản lý sức khỏe của trường
         </div>
       </div>
 
-      <div className="container-fluid px-4">
-        {/* Enhanced Stats Grid */}
-        <div className="admin-stats-grid">
-          {statsData.map((stat, index) => {
-            const Icon = stat.icon;
+      {/* Modern Stats Cards */}
+      <div className="admin-dashboard-stats">
+        {statsData.map((stat, index) => {
+          const Icon = stat.icon;
 
-            return (
-              <div
-                key={stat.id}
-                className={`admin-stat-card admin-animate-scale`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <div className="admin-stat-icon">
-                    <Icon />
-                  </div>
-                  <div className={`admin-stat-change ${stat.isPositive ? 'positive' : 'negative'}`}>
-                    {stat.isPositive ? <FaArrowUp /> : <FaArrowDown />}
-                    {stat.change}
-                  </div>
-                </div>
-                <div className="admin-stat-value">{stat.value}</div>
-                <div className="admin-stat-label">{stat.title}</div>
-                <p className="text-muted mt-2 mb-0" style={{ fontSize: '0.875rem' }}>
-                  {stat.description}
-                </p>
-
-                {/* Mini trend chart */}
-                <div className="mt-3" style={{ height: '40px' }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={stat.trend.map((value, idx) => ({ value }))}>
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke={stat.isPositive ? '#4CAF50' : '#F44336'}
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
+          return (
+            <div
+              key={stat.id}
+              className="admin-dashboard-stat-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              {/* Icon */}
+              <div className="admin-dashboard-stat-icon">
+                {stat.imageSrc ? (
+                  <img
+                    src={stat.imageSrc}
+                    alt={stat.imageAlt || stat.title}
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      objectFit: 'contain'
+                    }}
+                  />
+                ) : (
+                  <Icon />
+                )}
               </div>
-            );
-          })}
-        </div>
 
-        {/* Charts Section */}
-        <div className="row mb-4">
-          {/* Main Activity Chart */}
-          <div className="col-lg-8">
-            <div className="admin-card">
-              <div className="admin-card-header">
-                <h4 className="admin-card-title">
-                  <FaChartLine />
-                  Tổng quan hoạt động hệ thống
-                </h4>
-              </div>
-              <div className="admin-card-body">
-                <div className="mb-3">
-                  <div className="btn-group" role="group">
-                    <input type="radio" className="btn-check" name="chartType" id="medical_events" defaultChecked />
-                    <label className="btn btn-outline-primary btn-sm" htmlFor="medical_events">Sự kiện y tế</label>
+              {/* Value */}
+              <div className="admin-dashboard-stat-value">{stat.value}</div>
 
-                    <input type="radio" className="btn-check" name="chartType" id="health" />
-                    <label className="btn btn-outline-primary btn-sm" htmlFor="health">Kiểm tra sức khỏe</label>
+              {/* Label */}
+              <div className="admin-dashboard-stat-label">{stat.title}</div>
 
-                    <input type="radio" className="btn-check" name="chartType" id="medicines" />
-                    <label className="btn btn-outline-primary btn-sm" htmlFor="medicines">Thuốc</label>
-                  </div>
-                </div>
+              {/* Change indicator */}
+              {/* <div className={`admin-dashboard-stat-change ${stat.isPositive ? 'positive' : 'negative'}`}>
+                {stat.isPositive ? <FaArrowUp /> : <FaArrowDown />}
+                {stat.description}
+              </div> */}
+            </div>
+          );
+        })}
+      </div>
 
-                <ResponsiveContainer width="100%" height={350}>
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="medicalEventsGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#FF9500" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#FF9500" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="healthGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#9C27B0" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#9C27B0" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="medicinesGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4CAF50" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#4CAF50" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E0E0E0" />
-                    <XAxis dataKey="day" stroke="#757575" fontSize={12} />
-                    <YAxis stroke="#757575" fontSize={12} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: 'none',
-                        borderRadius: '12px',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                        fontSize: '14px'
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="medical_events"
-                      stroke="#FF9500"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#medicalEventsGradient)"
-                      name="Sự kiện y tế"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="health_checks"
-                      stroke="#9C27B0"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#healthGradient)"
-                      name="Kiểm tra sức khỏe"
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="medicines"
-                      stroke="#4CAF50"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#medicinesGradient)"
-                      name="Thuốc"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+      {/* Modern Charts */}
+      <div className="admin-dashboard-charts">
+        {/* Medical Supplies Chart */}
+        <div className="admin-dashboard-chart-card">
+          <div className="admin-dashboard-chart-header">
+            <div className="admin-dashboard-chart-title">
+              <FaPills />
+              Số lượng thuốc trong kho
+            </div>
+            <div className="admin-dashboard-chart-subtitle">
+              Thống kê tồn kho các loại thuốc và vật tư y tế
+              {dashboardData?.medicalSupplies ?
+                `(${dashboardData.medicalSupplies.length} loại thuốc)` :
+                '(Đang tải...)'}
             </div>
           </div>
-
-          {/* Medication Status Pie Chart */}
-          <div className="col-lg-4">
-            <div className="admin-card">
-              <div className="admin-card-header">
-                <h4 className="admin-card-title">
-                  <FaPills />
-                  Trạng thái đơn thuốc
-                </h4>
+          <div style={{ padding: '1.5rem' }}>
+            {/* Debug info - remove in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <div style={{
+                fontSize: '0.8rem',
+                color: '#666',
+                marginBottom: '1rem',
+                padding: '0.5rem',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '4px'
+              }}>
+                <strong>Debug:</strong> Medical supplies count: {dashboardData?.medicalSupplies?.length || 0}
+                {dashboardData?.medicalSupplies?.length > 0 && (
+                  <div>First item: {JSON.stringify(dashboardData.medicalSupplies[0])}</div>
+                )}
               </div>
-              <div className="admin-card-body">
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={medicationStatusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {medicationStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: 'none',
-                        borderRadius: '12px',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
-                        fontSize: '14px'
-                      }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+            )}
 
-                <div className="mt-3">
-                  {medicationStatusData.map((item, index) => (
-                    <div key={index} className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="d-flex align-items-center">
-                        <div
-                          className="rounded-circle me-2"
-                          style={{
-                            width: '12px',
-                            height: '12px',
-                            backgroundColor: item.color
-                          }}
-                        ></div>
-                        <small className="text-muted">{item.name}</small>
-                      </div>
-                      <div className="text-end">
-                        <strong style={{ fontSize: '0.875rem' }}>{item.value}</strong>
-                        <small className="text-muted ms-1">({item.percentage}%)</small>
-                      </div>
-                    </div>
+            <ResponsiveContainer width="100%" height={350}>
+              <BarChart
+                data={(() => {
+                  // Check if we have real data from API
+                  if (dashboardData?.medicalSupplies && dashboardData.medicalSupplies.length > 0) {
+                    return dashboardData.medicalSupplies;
+                  }
+                  // Fallback data if no real data
+                  return [
+                    { name: "Bandages", quantity: 94 },
+                    { name: "Antiseptic Wipes", quantity: 58 },
+                    { name: "Paracetamol", quantity: 200 }
+                  ];
+                })()}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+              >
+                <defs>
+                  <linearGradient id="medicineGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
+                    <stop offset="95%" stopColor="#059669" stopOpacity={0.7} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis
+                  dataKey="name"
+                  stroke="#64748b"
+                  fontSize={12}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis
+                  stroke="#64748b"
+                  fontSize={12}
+                  label={{
+                    value: 'Số lượng',
+                    angle: -90,
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle' }
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '14px'
+                  }}
+                  formatter={(value, name) => [
+                    `${value} đơn vị`,
+                    'Số lượng'
+                  ]}
+                  labelFormatter={(label) => `Thuốc: ${label}`}
+                />
+                <Bar
+                  dataKey="quantity"
+                  fill="url(#medicineGradient)"
+                  name="Số lượng"
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={60}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+
+            {/* Medicine Statistics Summary */}
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem',
+              background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+              borderRadius: '12px',
+              border: '1px solid #bbf7d0'
+            }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                gap: '1rem',
+                textAlign: 'center'
+              }}>
+                <div>
+                  <div style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    color: '#059669'
+                  }}>
+                    {dashboardData?.medicalSupplies?.length || 0}
+                  </div>
+                  <div style={{
+                    fontSize: '0.875rem',
+                    color: '#065f46',
+                    fontWeight: '500'
+                  }}>
+                    Loại thuốc
+                  </div>
+                </div>
+                <div>
+                  <div style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    color: '#059669'
+                  }}>
+                    {dashboardData?.medicalSupplies?.reduce((total, item) => total + (item.quantity || 0), 0) || 0}
+                  </div>
+                  <div style={{
+                    fontSize: '0.875rem',
+                    color: '#065f46',
+                    fontWeight: '500'
+                  }}>
+                    Tổng số lượng
+                  </div>
+                </div>
+                <div>
+                  <div style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    color: '#059669'
+                  }}>
+                    {(() => {
+                      if (dashboardData?.medicalSupplies?.length > 0) {
+                        const maxQuantity = Math.max(...dashboardData.medicalSupplies.map(m => m.quantity || 0));
+                        const topItem = dashboardData.medicalSupplies.find(item => (item.quantity || 0) === maxQuantity);
+                        return topItem?.name || 'N/A';
+                      }
+                      return 'Chưa có dữ liệu';
+                    })()}
+                  </div>
+                  <div style={{
+                    fontSize: '0.875rem',
+                    color: '#065f46',
+                    fontWeight: '500'
+                  }}>
+                    Nhiều nhất
+                  </div>
+                </div>
+              </div>
+
+              {/* Show message if no data */}
+              {(!dashboardData?.medicalSupplies || dashboardData.medicalSupplies.length === 0) && (
+                <div style={{
+                  textAlign: 'center',
+                  marginTop: '1rem',
+                  padding: '0.5rem',
+                  backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(251, 191, 36, 0.3)'
+                }}>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    color: '#92400e',
+                    fontWeight: '500'
+                  }}>
+                    ⚠️ Chưa có dữ liệu thuốc trong kho
+                  </div>
+                  <div style={{
+                    fontSize: '0.8rem',
+                    color: '#a16207',
+                    marginTop: '0.25rem'
+                  }}>
+                    Hãy thêm thuốc vào kho tại trang{' '}
+                    <a href="/admin/medicine-inventory" style={{ color: '#059669', textDecoration: 'underline' }}>
+                      Quản lý kho thuốc
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Medication Status Pie Chart */}
+        <div className="admin-dashboard-chart-card">
+          <div className="admin-dashboard-chart-header">
+            <div className="admin-dashboard-chart-title">
+              <FaPills />
+              Trạng thái đơn thuốc
+            </div>
+          </div>
+          <div style={{ padding: '1.5rem' }}>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={medicationStatusData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {medicationStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: 'none',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    fontSize: '14px'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
 
-        {/* Bottom Section */}
-        <div className="row">
-          {/* Recent Activities */}
-          <div className="col-lg-6">
-            <div className="admin-card">
-              <div className="admin-card-header">
-                <h4 className="admin-card-title">
-                  <FaBell />
-                  Hoạt động gần đây
-                </h4>
-              </div>
-              <div className="admin-card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                {recentActivities.map((activity, index) => {
-                  const Icon = activity.icon;
-
-                  return (
+            <div style={{ marginTop: '1rem' }}>
+              {medicationStatusData.map((item, index) => (
+                <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <div
-                      key={activity.id}
-                      className={`d-flex align-items-start mb-3 pb-3 admin-animate-slide-left ${index < recentActivities.length - 1 ? 'border-bottom' : ''}`}
                       style={{
-                        animationDelay: `${index * 0.1}s`,
-                        borderColor: '#E0E0E0 !important'
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: item.color,
+                        borderRadius: '50%',
+                        marginRight: '0.5rem'
                       }}
-                    >
-                      <div
-                        className="rounded-circle d-flex align-items-center justify-content-center me-3"
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                          background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
-                          color: 'white',
-                          fontSize: '0.875rem'
-                        }}
-                      >
-                        <Icon />
-                      </div>
-                      <div className="flex-grow-1">
-                        <h6 className="mb-1" style={{ fontSize: '0.95rem', fontWeight: '600' }}>
-                          {activity.title}
-                        </h6>
-                        <p className="mb-1 text-muted" style={{ fontSize: '0.875rem' }}>
-                          {activity.description}
-                        </p>
-                        <small className="text-muted">{activity.time}</small>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="col-lg-6">
-            <div className="admin-card">
-              <div className="admin-card-header">
-                <h4 className="admin-card-title">
-                  <FaChartBar />
-                  Hành động nhanh
-                </h4>
-              </div>
-              <div className="admin-card-body">
-                <div className="row g-3">
-                  {quickActions.map((action, index) => {
-                    const Icon = action.icon;
-
-                    return (
-                      <div key={action.id} className="col-md-6">
-                        <button
-                          className={`w-100 p-3 border-0 rounded-3 admin-animate-scale`}
-                          style={{
-                            animationDelay: `${index * 0.1}s`,
-                            background: 'linear-gradient(135deg, #FFFFFF, #FFF8F3)',
-                            border: '1px solid rgba(255, 149, 0, 0.1)',
-                            transition: 'all 0.3s ease',
-                            cursor: 'pointer'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.transform = 'translateY(-4px)';
-                            e.target.style.boxShadow = '0 8px 32px rgba(255, 149, 0, 0.2)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 4px 16px rgba(255, 149, 0, 0.15)';
-                          }}
-                        >
-                          <div className="text-start">
-                            <div
-                              className="rounded-circle d-inline-flex align-items-center justify-content-center mb-2"
-                              style={{
-                                width: '40px',
-                                height: '40px',
-                                background: 'linear-gradient(135deg, #FF9500, #9C27B0)',
-                                color: 'white'
-                              }}
-                            >
-                              <Icon style={{ fontSize: '1rem' }} />
-                            </div>
-                            <h6 className="mb-1" style={{ fontSize: '0.95rem', fontWeight: '600', color: '#424242' }}>
-                              {action.title}
-                            </h6>
-                            <p className="mb-0 text-muted" style={{ fontSize: '0.8rem' }}>
-                              {action.description}
-                            </p>
-                          </div>
-                        </button>
-                      </div>
-                    );
-                  })}
+                    ></div>
+                    <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{item.name}</span>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.875rem' }}>{item.value}</strong>
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginLeft: '0.25rem' }}>({item.percentage}%)</span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Pending Medications Table */}
+      <div className="admin-dashboard-pending-medications">
+        <div className="admin-dashboard-pending-medications-header">
+          <div className="admin-dashboard-pending-medications-title">
+            <FaPills />
+            Thuốc chờ uống ({pendingMedications.length})
+          </div>
+          <div className="admin-dashboard-pending-medications-subtitle">
+            Danh sách học sinh đang có đơn thuốc cần theo dõi
+          </div>
+        </div>
+
+        {pendingMedications.length === 0 ? (
+          <div className="admin-dashboard-no-medications">
+            <div className="admin-dashboard-no-medications-icon">
+              <FaPills />
+            </div>
+            <div className="admin-dashboard-no-medications-title">
+              Không có thuốc chờ uống
+            </div>
+            <div className="admin-dashboard-no-medications-description">
+              Hiện tại không có học sinh nào đang chờ uống thuốc
+            </div>
+          </div>
+        ) : (
+          <div className="admin-dashboard-medications-table-container">
+            <table className="admin-dashboard-medications-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên học sinh</th>
+                  <th>Lớp</th>
+                  <th>Tên thuốc</th>
+                  <th>Liều dùng</th>
+                  <th>Ghi chú</th>
+                  <th>Ngày tạo</th>
+                  <th>Y tá</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingMedications.slice(0, 8).map((medication, index) => (
+                  <tr key={medication.id}>
+                    <td>
+                      <div className="admin-dashboard-medication-stt">
+                        {index + 1}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-student">
+                        <div className="admin-dashboard-medication-student-name">
+                          {medication.studentName}
+                        </div>
+                        <div className="admin-dashboard-medication-parent">
+                          PH: {medication.parentName}
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-class">
+                        {medication.studentClass}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-name">
+                        {medication.medicationName}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-dosage">
+                        {medication.dosage}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-note" title={medication.note}>
+                        {medication.note.length > 20
+                          ? `${medication.note.substring(0, 20)}...`
+                          : medication.note}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-date">
+                        {medication.createdDate}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="admin-dashboard-medication-nurse">
+                        {medication.nurseName}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {pendingMedications.length > 8 && (
+              <div className="admin-dashboard-medications-table-footer">
+                <div className="admin-dashboard-medications-more">
+                  Và {pendingMedications.length - 8} đơn thuốc khác...
+                </div>
+                <a href="/admin/medicines/requests" className="admin-dashboard-btn-secondary">
+                  <FaEye className="me-2" />
+                  Xem tất cả
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+
     </div>
   );
 };

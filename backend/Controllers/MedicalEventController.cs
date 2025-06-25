@@ -44,16 +44,30 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllMedicalEvents(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllMedicalEvents(int pageNumber, int pageSize, string? search)
         {
             try
             {
-                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync(pageNumber, pageSize);
+                var medicalEvents = await _medicalEventService.GetAllMedicalEventsAsync(pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<MedicalEventDTO>>(medicalEvents, "Medical events retrieved successfully", true));
             }
             catch (Exception ex)
             {
                 return BadRequest(new BaseResponse<string>(null, $"Error: {ex.Message}", false));
+            }
+        }
+
+        [HttpGet("medical-event-count")]
+        public async Task<IActionResult> GetMedicalEventsCount()
+        {
+            try
+            {
+                var result = await _medicalEventService.GetEventCountsAsync();
+                return Ok(new BaseResponse<MedicalEventCountDTO>(result, "Lấy số lượng sự kiện y tế thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return Ok(new BaseResponse<MedicalEventCountDTO>(null, $"Có lỗi xảy ra: {ex.Message}", false));
             }
         }
     }

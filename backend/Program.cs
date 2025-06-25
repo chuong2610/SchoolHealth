@@ -188,6 +188,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRedisService, RedisService>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IHealthDeclareHistoryRepository, HealthDeclareHistoryRepository>();
+builder.Services.AddScoped<IHealthDeclareHistoryService, HealthDeclareHistoryService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 {
     var configString = builder.Configuration.GetConnectionString("Redis");

@@ -15,6 +15,7 @@ namespace backend.Interfaces
         Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id);
         Task<bool> UpdateNurseIdAsync(int medicationId, int nurseId);
         Task<PageResult<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
+        Task<MedicationCountDTO> GetMedicationCountsAsync();
 
     }
 }

@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
+using backend.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -31,22 +32,35 @@ namespace backend.Repositories
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
         }
 
-        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize)
+        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize, string? search)
         {
-            return _context.MedicalSupplies
+            var query = _context.MedicalSupplies
                 .AsNoTracking()
-                .Where(ms => ms.IsActive)
+                .Where(ms => ms.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ms => ms.Name.Contains(search));
+            }
+
+            return query
                 .OrderBy(ms => ms.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
         }
 
-        public Task<int> CountAllMedicalSuppliesAsync()
+        public Task<int> CountAllMedicalSuppliesAsync(string? search)
         {
-            return _context.MedicalSupplies
-                .Where(ms => ms.IsActive)
-                .CountAsync();
+            var query = _context.MedicalSupplies
+                .Where(ms => ms.IsActive);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ms => ms.Name.Contains(search));
+            }
+
+            return query.CountAsync();
         }
 
         public async Task<bool> AddMedicalSuppliesAsync(MedicalSupply supply)
@@ -75,5 +89,26 @@ namespace backend.Repositories
             var deleted = await _context.SaveChangesAsync();
             return deleted > 0;
         }
+
+        public async Task<MedicalSuppliesCountDTO> GetMedicalSuppliesCountsAsync()
+        {
+            var total = await _context.MedicalSupplies.CountAsync();
+
+            var inStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity > 5);
+            var lowStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity <= 5 && m.Quantity > 0);
+            var outOfStock = await _context.MedicalSupplies.CountAsync(m => m.Quantity == 0);
+
+            return new MedicalSuppliesCountDTO
+            {
+                TotalMedications = total,
+                InStock = inStock,
+                LowStock = lowStock,
+                OutOfStock = outOfStock
+            };
+        }
+    }
+
+    public class MedicationSuppliesCountDTO
+    {
     }
 }

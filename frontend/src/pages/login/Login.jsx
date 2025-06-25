@@ -3,18 +3,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
-import axios from "axios";
 import "./Login.css";
-// Styles được import từ main.jsx
-import loginBg from "../../assets/login-bg.png";
-import bagpackSvg from "../../assets/bagpack-svgrepo-com.svg";
-import eLearningSvg from "../../assets/e-learning-svgrepo-com.svg";
-import researchSvg from "../../assets/research-svgrepo-com.svg";
-import studentSvg from "../../assets/student-svgrepo-com.svg";
+// Import ảnh medical mới
+import medicalImage from "../../assets/LoginImage3.png";
 
-// API Configuration từ biến môi trường
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5182/api";
+// Google Configuration từ biến môi trường
 const GOOGLE_CLIENT_ID =
   import.meta.env.VITE_GOOGLE_CLIENT_ID ||
   "1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com";
@@ -59,11 +52,12 @@ const Login = () => {
   // Kiểm tra số điện thoại đã verify chưa
   const checkPhoneVerification = async (phoneNumber) => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/auth/is-verified/${phoneNumber}`
+      const response = await axiosInstance.get(
+        `/auth/is-verified/${phoneNumber}`
       );
       return response.data;
     } catch (error) {
+      console.error("❌ Check phone verification error:", error);
       throw error;
     }
   };
@@ -71,11 +65,12 @@ const Login = () => {
   // Gửi OTP
   const sendOTP = async (phoneNumber) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/send-otp`, {
+      const response = await axiosInstance.post("/auth/send-otp", {
         phoneNumber,
       });
       return response.data;
     } catch (error) {
+      console.error("❌ Send OTP error:", error);
       throw error;
     }
   };
@@ -83,12 +78,13 @@ const Login = () => {
   // Xác thực OTP
   const verifyOTP = async (phoneNumber, otpCode) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
+      const response = await axiosInstance.post("/auth/verify-otp", {
         phoneNumber,
         otp: otpCode,
       });
       return response.data;
     } catch (error) {
+      console.error("❌ Verify OTP error:", error);
       throw error;
     }
   };
@@ -96,12 +92,13 @@ const Login = () => {
   // Cập nhật mật khẩu
   const updatePassword = async (phoneNumber, newPassword) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/User/update-password`,
-        { phoneNumber, password: newPassword }
-      );
+      const response = await axiosInstance.post("/User/update-password", {
+        phoneNumber,
+        password: newPassword,
+      });
       return response.data;
     } catch (error) {
+      console.error("❌ Update password error:", error);
       throw error;
     }
   };
@@ -131,6 +128,7 @@ const Login = () => {
       } else {
         await sendOTP(phoneNumber);
         setStep("otp");
+        setSuccessMsg("Mã OTP đã được gửi đến email của bạn!");
       }
     } catch (err) {
       setError(
@@ -155,12 +153,14 @@ const Login = () => {
       const verificationResult = await verifyOTP(phoneNumber, otp);
       if (verificationResult.success) {
         setStep("password-setup");
+        setSuccessMsg("Xác thực OTP thành công!");
       } else {
         setError("Mã OTP không chính xác!");
       }
     } catch (err) {
       setError(
-        err.response?.data?.message || "Có lỗi xảy ra! Vui lòng thử lại."
+        err.response?.data?.message ||
+          "Mã OTP không chính xác! Vui lòng thử lại."
       );
     } finally {
       setLoading(false);
@@ -176,6 +176,10 @@ const Login = () => {
     }
     if (password !== confirmPassword) {
       setError("Mật khẩu xác nhận không khớp!");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Mật khẩu phải có ít nhất 6 ký tự!");
       return;
     }
     setLoading(true);
@@ -207,24 +211,67 @@ const Login = () => {
     setError("");
     setSuccessMsg("");
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+      console.log("🔐 Attempting login for:", phoneNumber);
+      const response = await axiosInstance.post("/auth/login", {
         phoneNumber,
         password,
       });
-      const { success, data } = response.data;
-      if (!success || !data?.token || !data?.roleName) {
-        setError("Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!");
+
+      console.log("📨 Login response:", response.data);
+
+      // Improved response validation
+      const responseData = response.data;
+      if (!responseData) {
+        setError("Phản hồi từ server không hợp lệ!");
         return;
       }
-      const { token, userId, roleName } = data;
+
+      // Handle different response structures
+      let authData;
+      if (responseData.success && responseData.data) {
+        // Structure: { success: true, data: { token, userId, roleName } }
+        authData = responseData.data;
+      } else if (
+        responseData.token &&
+        responseData.userId &&
+        responseData.roleName
+      ) {
+        // Direct structure: { token, userId, roleName }
+        authData = responseData;
+      } else {
+        console.error("❌ Invalid response structure:", responseData);
+        setError("Đăng nhập thất bại! Dữ liệu phản hồi không hợp lệ.");
+        return;
+      }
+
+      const { token, userId, roleName } = authData;
+
+      if (!token || !userId || !roleName) {
+        console.error("❌ Missing auth data:", {
+          token: !!token,
+          userId: !!userId,
+          roleName: !!roleName,
+        });
+        setError("Đăng nhập thất bại! Thiếu thông tin xác thực.");
+        return;
+      }
+
+      console.log("✅ Auth data validated:", { userId, roleName });
+
       await login(token, roleName, Number(userId), "");
       setSuccessMsg("Đăng nhập thành công! Đang chuyển hướng...");
-      setTimeout(() => navigate(`/${roleName.toLowerCase()}`), 1000);
+
+      // Navigate after a short delay to show success message
+      setTimeout(() => {
+        navigate(`/${roleName.toLowerCase()}`, { replace: true });
+      }, 1000);
     } catch (err) {
-      setError(
+      console.error("❌ Login error:", err);
+      const errorMessage =
         err.response?.data?.message ||
-          "Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin."
-      );
+        err.response?.data?.error ||
+        "Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -255,318 +302,187 @@ const Login = () => {
       case "phone":
         return (
           <>
+            <div className="brand-header">
+              <h2>Hệ thống quản lý y tế học đường</h2>
+              <p>Đăng nhập</p>
+            </div>
+
             <form onSubmit={handlePhoneSubmit} autoComplete="off">
               <div className="form-group">
-                <div className="login-title">
-                  Đăng nhập để truy cập hệ thống
-                </div>
-                {/* <div className="login-subtitle">Đăng nhập để truy cập hệ thống</div> */}
+                <label className="form-label">Số Điện Thoại</label>
                 <input
                   type="tel"
                   className="form-input"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="Vui lòng nhập số điện thoại"
                   value={phoneNumber}
                   onChange={handlePhoneInput}
                   required
                   pattern="[0-9]*"
                   inputMode="numeric"
                 />
-                <i
-                  className="fas fa-phone input-icon"
-                  style={{
-                    marginTop: "25px",
-                    animation: "pulse 1s ease-in-out infinite both ",
-                  }}
-                ></i>
               </div>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>Đang xử lý...
-                  </>
-                ) : (
-                  "Tiếp tục"
-                )}
+              <button type="submit" className="login-btn" disabled={loading}>
+                {loading ? "Đang xử lý..." : "Tiếp tục"}
               </button>
             </form>
-            <div className="divider">
-              <span>Hoặc đăng nhập bằng</span>
-            </div>
-            <button onClick={handleGoogleLogin} className="btn google-btn">
+            <div className="divider-text">HOẶC ĐĂNG NHẬP VỚI</div>
+            <button onClick={handleGoogleLogin} className="google-signin-btn">
               <img
                 src="https://developers.google.com/identity/images/g-logo.png"
                 alt="Google"
               />
-              Đăng nhập bằng Google
+              Đăng nhập với Google
             </button>
           </>
         );
       case "otp":
         return (
-          <form onSubmit={handleOTPSubmit} autoComplete="off">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Nhập mã OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-              />
-              <i className="fas fa-key input-icon"></i>
+          <>
+            <div className="brand-header">
+              <h2>Hệ thống quản lý y tế học đường</h2>
+              <p>Nhập mã OTP đã được gửi đến email của bạn</p>
             </div>
-            <div className="btn-group">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handlebacktoLogin}
-              >
-                Quay lại
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>Đang xác thực...
-                  </>
-                ) : (
-                  "Xác thực OTP"
-                )}
-              </button>
-            </div>
-          </form>
+
+            <form onSubmit={handleOTPSubmit} autoComplete="off">
+              <div className="form-group">
+                <label className="form-label">OTP Code</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Nhập mã OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="btn-group">
+                <button
+                  type="button"
+                  className="back-btn"
+                  onClick={handlebacktoLogin}
+                >
+                  Quay lại
+                </button>
+                <button type="submit" className="login-btn" disabled={loading}>
+                  {loading ? "Đang xác thực..." : "Xác thực"}
+                </button>
+              </div>
+            </form>
+          </>
         );
       case "password-setup":
         return (
-          <form onSubmit={handlePasswordSetup} autoComplete="off">
-            <div className="form-group">
-              <input
-                type="password"
-                className="form-input"
-                placeholder="Nhập mật khẩu mới"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <i className="fas fa-lock input-icon"></i>
+          <>
+            <div className="brand-header">
+              <h2>Hệ thống quản lý y tế học đường</h2>
+              <p>Tạo mật khẩu mới</p>
             </div>
-            <div className="form-group">
-              <input
-                type="password"
-                className="form-input"
-                placeholder="Xác nhận mật khẩu mới"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <i className="fas fa-lock input-icon"></i>
-            </div>
-            <div className="btn-group">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handlebacktoLogin}
-              >
-                Quay lại
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>Đang cập nhật...
-                  </>
-                ) : (
-                  "Cập nhật mật khẩu"
-                )}
-              </button>
-            </div>
-          </form>
+
+            <form onSubmit={handlePasswordSetup} autoComplete="off">
+              <div className="form-group">
+                <label className="form-label">Mật Khẩu</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Nhập mật khẩu mới"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Xác Nhận Mật Khẩu</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Xác nhận mật khẩu"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="btn-group">
+                <button
+                  type="button"
+                  className="back-btn"
+                  onClick={handlebacktoLogin}
+                >
+                  Quay lại
+                </button>
+                <button type="submit" className="login-btn" disabled={loading}>
+                  {loading ? "Đang tạo..." : "Tạo mật khẩu"}
+                </button>
+              </div>
+            </form>
+          </>
         );
       case "login":
         return (
-          <form onSubmit={handleLogin} autoComplete="off">
-            <div className="form-group">
-              <div className="login-title">Vui lòng nhập mật khẩu</div>
-              <input
-                type="tel"
-                className="form-input"
-                value={phoneNumber}
-                disabled
-              />
-              <i
-                className="fas fa-phone input-icon"
-                style={{
-                  marginTop: "25px",
-                  animation: "pulse 1s ease-in-out infinite both ",
-                }}
-              ></i>
+          <>
+            <div className="brand-header">
+              <h2>Hệ thống quản lý y tế học đường</h2>
+              <p>Đăng nhập</p>
             </div>
-            <div className="form-group">
-              <input
-                type="password"
-                className="form-input"
-                placeholder="Nhập mật khẩu"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <i
-                className="fas fa-lock input-icon"
-                style={{
-                  marginTop: "-7px",
-                  animation: "pulse 1s ease-in-out infinite both ",
-                }}
-              ></i>
-            </div>
-            <div className="btn-group">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handlebacktoLogin}
-              >
-                Quay lại
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span>Đang đăng nhập...
-                  </>
-                ) : (
-                  "Đăng nhập"
-                )}
-              </button>
-            </div>
-          </form>
+
+            <form onSubmit={handleLogin} autoComplete="off">
+              <div className="form-group">
+                <label className="form-label">Số Điện Thoại</label>
+                <input
+                  type="tel"
+                  className="form-input"
+                  value={phoneNumber}
+                  disabled
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Mật Khẩu</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="btn-group">
+                <button
+                  type="button"
+                  className="back-btn"
+                  onClick={handlebacktoLogin}
+                >
+                  Quay lại
+                </button>
+                <button type="submit" className="login-btn" disabled={loading}>
+                  {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                </button>
+              </div>
+            </form>
+          </>
         );
     }
   };
 
   return (
-    <div className="login-bg">
-      {/* SVG động nền ở 2 góc */}
-      <svg
-        className="corner-animated-bg top-left-bg"
-        viewBox="0 0 200 200"
-        preserveAspectRatio="none"
+    <div className="template-login-container">
+      {/* Left Side - Image */}
+      <div
+        className="template-left-side"
+        style={{
+          backgroundImage: `url(${medicalImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <circle cx="100" cy="100" r="80" fill="#fee440" opacity="0.6">
-          <animate
-            attributeName="cx"
-            values="100;150;100"
-            dur="8s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="cy"
-            values="100;50;100"
-            dur="10s"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="50" cy="150" r="60" fill="#3ddc97" opacity="0.5">
-          <animate
-            attributeName="cx"
-            values="50;30;50"
-            dur="7s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="cy"
-            values="150;120;150"
-            dur="9s"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
+        <div className="template-image-overlay"></div>
+      </div>
 
-      <svg
-        className="corner-animated-bg bottom-right-bg"
-        viewBox="0 0 200 200"
-        preserveAspectRatio="none"
-      >
-        <circle cx="100" cy="100" r="70" fill="#4361ee" opacity="0.6">
-          <animate
-            attributeName="cx"
-            values="100;50;100"
-            dur="6s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="cy"
-            values="100;150;100"
-            dur="8s"
-            repeatCount="indefinite"
-          />
-        </circle>
-        <circle cx="150" cy="50" r="50" fill="#ff6b6b" opacity="0.5">
-          <animate
-            attributeName="cx"
-            values="150;170;150"
-            dur="5s"
-            repeatCount="indefinite"
-          />
-          <animate
-            attributeName="cy"
-            values="50;80;50"
-            dur="7s"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
-
-      {/* SVG động các góc */}
-      <img src={bagpackSvg} alt="bagpack" className="corner-svg top-left-svg" />
-      <img
-        src={eLearningSvg}
-        alt="e-learning"
-        className="corner-svg top-right-svg"
-      />
-      <img
-        src={researchSvg}
-        alt="research"
-        className="corner-svg bottom-left-svg"
-      />
-      <img
-        src={studentSvg}
-        alt="student"
-        className="corner-svg bottom-right-svg"
-      />
-
-      <div className="login-container">
-        <div className="login-logo">
-          <i className="fas fa-heartbeat"></i>
-          <span>School Health</span>
-        </div>
-        <div className="login-title">Hệ thống sức khỏe học đường</div>
-
-        <div className="login-box">
-          {error && <div className="alert alert-danger">{error}</div>}
-          {successMsg && (
-            <div
-              className="alert alert-success"
-              style={{
-                background: "#E8F5E9",
-                color: "#388E3C",
-                border: "1px solid #C8E6C9",
-              }}
-            >
-              {successMsg}
-            </div>
-          )}
+      {/* Right Side - Login Form */}
+      <div className="template-right-side">
+        <div className="template-form-container">
+          {error && <div className="error-message">{error}</div>}
+          {successMsg && <div className="success-message">{successMsg}</div>}
           {renderForm()}
         </div>
       </div>

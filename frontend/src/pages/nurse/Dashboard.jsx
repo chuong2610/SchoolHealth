@@ -165,19 +165,19 @@ const HealthSvg = () => (
   </svg>
 );
 
-// Mock nurse profile
-const nurseProfile = {
-  name: "Nguyễn Thị B",
-  role: "Y tá",
-  email: "nurse.b@school.edu.vn",
-  avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-};
-
 const Dashboard = () => {
   const { user } = useAuth();
   const nurseId = user?.id;
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Use real nurse profile from user context instead of hardcoded data
+  const nurseProfile = {
+    name: user?.fullName || user?.name || "Chưa cập nhật",
+    role: user?.role || "Y tá",
+    email: user?.email || "Chưa cập nhật",
+    avatar: user?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user?.fullName || user?.name || "Nurse") + "&background=F06292&color=fff&size=200"
+  };
 
   useEffect(() => {
     if (!nurseId) return;
@@ -404,6 +404,7 @@ const Dashboard = () => {
             value: medicineToTake,
             icon: FaPills,
             color: 'success',
+
             gradient: 'linear-gradient(135deg, #A3D8A0 0%, #81C784 100%)',
             svgComponent: MedicineSvg
           },
@@ -440,9 +441,9 @@ const Dashboard = () => {
                 whileHover="hover"
               >
                 <Card className={`nurse-stat-card nurse-stat-card-${item.color}`} style={{
-                  border: '1px solid #e8e8e8',
+                  border: '2px solid #e8e8e8',
                   borderRadius: '12px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                   transition: 'all 0.3s ease'
                 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
@@ -476,78 +477,20 @@ const Dashboard = () => {
         ))}
       </Row>
 
-      {/* Main Content - 2 Column Layout */}
-      <Row gutter={[24, 24]}>
-        {/* Left Column - Tables */}
-        <Col xs={24} lg={14}>
-          {/* Medicine Schedule */}
-          <motion.div variants={itemVariants}>
-            <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-              <Card
-                className="nurse-data-card"
-                title={
-                  <span>
-                    <motion.div
-                      style={{ display: 'inline-block' }}
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <FaPills style={{ marginRight: '12px', color: 'var(--nurse-success)' }} />
-                    </motion.div>
-                    Lịch cho uống thuốc
-                  </span>
-                }
-              >
-                <div className="nurse-table">
-                  <CustomTable
-                    columns={medicineColumns}
-                    data={medicineSchedule}
-                    pagination={{ pageSize: 5 }}
-                    size="middle"
-                  />
-                </div>
-              </Card>
-            </motion.div>
-          </motion.div>
-
-          {/* Today's Appointments */}
-          <motion.div variants={itemVariants}>
-            <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-              <Card
-                className="nurse-data-card"
-                title={
-                  <span>
-                    <motion.div
-                      style={{ display: 'inline-block' }}
-                      animate={{ rotate: [0, 15, -15, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <FaCalendarAlt style={{ marginRight: '12px', color: 'var(--nurse-warning)' }} />
-                    </motion.div>
-                    Lịch khám hôm nay
-                  </span>
-                }
-              >
-                <div className="nurse-table">
-                  <CustomTable
-                    columns={todayColumns}
-                    data={todayHealthAppointments}
-                    pagination={false}
-                    size="middle"
-                  />
-                </div>
-              </Card>
-            </motion.div>
-          </motion.div>
-        </Col>
-
-        {/* Right Column - Charts */}
-        <Col xs={24} lg={10}>
-          {/* Medicine Confirmation Chart */}
+      {/* Charts Row - 2 Charts Side by Side */}
+      <Row gutter={[24, 24]} style={{ marginBottom: '24px' }}>
+        {/* Medicine Confirmation Chart */}
+        <Col xs={24} lg={12}>
           <motion.div variants={itemVariants}>
             <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
               <Card
                 className="nurse-chart-card"
+                style={{
+                  border: '2px solid #e8e8e8',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease'
+                }}
                 title={
                   <span>
                     <motion.div
@@ -609,12 +552,20 @@ const Dashboard = () => {
               </Card>
             </motion.div>
           </motion.div>
+        </Col>
 
-          {/* Weekly Health Events Chart */}
+        {/* Weekly Health Events Chart */}
+        <Col xs={24} lg={12}>
           <motion.div variants={itemVariants}>
             <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
               <Card
                 className="nurse-chart-card"
+                style={{
+                  border: '2px solid #e8e8e8',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease'
+                }}
                 title={
                   <span>
                     <motion.div
@@ -679,6 +630,85 @@ const Dashboard = () => {
                       />
                     </AreaChart>
                   </ResponsiveContainer>
+                </div>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </Col>
+      </Row>
+
+      {/* Tables Row - 2 Tables Side by Side */}
+      <Row gutter={[24, 24]}>
+        {/* Medicine Schedule */}
+        <Col xs={24} lg={12}>
+          <motion.div variants={itemVariants}>
+            <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
+              <Card
+                className="nurse-data-card"
+                style={{
+                  border: '2px solid #e8e8e8',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease'
+                }}
+                title={
+                  <span>
+                    <motion.div
+                      style={{ display: 'inline-block' }}
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <FaPills style={{ marginRight: '12px', color: 'var(--nurse-success)' }} />
+                    </motion.div>
+                    Lịch cho uống thuốc
+                  </span>
+                }
+              >
+                <div className="nurse-table">
+                  <CustomTable
+                    columns={medicineColumns}
+                    data={medicineSchedule}
+                    pagination={{ pageSize: 5 }}
+                    size="middle"
+                  />
+                </div>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </Col>
+
+        {/* Today's Appointments */}
+        <Col xs={24} lg={12}>
+          <motion.div variants={itemVariants}>
+            <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
+              <Card
+                className="nurse-data-card"
+                style={{
+                  border: '2px solid #e8e8e8',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  transition: 'all 0.3s ease'
+                }}
+                title={
+                  <span>
+                    <motion.div
+                      style={{ display: 'inline-block' }}
+                      animate={{ rotate: [0, 15, -15, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      <FaCalendarAlt style={{ marginRight: '12px', color: 'var(--nurse-warning)' }} />
+                    </motion.div>
+                    Lịch khám hôm nay
+                  </span>
+                }
+              >
+                <div className="nurse-table">
+                  <CustomTable
+                    columns={todayColumns}
+                    data={todayHealthAppointments}
+                    pagination={false}
+                    size="middle"
+                  />
                 </div>
               </Card>
             </motion.div>

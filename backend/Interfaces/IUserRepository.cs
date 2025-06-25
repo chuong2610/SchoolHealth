@@ -4,9 +4,10 @@ namespace backend.Interfaces
 {
         public interface IUserRepository
         {
-                Task<List<User>> GetAllUsersAsync();
-                Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize);
-                Task<int> CountUsersByRoleAsync(string role);
+                Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize, string? search);
+                Task<int> CountUsersAsync(string? search);
+                Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search);
+                Task<int> CountUsersByRoleAsync(string role, string? search);
                 Task<User?> GetUserByEmailAsync(string email);
                 Task<bool> CreateUserAsync(User user);
                 Task<User?> GetUserByIdAsync(int id);

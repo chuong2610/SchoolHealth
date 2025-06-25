@@ -1,0 +1,862 @@
+/* ==========================================
+   Parent Health History Redesign - Simple Blue Theme
+   ========================================== */
+
+/* Background image for health history page (behind forms) */
+div.parent-container {
+    position: relative !important;
+    background: #f8fafc !important;
+    min-height: 100vh !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+div.parent-container::before {
+    content: '' !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image: url('../../assets/@backgroundparent.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    opacity: 0 !important;
+    z-index: -2 !important;
+    pointer-events: none !important;
+}
+
+/* Parallax Star Background for Health History */
+div.parent-container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(3px 3px at 25px 35px, rgba(43, 207, 1, 0.8), transparent),
+        radial-gradient(3px 3px at 45px 75px, rgba(206, 38, 15, 0.6), transparent),
+        radial-gradient(3px 3px at 95px 45px, rgba(37, 235, 225, 0.7), transparent),
+        radial-gradient(3px 3px at 135px 85px, rgba(96, 165, 250, 0.5), transparent),
+        radial-gradient(2px 2px at 165px 35px, rgba(238, 5, 199, 0.8), transparent);
+    background-repeat: repeat;
+    background-size: 200px 100px;
+    animation: healthParallaxStars 25s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+@keyframes healthParallaxStars {
+    from {
+        background-position: 0 0;
+        /* transform: translateY(0) rotate(0deg); */
+    }
+
+    to {
+        background-position: 200px 100px;
+        /* transform: translateY(-100px) rotate(5deg); */
+    }
+}
+
+/* Enhanced Page Header */
+.parent-page-header {
+    background: #2563eb;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.parent-page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: healthFloat 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes healthFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(-20px, -20px) rotate(180deg);
+    }
+}
+
+/* Enhanced Card Wrappers */
+.parent-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.parent-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 35px 70px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Enhanced Stats Cards */
+.parent-stat-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.parent-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 35px 70px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Table Container Enhancement */
+.parent-table-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.5);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.parent-table-container:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 35px 70px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+/* Badge overrides for health conclusions and medication status */
+.badge-status.healthy,
+.badge-status.successful {
+    background: #059669 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.badge-status.sick,
+.badge-status.rejected {
+    background: #dc2626 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.badge-status.pending,
+.badge-status.active {
+    background: #F59E0B !important;
+    color: white !important;
+    border: none !important;
+}
+
+.badge-status.completed {
+    background: #059669 !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Action button overrides */
+.action-btn {
+    background: var(--parent-gradient-button) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--parent-border-radius-md) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all var(--parent-transition-normal) !important;
+    box-shadow: var(--parent-shadow-sm) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+}
+
+.action-btn:hover {
+    background: var(--parent-gradient-button) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--parent-shadow-md) !important;
+    color: white !important;
+}
+
+/* Chart styling overrides */
+.ant-charts-bar .ant-charts-axis-tick-line {
+    stroke: #2563eb !important;
+}
+
+.ant-charts-bar .ant-charts-axis-line {
+    stroke: #e2e8f0 !important;
+}
+
+/* Loading state overrides */
+/* .parent-spinner {
+    border-color: #2563eb !important;
+    border-top-color: transparent !important;
+} */
+
+/* Empty state styling */
+.empty-state-icon {
+    background: linear-gradient(135deg, #e5e7eb, #f3f4f6) !important;
+    color: #9ca3af !important;
+}
+
+/* Table row action button positioning fix */
+.parent-table tbody td .action-btn {
+    position: relative !important;
+    left: 0 !important;
+    margin: 0 auto !important;
+}
+
+/* Status badges in table - force override */
+.parent-table .badge-status {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 20px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Modal detail field styling */
+.parent-modal .modal-content .detail-field {
+    background: #f8fafc !important;
+    border: 1px solid rgba(37, 99, 235, 0.1) !important;
+}
+
+.parent-modal .modal-content .detail-header-line {
+    background: #2563eb !important;
+}
+
+/* Override inline styles for form fields in modals */
+.parent-modal .modal-body div[style*="linear-gradient"] {
+    background: #f8fafc !important;
+    border: 1px solid rgba(37, 99, 235, 0.1) !important;
+}
+
+.parent-modal .modal-body div[style*="rgba(107, 70, 193"] {
+    border: 1px solid rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Chart bar colors */
+.ant-charts-bar .ant-charts-geometry-rect rect {
+    fill: #2563eb !important;
+}
+
+/* ==========================================
+   Health History Responsive Design
+   ========================================== */
+
+/* Large Desktops (1200px and up) */
+@media (min-width: 1200px) {
+    .parent-container {
+        padding: 2rem 3rem;
+    }
+
+    .parent-card {
+        padding: 2.5rem;
+    }
+
+    .parent-page-header {
+        height: 25vh;
+    }
+
+    .parent-stat-card {
+        padding: 2rem;
+    }
+
+    .parent-table tbody td {
+        padding: 1.25rem;
+    }
+
+    .parent-table thead th {
+        padding: 1.25rem;
+    }
+
+    .action-btn {
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+    }
+
+    .badge-status {
+        font-size: 1rem !important;
+        padding: 0.6rem 1.2rem !important;
+    }
+}
+
+/* Desktops (992px to 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .parent-container {
+        padding: 1.5rem 2rem;
+    }
+
+    .parent-page-header {
+        height: 22vh;
+    }
+
+    .parent-card {
+        padding: 2rem;
+    }
+
+    .parent-stat-card {
+        padding: 1.75rem;
+    }
+}
+
+/* Tablets (768px to 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .parent-container {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .parent-page-header {
+        height: 20vh;
+    }
+
+    .parent-card {
+        padding: 1.75rem;
+    }
+
+    .parent-stat-card {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .parent-table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .parent-table {
+        min-width: 900px;
+    }
+
+    .action-btn {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+
+    .badge-status {
+        font-size: 0.85rem !important;
+        padding: 0.45rem 0.9rem !important;
+    }
+}
+
+/* Mobile Landscape & Small Tablets (576px to 767px) */
+@media (max-width: 767px) {
+    .parent-container {
+        padding: 1rem;
+    }
+
+    .action-btn {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.875rem !important;
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+
+    .badge-status {
+        font-size: 0.75rem !important;
+        padding: 0.375rem 0.75rem !important;
+    }
+
+    .parent-page-header {
+        height: 18vh;
+        margin: -1rem -1rem 1rem;
+    }
+
+    .parent-page-header-content {
+        padding: 1.5rem 1rem;
+        text-align: center;
+    }
+
+    .parent-page-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .parent-card {
+        padding: 1.25rem;
+        border-radius: 16px;
+        margin-bottom: 1.5rem;
+    }
+
+    .parent-card-title {
+        font-size: 1.25rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .parent-stat-card {
+        padding: 1.25rem;
+        border-radius: 16px;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .parent-stat-icon {
+        margin: 0 auto 0.75rem;
+    }
+
+    .parent-stat-value {
+        font-size: 1.75rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.9rem;
+    }
+
+    .parent-table-container {
+        overflow-x: auto;
+        border-radius: 16px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .parent-table {
+        min-width: 700px;
+        font-size: 0.875rem;
+    }
+
+    .parent-table thead th {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .parent-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Chart containers */
+    .chart-container {
+        height: 250px;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Filter sections */
+    .filter-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    /* Modal adjustments */
+    .parent-modal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .parent-modal .modal-info-card {
+        padding: 1rem;
+    }
+}
+
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
+    .parent-container {
+        padding: 0.75rem;
+    }
+
+    .parent-page-header {
+        height: 16vh;
+        margin: -0.75rem -0.75rem 0.75rem;
+    }
+
+    .parent-page-header-content {
+        padding: 1.25rem 0.75rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.75rem;
+    }
+
+    .parent-page-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .parent-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .parent-card-title {
+        font-size: 1.1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .parent-stat-card {
+        padding: 1rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+    }
+
+    .parent-stat-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        margin: 0;
+    }
+
+    .parent-stat-content {
+        flex: 1;
+    }
+
+    .parent-stat-value {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 0.5rem 0.875rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .badge-status {
+        font-size: 0.7rem !important;
+        padding: 0.3rem 0.6rem !important;
+    }
+
+    .parent-table {
+        min-width: 600px;
+        font-size: 0.8rem;
+    }
+
+    .parent-table thead th {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.7rem;
+    }
+
+    .parent-table tbody td {
+        padding: 0.6rem 0.4rem;
+    }
+
+    /* Chart containers */
+    .chart-container {
+        height: 200px;
+    }
+
+    /* Form controls */
+    .parent-form-control {
+        font-size: 0.875rem;
+        padding: 0.6rem;
+    }
+
+    /* Buttons */
+    .parent-primary-btn,
+    .parent-secondary-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modal adjustments */
+    .parent-modal .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .parent-modal .modal-header,
+    .parent-modal .modal-body,
+    .parent-modal .modal-footer {
+        padding: 1rem;
+    }
+}
+
+/* Small Mobile (360px to 480px) */
+@media (max-width: 480px) {
+    .parent-container {
+        padding: 0.5rem;
+    }
+
+    .parent-page-header {
+        height: 14vh;
+        margin: -0.5rem -0.5rem 0.5rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.5rem;
+    }
+
+    .parent-page-subtitle {
+        font-size: 0.8rem;
+        display: none;
+    }
+
+    .parent-card {
+        padding: 0.875rem;
+    }
+
+    .parent-card-title {
+        font-size: 1rem;
+    }
+
+    .parent-stat-card {
+        padding: 0.875rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .parent-stat-icon {
+        width: 45px;
+        height: 45px;
+        margin: 0 auto;
+    }
+
+    .parent-stat-value {
+        font-size: 1.25rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.75rem;
+    }
+
+    .action-btn {
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    .badge-status {
+        font-size: 0.65rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    .parent-table {
+        min-width: 500px;
+        font-size: 0.75rem;
+    }
+
+    .parent-table thead th {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.65rem;
+    }
+
+    .parent-table tbody td {
+        padding: 0.5rem 0.3rem;
+    }
+
+    .chart-container {
+        height: 180px;
+    }
+
+    .filter-group label {
+        font-size: 0.8rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.75rem;
+        padding: 0.4rem;
+    }
+}
+
+/* Extra Small Mobile (less than 360px) */
+@media (max-width: 359px) {
+    .parent-container {
+        padding: 0.375rem;
+    }
+
+    .parent-page-header {
+        height: 12vh;
+        margin: -0.375rem -0.375rem 0.375rem;
+    }
+
+    .parent-page-title {
+        font-size: 1.25rem;
+    }
+
+    .parent-card {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+
+    .parent-card-title {
+        font-size: 0.9rem;
+    }
+
+    .parent-stat-card {
+        padding: 0.75rem;
+    }
+
+    .parent-stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .parent-stat-value {
+        font-size: 1rem;
+    }
+
+    .parent-stat-label {
+        font-size: 0.7rem;
+    }
+
+    .parent-table {
+        min-width: 450px;
+        font-size: 0.7rem;
+    }
+
+    .action-btn {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.7rem !important;
+    }
+
+    .badge-status {
+        font-size: 0.6rem !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+
+    .chart-container {
+        height: 150px;
+    }
+}
+
+/* Fade-in Animations */
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced focus states */
+.parent-form-control:focus,
+.enhanced-control:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.18);
+    background: #f8fafc;
+}
+
+/* Parent Animation Classes */
+.parent-animate-fade-in {
+    animation: parentFadeIn 0.8s ease-out;
+}
+
+.parent-animate-slide-in {
+    animation: parentSlideIn 1s ease-out;
+}
+
+.parent-animate-scale-in {
+    animation: parentScaleIn 0.6s ease-out;
+}
+
+@keyframes parentFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes parentSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes parentScaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Badge gradients override for inline styles */
+[style*="linear-gradient(135deg, #10b981, #34d399)"] {
+    background: #2563eb !important;
+}
+
+[style*="linear-gradient(135deg, #ef4444, #f87171)"] {
+    background: #dc2626 !important;
+}
+
+[style*="linear-gradient(135deg, #f59e0b, #fbbf24)"] {
+    background: #F59E0B !important;
+}
