@@ -386,15 +386,15 @@ const HealthEvents = () => {
         medicalEventSupplys:
           validSupplies.length > 0
             ? validSupplies.map((supply) => ({
-                medicalSupplyId: parseInt(supply.medicalSupplyId),
-                quantity: parseInt(supply.quantity),
-              }))
+              medicalSupplyId: parseInt(supply.medicalSupplyId),
+              quantity: parseInt(supply.quantity),
+            }))
             : [
-                {
-                  medicalSupplyId: 0,
-                  quantity: 0,
-                },
-              ],
+              {
+                medicalSupplyId: 0,
+                quantity: 0,
+              },
+            ],
         nurseId: parseInt(user.id),
       };
 
@@ -495,9 +495,6 @@ const HealthEvents = () => {
         alignItems: "center",
         justifyContent: "center",
         flexWrap: "wrap",
-        width: "100%",
-        height: "100%",
-        padding: "8px",
       }}
     >
       <button
@@ -505,32 +502,30 @@ const HealthEvents = () => {
         onClick={() => loadMedicalEventDetailModal(event.id)}
         title="Xem chi tiết"
         style={{
-          background: "#F06292",
-          border: "1px solid #F06292",
-          color: "white",
-          width: "40px",
-          height: "40px",
-          borderRadius: "8px",
-          display: "flex",
-
-          alignItems: "center",
-          justifyContent: "left",
-          fontSize: "14px",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          boxShadow: "0 2px 6px rgba(240, 98, 146, 0.25)",
-          outline: "none",
-          margin: "auto",
+          background: '#F06292',
+          border: '1px solid #F06292',
+          color: 'white',
+          width: '30px',
+          height: '30px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '12px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
+          outline: 'none'
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = "#E91E63";
-          e.target.style.transform = "scale(1.05)";
-          e.target.style.boxShadow = "0 3px 10px rgba(240, 98, 146, 0.35)";
+          e.target.style.background = '#E91E63';
+          e.target.style.transform = 'scale(1.05)';
+          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = "#F06292";
-          e.target.style.transform = "scale(1)";
-          e.target.style.boxShadow = "0 2px 6px rgba(240, 98, 146, 0.25)";
+          e.target.style.background = '#F06292';
+          e.target.style.transform = 'scale(1)';
+          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
         }}
       >
         <FaEye />
@@ -596,10 +591,10 @@ const HealthEvents = () => {
                   type === "all"
                     ? "tat-ca-su-kien"
                     : type === "recent"
-                    ? "su-kien-gan-day"
-                    : type === "today"
-                    ? "su-kien-hom-nay"
-                    : "su-kien-cap-cuu";
+                      ? "su-kien-gan-day"
+                      : type === "today"
+                        ? "su-kien-hom-nay"
+                        : "su-kien-cap-cuu";
                 exportToExcel(data, filename);
               }}
             >
@@ -615,145 +610,81 @@ const HealthEvents = () => {
       >
         <Table
           className="medicine-table"
-          style={{ width: "100%", tableLayout: "fixed", minWidth: "800px" }}
+          style={{
+            width: "100%",
+            tableLayout: "fixed",
+            minWidth: "760px", // 150+120+120+120+100+150 = 760px
+          }}
         >
           <thead>
             <tr>
-              <th
-                style={{
-                  width: "155px",
-                  minWidth: "150px",
-                  maxWidth: "160px",
-                  textAlign: "center",
-                }}
-              >
-                Loại sự kiện
-              </th>
-              <th
-                style={{
-                  width: "125px",
-                  minWidth: "120px",
-                  maxWidth: "100px",
-                  textAlign: "center",
-                }}
-              >
-                Địa điểm
-              </th>
-              <th
-                style={{
-                  width: "145px",
-                  minWidth: "140px",
-                  maxWidth: "150px",
-                  textAlign: "center",
-                }}
-              >
-                Ngày thực hiện
-              </th>
-              <th
-                style={{
-                  width: "135px",
-                  minWidth: "130px",
-                  maxWidth: "140px",
-                  textAlign: "center",
-                }}
-              >
-                Học sinh
-              </th>
-              <th
-                style={{
-                  width: "130px",
-                  minWidth: "120px",
-                  maxWidth: "130px",
-                  textAlign: "center",
-                }}
-              >
-                Y tá
-              </th>
-              <th
-                style={{
-                  width: "100px",
-                  minWidth: "105px",
-                  maxWidth: "100px",
-                  textAlign: "center",
-                }}
-              >
-                Thao tác
-              </th>
+              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Loại sự kiện</th>
+              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Địa điểm</th>
+              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Ngày</th>
+              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Học sinh</th>
+              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Y tá</th>
+              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {(showAll ? data : data.slice(0, ROW_LIMIT)).map((event, index) => (
               <tr key={event.id || `event-${index}`} className="table-row">
-                <td
-                  style={{
-                    width: "150px",
-                    minWidth: "150px",
-                    maxWidth: "150px",
-                  }}
-                >
-                  <div className="medicine-id">
-                    <FaHeartbeat className="medicine-icon pill-bounce" />
+                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
+                  <div className="medicine-id" style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    lineHeight: '1.4',
+                  }}>
+                    <FaHeartbeat className="medicine-icon pill-bounce" style={{ marginRight: '0.5rem' }} />
                     {event.eventType || "N/A"}
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "120px",
-                    minWidth: "120px",
-                    maxWidth: "120px",
-                  }}
-                >
-                  <div className="location-info">
+                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
+                  <div className="location-info" style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    lineHeight: '1.4',
+                  }}>
                     <FaMapMarkerAlt className="me-1" />
                     {event.location || "N/A"}
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "140px",
-                    minWidth: "140px",
-                    maxWidth: "140px",
-                  }}
-                >
-                  <div className="date-info">
+                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
+                  <div className="date-info" style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    lineHeight: '1.4',
+                  }}>
                     <FaCalendarAlt className="date-icon" />
                     {formatDateTime(event.date) || "N/A"}
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "130px",
-                    minWidth: "130px",
-                    maxWidth: "130px",
-                  }}
-                >
-                  <div className="student-info">
+                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
+                  <div className="student-info" style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    lineHeight: '1.4',
+                  }}>
                     <FaUser className="me-1" />
                     <strong>{event.studentName || "N/A"}</strong>
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "120px",
-                    minWidth: "120px",
-                    maxWidth: "120px",
-                  }}
-                >
-                  <div className="parent-info">
+                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
+                  <div className="parent-info" style={{
+                    fontSize: '1.2rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    lineHeight: '1.4',
+                  }}>
                     <FaUserNurse className="me-1" />
                     {event.nurseName || "N/A"}
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "100px",
-                    minWidth: "100px",
-                    maxWidth: "100px",
-                    textAlign: "center",
-                    verticalAlign: "middle",
-                    padding: "8px",
-                  }}
-                >
+                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
                   {renderActionButtons(event)}
                 </td>
               </tr>
@@ -868,8 +799,8 @@ const HealthEvents = () => {
                     }
                     
                     .medicine-table thead th {
-                        background: linear-gradient(135deg, #F06292 0%, #E91E63 50%, #C2185B 100%) !important;
-                        color: white !important;
+                        background: rgba(248, 187, 217, 0.15) !important;
+                        color: #1a1a1a !important;
                         font-weight: 600 !important;
                         font-size: 0.85rem !important;
                         text-transform: uppercase !important;
@@ -1270,6 +1201,8 @@ const HealthEvents = () => {
                     
                     @media (max-width: 768px) {
                         .nurse-theme .medicine-table thead th {
+                            background: rgba(248, 187, 217, 0.15) !important;
+                            color: #1a1a1a !important;
                             font-size: 0.75rem !important;
                             padding: 0.75rem 0.5rem !important;
                         }
@@ -1728,41 +1661,41 @@ const HealthEvents = () => {
                     modalEventDetail.medicalEventSupplys.length > 0) ||
                     (modalEventDetail.supplies &&
                       modalEventDetail.supplies.length > 0)) && (
-                    <fieldset className="form-section">
-                      <legend>
-                        <FaMedkit />
-                        Vật tư y tế đã sử dụng
-                      </legend>
-                      <div className="supplies-list">
-                        {(
-                          modalEventDetail.medicalEventSupplys ||
-                          modalEventDetail.supplies ||
-                          []
-                        ).map((supply, index) => (
-                          <div key={index} className="supply-item">
-                            <div className="supply-icon">
-                              <FaCapsules />
-                            </div>
-                            <div className="supply-details">
-                              <h4>
-                                {supply.medicalSupplyName ||
-                                  supply.MedicalSupplyName ||
-                                  "N/A"}
-                              </h4>
-                              <div className="supply-quantity">
-                                <span className="quantity-label">
-                                  Số lượng đã sử dụng:
-                                </span>
-                                <span className="quantity-value">
-                                  {supply.quantity || supply.Quantity || 0}
-                                </span>
+                      <fieldset className="form-section">
+                        <legend>
+                          <FaMedkit />
+                          Vật tư y tế đã sử dụng
+                        </legend>
+                        <div className="supplies-list">
+                          {(
+                            modalEventDetail.medicalEventSupplys ||
+                            modalEventDetail.supplies ||
+                            []
+                          ).map((supply, index) => (
+                            <div key={index} className="supply-item">
+                              <div className="supply-icon">
+                                <FaCapsules />
+                              </div>
+                              <div className="supply-details">
+                                <h4>
+                                  {supply.medicalSupplyName ||
+                                    supply.MedicalSupplyName ||
+                                    "N/A"}
+                                </h4>
+                                <div className="supply-quantity">
+                                  <span className="quantity-label">
+                                    Số lượng đã sử dụng:
+                                  </span>
+                                  <span className="quantity-value">
+                                    {supply.quantity || supply.Quantity || 0}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </fieldset>
-                  )}
+                          ))}
+                        </div>
+                      </fieldset>
+                    )}
                 </div>
               )}
           </div>
@@ -1778,7 +1711,7 @@ const HealthEvents = () => {
                   setNurseNote("");
                 }}
               >
-                <FaTimes />
+                {/* <FaTimes /> */}
                 Đóng
               </Button>
 

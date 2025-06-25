@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import {
@@ -23,16 +23,9 @@ import {
   FaClock,
   FaEye,
   FaArrowRight,
-  FaStethoscope,
-  FaUserMd,
-  FaClipboardList,
-  FaHome,
-  FaStar,
-  FaGraduationCap,
+  FaSchool,
   FaExclamationTriangle,
-  FaBell,
-  FaChartLine,
-  FaFileAlt,
+
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 // Styles được import từ main.jsx
@@ -41,34 +34,35 @@ const ParentDashboard = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const observerRef = useRef();
+  const observerRef = useRef();
 
-  // // Scroll animation observer
-  // useEffect(() => {
-  //   const observerCallback = (entries) => {
-  //     entries.forEach((entry) => {
-  //       if (entry.isIntersecting) {
-  //         entry.target.classList.add('animate-in');
-  //       }
-  //     });
-  //   };
+  // Scroll animation observer
+  useEffect(() => {
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        }
+      });
+    };
 
-  //   observerRef.current = new IntersectionObserver(observerCallback, {
-  //     threshold: 0.1,
-  //     rootMargin: '0px 0px -50px 0px'
-  //   });
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
 
-  //   const animateElements = document.querySelectorAll('.scroll-animate');
-  //   animateElements.forEach((el) => {
-  //     observerRef.current.observe(el);
-  //   });
+    const animateElements = document.querySelectorAll('.scroll-animate');
+    animateElements.forEach((el) => {
+      observerRef.current.observe(el);
+    });
 
-  //   return () => {
-  //     if (observerRef.current) {
-  //       observerRef.current.disconnect();
-  //     }
-  //   };
-  // }, [blogs]); // Re-run when blogs change
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [blogs]); // Re-run when blogs change
+
   const [animateStats, setAnimateStats] = useState(false);
   const token = localStorage.getItem("token");
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,9 +90,8 @@ const ParentDashboard = () => {
     } catch (err) {
       setError(
         err.response
-          ? `Lỗi ${err.response.status}: ${
-              err.response.data.message || "Không thể tải dữ liệu blog."
-            }`
+          ? `Lỗi ${err.response.status}: ${err.response.data.message || "Không thể tải dữ liệu blog."
+          }`
           : "Không thể kết nối đến server."
       );
       setLoading(false);
@@ -127,12 +120,15 @@ const ParentDashboard = () => {
     return doc.body.textContent || "";
   };
 
+  // Image error handler
+  const handleImageError = (e) => {
+    e.target.onError = null;
+    e.target.src = "https://via.placeholder.com/400x200/2563eb/ffffff?text=Không+có+ảnh";
+  };
+
   return (
     <div className="parent-dashboard">
       {/* Hero Section */}
-      <div style={{position: 'relative', zIndex: 1000}}>
-
-      
       <section className="hero-section">
         <div className="hero-background">
           <img src={schoolImage} alt="School Health Care" className="hero-bg-image" />
@@ -154,7 +150,8 @@ const ParentDashboard = () => {
       <Container className="parent-dashboard" >
         {/* About School Section */}
         <section className="about-section">
-          <h2 className="section-title scroll-animate" >Giới thiệu về trường học</h2>
+        
+          <h2 className="section-title scroll-animate"><FaSchool />Giới thiệu về trường học</h2>
           <Row className="align-items-center">
             <Col lg={6}>
               <div className="about-image scroll-animate delay-1">
@@ -256,7 +253,7 @@ const ParentDashboard = () => {
                   return (
                     <Col lg={4} md={6} key={blog.id}>
                       <Card
-                        className="border-0 h-100 shadow-sm"
+                        className="border-0 h-100 shadow-sm blog-card scroll-animate"
                         style={{
                           borderRadius: "1rem",
                           overflow: "hidden",
@@ -279,18 +276,14 @@ const ParentDashboard = () => {
                           style={{ position: "relative", overflow: "hidden" }}
                         >
                           <img
-                            src={blog.imageUrl}
+                            src={blog.imageUrl || "https://via.placeholder.com/400x200/2563eb/ffffff?text=Không+có+ảnh"}
                             alt={blog.title}
                             style={{
                               width: "100%",
                               height: "200px",
                               objectFit: "cover",
                             }}
-                            onError={(e) => {
-                              e.target.onError = null;
-                              e.target.src =
-                                "https://placehold.jp/400x200.png?text=No+Image";
-                            }}
+                            onError={handleImageError}
                           />
                           <div
                             style={{
@@ -352,7 +345,6 @@ const ParentDashboard = () => {
           </div>
         </div>
       </Container>
-    </div>
     </div>
   );
 };

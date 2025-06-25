@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axiosInstance from '../../api/axiosInstance';
-import axios from 'axios';
 import './Login.css';
 // Import ảnh medical mới
-import medicalImage from '../../assets/anhlogin.jpg';
+import medicalImage from '../../assets/LoginImage3.png';
 
-// API Configuration từ biến môi trường
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5182/api';
+// Google Configuration từ biến môi trường
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '1059017246677-b4j4rqlgqvog2dnssqcn41ch8741npet.apps.googleusercontent.com';
 const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || 'http://localhost:3000/auth/google/callback';
 
@@ -50,9 +48,10 @@ const Login = () => {
     // Kiểm tra số điện thoại đã verify chưa
     const checkPhoneVerification = async (phoneNumber) => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/auth/is-verified/${phoneNumber}`);
+            const response = await axiosInstance.get(`/auth/is-verified/${phoneNumber}`);
             return response.data;
         } catch (error) {
+            console.error('❌ Check phone verification error:', error);
             throw error;
         }
     };
@@ -60,9 +59,10 @@ const Login = () => {
     // Gửi OTP
     const sendOTP = async (phoneNumber) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/send-otp`, { phoneNumber });
+            const response = await axiosInstance.post('/auth/send-otp', { phoneNumber });
             return response.data;
         } catch (error) {
+            console.error('❌ Send OTP error:', error);
             throw error;
         }
     };
@@ -70,9 +70,10 @@ const Login = () => {
     // Xác thực OTP
     const verifyOTP = async (phoneNumber, otpCode) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, { phoneNumber, otp: otpCode });
+            const response = await axiosInstance.post('/auth/verify-otp', { phoneNumber, otp: otpCode });
             return response.data;
         } catch (error) {
+            console.error('❌ Verify OTP error:', error);
             throw error;
         }
     };
@@ -80,9 +81,10 @@ const Login = () => {
     // Cập nhật mật khẩu
     const updatePassword = async (phoneNumber, newPassword) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/User/update-password`, { phoneNumber, password: newPassword });
+            const response = await axiosInstance.post('/User/update-password', { phoneNumber, password: newPassword });
             return response.data;
         } catch (error) {
+            console.error('❌ Update password error:', error);
             throw error;
         }
     };
@@ -112,6 +114,7 @@ const Login = () => {
             } else {
                 await sendOTP(phoneNumber);
                 setStep('otp');
+                setSuccessMsg('Mã OTP đã được gửi đến email của bạn!');
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Có lỗi xảy ra! Vui lòng thử lại.');
@@ -134,11 +137,12 @@ const Login = () => {
             const verificationResult = await verifyOTP(phoneNumber, otp);
             if (verificationResult.success) {
                 setStep('password-setup');
+                setSuccessMsg('Xác thực OTP thành công!');
             } else {
                 setError('Mã OTP không chính xác!');
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Có lỗi xảy ra! Vui lòng thử lại.');
+            setError(err.response?.data?.message || 'Mã OTP không chính xác! Vui lòng thử lại.');
         } finally {
             setLoading(false);
         }
@@ -153,6 +157,10 @@ const Login = () => {
         }
         if (password !== confirmPassword) {
             setError('Mật khẩu xác nhận không khớp!');
+            return;
+        }
+        if (password.length < 6) {
+            setError('Mật khẩu phải có ít nhất 6 ký tự!');
             return;
         }
         setLoading(true);
@@ -182,18 +190,56 @@ const Login = () => {
         setError('');
         setSuccessMsg('');
         try {
-            const response = await axios.post(`${API_BASE_URL}/auth/login`, { phoneNumber, password });
-            const { success, data } = response.data;
-            if (!success || !data?.token || !data?.roleName) {
-                setError('Đăng nhập thất bại hoặc dữ liệu phản hồi không hợp lệ!');
+            console.log('🔐 Attempting login for:', phoneNumber);
+            const response = await axiosInstance.post('/auth/login', { phoneNumber, password });
+
+            console.log('📨 Login response:', response.data);
+
+            // Improved response validation
+            const responseData = response.data;
+            if (!responseData) {
+                setError('Phản hồi từ server không hợp lệ!');
                 return;
             }
-            const { token, userId, roleName } = data;
+
+            // Handle different response structures
+            let authData;
+            if (responseData.success && responseData.data) {
+                // Structure: { success: true, data: { token, userId, roleName } }
+                authData = responseData.data;
+            } else if (responseData.token && responseData.userId && responseData.roleName) {
+                // Direct structure: { token, userId, roleName }
+                authData = responseData;
+            } else {
+                console.error('❌ Invalid response structure:', responseData);
+                setError('Đăng nhập thất bại! Dữ liệu phản hồi không hợp lệ.');
+                return;
+            }
+
+            const { token, userId, roleName } = authData;
+
+            if (!token || !userId || !roleName) {
+                console.error('❌ Missing auth data:', { token: !!token, userId: !!userId, roleName: !!roleName });
+                setError('Đăng nhập thất bại! Thiếu thông tin xác thực.');
+                return;
+            }
+
+            console.log('✅ Auth data validated:', { userId, roleName });
+
             await login(token, roleName, Number(userId), '');
             setSuccessMsg('Đăng nhập thành công! Đang chuyển hướng...');
-            setTimeout(() => navigate(`/${roleName.toLowerCase()}`), 1000);
+
+            // Navigate after a short delay to show success message
+            setTimeout(() => {
+                navigate(`/${roleName.toLowerCase()}`, { replace: true });
+            }, 1000);
+
         } catch (err) {
-            setError(err.response?.data?.message || 'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.');
+            console.error('❌ Login error:', err);
+            const errorMessage = err.response?.data?.message ||
+                err.response?.data?.error ||
+                'Đăng nhập thất bại! Vui lòng kiểm tra lại thông tin.';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -225,17 +271,13 @@ const Login = () => {
                             <p>Đăng nhập</p>
                         </div>
 
-
-
-
-
                         <form onSubmit={handlePhoneSubmit} autoComplete="off">
                             <div className="form-group">
-                                <label className="form-label">Phone Number</label>
+                                <label className="form-label">Số Điện Thoại</label>
                                 <input
                                     type="tel"
                                     className="form-input"
-                                    placeholder="Enter your phone number"
+                                    placeholder="Vui lòng nhập số điện thoại"
                                     value={phoneNumber}
                                     onChange={handlePhoneInput}
                                     required
@@ -244,13 +286,13 @@ const Login = () => {
                                 />
                             </div>
                             <button type="submit" className="login-btn" disabled={loading}>
-                                {loading ? 'Processing...' : 'Continue'}
+                                {loading ? 'Đang xử lý...' : 'Tiếp tục'}
                             </button>
                         </form>
-                        <div className="divider-text">OR SIGN IN</div>
+                        <div className="divider-text">HOẶC ĐĂNG NHẬP VỚI</div>
                         <button onClick={handleGoogleLogin} className="google-signin-btn">
                             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
-                            Sign in with Google
+                            Đăng nhập với Google
                         </button>
                     </>
                 );
@@ -259,7 +301,7 @@ const Login = () => {
                     <>
                         <div className="brand-header">
                             <h2>Hệ thống quản lý y tế học đường</h2>
-                            <p>Nhập mã OTP</p>
+                            <p>Nhập mã OTP đã được gửi đến email của bạn</p>
                         </div>
 
                         <form onSubmit={handleOTPSubmit} autoComplete="off">
@@ -268,7 +310,7 @@ const Login = () => {
                                 <input
                                     type="text"
                                     className="form-input"
-                                    placeholder="Enter OTP code"
+                                    placeholder="Nhập mã OTP"
                                     value={otp}
                                     onChange={(e) => setOtp(e.target.value)}
                                     required
@@ -276,10 +318,10 @@ const Login = () => {
                             </div>
                             <div className="btn-group">
                                 <button type="button" className="back-btn" onClick={handlebacktoLogin}>
-                                    Back
+                                    Quay lại
                                 </button>
                                 <button type="submit" className="login-btn" disabled={loading}>
-                                    {loading ? 'Verifying...' : 'Verify'}
+                                    {loading ? 'Đang xác thực...' : 'Xác thực'}
                                 </button>
                             </div>
                         </form>
@@ -290,27 +332,27 @@ const Login = () => {
                     <>
                         <div className="brand-header">
                             <h2>Hệ thống quản lý y tế học đường</h2>
-                            <p>Tạo mật khẩu</p>
+                            <p>Tạo mật khẩu mới</p>
                         </div>
 
                         <form onSubmit={handlePasswordSetup} autoComplete="off">
                             <div className="form-group">
-                                <label className="form-label">Password</label>
+                                <label className="form-label">Mật Khẩu</label>
                                 <input
                                     type="password"
                                     className="form-input"
-                                    placeholder="Enter new password"
+                                    placeholder="Nhập mật khẩu mới"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Confirm Password</label>
+                                <label className="form-label">Xác Nhận Mật Khẩu</label>
                                 <input
                                     type="password"
                                     className="form-input"
-                                    placeholder="Confirm your password"
+                                    placeholder="Xác nhận mật khẩu"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
@@ -318,10 +360,10 @@ const Login = () => {
                             </div>
                             <div className="btn-group">
                                 <button type="button" className="back-btn" onClick={handlebacktoLogin}>
-                                    Back
+                                    Quay lại
                                 </button>
                                 <button type="submit" className="login-btn" disabled={loading}>
-                                    {loading ? 'Creating...' : 'Create Password'}
+                                    {loading ? 'Đang tạo...' : 'Tạo mật khẩu'}
                                 </button>
                             </div>
                         </form>
@@ -334,17 +376,10 @@ const Login = () => {
                             <h2>Hệ thống quản lý y tế học đường</h2>
                             <p>Đăng nhập</p>
                         </div>
-{/* 
-                        <button onClick={handleGoogleLogin} className="google-signin-btn">
-                            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
-                            Sign in with Google
-                        </button>
-
-                        <div className="divider-text">OR SIGN IN</div> */}
 
                         <form onSubmit={handleLogin} autoComplete="off">
                             <div className="form-group">
-                                <label className="form-label">Phone Number</label>
+                                <label className="form-label">Số Điện Thoại</label>
                                 <input
                                     type="tel"
                                     className="form-input"
@@ -353,11 +388,11 @@ const Login = () => {
                                 />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Password</label>
+                                <label className="form-label">Mật Khẩu</label>
                                 <input
                                     type="password"
                                     className="form-input"
-                                    placeholder="Enter your password"
+                                    placeholder="Nhập mật khẩu"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -365,10 +400,10 @@ const Login = () => {
                             </div>
                             <div className="btn-group">
                                 <button type="button" className="back-btn" onClick={handlebacktoLogin}>
-                                    Back
+                                    Quay lại
                                 </button>
                                 <button type="submit" className="login-btn" disabled={loading}>
-                                    {loading ? 'Signing in...' : 'Login'}
+                                    {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                                 </button>
                             </div>
                         </form>

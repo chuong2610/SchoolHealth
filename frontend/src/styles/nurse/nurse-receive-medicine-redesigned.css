@@ -635,1450 +635,1308 @@
 }
 
 /* ==========================================
-   Nurse Receive Medicine Responsive Design
+   ENHANCED RESPONSIVE DESIGN - RECEIVE MEDICINE
    ========================================== */
 
-/* Large Desktops (1200px and up) */
-@media (min-width: 1200px) {
+/* Extra Large Screens (1400px and up) */
+@media (min-width: 1400px) {
     .nurse-receive-medicine-redesigned {
         padding: 32px !important;
+        max-width: 1800px !important;
+        margin: 0 auto !important;
     }
 
-    .nurse-medicine-header-redesigned {
-        padding: 36px !important;
+    .medicine-header-redesigned {
+        padding: 48px !important;
+        margin-bottom: 40px !important;
     }
 
-    .nurse-medicine-title-redesigned {
+    .medicine-title-redesigned {
+        font-size: 2.5rem !important;
+    }
+
+    .medicine-subtitle-redesigned {
+        font-size: 1.2rem !important;
+    }
+
+    .medicine-filters-redesigned {
+        padding: 40px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .medicine-filter-row {
+        grid-template-columns: 3fr 1fr 1fr 1fr auto !important;
+        gap: 20px !important;
+    }
+
+    .medicine-stats-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 32px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 32px !important;
+        min-height: 200px !important;
+    }
+
+    .medicine-stat-icon {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 2rem !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 3rem !important;
+    }
+
+    .medicine-table-container {
+        padding: 40px !important;
+        margin-bottom: 40px !important;
+    }
+
+    .medicine-table-header {
+        margin-bottom: 32px !important;
+    }
+
+    .medicine-table-title {
+        font-size: 2rem !important;
+    }
+
+    .medicine-action-buttons .btn-action {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+    }
+
+    .medicine-pagination {
+        margin-top: 40px !important;
+    }
+
+    .medicine-modal .modal-lg {
+        max-width: 750px !important;
+    }
+
+    .medicine-modal-body {
+        padding: 40px !important;
+    }
+
+    .medicine-form-section {
+        padding: 32px !important;
+        margin-bottom: 32px !important;
+    }
+}
+
+/* Large Desktops (1200px to 1399px) */
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .nurse-receive-medicine-redesigned {
+        padding: 28px !important;
+        max-width: 1400px !important;
+        margin: 0 auto !important;
+    }
+
+    .medicine-header-redesigned {
+        padding: 40px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .medicine-title-redesigned {
         font-size: 2.2rem !important;
     }
 
-    .nurse-medicine-stats {
+    .medicine-subtitle-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .medicine-filters-redesigned {
+        padding: 36px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .medicine-filter-row {
+        grid-template-columns: 2.5fr 1fr 1fr 1fr auto !important;
+        gap: 18px !important;
+    }
+
+    .medicine-stats-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 28px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 28px !important;
+        min-height: 180px !important;
+    }
+
+    .medicine-stat-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.8rem !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 2.5rem !important;
+    }
+
+    .medicine-table-container {
+        padding: 36px !important;
+        margin-bottom: 36px !important;
+    }
+
+    .medicine-table-header {
+        margin-bottom: 28px !important;
+    }
+
+    .medicine-table-title {
+        font-size: 1.8rem !important;
+    }
+
+    .medicine-action-buttons .btn-action {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1.1rem !important;
+    }
+
+    .medicine-pagination {
+        margin-top: 36px !important;
+    }
+
+    .medicine-modal .modal-lg {
+        max-width: 650px !important;
+    }
+
+    .medicine-modal-body {
+        padding: 36px !important;
+    }
+
+    .medicine-form-section {
+        padding: 28px !important;
+        margin-bottom: 28px !important;
+    }
+}
+
+/* Standard Desktops (1024px to 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .nurse-receive-medicine-redesigned {
+        padding: 26px !important;
+    }
+
+    .medicine-header-redesigned {
+        padding: 36px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .medicine-title-redesigned {
+        font-size: 2rem !important;
+    }
+
+    .medicine-subtitle-redesigned {
+        font-size: 1rem !important;
+    }
+
+    .medicine-filters-redesigned {
+        padding: 32px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .medicine-filter-row {
+        grid-template-columns: 2fr 1fr 1fr auto !important;
+        gap: 16px !important;
+    }
+
+    .medicine-stats-grid {
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 24px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 24px !important;
+        min-height: 160px !important;
+    }
+
+    .medicine-stat-icon {
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 1.6rem !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 2.2rem !important;
     }
 
     .medicine-table-container {
         padding: 32px !important;
+        margin-bottom: 32px !important;
     }
 
-    .search-container {
-        gap: 20px !important;
+    .medicine-table-header {
+        margin-bottom: 24px !important;
     }
 
-    .search-box {
-        max-width: 500px !important;
+    .medicine-table-title {
+        font-size: 1.6rem !important;
     }
 
-    .medicine-table th,
-    .medicine-table td {
-        padding: 20px !important;
+    .medicine-action-buttons .btn-action {
+        width: 32px !important;
+        height: 32px !important;
         font-size: 1rem !important;
     }
 
-    .modal-body {
+    .medicine-pagination {
+        margin-top: 32px !important;
+    }
+
+    .medicine-modal .modal-lg {
+        max-width: 600px !important;
+    }
+
+    .medicine-modal-body {
         padding: 32px !important;
     }
 
-    .detail-section {
+    .medicine-form-section {
+        padding: 24px !important;
+        margin-bottom: 24px !important;
+    }
+}
+
+/* Tablets (768px to 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .nurse-receive-medicine-redesigned {
+        padding: 20px !important;
+    }
+
+    .medicine-header-redesigned {
+        padding: 28px !important;
+        margin-bottom: 28px !important;
+        text-align: center !important;
+    }
+
+    .medicine-title-redesigned {
+        font-size: 1.8rem !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .medicine-title-icon-redesigned {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+    }
+
+    .medicine-subtitle-redesigned {
+        font-size: 0.95rem !important;
+        text-align: center !important;
+    }
+
+    .medicine-filters-redesigned {
+        padding: 24px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .medicine-filter-row {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+    }
+
+    .medicine-filter-group {
+        width: 100% !important;
+    }
+
+    .medicine-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 20px !important;
+        min-height: 140px !important;
+        text-align: center !important;
+    }
+
+    .medicine-stat-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.4rem !important;
+        margin: 0 auto 12px !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 1.8rem !important;
+    }
+
+    .medicine-stat-label {
+        font-size: 0.85rem !important;
+    }
+
+    .medicine-table-container {
+        padding: 24px !important;
+        margin-bottom: 28px !important;
+    }
+
+    .medicine-table-header {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 16px !important;
+        margin-bottom: 20px !important;
+        text-align: center !important;
+    }
+
+    .medicine-table-title {
+        font-size: 1.4rem !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .medicine-table-actions {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .medicine-add-btn,
+    .medicine-export-btn {
+        min-width: 160px !important;
+        padding: 12px 20px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Enhanced table scrolling for tablets */
+    .medicine-table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 12px !important;
+    }
+
+    .table {
+        min-width: 900px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px 10px !important;
+    }
+
+    .medicine-action-buttons {
+        justify-content: center !important;
+        gap: 6px !important;
+    }
+
+    .medicine-action-buttons .btn-action {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-pagination {
+        margin-top: 28px !important;
+        justify-content: center !important;
+    }
+
+    .medicine-modal .modal-lg {
+        max-width: calc(100vw - 32px) !important;
+        margin: 16px !important;
+    }
+
+    .medicine-modal-body {
+        padding: 24px !important;
+    }
+
+    .medicine-form-section {
         padding: 20px !important;
         margin-bottom: 20px !important;
     }
 
-    .btn-action {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1rem !important;
-    }
-}
-
-/* Desktops (992px to 1199px) */
-@media (max-width: 1199px) and (min-width: 992px) {
-    .nurse-receive-medicine-redesigned {
-        padding: 28px !important;
+    .medicine-form-header {
+        text-align: center !important;
+        margin-bottom: 20px !important;
     }
 
-    .nurse-medicine-header-redesigned {
-        padding: 32px !important;
+    .medicine-form-header h5 {
+        font-size: 1.2rem !important;
     }
 
-    .nurse-medicine-title-redesigned {
-        font-size: 2rem !important;
-    }
-
-    .nurse-medicine-stats {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 20px !important;
-    }
-
-    .medicine-table-container {
-        padding: 28px !important;
-    }
-
-    .search-box {
-        max-width: 450px !important;
-    }
-
-    .medicine-table th,
-    .medicine-table td {
-        padding: 18px !important;
-        font-size: 0.95rem !important;
-    }
-
-    .modal-body {
-        padding: 28px !important;
-    }
-
-    .detail-section {
-        padding: 18px !important;
-        margin-bottom: 18px !important;
-    }
-}
-
-/* Tablets (768px to 991px) */
-@media (max-width: 991px) and (min-width: 768px) {
-    .nurse-receive-medicine-redesigned {
-        padding: 24px !important;
-    }
-
-    .nurse-medicine-header-redesigned {
-        padding: 28px !important;
-    }
-
-    .nurse-medicine-title-redesigned {
-        font-size: 1.8rem !important;
-    }
-
-    .nurse-medicine-stats {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 18px !important;
-    }
-
-    .medicine-table-container {
-        padding: 24px !important;
-    }
-
-    .search-container {
+    .medicine-form-row {
         flex-direction: column !important;
-        align-items: stretch !important;
         gap: 16px !important;
     }
 
-    .search-box {
-        max-width: 100% !important;
-    }
-
-    .action-buttons {
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-    }
-
-    .filter-btn,
-    .export-btn {
-        flex: 1 !important;
-        min-width: 140px !important;
-        justify-content: center !important;
-    }
-
-    .medicine-table th,
-    .medicine-table td {
-        padding: 16px !important;
-        font-size: 0.9rem !important;
-    }
-
-    .medicine-action-buttons {
-        gap: 6px !important;
-    }
-
-    .btn-action {
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 0.85rem !important;
-    }
-
-    .modal-body {
-        padding: 24px !important;
-    }
-
-    .status-badge {
-        font-size: 0.7rem !important;
-        padding: 5px 10px !important;
+    .medicine-form-group {
+        width: 100% !important;
     }
 }
 
 /* Mobile Landscape & Small Tablets (576px to 767px) */
 @media (max-width: 767px) {
     .nurse-receive-medicine-redesigned {
-        padding: 20px !important;
-    }
-
-    .nurse-medicine-header-redesigned {
-        padding: 24px !important;
-    }
-
-    .nurse-medicine-title-redesigned {
-        font-size: 1.6rem !important;
-        text-align: center !important;
-    }
-
-    .nurse-medicine-subtitle-redesigned {
-        text-align: center !important;
-        font-size: 0.95rem !important;
-    }
-
-    .nurse-medicine-stats {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 16px !important;
-    }
-
-    .nurse-medicine-stat-card {
         padding: 16px !important;
+    }
+
+    .medicine-header-redesigned {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
         text-align: center !important;
     }
 
-    .nurse-medicine-stat-icon {
-        width: 44px !important;
-        height: 44px !important;
-        font-size: 1.2rem !important;
-        margin: 0 auto 12px !important;
+    .medicine-title-redesigned {
+        font-size: 1.5rem !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: center !important;
     }
 
-    .nurse-medicine-stat-value {
-        font-size: 1.8rem !important;
+    .medicine-title-icon-redesigned {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+
+    .medicine-subtitle-redesigned {
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-filters-redesigned {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        border-radius: 10px !important;
+    }
+
+    .medicine-filter-header {
+        text-align: center !important;
+        margin-bottom: 16px !important;
+    }
+
+    .medicine-filter-title {
+        font-size: 1.2rem !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        justify-content: center !important;
+    }
+
+    .medicine-filter-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-filter-row {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .medicine-filter-input,
+    .medicine-filter-select {
+        padding: 10px 14px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .medicine-filter-btn {
+        padding: 10px 16px !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+    }
+
+    .medicine-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 16px !important;
+        text-align: left !important;
+        min-height: auto !important;
+    }
+
+    .medicine-stat-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .medicine-stat-content {
+        flex: 1 !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 1.5rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .medicine-stat-label {
+        font-size: 0.8rem !important;
+        margin: 0 !important;
     }
 
     .medicine-table-container {
         padding: 20px !important;
+        margin-bottom: 20px !important;
     }
 
-    .search-container {
+    .medicine-table-header {
         flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 14px !important;
+        align-items: center !important;
+        gap: 16px !important;
+        margin-bottom: 16px !important;
+        text-align: center !important;
     }
 
-    .action-buttons {
-        justify-content: stretch !important;
+    .medicine-table-title {
+        font-size: 1.2rem !important;
         flex-direction: column !important;
-        gap: 10px !important;
-    }
-
-    .filter-btn,
-    .export-btn {
-        width: 100% !important;
-        justify-content: center !important;
-        padding: 12px 20px !important;
-    }
-
-    .medicine-table-wrapper {
-        border-radius: 12px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .medicine-table th,
-    .medicine-table td {
-        padding: 14px 10px !important;
-        font-size: 0.85rem !important;
-    }
-
-    .medicine-table th {
-        font-size: 0.8rem !important;
-        white-space: nowrap !important;
-    }
-
-    .medicine-action-buttons {
-        gap: 4px !important;
-        flex-direction: column !important;
-    }
-
-    .btn-action {
-        width: 100% !important;
-        height: 32px !important;
-        font-size: 0.8rem !important;
-        border-radius: 6px !important;
-        justify-content: flex-start !important;
-        padding: 0 12px !important;
         gap: 8px !important;
     }
 
-    .btn-action::after {
-        content: attr(data-tooltip) !important;
+    .medicine-table-title-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-table-actions {
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .medicine-add-btn,
+    .medicine-export-btn {
+        width: 100% !important;
+        max-width: 250px !important;
+        padding: 12px 20px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Enhanced mobile table */
+    .medicine-table-responsive {
+        margin: 0 -16px !important;
+        padding: 0 16px !important;
+    }
+
+    .table {
+        min-width: 600px !important;
         font-size: 0.75rem !important;
     }
 
-    .btn-action.view::after {
-        content: 'Xem chi tiết' !important;
+    .table th,
+    .table td {
+        padding: 8px 4px !important;
     }
 
-    .btn-action.confirm::after {
-        content: 'Xác nhận' !important;
+    .table th {
+        font-size: 0.7rem !important;
     }
 
-    .btn-action.reject::after {
-        content: 'Từ chối' !important;
+    .medicine-action-buttons {
+        justify-content: center !important;
+        gap: 4px !important;
     }
 
-    .modal-dialog {
-        margin: 10px !important;
-        max-width: calc(100vw - 20px) !important;
+    .medicine-action-buttons .btn-action {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
     }
 
-    .modal-body {
-        padding: 20px !important;
+    .medicine-pagination {
+        margin-top: 20px !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
     }
 
-    .detail-section {
-        padding: 16px !important;
-        margin-bottom: 16px !important;
+    .medicine-pagination .page-link {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
     }
 
-    .status-badge {
-        font-size: 0.65rem !important;
-        padding: 4px 8px !important;
+    /* Modal adjustments for small mobile */
+    .medicine-modal .modal-lg {
+        max-width: calc(100vw - 24px) !important;
+        margin: 12px !important;
     }
 
-    .status-badge-large {
+    .medicine-modal-header {
+        padding: 12px !important;
+    }
+
+    .medicine-modal-title {
+        font-size: 1rem !important;
+    }
+
+    .medicine-modal-title-icon {
+        width: 28px !important;
+        height: 28px !important;
         font-size: 0.8rem !important;
-        padding: 6px 12px !important;
     }
 
-    .medication-card {
-        padding: 14px !important;
+    .medicine-modal-body {
+        padding: 12px !important;
     }
 
-    .medication-name {
-        font-size: 0.95rem !important;
+    .medicine-form-section {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
     }
 
-    .dosage-highlight {
-        font-size: 0.85rem !important;
+    .medicine-form-header h5 {
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-form-label {
+        font-size: 0.75rem !important;
+    }
+
+    .medicine-form-control {
         padding: 8px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-btn-save,
+    .medicine-btn-cancel {
+        padding: 6px 14px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-loading {
+        font-size: 36px !important;
+        padding: 30px !important;
+    }
+
+    .medicine-alert {
+        margin: 12px !important;
+        padding: 12px !important;
+        font-size: 0.75rem !important;
     }
 }
 
 /* Mobile Portrait (481px to 575px) */
 @media (max-width: 575px) {
     .nurse-receive-medicine-redesigned {
+        padding: 12px !important;
+    }
+
+    .medicine-header-redesigned {
         padding: 16px !important;
+        margin-bottom: 16px !important;
     }
 
-    .nurse-medicine-header-redesigned {
-        padding: 20px !important;
+    .medicine-title-redesigned {
+        font-size: 1.3rem !important;
     }
 
-    .nurse-medicine-title-redesigned {
-        font-size: 1.4rem !important;
-    }
-
-    .nurse-medicine-subtitle-redesigned {
+    .medicine-title-icon-redesigned {
+        width: 32px !important;
+        height: 32px !important;
         font-size: 0.9rem !important;
     }
 
-    .nurse-medicine-stats {
-        grid-template-columns: 1fr !important;
-        gap: 14px !important;
+    .medicine-subtitle-redesigned {
+        font-size: 0.85rem !important;
     }
 
-    .nurse-medicine-stat-card {
-        padding: 14px !important;
-        display: flex !important;
-        align-items: center !important;
-        text-align: left !important;
-        gap: 14px !important;
+    .medicine-filters-redesigned {
+        padding: 16px !important;
+        margin-bottom: 16px !important;
     }
 
-    .nurse-medicine-stat-icon {
-        width: 40px !important;
-        height: 40px !important;
+    .medicine-filter-title {
         font-size: 1.1rem !important;
-        margin: 0 !important;
-        flex-shrink: 0 !important;
     }
 
-    .nurse-medicine-stat-content {
-        flex: 1 !important;
-    }
-
-    .nurse-medicine-stat-value {
-        font-size: 1.6rem !important;
-        margin-bottom: 4px !important;
-    }
-
-    .nurse-medicine-stat-label {
+    .medicine-filter-icon {
+        width: 28px !important;
+        height: 28px !important;
         font-size: 0.8rem !important;
+    }
+
+    .medicine-filter-input,
+    .medicine-filter-select {
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-filter-btn {
+        padding: 8px 14px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-stats-grid {
+        gap: 12px !important;
+    }
+
+    .medicine-stat-card {
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+
+    .medicine-stat-icon {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 1rem !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 1.2rem !important;
+    }
+
+    .medicine-stat-label {
+        font-size: 0.75rem !important;
     }
 
     .medicine-table-container {
         padding: 16px !important;
+        margin-bottom: 16px !important;
     }
 
-    .medicine-table th,
-    .medicine-table td {
-        padding: 12px 8px !important;
+    .medicine-table-title {
+        font-size: 1.1rem !important;
+    }
+
+    .medicine-table-title-icon {
+        width: 28px !important;
+        height: 28px !important;
         font-size: 0.8rem !important;
     }
 
-    .search-input {
-        padding: 10px 14px 10px 36px !important;
-        font-size: 0.85rem !important;
-    }
-
-    .search-icon {
-        left: 0.8rem !important;
-        font-size: 0.9rem !important;
-    }
-
-    .filter-btn,
-    .export-btn {
+    .medicine-add-btn,
+    .medicine-export-btn {
         padding: 10px 16px !important;
         font-size: 0.8rem !important;
     }
 
-    .btn-action {
-        height: 28px !important;
+    /* Enhanced mobile table for small screens */
+    .medicine-table-responsive {
+        margin: 0 -16px !important;
+        padding: 0 16px !important;
+    }
+
+    .table {
+        min-width: 600px !important;
         font-size: 0.75rem !important;
-        padding: 0 10px !important;
     }
 
-    .modal-dialog {
-        margin: 8px !important;
-        max-width: calc(100vw - 16px) !important;
+    .table th,
+    .table td {
+        padding: 8px 4px !important;
     }
 
-    .modal-body {
-        padding: 16px !important;
-    }
-
-    .detail-section {
-        padding: 14px !important;
-        margin-bottom: 14px !important;
-    }
-
-    .detail-section h6 {
-        font-size: 0.9rem !important;
-    }
-
-    .detail-section p {
-        font-size: 0.8rem !important;
-    }
-
-    .medication-card {
-        padding: 12px !important;
-    }
-
-    .medication-icon {
-        width: 24px !important;
-        height: 24px !important;
+    .table th {
         font-size: 0.7rem !important;
     }
 
-    .medication-name {
+    .medicine-action-buttons .btn-action {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 0.7rem !important;
+}
+
+    .medicine-pagination .page-link {
+        padding: 6px 10px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Modal adjustments for very small screens */
+    .medicine-modal .modal-lg {
+        max-width: calc(100vw - 24px) !important;
+        margin: 12px !important;
+    }
+
+    .medicine-modal-header {
+        padding: 12px !important;
+    }
+
+    .medicine-modal-title {
+        font-size: 1rem !important;
+    }
+
+    .medicine-modal-title-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.8rem !important;
+}
+
+    .medicine-modal-body {
+        padding: 12px !important;
+    }
+
+    .medicine-form-section {
+        padding: 12px !important;
+    margin-bottom: 12px !important;
+}
+
+    .medicine-form-header h5 {
         font-size: 0.9rem !important;
     }
 
-    .dosage-highlight {
-        font-size: 0.8rem !important;
-        padding: 6px 8px !important;
+    .medicine-form-label {
+        font-size: 0.75rem !important;
     }
 
-    .notification {
-        top: 10px !important;
-        right: 10px !important;
-        left: 10px !important;
-        padding: 12px 16px !important;
-        font-size: 0.85rem !important;
+    .medicine-form-control {
+        padding: 8px 10px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-btn-save,
+    .medicine-btn-cancel {
+        padding: 6px 14px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .medicine-loading {
+        font-size: 36px !important;
+        padding: 30px !important;
+    }
+
+    .medicine-alert {
+        margin: 12px !important;
+        padding: 12px !important;
+        font-size: 0.75rem !important;
     }
 }
 
 /* Small Mobile (360px to 480px) */
 @media (max-width: 480px) {
     .nurse-receive-medicine-redesigned {
-        padding: 12px !important;
+        padding: 10px !important;
     }
 
-    .nurse-medicine-header-redesigned {
-        padding: 16px !important;
+    .medicine-header-redesigned {
+        padding: 14px !important;
+        margin-bottom: 14px !important;
     }
 
-    .nurse-medicine-title-redesigned {
+    .medicine-title-redesigned {
         font-size: 1.2rem !important;
     }
 
-    .nurse-medicine-subtitle-redesigned {
+    .medicine-title-icon-redesigned {
+        width: 28px !important;
+        height: 28px !important;
         font-size: 0.8rem !important;
     }
 
-    .nurse-medicine-stat-card {
-        padding: 12px !important;
-        gap: 12px !important;
+    .medicine-subtitle-redesigned {
+        font-size: 0.8rem !important;
     }
 
-    .nurse-medicine-stat-icon {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1rem !important;
+    .medicine-filters-redesigned {
+        padding: 14px !important;
+        margin-bottom: 14px !important;
     }
 
-    .nurse-medicine-stat-value {
-        font-size: 1.4rem !important;
+    .medicine-filter-title {
+    font-size: 1rem !important;
     }
 
-    .nurse-medicine-stat-label {
+    .medicine-filter-icon {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-filter-input,
+    .medicine-filter-select {
+        padding: 6px 10px !important;
         font-size: 0.75rem !important;
+    }
+
+    .medicine-filter-btn {
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .medicine-stat-card {
+        padding: 10px !important;
+        gap: 10px !important;
+    }
+
+    .medicine-stat-icon {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-stat-value {
+        font-size: 1.1rem !important;
+    }
+
+    .medicine-stat-label {
+        font-size: 0.7rem !important;
     }
 
     .medicine-table-container {
-        padding: 12px !important;
+        padding: 14px !important;
+        margin-bottom: 14px !important;
     }
 
-    .medicine-table th,
-    .medicine-table td {
-        padding: 10px 6px !important;
+    .medicine-table-title {
+        font-size: 1rem !important;
+    }
+
+    .medicine-table-title-icon {
+    width: 24px !important;
+    height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-add-btn,
+    .medicine-export-btn {
+        padding: 8px 14px !important;
         font-size: 0.75rem !important;
     }
 
-    .search-input {
-        padding: 8px 12px 8px 32px !important;
-        font-size: 0.8rem !important;
-        border-radius: 20px !important;
+    .table {
+        min-width: 550px !important;
+        font-size: 0.7rem !important;
     }
 
-    .search-icon {
-        left: 0.7rem !important;
-        font-size: 0.8rem !important;
+    .table th,
+    .table td {
+        padding: 6px 3px !important;
     }
 
-    .filter-btn,
-    .export-btn {
-        padding: 8px 12px !important;
-        font-size: 0.75rem !important;
-        border-radius: 8px !important;
+    .table th {
+        font-size: 0.65rem !important;
     }
 
-    .btn-action {
+    .medicine-action-buttons .btn-action {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .medicine-pagination .page-link {
+        padding: 5px 8px !important;
+        font-size: 0.7rem !important;
+    }
+
+    /* Modal adjustments for very small screens */
+    .medicine-modal .modal-lg {
+        max-width: calc(100vw - 16px) !important;
+        margin: 8px !important;
+    }
+
+    .medicine-modal-header {
+        padding: 10px !important;
+    }
+
+    .medicine-modal-title {
+        font-size: 0.95rem !important;
+    }
+
+    .medicine-modal-title-icon {
+        width: 24px !important;
         height: 24px !important;
         font-size: 0.7rem !important;
-        padding: 0 8px !important;
-        border-radius: 4px !important;
     }
 
-    .modal-dialog {
-        margin: 6px !important;
-        max-width: calc(100vw - 12px) !important;
-    }
-
-    .modal-body {
-        padding: 14px !important;
-    }
-
-    .detail-section {
-        padding: 12px !important;
-        margin-bottom: 12px !important;
-        border-radius: 6px !important;
-    }
-
-    .detail-section h6 {
-        font-size: 0.85rem !important;
-        margin-bottom: 6px !important;
-    }
-
-    .detail-section p {
-        font-size: 0.75rem !important;
-    }
-
-    .status-badge {
-        font-size: 0.6rem !important;
-        padding: 3px 6px !important;
-        border-radius: 12px !important;
-    }
-
-    .status-badge-large {
-        font-size: 0.7rem !important;
-        padding: 4px 8px !important;
-    }
-
-    .medication-card {
+    .medicine-modal-body {
         padding: 10px !important;
-        border-radius: 8px !important;
     }
 
-    .medication-icon {
-        width: 20px !important;
-        height: 20px !important;
-        font-size: 0.6rem !important;
-        border-radius: 4px !important;
+    .medicine-form-section {
+        padding: 10px !important;
+        margin-bottom: 10px !important;
     }
 
-    .medication-name {
-        font-size: 0.8rem !important;
-    }
-
-    .dosage-highlight {
+    .medicine-form-control {
+        padding: 6px 8px !important;
         font-size: 0.7rem !important;
-        padding: 4px 6px !important;
-        border-radius: 4px !important;
     }
 
-    .loading-spinner {
-        width: 28px !important;
-        height: 28px !important;
-        border-width: 3px !important;
+    .medicine-btn-save,
+    .medicine-btn-cancel {
+        padding: 5px 12px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-loading {
+        font-size: 28px !important;
+        padding: 20px !important;
+    }
+
+    .medicine-alert {
+        margin: 8px !important;
+        padding: 8px !important;
+        font-size: 0.7rem !important;
     }
 }
 
 /* Extra Small Mobile (less than 360px) */
 @media (max-width: 359px) {
     .nurse-receive-medicine-redesigned {
-        padding: 10px !important;
-    }
-
-    .nurse-medicine-header-redesigned {
-        padding: 14px !important;
-    }
-
-    .nurse-medicine-title-redesigned {
-        font-size: 1.1rem !important;
-    }
-
-    .nurse-medicine-subtitle-redesigned {
-        font-size: 0.75rem !important;
-    }
-
-    .nurse-medicine-stat-card {
-        padding: 10px !important;
-        gap: 10px !important;
-    }
-
-    .nurse-medicine-stat-icon {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.9rem !important;
-    }
-
-    .nurse-medicine-stat-value {
-        font-size: 1.2rem !important;
-    }
-
-    .nurse-medicine-stat-label {
-        font-size: 0.7rem !important;
-    }
-
-    .medicine-table-container {
-        padding: 10px !important;
-    }
-
-    .medicine-table th,
-    .medicine-table td {
-        padding: 8px 4px !important;
-        font-size: 0.7rem !important;
-    }
-
-    .search-input {
-        padding: 6px 10px 6px 28px !important;
-        font-size: 0.75rem !important;
-    }
-
-    .search-icon {
-        left: 0.6rem !important;
-        font-size: 0.7rem !important;
-    }
-
-    .filter-btn,
-    .export-btn {
-        padding: 6px 10px !important;
-        font-size: 0.7rem !important;
-    }
-
-    .btn-action {
-        height: 20px !important;
-        font-size: 0.65rem !important;
-        padding: 0 6px !important;
-    }
-
-    .modal-body {
-        padding: 12px !important;
-    }
-
-    .detail-section {
-        padding: 10px !important;
-        margin-bottom: 10px !important;
-    }
-
-    .detail-section h6 {
-        font-size: 0.8rem !important;
-    }
-
-    .detail-section p {
-        font-size: 0.7rem !important;
-    }
-
-    .medication-card {
         padding: 8px !important;
     }
 
-    .medication-name {
+    .medicine-header-redesigned {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .medicine-title-redesigned {
+        font-size: 1.1rem !important;
+    }
+
+    .medicine-title-icon-redesigned {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-subtitle-redesigned {
         font-size: 0.75rem !important;
     }
 
-    .dosage-highlight {
+    .medicine-filters-redesigned {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .medicine-filter-title {
+        font-size: 0.95rem !important;
+    }
+
+    .medicine-filter-icon {
+        width: 20px !important;
+        height: 20px !important;
         font-size: 0.65rem !important;
-        padding: 3px 5px !important;
     }
 
-    .notification {
-        font-size: 0.8rem !important;
-        padding: 10px 12px !important;
+    .medicine-filter-input,
+    .medicine-filter-select {
+        padding: 5px 8px !important;
+        font-size: 0.7rem !important;
     }
 
-    .loading-spinner {
+    .medicine-filter-btn {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-stat-card {
+        padding: 8px !important;
+        gap: 8px !important;
+    }
+
+    .medicine-stat-icon {
         width: 24px !important;
         height: 24px !important;
-        border-width: 2px !important;
+        font-size: 0.8rem !important;
     }
-}
 
-/* Status badge improvements */
-.status-badge-large {
-    padding: 8px 16px !important;
-    border-radius: 20px !important;
-    font-weight: 600 !important;
-    font-size: 0.85rem !important;
-    letter-spacing: 0.3px !important;
-    border: 2px solid transparent !important;
-    text-shadow: none !important;
-}
-
-.status-badge-large.bg-warning {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
-    color: #ffffff !important;
-    border-color: #fbbf24 !important;
-}
-
-.status-badge-large.bg-info {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
-    color: #ffffff !important;
-    border-color: #34d399 !important;
-}
-
-.status-badge-large.bg-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-    color: #ffffff !important;
-    border-color: #10b981 !important;
-}
-
-/* Section title improvements */
-.section-title {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-    margin-bottom: 16px !important;
-    padding-bottom: 8px !important;
-    border-bottom: 2px solid #e2e8f0 !important;
-}
-
-.section-icon {
-    width: 24px !important;
-    height: 24px !important;
-    background: linear-gradient(135deg, #34d399, #10b981) !important;
-    border-radius: 6px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    font-size: 0.7rem !important;
-}
-
-/* Medication card improvements */
-.medication-card {
-    background: #ffffff !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 12px !important;
-    padding: 16px !important;
-    margin-bottom: 12px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
-
-.medication-card:hover {
-    border-color: #ec8bea !important;
-    box-shadow: 0 4px 12px rgb(222, 127, 203) !important;
-    transform: translateY(-2px) !important;
-}
-
-.medication-header {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    margin-bottom: 12px !important;
-}
-
-.medication-icon {
-    width: 28px !important;
-    height: 28px !important;
-    background: linear-gradient(135deg, #ec4899, #be185d) !important;
-    border-radius: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    font-size: 0.8rem !important;
-}
-
-.medication-name {
-    color: #1e293b !important;
+    .medicine-stat-value {
     font-size: 1rem !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
-    line-height: 1.3 !important;
-}
-
-.dosage-highlight {
-    background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
-    border: 1px solid #f59e0b !important;
-    border-radius: 8px !important;
-    padding: 10px 12px !important;
-    font-weight: 600 !important;
-    color: #92400e !important;
-    text-align: center !important;
-    font-size: 0.9rem !important;
-    margin-bottom: 12px !important;
-}
-
-/* Empty state message styling */
-.no-medication-message {
-    text-align: center !important;
-    color: #6b7280 !important;
-    font-style: italic !important;
-    opacity: 0.8 !important;
-}
-
-/* Force override any conflicting styles */
-body .info-value-enhanced.no-medication-message {
-    text-align: center !important;
-    color: #6b7280 !important;
-    font-style: italic !important;
-    opacity: 0.8 !important;
-}
-
-/* ULTIMATE OVERRIDE RULES - Maximum specificity */
-html body div.modal-body div.info-item-enhanced div.info-label-enhanced,
-html body div.modal div.modal-body div.info-item-enhanced div.info-label-enhanced {
-    display: flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-    font-size: 0.7rem !important;
-    font-weight: 700 !important;
-    color: #374151 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.3px !important;
-    margin-bottom: 0.3rem !important;
-}
-
-html body div.modal-body div.info-item-enhanced div.info-value-enhanced,
-html body div.modal div.modal-body div.info-item-enhanced div.info-value-enhanced {
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-    line-height: 1.3 !important;
-}
-
-html body div.modal-body div.info-item-enhanced,
-html body div.modal div.modal-body div.info-item-enhanced {
-    background: #ffffff !important;
-    border: 1.5px solid #e5e7eb !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
-    transition: all 0.25s ease !important;
-    margin-bottom: 8px !important;
-}
-
-/* Enhanced Prescription Modal Form - Single Form Design */
-.enhanced-prescription-modal .modal-dialog {
-    max-width: 85% !important;
-    margin: 1rem auto !important;
-}
-
-.enhanced-prescription-modal .modal-content {
-    border: none !important;
-    border-radius: 20px !important;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
-    overflow: hidden !important;
-    background: white !important;
-}
-
-/* Enhanced Modal Header */
-.enhanced-modal-header {
-    background: linear-gradient(135deg, #F06292 0%, #E91E63 100%) !important;
-    color: white !important;
-    padding: 2rem !important;
-    position: relative !important;
-    overflow: hidden !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-}
-
-.enhanced-modal-header::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="white" opacity="0.1"/><circle cx="70" cy="30" r="1.5" fill="white" opacity="0.08"/><circle cx="30" cy="70" r="2.5" fill="white" opacity="0.06"/><circle cx="85" cy="85" r="1" fill="white" opacity="0.1"/></svg>') repeat !important;
-    pointer-events: none !important;
-}
-
-.enhanced-modal-header .header-content {
-    position: relative !important;
-    z-index: 2 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 1.2rem !important;
-}
-
-.enhanced-modal-header .modal-icon {
-    width: 60px !important;
-    height: 60px !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-radius: 15px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.8rem !important;
-    backdrop-filter: blur(10px) !important;
-}
-
-.enhanced-modal-header .header-text h2 {
-    margin: 0 !important;
-    font-size: 1.75rem !important;
-    font-weight: 700 !important;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-.enhanced-modal-header .header-text p {
-    margin: 0.5rem 0 0 0 !important;
-    opacity: 0.9 !important;
-    font-size: 1rem !important;
-    font-weight: 400 !important;
-}
-
-.enhanced-modal-header .status-indicator {
-    position: relative !important;
-    z-index: 2 !important;
-}
-
-.status-badge-enhanced {
-    padding: 0.75rem 1.25rem !important;
-    border-radius: 20px !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    backdrop-filter: blur(15px) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-}
-
-.status-badge-enhanced.pending {
-    background: rgba(255, 193, 7, 0.9) !important;
-    color: #856404 !important;
-}
-
-.status-badge-enhanced.active {
-    background: rgba(23, 162, 184, 0.9) !important;
-    color: white !important;
-}
-
-.status-badge-enhanced.completed {
-    background: rgba(40, 167, 69, 0.9) !important;
-    color: white !important;
-}
-
-/* Enhanced Modal Body */
-.enhanced-modal-body {
-    padding: 0 !important;
-    background: #ffffff !important;
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-}
-
-.form-content {
-    padding: 2rem !important;
-}
-
-/* Form Sections */
-.form-section {
-    margin-bottom: 2rem !important;
-    border: none !important;
-    padding: 0 !important;
-}
-
-.form-section legend {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
-    font-size: 1.2rem !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-    margin-bottom: 1.5rem !important;
-    padding: 0 !important;
-    border: none !important;
-    width: auto !important;
-}
-
-.form-section legend svg {
-    width: 24px !important;
-    height: 24px !important;
-    color: #F06292 !important;
-}
-
-/* Info Cards */
-.info-card {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 15px !important;
-    padding: 1.5rem !important;
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-    gap: 1.25rem !important;
-}
-
-.info-item {
-    background: white !important;
-    border-radius: 10px !important;
-    padding: 1rem !important;
-    border: 1px solid #e2e8f0 !important;
-    transition: all 0.3s ease !important;
-}
-
-.info-item:hover {
-    border-color: #F06292 !important;
-    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.1) !important;
-    transform: translateY(-2px) !important;
-}
-
-.info-item label {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    font-size: 0.8rem !important;
-    font-weight: 600 !important;
-    color: #64748b !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    margin-bottom: 0.75rem !important;
-}
-
-.info-item label svg {
-    color: #94a3b8 !important;
-    font-size: 0.9rem !important;
-}
-
-.info-item .info-value {
-    font-size: 1rem !important;
-    font-weight: 600 !important;
-    color: #1e293b !important;
-    line-height: 1.5 !important;
-}
-
-/* Medications List */
-.medications-list {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 15px !important;
-    padding: 1.5rem !important;
-}
-
-.medication-item {
-    background: white !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 12px !important;
-    padding: 1.5rem !important;
-    margin-bottom: 1rem !important;
-    position: relative !important;
-    overflow: hidden !important;
-    transition: all 0.3s ease !important;
-}
-
-.medication-item:hover {
-    border-color: #F06292 !important;
-    box-shadow: 0 6px 20px rgba(240, 98, 146, 0.12) !important;
-    transform: translateY(-3px) !important;
-}
-
-.medication-item::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 4px !important;
-    background: linear-gradient(90deg, #F06292, #E91E63) !important;
-}
-
-.medication-header {
-    display: flex !important;
-    align-items: center !important;
-    gap: 1rem !important;
-    margin-bottom: 1rem !important;
-}
-
-.med-icon {
-    width: 50px !important;
-    height: 50px !important;
-    background: linear-gradient(135deg, #F06292, #E91E63) !important;
-    color: white !important;
-    border-radius: 12px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 1.2rem !important;
-    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3) !important;
-}
-
-.med-details h4 {
-    margin: 0 0 0.5rem 0 !important;
-    font-size: 1.3rem !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-}
-
-.dosage-info {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-}
-
-.dosage-label {
-    font-size: 0.9rem !important;
-    color: #64748b !important;
-    font-weight: 500 !important;
-}
-
-.dosage-value {
-    background: linear-gradient(135deg, #fef3e2, #fde68a) !important;
-    color: #92400e !important;
-    padding: 0.25rem 0.75rem !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    font-size: 0.9rem !important;
-    border: 1px solid #fbbf24 !important;
-}
-
-.medication-note {
-    background: rgba(254, 243, 226, 0.8) !important;
-    border: 1px solid #fed7aa !important;
-    border-radius: 10px !important;
-    padding: 1rem !important;
-    margin-top: 1rem !important;
-    display: flex !important;
-    gap: 0.75rem !important;
-}
-
-.medication-note svg {
-    color: #ea580c !important;
-    font-size: 1.1rem !important;
-    margin-top: 0.2rem !important;
-    flex-shrink: 0 !important;
-}
-
-.medication-note div strong {
-    color: #ea580c !important;
-    font-weight: 600 !important;
-    display: block !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.medication-note div p {
-    color: #c2410c !important;
-    margin: 0 !important;
-    line-height: 1.5 !important;
-    font-style: italic !important;
-}
-
-.no-medication {
-    text-align: center !important;
-    padding: 2rem !important;
-    color: #64748b !important;
-}
-
-.no-medication svg {
-    font-size: 2rem !important;
-    margin-bottom: 1rem !important;
-    color: #94a3b8 !important;
-}
-
-/* Nurse Section */
-.nurse-section {
-    background: linear-gradient(135deg, #f0f9ff, #e0f2fe) !important;
-    border: 1px solid #0ea5e9 !important;
-    border-radius: 15px !important;
-    padding: 1.5rem !important;
-}
-
-.nurse-section legend {
-    color: #0369a1 !important;
-}
-
-.nurse-section legend svg {
-    color: #0ea5e9 !important;
-}
-
-.nurse-input-area {
-    background: white !important;
-    border-radius: 12px !important;
-    padding: 1.5rem !important;
-    border: 1px solid #bae6fd !important;
-}
-
-.nurse-input-area .form-label {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    font-weight: 600 !important;
-    color: #0369a1 !important;
-    margin-bottom: 1rem !important;
-}
-
-.nurse-input-area .form-label svg {
-    color: #0ea5e9 !important;
-}
-
-.nurse-textarea {
-    border: 2px solid #e0f2fe !important;
-    border-radius: 10px !important;
-    padding: 1rem !important;
-    font-size: 1rem !important;
-    line-height: 1.6 !important;
-    resize: vertical !important;
-    transition: all 0.3s ease !important;
-}
-
-.nurse-textarea:focus {
-    border-color: #0ea5e9 !important;
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1) !important;
-    outline: none !important;
-}
-
-.nurse-textarea::placeholder {
-    color: #94a3b8 !important;
-    font-style: italic !important;
-}
-
-/* Loading and Error States */
-.loading-state,
-.error-state {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 3rem !important;
-    text-align: center !important;
-}
-
-.loading-spinner {
-    font-size: 2.5rem !important;
-    color: #F06292 !important;
-    margin-bottom: 1.5rem !important;
-}
-
-.loading-state h4 {
-    color: #374151 !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.loading-state p {
-    color: #6b7280 !important;
-    margin: 0 !important;
-}
-
-.error-state {
-    color: #dc3545 !important;
-}
-
-.error-icon {
-    font-size: 2.5rem !important;
-    margin-bottom: 1.5rem !important;
-}
-
-.error-state h4 {
-    margin-bottom: 0.5rem !important;
-}
-
-.error-state p {
-    margin: 0 !important;
-}
-
-/* Enhanced Modal Footer */
-.enhanced-modal-footer {
-    background: linear-gradient(135deg, #f8fafc, #e2e8f0) !important;
-    padding: 1.5rem 2rem !important;
-    border-top: 1px solid #e2e8f0 !important;
-}
-
-.footer-actions {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    gap: 1rem !important;
-}
-
-.action-buttons {
-    display: flex !important;
-    gap: 1rem !important;
-}
-
-.enhanced-modal-footer .btn {
-    padding: 0.75rem 1.5rem !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    transition: all 0.3s ease !important;
-    border: none !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.enhanced-modal-footer .btn:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
-}
-
-.enhanced-modal-footer .btn svg {
-    font-size: 1rem !important;
-}
-
-.enhanced-modal-footer .btn-close {
-    background: #6c757d !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-close:hover {
-    background: #5a6268 !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-reject {
-    background: #dc3545 !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-reject:hover {
-    background: #c82333 !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-confirm {
-    background: #28a745 !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-confirm:hover {
-    background: #218838 !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-complete {
-    background: #007bff !important;
-    color: white !important;
-}
-
-.enhanced-modal-footer .btn-complete:hover {
-    background: #0069d9 !important;
-    color: white !important;
-}
-
-/* Responsive Design for Enhanced Modal */
-@media (max-width: 1199px) {
-    .enhanced-prescription-modal .modal-dialog {
-        max-width: 90% !important;
     }
 
-    .info-card {
-        grid-template-columns: 1fr !important;
+    .medicine-stat-label {
+        font-size: 0.65rem !important;
     }
 
-    .enhanced-modal-header {
-        padding: 1.5rem !important;
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 1rem !important;
+    .medicine-table-container {
+        padding: 12px !important;
+        margin-bottom: 12px !important;
     }
 
-    .enhanced-modal-header .header-content {
-        flex-direction: column !important;
-        gap: 1rem !important;
-    }
-}
-
-@media (max-width: 767px) {
-    .enhanced-prescription-modal .modal-dialog {
-        max-width: 95% !important;
-        margin: 0.5rem !important;
-    }
-
-    .enhanced-modal-header {
-        padding: 1rem !important;
-    }
-
-    .enhanced-modal-header .modal-icon {
-        width: 50px !important;
-        height: 50px !important;
-        font-size: 1.5rem !important;
-    }
-
-    .enhanced-modal-header .header-text h2 {
-        font-size: 1.5rem !important;
-    }
-
-    .form-content {
-        padding: 1rem !important;
-    }
-
-    .footer-actions {
-        flex-direction: column !important;
-        gap: 1rem !important;
-    }
-
-    .action-buttons {
-        width: 100% !important;
-        justify-content: center !important;
-    }
-
-    .enhanced-modal-footer .btn {
-        padding: 0.875rem 1.25rem !important;
+    .medicine-table-title {
         font-size: 0.9rem !important;
     }
+
+    .medicine-table-title-icon {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .medicine-add-btn,
+    .medicine-export-btn {
+        padding: 6px 12px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .table {
+        min-width: 500px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .table th,
+    .table td {
+        padding: 4px 2px !important;
+    }
+
+    .table th {
+        font-size: 0.6rem !important;
+    }
+
+    .medicine-action-buttons .btn-action {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.6rem !important;
+    }
+
+    .medicine-pagination .page-link {
+        padding: 4px 6px !important;
+        font-size: 0.65rem !important;
+    }
+
+    .medicine-modal-title {
+        font-size: 0.9rem !important;
+    }
+
+    .medicine-form-control {
+        padding: 5px 6px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-btn-save,
+    .medicine-btn-cancel {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+
+    .medicine-loading {
+        font-size: 28px !important;
+        padding: 20px !important;
+    }
+
+    .medicine-alert {
+        margin: 8px !important;
+        padding: 8px !important;
+        font-size: 0.7rem !important;
+    }
 }
 
-@media (max-width: 575px) {
-    .enhanced-modal-body {
-        max-height: 60vh !important;
+/* Enhanced touch targets and accessibility */
+@media (max-width: 767px) {
+
+    .medicine-add-btn,
+    .medicine-export-btn,
+    .medicine-filter-btn,
+    .medicine-btn-save,
+    .medicine-btn-cancel {
+        min-height: 44px !important;
+        touch-action: manipulation !important;
     }
 
-    .medication-header {
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 0.75rem !important;
+    .medicine-action-buttons .btn-action {
+        min-width: 44px !important;
+        min-height: 44px !important;
     }
 
-    .med-details {
-        text-align: center !important;
+    .medicine-pagination .page-link {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+}
+
+/* Focus states for better accessibility */
+@media (max-width: 767px) {
+
+    .medicine-filter-input:focus,
+    .medicine-filter-select:focus,
+    .medicine-form-control:focus {
+        outline: 2px solid var(--nurse-primary) !important;
+        outline-offset: 2px !important;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+
+    .medicine-stat-card,
+    .medicine-modal,
+    .medicine-alert {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+
+    .medicine-stat-card,
+    .medicine-table-container,
+    .medicine-header-redesigned,
+    .medicine-filters-redesigned {
+        border: 2px solid var(--nurse-primary) !important;
     }
 
-    .dosage-info {
-        justify-content: center !important;
+    .medicine-add-btn,
+    .medicine-export-btn,
+    .medicine-filter-btn {
+        border: 2px solid currentColor !important;
+    }
+}
+
+/* Print styles for medicine management */
+@media print {
+    .nurse-receive-medicine-redesigned {
+        padding: 0 !important;
+        background: white !important;
     }
 
-    .enhanced-modal-footer .btn {
-        width: 100% !important;
-        justify-content: center !important;
+    .medicine-header-redesigned {
+        background: white !important;
+        color: black !important;
+        border: 1px solid black !important;
+    }
+
+    .medicine-add-btn,
+    .medicine-export-btn,
+    .medicine-filter-btn,
+    .medicine-action-buttons {
+        display: none !important;
+    }
+
+    .medicine-table-container {
+        break-inside: avoid !important;
+        border: 1px solid black !important;
+    }
+
+    .table {
+        font-size: 10pt !important;
+    }
+
+    .medicine-stats-grid {
+        break-inside: avoid !important;
+    }
+
+    .medicine-stat-card {
+        border: 1px solid black !important;
+        break-inside: avoid !important;
+    }
+}
+
+/* Landscape orientation optimization for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+    .medicine-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .medicine-modal .modal-lg {
+        max-height: calc(100vh - 20px) !important;
+        overflow-y: auto !important;
+    }
+
+    .medicine-modal-body {
+        max-height: calc(100vh - 120px) !important;
+        overflow-y: auto !important;
     }
 }

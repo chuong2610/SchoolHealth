@@ -76,10 +76,19 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get('/Home/admin');
+      // Add required parameters for medical supplies data
+      const response = await axiosInstance.get('/Home/admin', {
+        params: {
+          pageNumber: 1,
+          pageSize: 100, // Get more medical supplies for chart
+          search: '' // Empty search to get all
+        }
+      });
       setDashboardData(response.data.data);
+      console.log('Dashboard data loaded:', response.data.data); // Debug log
     } catch (err) {
       setError('Failed to load dashboard data');
+      console.error('Dashboard API error:', err); // Debug log
     } finally {
       setLoading(false);
     }
@@ -189,7 +198,7 @@ const AdminDashboard = () => {
   // Generate pending medications data - students waiting to take medicine
   const pendingMedications = dashboardData ?
     dashboardData.medications?.filter(medication =>
-       medication.status === 'Active' || medication.status === 'active'
+      medication.status === 'Active' || medication.status === 'active'
     ).map((medication, index) => ({
       id: medication.id || index + 1,
       studentName: medication.studentName || 'Không xác định',
@@ -202,7 +211,7 @@ const AdminDashboard = () => {
       parentName: medication.parentName || 'Không xác định'
     })) || []
     : [
-      
+
     ];
 
   // Generate recent activities from real data
@@ -369,16 +378,43 @@ const AdminDashboard = () => {
             </div>
             <div className="admin-dashboard-chart-subtitle">
               Thống kê tồn kho các loại thuốc và vật tư y tế
+              {dashboardData?.medicalSupplies ?
+                `(${dashboardData.medicalSupplies.length} loại thuốc)` :
+                '(Đang tải...)'}
             </div>
           </div>
           <div style={{ padding: '1.5rem' }}>
+            {/* Debug info - remove in production */}
+            {process.env.NODE_ENV === 'development' && (
+              <div style={{
+                fontSize: '0.8rem',
+                color: '#666',
+                marginBottom: '1rem',
+                padding: '0.5rem',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '4px'
+              }}>
+                <strong>Debug:</strong> Medical supplies count: {dashboardData?.medicalSupplies?.length || 0}
+                {dashboardData?.medicalSupplies?.length > 0 && (
+                  <div>First item: {JSON.stringify(dashboardData.medicalSupplies[0])}</div>
+                )}
+              </div>
+            )}
+
             <ResponsiveContainer width="100%" height={350}>
               <BarChart
-                data={dashboardData?.medicalSupplies || [
-                  { name: "Bandages", quantity: 94 },
-                  { name: "Antiseptic Wipes", quantity: 58 },
-                  { name: "Paracetamol", quantity: 200 }
-                ]}
+                data={(() => {
+                  // Check if we have real data from API
+                  if (dashboardData?.medicalSupplies && dashboardData.medicalSupplies.length > 0) {
+                    return dashboardData.medicalSupplies;
+                  }
+                  // Fallback data if no real data
+                  return [
+                    { name: "Bandages", quantity: 94 },
+                    { name: "Antiseptic Wipes", quantity: 58 },
+                    { name: "Paracetamol", quantity: 200 }
+                  ];
+                })()}
                 margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
               >
                 <defs>
@@ -450,7 +486,7 @@ const AdminDashboard = () => {
                     fontWeight: 'bold',
                     color: '#059669'
                   }}>
-                    {dashboardData?.medicalSupplies?.length || 3}
+                    {dashboardData?.medicalSupplies?.length || 0}
                   </div>
                   <div style={{
                     fontSize: '0.875rem',
@@ -466,7 +502,7 @@ const AdminDashboard = () => {
                     fontWeight: 'bold',
                     color: '#059669'
                   }}>
-                    {dashboardData?.medicalSupplies?.reduce((total, item) => total + item.quantity, 0) || 352}
+                    {dashboardData?.medicalSupplies?.reduce((total, item) => total + (item.quantity || 0), 0) || 0}
                   </div>
                   <div style={{
                     fontSize: '0.875rem',
@@ -484,10 +520,11 @@ const AdminDashboard = () => {
                   }}>
                     {(() => {
                       if (dashboardData?.medicalSupplies?.length > 0) {
-                        const maxQuantity = Math.max(...dashboardData.medicalSupplies.map(m => m.quantity));
-                        return dashboardData.medicalSupplies.find(item => item.quantity === maxQuantity)?.name;
+                        const maxQuantity = Math.max(...dashboardData.medicalSupplies.map(m => m.quantity || 0));
+                        const topItem = dashboardData.medicalSupplies.find(item => (item.quantity || 0) === maxQuantity);
+                        return topItem?.name || 'N/A';
                       }
-                      return 'Paracetamol';
+                      return 'Chưa có dữ liệu';
                     })()}
                   </div>
                   <div style={{
@@ -499,6 +536,36 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Show message if no data */}
+              {(!dashboardData?.medicalSupplies || dashboardData.medicalSupplies.length === 0) && (
+                <div style={{
+                  textAlign: 'center',
+                  marginTop: '1rem',
+                  padding: '0.5rem',
+                  backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(251, 191, 36, 0.3)'
+                }}>
+                  <div style={{
+                    fontSize: '0.9rem',
+                    color: '#92400e',
+                    fontWeight: '500'
+                  }}>
+                    ⚠️ Chưa có dữ liệu thuốc trong kho
+                  </div>
+                  <div style={{
+                    fontSize: '0.8rem',
+                    color: '#a16207',
+                    marginTop: '0.25rem'
+                  }}>
+                    Hãy thêm thuốc vào kho tại trang{' '}
+                    <a href="/admin/medicine-inventory" style={{ color: '#059669', textDecoration: 'underline' }}>
+                      Quản lý kho thuốc
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
