@@ -17,14 +17,21 @@ public class HealthDeclareHistoryRepository : IHealthDeclareHistoryRepository
         var query = _context.HealthDeclareHistories
             .Include(h => h.StudentProfile)
                 .ThenInclude(sp => sp.Student)
-                .ThenInclude(s => s.Class)   // <-- thêm ThenInclude này
+                .ThenInclude(s => s.Class)
             .Include(h => h.Parent)
             .AsNoTracking()
             .Where(h => h.ParentId == parentId);
 
         if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(h => h.StudentProfile.Student.Name.Contains(search));
+            query = query.Where(h =>
+                                h.StudentProfile.Student.Name.Contains(search) ||
+                                h.Allergys.Contains(search) ||
+                                h.ChronicIllnesss.Contains(search) ||
+                                h.LongTermMedications.Contains(search) ||
+                                h.OtherMedicalConditions.Contains(search) ||
+                                h.StudentProfile.Student.Class.ClassName.Contains(search) ||
+                                h.DeclarationDate.ToString().Contains(search));
         }
 
         return await query
@@ -38,12 +45,21 @@ public class HealthDeclareHistoryRepository : IHealthDeclareHistoryRepository
     {
         var query = _context.HealthDeclareHistories
             .Include(h => h.StudentProfile)
+                .ThenInclude(s => s.Student)
+                    .ThenInclude(c => c.Class)
             .AsNoTracking()
             .Where(h => h.ParentId == parentId);
 
         if (!string.IsNullOrEmpty(search))
         {
-            query = query.Where(h => h.StudentProfile.Student.Name.Contains(search));
+            query = query.Where(h =>
+                                h.StudentProfile.Student.Name.Contains(search) ||
+                                h.Allergys.Contains(search) ||
+                                h.ChronicIllnesss.Contains(search) ||
+                                h.LongTermMedications.Contains(search) ||
+                                h.OtherMedicalConditions.Contains(search) ||
+                                h.StudentProfile.Student.Class.ClassName.Contains(search) ||
+                                h.DeclarationDate.ToString().Contains(search));
         }
 
         return await query.CountAsync();

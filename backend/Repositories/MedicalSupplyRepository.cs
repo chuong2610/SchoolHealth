@@ -32,21 +32,26 @@ namespace backend.Repositories
             return _context.SaveChangesAsync().ContinueWith(task => task.Result > 0);
         }
 
-        public Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize, string? search)
+        public async Task<List<MedicalSupply>> GetAllMedicalSuppliesAsync(int? pageNumber, int? pageSize, string? search)
         {
+            if (pageNumber == null && pageSize == null)
+            {
+                return await _context.MedicalSupplies.Where(ms => ms.IsActive == true).AsNoTracking().ToListAsync();
+            }
             var query = _context.MedicalSupplies
                 .AsNoTracking()
                 .Where(ms => ms.IsActive);
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ms => ms.Name.Contains(search));
+                query = query.Where(ms => ms.Name.Contains(search) ||
+                                          ms.Quantity.ToString().Contains(search));
             }
 
-            return query
+            return await query
                 .OrderBy(ms => ms.Id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((pageNumber.Value - 1) * pageSize.Value)
+                .Take(pageSize.Value)
                 .ToListAsync();
         }
 
@@ -57,7 +62,8 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ms => ms.Name.Contains(search));
+                query = query.Where(ms => ms.Name.Contains(search) ||
+                                          ms.Quantity.ToString().Contains(search));
             }
 
             return query.CountAsync();

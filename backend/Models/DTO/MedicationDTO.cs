@@ -10,7 +10,6 @@ namespace backend.Models.DTO
         public string StudentClass { get; set; } = string.Empty;
         public string NurseName { get; set; } = string.Empty;
         public string StudentName { get; set; } = string.Empty;
-        public string StudentClassName { get; set; } = string.Empty;
         public string ParentName { get; set; } = string.Empty;
     }
 }

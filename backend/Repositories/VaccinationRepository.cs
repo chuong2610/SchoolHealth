@@ -38,7 +38,11 @@ namespace backend.Repositories
                 query = query.Where(v =>
                     v.Nurse.Name.Contains(search) ||
                     v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search));
+                    v.VaccineName.Contains(search) ||
+                    v.Location.Contains(search) ||
+                    v.Description.Contains(search) ||
+                    v.Date.ToString().Contains(search) ||
+                    v.Student.Class.ClassName.Contains(search));
             }
 
             return await query
@@ -60,7 +64,11 @@ namespace backend.Repositories
                 query = query.Where(v =>
                     v.Nurse.Name.Contains(search) ||
                     v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search));
+                    v.VaccineName.Contains(search) ||
+                    v.Location.Contains(search) ||
+                    v.Description.Contains(search) ||
+                    v.Date.ToString().Contains(search) ||
+                    v.Student.Class.ClassName.Contains(search));
             }
 
             return await query.CountAsync();
@@ -71,6 +79,7 @@ namespace backend.Repositories
             var query = _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
+                .ThenInclude(c => c.Class)
                 .Where(v => v.Student.ParentId == parentId);
 
             if (!string.IsNullOrEmpty(search))
@@ -78,7 +87,11 @@ namespace backend.Repositories
                 query = query.Where(v =>
                     v.Nurse.Name.Contains(search) ||
                     v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search));
+                    v.VaccineName.Contains(search) ||
+                    v.Location.Contains(search) ||
+                    v.Description.Contains(search) ||
+                    v.Date.ToString().Contains(search) ||
+                    v.Student.Class.ClassName.Contains(search));
             }
 
             return await query
@@ -98,7 +111,11 @@ namespace backend.Repositories
                 query = query.Where(v =>
                     v.Nurse.Name.Contains(search) ||
                     v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search));
+                    v.VaccineName.Contains(search) ||
+                    v.Location.Contains(search) ||
+                    v.Description.Contains(search) ||
+                    v.Date.ToString().Contains(search) ||
+                    v.Student.Class.ClassName.Contains(search));
             }
 
             return await query.CountAsync();

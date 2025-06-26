@@ -206,31 +206,17 @@ namespace backend.Services
             var totalItems = await _notificationRepository.CountNotificationsAsync(search);
             var notifications = await _notificationRepository.GetAllNotificationsAsync(pageNumber, pageSize, search);
 
-            var notificationDtos = new List<NotificationClassDTO>();
-
-            foreach (var notification in notifications)
-            {
-                var uniqueClasses = notification.NotificationStudents
-                    .Select(ns => ns.Student?.Class)
-                    .Where(c => c != null)
-                    .GroupBy(c => c.Id)
-                    .Select(g => g.First());
-
-                foreach (var cls in uniqueClasses)
-                {
-                    notificationDtos.Add(new NotificationClassDTO
+            var notificationDtos = notifications
+                    .Select(n => new NotificationClassDTO
                     {
-                        Id = notification.Id,
-                        VaccineName = notification.Name ?? string.Empty,
-                        Title = notification.Title,
-                        Type = notification.Type,
-                        Message = notification.Message,
-                        CreatedAt = notification.CreatedAt,
-                        ClassId = cls.Id,
-                        ClassName = cls.ClassName
-                    });
-                }
-            }
+                        Id = n.Id,
+                        VaccineName = n.Name ?? string.Empty,
+                        Title = n.Title,
+                        Type = n.Type,
+                        Message = n.Message,
+                        CreatedAt = n.CreatedAt,
+                        ClassName = n.ClassName
+                    }).ToList();
 
             return new PageResult<NotificationClassDTO>
             {
@@ -266,7 +252,7 @@ namespace backend.Services
                 CreatedAt = DateTime.UtcNow,
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
-                ClassName = classEntity.ClassName, // Gán className lấy từ DB
+                ClassName = classEntity.ClassName,
                 NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
                     StudentId = s.Id,

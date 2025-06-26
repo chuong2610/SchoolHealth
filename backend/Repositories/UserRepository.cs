@@ -89,11 +89,16 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
+                var searchLower = search.ToLower();
                 query = query.Where(u =>
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
-                    u.Phone.Contains(search));
+                    u.Phone.Contains(search) ||
+                    u.DateOfBirth.ToString().Contains(search) ||
+                    u.Gender.ToLower() == searchLower ||
+                    u.Address.Contains(search));
             }
+
 
             var items = await query
                 .OrderBy(u => u.Id)
@@ -110,11 +115,16 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
+                var searchLower = search.ToLower();
                 query = query.Where(u =>
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
-                    u.Phone.Contains(search));
+                    u.Phone.Contains(search) ||
+                    u.DateOfBirth.ToString().Contains(search) ||
+                    u.Gender.ToLower() == searchLower ||
+                    u.Address.Contains(search));
             }
+
 
             return await query.CountAsync();
         }
@@ -127,11 +137,16 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
+                var searchLower = search.ToLower();
                 query = query.Where(u =>
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
-                    u.Phone.Contains(search));
+                    u.Phone.Contains(search) ||
+                    u.DateOfBirth.ToString().Contains(search) ||
+                    u.Gender.ToLower() == searchLower ||
+                    u.Address.Contains(search));
             }
+
 
             return await query
                 .OrderBy(u => u.Id)
@@ -148,10 +163,14 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
+                var searchLower = search.ToLower();
                 query = query.Where(u =>
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
-                    u.Phone.Contains(search));
+                    u.Phone.Contains(search) ||
+                    u.DateOfBirth.ToString().Contains(search) ||
+                    u.Gender.ToLower() == searchLower ||
+                    u.Address.Contains(search));
             }
 
             return await query.CountAsync();
