@@ -42,5 +42,13 @@ namespace backend.Repositories
                 .Include(p => p.Student)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<StudentProfile> GetByIdWithIncludesAsync(int studentId)
+        {
+            return await _context.StudentProfiles
+                .Include(sp => sp.Student)
+                .ThenInclude(s => s.Class)
+                .FirstOrDefaultAsync(sp => sp.Id == studentId);
+        }
     }
 }

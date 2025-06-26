@@ -61,7 +61,7 @@ namespace backend.Controllers
         {
             try
             {
-                var medications = await _medicationService.GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+                var medications = await _medicationService.GetMedicationsActivesByNurseIdAsync(id, pageNumber, pageSize, search);
                 return Ok(new BaseResponse<PageResult<MedicationDTO>>(medications, "Lấy danh sách gửi thuốc thành công", true));
             }
             catch (Exception ex)
