@@ -36,13 +36,30 @@ namespace backend.Services
 
             await _repo.SaveMessageAsync(msg);
 
-            await _hub.Clients.User(msg.ToUserId.ToString()).SendAsync("ReceiveMessage", new
+            // Prepare message data for SignalR broadcast
+            var messageData = new
             {
-                from = msg.FromUserId,
-                to = msg.ToUserId,
+                fromUserId = msg.FromUserId,
+                toUserId = msg.ToUserId,
                 message = msg.Message,
-                timestamp = msg.Timestamp
-            });
+                timestamp = msg.Timestamp,
+                id = msg.Id // Include message ID if available
+            };
+
+            // Send to recipient if specified
+            if (msg.ToUserId.HasValue)
+            {
+                await _hub.Clients.User(msg.ToUserId.ToString()).SendAsync("ReceiveMessage", messageData);
+            }
+
+            // Also send to sender for confirmation (different event to avoid loops)
+            await _hub.Clients.User(msg.FromUserId.ToString()).SendAsync("MessageSent", messageData);
+
+            // If this is an unassigned message (ToUserId is null), broadcast to all nurses
+            if (!msg.ToUserId.HasValue)
+            {
+                await _hub.Clients.Group("Nurses").SendAsync("NewUnassignedMessage", messageData);
+            }
         }
 
         public async Task<List<ChatMessageDTO>> GetHistoryAsync(int userA, int userB, int skip, int take)

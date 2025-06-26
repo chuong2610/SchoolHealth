@@ -149,6 +149,8 @@ class ChatSignalRService {
         if (this.connection) {
             try {
                 this.connection.off('ReceiveMessage');
+                this.connection.off('MessageSent');
+                this.connection.off('NewUnassignedMessage');
                 this.connection.off('NewMessage');
                 this.connection.off('MessageAssigned');
                 this.connection.off('AssignmentNotification');
@@ -174,12 +176,66 @@ class ChatSignalRService {
         // Real-time message events
         this.connection.on('ReceiveMessage', (data) => {
             console.log('📨 Real-time message received:', data);
-            this.notifyListeners('messageReceived', data);
+
+            // Transform backend message data to frontend expected format
+            const transformedMessage = {
+                id: data.id || Date.now() + Math.random(),
+                fromUserId: data.fromUserId || data.from || data.FromUserId,
+                toUserId: data.toUserId || data.to || data.ToUserId,
+                message: data.message || data.Message,
+                timestamp: data.timestamp || data.Timestamp || new Date().toISOString(),
+                isFromCurrentUser: false // Will be determined by component
+            };
+
+            this.notifyListeners('messageReceived', transformedMessage);
+        });
+
+        this.connection.on('MessageSent', (data) => {
+            console.log('📤 Message sent confirmation received:', data);
+
+            // Transform and notify for sent message confirmation
+            const transformedMessage = {
+                id: data.id || Date.now() + Math.random(),
+                fromUserId: data.fromUserId || data.from || data.FromUserId,
+                toUserId: data.toUserId || data.to || data.ToUserId,
+                message: data.message || data.Message,
+                timestamp: data.timestamp || data.Timestamp || new Date().toISOString(),
+                isFromCurrentUser: true // This is always from current user
+            };
+
+            this.notifyListeners('messageSent', transformedMessage);
+        });
+
+        this.connection.on('NewUnassignedMessage', (data) => {
+            console.log('📥 New unassigned message received:', data);
+
+            // Transform backend message data to frontend expected format
+            const transformedMessage = {
+                id: data.id || Date.now() + Math.random(),
+                fromUserId: data.fromUserId || data.from || data.FromUserId,
+                toUserId: data.toUserId || data.to || data.ToUserId,
+                message: data.message || data.Message,
+                timestamp: data.timestamp || data.Timestamp || new Date().toISOString(),
+                priority: data.priority || 'Thường'
+            };
+
+            this.notifyListeners('newUnassignedMessage', transformedMessage);
         });
 
         this.connection.on('NewMessage', (data) => {
-            console.log('📨 Real-time message received (NewMessage):', data);
-            this.notifyListeners('messageReceived', data);
+            console.log('📨 Real-time message received (NewMessage - legacy):', data);
+
+            // Transform backend message data to frontend expected format
+            const transformedMessage = {
+                id: data.id || Date.now() + Math.random(),
+                fromUserId: data.fromUserId || data.from || data.FromUserId,
+                toUserId: data.toUserId || data.to || data.ToUserId,
+                message: data.message || data.Message,
+                timestamp: data.timestamp || data.Timestamp || new Date().toISOString(),
+                isFromCurrentUser: false // Will be determined by component
+            };
+
+            this.notifyListeners('messageReceived', transformedMessage);
         });
 
         // Assignment events
@@ -284,31 +340,41 @@ class ChatSignalRService {
     }
 
     async sendMessage(fromUserId, toUserId, message) {
-        if (!this.isConnected || !this.connection) {
-            throw new Error('SignalR not connected');
-        }
-
         try {
             const messageData = {
+                FromUserId: fromUserId,
+                ToUserId: toUserId,
+                Message: message
+            };
+
+            // Try SignalR first (if backend supports it)
+            if (this.isConnected && this.availableMethods.SendMessage !== false) {
+                try {
+                    await this.trySignalRMethod('SendMessage', messageData);
+                    return {
+                        id: Date.now(), // Generate temporary ID for UI
+                        fromUserId: fromUserId,
+                        toUserId: toUserId,
+                        message: message,
+                        timestamp: new Date().toISOString()
+                    };
+                } catch (signalRError) {
+                    console.log('📡 SignalR SendMessage not available, using REST API');
+                    // Continue to REST API fallback
+                }
+            }
+
+            // Fallback to REST API (this is the main backend implementation)
+            console.log('📡 Using REST API for sending message');
+            const response = await axiosInstance.post('/Chat/send', messageData);
+
+            return {
+                id: Date.now(), // Generate temporary ID for UI
                 fromUserId: fromUserId,
                 toUserId: toUserId,
                 message: message,
                 timestamp: new Date().toISOString()
             };
-
-            // Try SignalR first
-            try {
-                await this.trySignalRMethod('SendMessage', messageData);
-                return messageData;
-            } catch (signalRError) {
-                if (this.availableMethods.SendMessage === false) {
-                    // Fallback to REST API
-                    console.log('📡 Using REST API for sending message');
-                    const response = await axiosInstance.post('/Chat/send', messageData);
-                    return response.data;
-                }
-                throw signalRError;
-            }
         } catch (error) {
             console.error('Error sending message:', error);
             throw error;
@@ -326,8 +392,9 @@ class ChatSignalRService {
             if (this.isConnected && this.availableMethods.GetUserConversations !== false) {
                 try {
                     const conversations = await this.trySignalRMethod('GetUserConversations', userId);
-                    this.cache.conversations.set(userId, conversations);
-                    return conversations;
+                    const transformedConversations = this.transformConversationsData(conversations);
+                    this.cache.conversations.set(userId, transformedConversations);
+                    return transformedConversations;
                 } catch (signalRError) {
                     console.log('📡 SignalR failed, falling back to REST API:', signalRError.message);
                     // Continue to REST API fallback
@@ -337,7 +404,7 @@ class ChatSignalRService {
             // Fallback to REST API
             console.log('📡 Using REST API for getUserConversations');
             const response = await axiosInstance.get(`/Chat/conversations?userId=${userId}`);
-            const conversations = response.data;
+            const conversations = this.transformConversationsData(response.data);
             this.cache.conversations.set(userId, conversations);
             return conversations;
         } catch (error) {
@@ -347,13 +414,32 @@ class ChatSignalRService {
         }
     }
 
+    // Transform backend ChatPreviewDto to frontend expected format
+    transformConversationsData(backendData) {
+        if (!Array.isArray(backendData)) {
+            return [];
+        }
+
+        return backendData.map(item => ({
+            id: item.User || item.user || item.id,
+            parentId: item.User || item.user,
+            User: item.User || item.user, // Keep original field for backend compatibility
+            parentName: item.ParentName || item.parentName || 'Phụ huynh',
+            lastMessage: item.LastMessage || item.lastMessage || '',
+            lastMessageTime: item.Timestamp || item.timestamp,
+            unreadCount: item.HasUnread ? 1 : 0,
+            HasUnread: item.HasUnread || false,
+            hasUnread: item.HasUnread || false
+        }));
+    }
+
     async getChatHistory(userA, userB, skip = 0, take = 50) {
         try {
             // Try SignalR first
-            if (this.isConnected) {
+            if (this.isConnected && this.availableMethods.GetChatHistory !== false) {
                 try {
                     const history = await this.trySignalRMethod('GetChatHistory', userA, userB, skip, take);
-                    return history;
+                    return this.transformChatHistoryData(history);
                 } catch (signalRError) {
                     if (this.availableMethods.GetChatHistory !== false) {
                         throw signalRError;
@@ -364,11 +450,27 @@ class ChatSignalRService {
             // Fallback to REST API
             console.log(`📡 Using REST API for getChatHistory (skip: ${skip}, take: ${take})`);
             const response = await axiosInstance.get(`/Chat/history?userA=${userA}&userB=${userB}&skip=${skip}&take=${take}`);
-            return response.data;
+            return this.transformChatHistoryData(response.data);
         } catch (error) {
             console.error('Error getting chat history:', error);
             throw error;
         }
+    }
+
+    // Transform backend ChatMessageDTO to frontend expected format
+    transformChatHistoryData(backendData) {
+        if (!Array.isArray(backendData)) {
+            return [];
+        }
+
+        return backendData.map((item, index) => ({
+            id: item.Id || item.id || Date.now() + index,
+            fromUserId: item.FromUserId || item.fromUserId,
+            toUserId: item.ToUserId || item.toUserId,
+            message: item.Message || item.message,
+            timestamp: item.Timestamp || item.timestamp,
+            isRead: item.IsRead || item.isRead || false
+        }));
     }
 
     async getPendingRequests(userId) {
@@ -412,12 +514,13 @@ class ChatSignalRService {
             }
 
             // Try SignalR first
-            if (this.isConnected) {
+            if (this.isConnected && this.availableMethods.GetUnassignedMessages !== false) {
                 try {
                     const messages = await this.trySignalRMethod('GetUnassignedMessages');
-                    this.cache.unassignedMessages = messages;
+                    const transformedMessages = this.transformUnassignedMessagesData(messages);
+                    this.cache.unassignedMessages = transformedMessages;
                     this.cache.lastUpdate = Date.now();
-                    return messages;
+                    return transformedMessages;
                 } catch (signalRError) {
                     if (this.availableMethods.GetUnassignedMessages !== false) {
                         throw signalRError;
@@ -428,7 +531,7 @@ class ChatSignalRService {
             // Fallback to REST API
             console.log('📡 Using REST API for getUnassignedMessages');
             const response = await axiosInstance.get('/Chat/unassigned');
-            const messages = response.data;
+            const messages = this.transformUnassignedMessagesData(response.data);
             this.cache.unassignedMessages = messages;
             this.cache.lastUpdate = Date.now();
             return messages;
@@ -438,12 +541,33 @@ class ChatSignalRService {
         }
     }
 
+    // Transform backend unassigned messages to frontend expected format
+    transformUnassignedMessagesData(backendData) {
+        if (!Array.isArray(backendData)) {
+            return [];
+        }
+
+        return backendData.map(item => ({
+            id: item.User || item.user || Date.now() + Math.random(),
+            parentId: item.User || item.user,
+            parentName: item.ParentName || item.parentName || 'Phụ huynh',
+            studentName: item.StudentName || item.studentName || '',
+            message: item.LastMessage || item.lastMessage || item.Message || item.message || '',
+            timestamp: item.Timestamp || item.timestamp || new Date().toISOString(),
+            priority: item.Priority || item.priority || 'Thường'
+        }));
+    }
+
     async assignMessage(parentId, nurseId) {
         try {
-            const assignmentData = { parentId, nurseId };
+            // Backend expects ParentId and NurseId (capitalized)
+            const assignmentData = {
+                ParentId: parentId,
+                NurseId: nurseId
+            };
 
             // Try SignalR first
-            if (this.isConnected) {
+            if (this.isConnected && this.availableMethods.AssignMessage !== false) {
                 try {
                     await this.trySignalRMethod('AssignMessage', assignmentData);
 
@@ -487,10 +611,15 @@ class ChatSignalRService {
                 }
             }
 
-            // Fallback to REST API
+            // Use NodeController endpoint for hasUnreadMessages
             console.log('📡 Using REST API for hasUnreadMessages');
             const response = await axiosInstance.get(`/Node/has-unread-message/${userId}`);
-            return response.data;
+
+            // Backend returns { hasUnreadMessage: boolean }
+            // Transform to expected format { hasUnread: boolean }
+            return {
+                hasUnread: response.data.hasUnreadMessage || false
+            };
         } catch (error) {
             console.error('Error checking unread messages:', error);
             // Return default false instead of throwing to prevent app crash
@@ -500,24 +629,13 @@ class ChatSignalRService {
 
     async markAsRead(userId) {
         try {
-            // Try SignalR first
-            if (this.isConnected) {
-                try {
-                    await this.trySignalRMethod('MarkAsRead', userId);
-                    return;
-                } catch (signalRError) {
-                    if (this.availableMethods.MarkAsRead !== false) {
-                        throw signalRError;
-                    }
-                }
-            }
-
-            // Fallback to REST API
-            console.log('📡 Using REST API for markAsRead');
-            await axiosInstance.post(`/Node/mark-read/${userId}`);
+            // Backend handles mark as read automatically in getChatHistory endpoint
+            // So we don't need a separate markAsRead call
+            console.log('📡 markAsRead handled automatically by backend in getChatHistory');
+            return;
         } catch (error) {
             console.error('Error marking as read:', error);
-            throw error;
+            // Don't throw error as this is not critical
         }
     }
 

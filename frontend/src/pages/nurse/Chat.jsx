@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { Tabs, Tab, Form, Button, Spinner, Alert, Badge } from 'react-bootstrap';
 import {
     FaComments,
@@ -19,6 +19,21 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import chatSignalR from '../../services/chatSignalR';
 import '../../styles/nurse/chat/index.css';
+
+// Debounce utility function
+const useDebounce = (callback, delay) => {
+    const timeoutRef = useRef(null);
+
+    return useCallback((...args) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            callback(...args);
+        }, delay);
+    }, [callback, delay]);
+};
 
 const NurseChat = () => {
     const { user } = useAuth();
@@ -49,6 +64,11 @@ const NurseChat = () => {
     const [isAtBottom, setIsAtBottom] = useState(true);
     const [newMessagesCount, setNewMessagesCount] = useState(0);
     const [showNewMessageBadge, setShowNewMessageBadge] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingUsers, setTypingUsers] = useState(new Set());
+    const typingTimeoutRef = useRef(null);
+
+    // We'll define debounced functions after the original functions are defined
 
     // Load data when component mounts and setup SignalR
     useEffect(() => {
@@ -103,7 +123,11 @@ const NurseChat = () => {
     // Define loadMoreMessages first with useCallback
     const loadMoreMessages = useCallback(async () => {
         if (!selectedConversation || loadingMore || !hasMoreMessages) {
-            console.log('❌ LoadMoreMessages blocked:', { selectedConversation: !!selectedConversation, loadingMore, hasMoreMessages });
+            console.log('❌ LoadMoreMessages blocked:', {
+                selectedConversation: !!selectedConversation,
+                loadingMore,
+                hasMoreMessages
+            });
             return;
         }
 
@@ -113,17 +137,23 @@ const NurseChat = () => {
             return;
         }
 
-        console.log('🔄 Loading more messages...', { skip, parentId });
+        console.log('🔄 Loading more messages...', { skip, parentId, currentCount: messages.length });
         setLoadingMore(true);
 
         try {
             // Get current scroll height to maintain position
             const container = messagesContainerRef.current;
             const prevScrollHeight = container?.scrollHeight || 0;
+            const prevScrollTop = container?.scrollTop || 0;
 
             // Load next batch of older messages
             const response = await chatSignalR.getChatHistory(user.id, parentId, skip, 50);
-            console.log('📊 Response from getChatHistory:', { length: response?.length, skip });
+            console.log('📊 Response from getChatHistory:', {
+                length: response?.length,
+                skip,
+                firstMessage: response?.[0],
+                lastMessage: response?.[response?.length - 1]
+            });
 
             if (response && response.length > 0) {
                 // Backend returns messages ordered by timestamp DESC (newest first)
@@ -131,24 +161,48 @@ const NurseChat = () => {
                 const olderMessages = [...response].reverse();
                 console.log('📝 Adding older messages:', olderMessages.length);
 
-                // Add older messages to the beginning of the current messages
+                // Check for duplicates before adding
                 setMessages(prev => {
                     console.log('📝 Current messages count:', prev.length);
-                    const newMessages = [...olderMessages, ...prev];
+
+                    // Filter out duplicates based on message content and timestamp
+                    const uniqueOlderMessages = olderMessages.filter(newMsg =>
+                        !prev.some(existingMsg =>
+                            existingMsg.message === newMsg.message &&
+                            existingMsg.fromUserId === newMsg.fromUserId &&
+                            Math.abs(new Date(existingMsg.timestamp).getTime() - new Date(newMsg.timestamp).getTime()) < 1000
+                        )
+                    );
+
+                    if (uniqueOlderMessages.length === 0) {
+                        console.log('📝 No new unique messages to add');
+                        return prev;
+                    }
+
+                    const newMessages = [...uniqueOlderMessages, ...prev];
                     console.log('📝 New messages count:', newMessages.length);
                     return newMessages;
                 });
+
                 setSkip(prev => prev + response.length);
                 setHasMoreMessages(response.length === 50); // If we got 50, there might be more
 
                 // Maintain scroll position
                 if (container) {
-                    setTimeout(() => {
-                        const newScrollHeight = container.scrollHeight;
-                        const scrollDiff = newScrollHeight - prevScrollHeight;
-                        container.scrollTop = scrollDiff;
-                        console.log('📍 Scroll position maintained:', { prevScrollHeight, newScrollHeight, scrollDiff });
-                    }, 50);
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
+                            const newScrollHeight = container.scrollHeight;
+                            const scrollDiff = newScrollHeight - prevScrollHeight;
+                            container.scrollTop = prevScrollTop + scrollDiff;
+                            console.log('📍 Scroll position maintained:', {
+                                prevScrollHeight,
+                                newScrollHeight,
+                                scrollDiff,
+                                oldScrollTop: prevScrollTop,
+                                newScrollTop: container.scrollTop
+                            });
+                        }, 100);
+                    });
                 }
             } else {
                 console.log('🏁 No more messages to load');
@@ -156,11 +210,21 @@ const NurseChat = () => {
             }
         } catch (error) {
             console.error('Error loading more messages:', error);
-            setError('Không thể tải thêm tin nhắn. Vui lòng thử lại.');
+
+            // More specific error messages
+            if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+                setError('Lỗi kết nối mạng. Vui lòng kiểm tra internet và thử lại.');
+            } else if (error.response?.status === 401) {
+                setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else if (error.response?.status >= 500) {
+                setError('Lỗi server. Vui lòng thử lại sau ít phút.');
+            } else {
+                setError('Không thể tải thêm tin nhắn. Vui lòng thử lại.');
+            }
         } finally {
             setLoadingMore(false);
         }
-    }, [selectedConversation, loadingMore, hasMoreMessages, skip, user.id]);
+    }, [selectedConversation, loadingMore, hasMoreMessages, skip, user.id, messages.length]);
 
     // Handle window resize for responsive behavior
     useEffect(() => {
@@ -311,25 +375,79 @@ const NurseChat = () => {
         }
     };
 
-    const loadConversations = async () => {
+    const loadConversations = async (retryCount = 0) => {
         try {
+            console.log('🔄 Loading conversations...', { retryCount });
             const response = await chatSignalR.getUserConversations(user.id);
+            console.log('📊 Conversations loaded:', response?.length || 0);
             setConversations(response || []);
+
+            // Clear any previous errors on success
+            if (error && error.includes('cuộc trò chuyện')) {
+                setError('');
+            }
         } catch (error) {
             console.error('Error loading conversations:', error);
+
+            // Retry logic for network errors
+            if (retryCount < 2 && (
+                error.message.includes('Network Error') ||
+                error.message.includes('fetch') ||
+                error.response?.status >= 500
+            )) {
+                console.log(`🔄 Retrying loadConversations (attempt ${retryCount + 1})`);
+                setTimeout(() => loadConversations(retryCount + 1), 1000 * (retryCount + 1));
+                return;
+            }
+
             setConversations([]);
-            setError('Không thể tải cuộc trò chuyện. Vui lòng thử lại.');
+
+            // More specific error messages
+            if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+                setError('Lỗi kết nối. Đang thử kết nối lại...');
+            } else if (error.response?.status === 401) {
+                setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                setError('Không thể tải cuộc trò chuyện. Vui lòng thử lại.');
+            }
         }
     };
 
-    const loadUnassignedMessages = async () => {
+    const loadUnassignedMessages = async (retryCount = 0) => {
         try {
+            console.log('🔄 Loading unassigned messages...', { retryCount });
             const response = await chatSignalR.getUnassignedMessages();
+            console.log('📊 Unassigned messages loaded:', response?.length || 0);
             setUnassignedMessages(response || []);
+
+            // Clear any previous errors on success
+            if (error && error.includes('tin nhắn chờ')) {
+                setError('');
+            }
         } catch (error) {
             console.error('Error loading unassigned messages:', error);
+
+            // Retry logic for network errors
+            if (retryCount < 2 && (
+                error.message.includes('Network Error') ||
+                error.message.includes('fetch') ||
+                error.response?.status >= 500
+            )) {
+                console.log(`🔄 Retrying loadUnassignedMessages (attempt ${retryCount + 1})`);
+                setTimeout(() => loadUnassignedMessages(retryCount + 1), 1000 * (retryCount + 1));
+                return;
+            }
+
             setUnassignedMessages([]);
-            setError('Không thể tải tin nhắn chờ. Vui lòng thử lại.');
+
+            // More specific error messages
+            if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+                setError('Lỗi kết nối. Đang thử kết nối lại...');
+            } else if (error.response?.status === 401) {
+                setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                setError('Không thể tải tin nhắn chờ. Vui lòng thử lại.');
+            }
         }
     };
 
@@ -342,30 +460,108 @@ const NurseChat = () => {
         }
     };
 
+    // Debounced functions to prevent API spam
+    const debouncedLoadConversations = useDebounce(loadConversations, 500);
+    const debouncedLoadUnassignedMessages = useDebounce(loadUnassignedMessages, 500);
+    const debouncedCheckUnreadMessages = useDebounce(checkUnreadMessages, 1000);
+
+    // Memoized calculations for performance
+    const memoizedConversations = useMemo(() => {
+        return conversations.map(conv => ({
+            ...conv,
+            isActive: selectedConversation?.id === conv.id,
+            hasNewMessages: conv.unreadCount > 0
+        }));
+    }, [conversations, selectedConversation?.id]);
+
+    const memoizedMessages = useMemo(() => {
+        return messages.map((msg, index) => ({
+            ...msg,
+            isConsecutive: index > 0 && messages[index - 1]?.fromUserId === msg.fromUserId,
+            showTime: index === 0 ||
+                (new Date(msg.timestamp).getTime() - new Date(messages[index - 1]?.timestamp).getTime()) > 300000 // 5 minutes
+        }));
+    }, [messages]);
+
+    const connectionStatusConfig = useMemo(() => ({
+        Connected: {
+            color: 'connected',
+            text: 'Tư vấn thời gian thực',
+            icon: '✅'
+        },
+        Connecting: {
+            color: 'connecting',
+            text: 'Đang kết nối...',
+            icon: '🔄'
+        },
+        Reconnecting: {
+            color: 'connecting',
+            text: 'Đang kết nối lại...',
+            icon: '🔄'
+        },
+        Failed: {
+            color: 'disconnected',
+            text: 'Dùng REST API',
+            icon: '⚠️'
+        },
+        Disconnected: {
+            color: 'disconnected',
+            text: 'Ngoại tuyến',
+            icon: '❌'
+        }
+    }), []);
+
+    const currentConnectionStatus = useMemo(() => {
+        return connectionStatusConfig[connectionStatus] || connectionStatusConfig.Disconnected;
+    }, [connectionStatus, connectionStatusConfig]);
+
     const setupSignalRConnection = async () => {
         if (!user?.id) return;
 
         try {
             setConnectionStatus('Connecting');
+            console.log('🔌 Setting up SignalR connection for user:', user.id);
 
             // Define event handlers that can be referenced for cleanup
             const reconnectingHandler = () => {
+                console.log('🔄 SignalR reconnecting...');
                 setIsConnected(false);
                 setConnectionStatus('Reconnecting');
             };
 
             const reconnectedHandler = () => {
+                console.log('✅ SignalR reconnected successfully');
                 setIsConnected(true);
                 setConnectionStatus('Connected');
+
+                // Refresh data after reconnection
+                setTimeout(() => {
+                    loadConversations();
+                    loadUnassignedMessages();
+                    checkUnreadMessages();
+                }, 1000);
             };
 
-            const disconnectedHandler = () => {
+            const disconnectedHandler = (error) => {
+                console.log('❌ SignalR disconnected:', error);
                 setIsConnected(false);
                 setConnectionStatus('Disconnected');
+
+                // Show user-friendly message
+                if (error && !error.includes('Connection stopped by user')) {
+                    setError('Mất kết nối realtime. Đang thử kết nối lại...');
+
+                    // Auto-clear error after a while
+                    setTimeout(() => {
+                        setError('');
+                    }, 5000);
+                }
             };
 
             // Setup event handlers before connecting
             chatSignalR.addEventListener('messageReceived', handleRealTimeMessage);
+            chatSignalR.addEventListener('messageSent', handleMessageSentConfirmation);
+            chatSignalR.addEventListener('newUnassignedMessage', handleNewUnassignedMessage);
             chatSignalR.addEventListener('messageAssigned', handleMessageAssigned);
             chatSignalR.addEventListener('reconnecting', reconnectingHandler);
             chatSignalR.addEventListener('reconnected', reconnectedHandler);
@@ -375,41 +571,88 @@ const NurseChat = () => {
             setIsConnected(connected);
             setConnectionStatus(connected ? 'Connected' : 'Failed');
 
-            if (!connected) {
-                console.warn('SignalR connection failed, will use REST API only');
+            if (connected) {
+                console.log('✅ SignalR connection established successfully');
+                // Clear any connection-related errors
+                if (error && error.includes('kết nối')) {
+                    setError('');
+                }
+            } else {
+                console.warn('⚠️ SignalR connection failed, will use REST API only');
+                setConnectionStatus('Failed');
             }
 
             // Return cleanup function
             return () => {
+                console.log('🧹 Cleaning up SignalR event listeners');
                 chatSignalR.removeEventListener('messageReceived', handleRealTimeMessage);
+                chatSignalR.removeEventListener('messageSent', handleMessageSentConfirmation);
+                chatSignalR.removeEventListener('newUnassignedMessage', handleNewUnassignedMessage);
                 chatSignalR.removeEventListener('messageAssigned', handleMessageAssigned);
                 chatSignalR.removeEventListener('reconnecting', reconnectingHandler);
                 chatSignalR.removeEventListener('reconnected', reconnectedHandler);
                 chatSignalR.removeEventListener('disconnected', disconnectedHandler);
             };
         } catch (error) {
-            console.error('Error setting up SignalR:', error);
+            console.error('❌ Error setting up SignalR:', error);
             setIsConnected(false);
             setConnectionStatus('Error');
+
+            // Show user-friendly error message
+            if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+                setError('Không thể kết nối realtime. Vẫn có thể chat qua REST API.');
+            } else {
+                setError('Lỗi khởi tạo kết nối. Chat vẫn hoạt động bình thường.');
+            }
+
+            // Auto-clear error after a while
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+
             return null;
         }
     };
 
     const handleRealTimeMessage = (messageData) => {
-        // Add real-time message to current conversation
-        if (selectedConversation &&
-            (messageData.fromUserId === selectedConversation.parentId ||
-                messageData.fromUserId === selectedConversation.User)) {
+        console.log('🔄 Handling real-time message:', messageData);
+
+        // Check if message belongs to current conversation
+        const currentParentId = selectedConversation?.parentId ||
+            selectedConversation?.User ||
+            selectedConversation?.user;
+
+        const isMessageForCurrentConversation = currentParentId && (
+            messageData.fromUserId === currentParentId ||
+            (messageData.toUserId === user.id && messageData.fromUserId === currentParentId) ||
+            (messageData.fromUserId === user.id && messageData.toUserId === currentParentId)
+        );
+
+        if (isMessageForCurrentConversation) {
+            console.log('📨 Adding message to current conversation');
+
             const newMessage = {
-                id: messageData.id || Date.now(),
+                id: messageData.id || Date.now() + Math.random(),
                 message: messageData.message,
                 fromUserId: messageData.fromUserId,
                 toUserId: messageData.toUserId,
-                timestamp: messageData.timestamp,
+                timestamp: messageData.timestamp || new Date().toISOString(),
                 isFromCurrentUser: messageData.fromUserId === user.id
             };
 
             setMessages(prev => {
+                // Check if message already exists to prevent duplicates
+                const messageExists = prev.some(msg =>
+                    msg.message === newMessage.message &&
+                    msg.fromUserId === newMessage.fromUserId &&
+                    Math.abs(new Date(msg.timestamp).getTime() - new Date(newMessage.timestamp).getTime()) < 1000
+                );
+
+                if (messageExists) {
+                    console.log('📨 Message already exists, skipping duplicate');
+                    return prev;
+                }
+
                 const updatedMessages = [...prev, newMessage];
                 // Sort by timestamp to maintain order
                 const sortedMessages = updatedMessages.sort((a, b) => {
@@ -420,14 +663,66 @@ const NurseChat = () => {
 
                 return sortedMessages;
             });
+
+            // Show new message notification if user is not at bottom
+            if (!isAtBottom && messageData.fromUserId !== user.id) {
+                setNewMessagesCount(prev => prev + 1);
+                setShowNewMessageBadge(true);
+            }
+
+            // Auto-scroll to bottom if message is from current user or user is already at bottom
+            if (messageData.fromUserId === user.id || isAtBottom) {
+                setTimeout(() => scrollToBottom(false, false), 100);
+            }
         }
 
-        // Refresh conversations and unassigned messages
-        loadConversations();
-        loadUnassignedMessages();
+        // Refresh conversations list to update last message and unread counts
+        debouncedLoadConversations();
+
+        // Refresh unassigned messages if this was an unassigned message
+        if (!messageData.toUserId || messageData.toUserId === null) {
+            debouncedLoadUnassignedMessages();
+        }
+    };
+
+    const handleMessageSentConfirmation = (messageData) => {
+        console.log('✅ Message sent confirmation received:', messageData);
+
+        // Update any pending message to show as sent
+        setMessages(prev => prev.map(msg => {
+            // Find matching pending message and mark as sent
+            if (msg.isPending &&
+                msg.message === messageData.message &&
+                Math.abs(new Date(msg.timestamp).getTime() - new Date(messageData.timestamp).getTime()) < 5000) {
+                return {
+                    ...msg,
+                    id: messageData.id || msg.id,
+                    isPending: false,
+                    isFailed: false
+                };
+            }
+            return msg;
+        }));
+
+        // Refresh conversations to update last message
+        debouncedLoadConversations();
+    };
+
+    const handleNewUnassignedMessage = (messageData) => {
+        console.log('📥 New unassigned message received:', messageData);
+
+        // Refresh unassigned messages to show new message
+        debouncedLoadUnassignedMessages();
+
+        // If currently on unassigned tab, show notification
+        if (activeTab === 'unassigned') {
+            // Could add toast notification here
+        }
     };
 
     const handleMessageAssigned = (assignmentData) => {
+        console.log('👩‍⚕️ Message assignment received:', assignmentData);
+
         // Refresh conversations and unassigned messages when assignment happens
         loadConversations();
         loadUnassignedMessages();
@@ -535,43 +830,138 @@ const NurseChat = () => {
         e.preventDefault();
         if (!newMessage.trim() || !selectedConversation) return;
 
-        setSending(true);
-        try {
-            const parentId = selectedConversation.parentId || selectedConversation.User || selectedConversation.user;
-            const messageText = newMessage.trim();
+        const parentId = selectedConversation.parentId || selectedConversation.User || selectedConversation.user;
+        const messageText = newMessage.trim();
+        const tempId = Date.now() + Math.random(); // Unique temporary ID
 
-            // Send message via hybrid system (SignalR preferred, REST API fallback)
-            await chatSignalR.sendMessage(user.id, parentId, messageText);
+        // Optimistic update - Add message immediately to UI
+        const optimisticMessage = {
+            id: tempId,
+            message: messageText,
+            fromUserId: user.id,
+            toUserId: parentId,
+            timestamp: new Date().toISOString(),
+            isFromCurrentUser: true,
+            isPending: true // Mark as pending to show loading state
+        };
 
-            // Add message to local state for immediate UI update
-            const newMsg = {
-                id: Date.now(),
-                message: messageText,
-                fromUserId: user.id,
-                toUserId: parentId,
-                timestamp: new Date().toISOString(),
-                isFromCurrentUser: true
-            };
-
-            setMessages(prev => {
-                const updatedMessages = [...prev, newMsg];
-                // Sort by timestamp to maintain order
-                const sortedMessages = updatedMessages.sort((a, b) => {
-                    const timeA = new Date(a.timestamp).getTime();
-                    const timeB = new Date(b.timestamp).getTime();
-                    return timeA - timeB;
-                });
-
-                return sortedMessages;
+        // Add optimistic message to UI immediately
+        setMessages(prev => {
+            const updatedMessages = [...prev, optimisticMessage];
+            // Sort by timestamp to maintain order
+            const sortedMessages = updatedMessages.sort((a, b) => {
+                const timeA = new Date(a.timestamp).getTime();
+                const timeB = new Date(b.timestamp).getTime();
+                return timeA - timeB;
             });
-            setNewMessage('');
+            return sortedMessages;
+        });
 
-            // Refresh conversations
-            await loadConversations();
+        // Clear input and scroll to bottom immediately
+        setNewMessage('');
+        setSending(true);
+
+        // Auto-scroll to show the new message
+        setTimeout(() => scrollToBottom(false, true), 100);
+
+        try {
+            // Send message via hybrid system (SignalR preferred, REST API fallback)
+            const sentMessage = await chatSignalR.sendMessage(user.id, parentId, messageText);
+            console.log('📤 Message sent successfully:', sentMessage);
+
+            // Update the optimistic message to remove pending state
+            setMessages(prev => prev.map(msg =>
+                msg.id === tempId
+                    ? { ...msg, isPending: false, id: sentMessage.id || tempId }
+                    : msg
+            ));
+
+            // Refresh conversations list to update last message
+            debouncedLoadConversations();
+
+            // Clear any previous send errors
+            if (error && error.includes('gửi tin nhắn')) {
+                setError('');
+            }
 
         } catch (error) {
             console.error('Error sending message:', error);
-            setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
+
+            // Mark the message as failed instead of removing it
+            setMessages(prev => prev.map(msg =>
+                msg.id === tempId
+                    ? { ...msg, isPending: false, isFailed: true }
+                    : msg
+            ));
+
+            // Don't restore message text to input for failed messages
+            // User can retry using the retry button
+
+            // Show specific error messages
+            if (error.message.includes('Network Error') || error.message.includes('fetch')) {
+                setError('Lỗi mạng. Nhấn nút 🔄 để gửi lại tin nhắn.');
+            } else if (error.response?.status === 401) {
+                setError('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.');
+            } else {
+                setError('Gửi tin nhắn thất bại. Nhấn 🔄 để thử lại.');
+            }
+
+            // Auto-clear error after a while
+            setTimeout(() => {
+                if (error && error.includes('gửi tin nhắn')) {
+                    setError('');
+                }
+            }, 5000);
+        } finally {
+            setSending(false);
+        }
+    };
+
+    const retryMessage = async (failedMessage) => {
+        if (!selectedConversation || sending) return;
+
+        const parentId = selectedConversation.parentId || selectedConversation.User || selectedConversation.user;
+
+        // Mark message as pending again
+        setMessages(prev => prev.map(msg =>
+            msg.id === failedMessage.id
+                ? { ...msg, isPending: true, isFailed: false }
+                : msg
+        ));
+
+        setSending(true);
+
+        try {
+            // Retry sending the message
+            const sentMessage = await chatSignalR.sendMessage(user.id, parentId, failedMessage.message);
+            console.log('🔄 Message retried successfully:', sentMessage);
+
+            // Update the message to successful state
+            setMessages(prev => prev.map(msg =>
+                msg.id === failedMessage.id
+                    ? { ...msg, isPending: false, isFailed: false, id: sentMessage.id || failedMessage.id }
+                    : msg
+            ));
+
+            // Refresh conversations list
+            debouncedLoadConversations();
+
+            // Clear any previous errors
+            if (error && error.includes('gửi tin nhắn')) {
+                setError('');
+            }
+
+        } catch (error) {
+            console.error('Error retrying message:', error);
+
+            // Mark message as failed again
+            setMessages(prev => prev.map(msg =>
+                msg.id === failedMessage.id
+                    ? { ...msg, isPending: false, isFailed: true }
+                    : msg
+            ));
+
+            setError('Không thể gửi lại tin nhắn. Vui lòng thử lại.');
         } finally {
             setSending(false);
         }
@@ -799,6 +1189,17 @@ const NurseChat = () => {
                 </div>
 
                 <div className="messages-container" ref={messagesContainerRef}>
+                    {/* Connection Status Indicator */}
+                    {(connectionStatus !== 'Connected') && (
+                        <div className={`connection-status-indicator ${connectionStatus === 'Connecting' || connectionStatus === 'Reconnecting' ? 'connecting' : 'disconnected'
+                            }`}>
+                            {connectionStatus === 'Connecting' ? '🔄 Đang kết nối...' :
+                                connectionStatus === 'Reconnecting' ? '🔄 Đang kết nối lại...' :
+                                    connectionStatus === 'Failed' ? '⚠️ Chế độ REST API' :
+                                        '❌ Mất kết nối realtime'}
+                        </div>
+                    )}
+
                     {messages.length === 0 ? (
                         <div className="empty-state">
                             <div className="empty-state-icon">
@@ -825,16 +1226,46 @@ const NurseChat = () => {
                             {messages.map((message, index) => (
                                 <div
                                     key={message.id || index}
-                                    className={`message ${message.fromUserId === user.id ? 'sent' : 'received'}`}
+                                    className={`message ${message.fromUserId === user.id ? 'sent' : 'received'} ${message.isPending ? 'pending' : ''
+                                        } ${message.isFailed ? 'failed' : ''}`}
                                 >
                                     <div className="message-bubble">
                                         <div>{message.message}</div>
                                         <div className="message-time">
                                             {formatMessageTime(message.timestamp)}
+                                            {message.fromUserId === user.id && (
+                                                <span className={`message-status ${message.isPending ? 'sending' :
+                                                    message.isFailed ? 'failed' : 'sent'
+                                                    }`}>
+                                                    {message.isPending ? '🕒' :
+                                                        message.isFailed ? '❌' : '✓'}
+                                                </span>
+                                            )}
                                         </div>
+                                        {message.isFailed && (
+                                            <button
+                                                className="retry-message-button"
+                                                onClick={() => retryMessage(message)}
+                                                title="Gửi lại tin nhắn"
+                                            >
+                                                🔄
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             ))}
+
+                            {/* Typing Indicator */}
+                            {typingUsers.size > 0 && (
+                                <div className="typing-indicator">
+                                    <span>Phụ huynh đang nhập tin nhắn</span>
+                                    <div className="typing-dots">
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                    </div>
+                                </div>
+                            )}
                         </>
                     )}
                     <div ref={messagesEndRef} />

@@ -499,20 +499,34 @@ const ParentChat = () => {
 
         setSending(true);
         try {
-            const nurseId = selectedConversation?.nurseId || selectedConversation?.User || selectedConversation?.user;
             const messageText = newMessage.trim();
+            let nurseId = null;
+
+            // LOGIC THEO FLOW YÊU CẦU:
+            // - Tab "conversations" + có selectedConversation → gửi tin nhắn bình thường với nurseId
+            // - Tab "pending" hoặc không có selectedConversation → gửi tin nhắn chờ với nurseId = null
+            if (activeTab === 'conversations' && selectedConversation) {
+                // Tin nhắn bình thường với y tá
+                nurseId = selectedConversation.nurseId || selectedConversation.User || selectedConversation.user;
+                console.log('📤 [PARENT] Sending normal message to nurse:', nurseId);
+            } else {
+                // Tin nhắn chờ mới (gửi cho hệ thống, chờ nurse nhận)
+                nurseId = null;
+                console.log('📤 [PARENT] Sending pending message (waiting for nurse assignment)');
+            }
 
             // Send message via hybrid system (SignalR preferred, REST API fallback)
-            await chatSignalR.sendMessage(user.id, nurseId || null, messageText);
+            await chatSignalR.sendMessage(user.id, nurseId, messageText);
 
             // Add message to local state for immediate UI update
             const newMsg = {
                 id: Date.now(),
                 message: messageText,
                 fromUserId: user.id,
-                toUserId: nurseId || null,
+                toUserId: nurseId,
                 timestamp: new Date().toISOString(),
-                isFromCurrentUser: true
+                isFromCurrentUser: true,
+                isPending: nurseId === null // Mark pending messages
             };
 
             setMessages(prev => {
@@ -528,12 +542,15 @@ const ParentChat = () => {
             });
             setNewMessage('');
 
-            // Refresh conversations and pending requests
-            if (selectedConversation) {
+            // Refresh data theo tab hiện tại
+            if (activeTab === 'conversations') {
                 await loadConversations();
             } else {
                 await loadPendingRequests();
             }
+
+            // Auto scroll to bottom
+            setTimeout(() => scrollToBottom(false, false), 100);
 
         } catch (error) {
             console.error('Error sending message:', error);

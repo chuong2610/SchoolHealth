@@ -252,80 +252,80 @@ const Profile = () => {
                     <div className="tab-section">
                       <h5>
                         <FaUser />
-                        Thông tin cơ bản
-                      </h5>
+                      Thông tin cơ bản
+                    </h5>
 
-                      <div className="info-item">
-                        <div className="info-icon primary">
-                          <FaEnvelope />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon primary">
+                        <FaEnvelope />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Email</div>
-                          {editMode ? (
-                            <Form.Control
-                              type="email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            />
-                          ) : (
+                        {editMode ? (
+                          <Form.Control
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          />
+                        ) : (
                             <div className="info-value">{formData.email}</div>
-                          )}
-                        </div>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="info-item">
-                        <div className="info-icon success">
-                          <FaPhone />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon success">
+                        <FaPhone />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Số điện thoại</div>
-                          {editMode ? (
-                            <Form.Control
-                              type="tel"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            />
-                          ) : (
+                        {editMode ? (
+                          <Form.Control
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          />
+                        ) : (
                             <div className="info-value">{formData.phone}</div>
-                          )}
-                        </div>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="info-item">
-                        <div className="info-icon warning">
-                          <FaBirthdayCake />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon warning">
+                        <FaBirthdayCake />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Ngày sinh</div>
-                          {editMode ? (
-                            <Form.Control
-                              type="date"
-                              value={formData.dob}
-                              onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                            />
-                          ) : (
+                        {editMode ? (
+                          <Form.Control
+                            type="date"
+                            value={formData.dob}
+                            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                          />
+                        ) : (
                             <div className="info-value">{formData.dob}</div>
-                          )}
-                        </div>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="info-item">
-                        <div className="info-icon purple">
-                          <FaVenusMars />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon purple">
+                        <FaVenusMars />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Giới tính</div>
-                          {editMode ? (
-                            <Form.Select
-                              value={formData.gender}
-                              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                            >
-                              <option value="Nam">Nam</option>
-                              <option value="Nữ">Nữ</option>
-                            </Form.Select>
-                          ) : (
+                        {editMode ? (
+                          <Form.Select
+                            value={formData.gender}
+                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                          >
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                          </Form.Select>
+                        ) : (
                             <div className="info-value">{formData.gender}</div>
-                          )}
+                        )}
                         </div>
                       </div>
                     </div>
@@ -335,43 +335,43 @@ const Profile = () => {
                     <div className="tab-section">
                       <h5>
                         <FaMapMarkerAlt />
-                        Thông tin liên hệ
-                      </h5>
+                      Thông tin liên hệ
+                    </h5>
 
-                      <div className="info-item">
-                        <div className="info-icon primary">
-                          <FaMapMarkerAlt />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon primary">
+                        <FaMapMarkerAlt />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Địa chỉ</div>
-                          {editMode ? (
-                            <Form.Control
-                              as="textarea"
-                              rows={2}
-                              value={formData.address}
-                              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                            />
-                          ) : (
+                        {editMode ? (
+                          <Form.Control
+                            as="textarea"
+                            rows={2}
+                            value={formData.address}
+                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                          />
+                        ) : (
                             <div className="info-value">{formData.address}</div>
-                          )}
-                        </div>
+                        )}
                       </div>
+                    </div>
 
-                      <div className="info-item">
-                        <div className="info-icon warning">
-                          <FaPhone />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon warning">
+                        <FaPhone />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Liên hệ khẩn cấp</div>
-                          {editMode ? (
-                            <Form.Control
-                              type="tel"
-                              value={formData.emergencyContact}
-                              onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
-                            />
-                          ) : (
+                        {editMode ? (
+                          <Form.Control
+                            type="tel"
+                            value={formData.emergencyContact}
+                            onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
+                          />
+                        ) : (
                             <div className="info-value">{formData.emergencyContact}</div>
-                          )}
+                        )}
                         </div>
                       </div>
                     </div>
@@ -532,24 +532,24 @@ const Profile = () => {
                     <div className="tab-section">
                       <h5>
                         <FaShieldAlt />
-                        Bảo mật tài khoản
-                      </h5>
+                      Bảo mật tài khoản
+                    </h5>
 
-                      <div className="info-item">
-                        <div className="info-icon primary">
-                          <FaLock />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon primary">
+                        <FaLock />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Mật khẩu</div>
                           <div className="info-value">Đổi mật khẩu để bảo vệ tài khoản</div>
-                          <Button
-                            variant="outline-primary"
-                            size="sm"
-                            onClick={() => setShowChangePassword(true)}
-                          >
-                            <FaKey className="me-1" />
-                            Đổi mật khẩu
-                          </Button>
+                        <Button
+                          variant="outline-primary"
+                          size="sm"
+                          onClick={() => setShowChangePassword(true)}
+                        >
+                          <FaKey className="me-1" />
+                          Đổi mật khẩu
+                        </Button>
                         </div>
                       </div>
                     </div>
@@ -577,28 +577,28 @@ const Profile = () => {
                     <div className="tab-section">
                       <h5>
                         <FaCog />
-                        Cài đặt ứng dụng
-                      </h5>
+                      Cài đặt ứng dụng
+                    </h5>
 
-                      <div className="info-item">
-                        <div className="info-icon primary">
-                          <FaBell />
-                        </div>
+                    <div className="info-item">
+                      <div className="info-icon primary">
+                        <FaBell />
+                      </div>
                         <div className="info-content flex-grow-1">
                           <div className="info-label">Thông báo</div>
                           <div className="info-value">Quản lý thông báo và cảnh báo</div>
-                          <Form.Check
-                            type="switch"
-                            id="notifications"
-                            label="Nhận thông báo qua email"
-                            defaultChecked
-                          />
-                          <Form.Check
-                            type="switch"
-                            id="push-notifications"
-                            label="Thông báo đẩy"
-                            defaultChecked
-                          />
+                        <Form.Check
+                          type="switch"
+                          id="notifications"
+                          label="Nhận thông báo qua email"
+                          defaultChecked
+                        />
+                        <Form.Check
+                          type="switch"
+                          id="push-notifications"
+                          label="Thông báo đẩy"
+                          defaultChecked
+                        />
                         </div>
                       </div>
                     </div>
