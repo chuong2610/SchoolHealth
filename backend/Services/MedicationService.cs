@@ -64,61 +64,96 @@ namespace backend.Services
 
 
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int? pageNumber, int? pageSize, string? search)
         {
+            var medications = await _medicationRepository
+                .GetMedicationsPendingAsync(pageNumber, pageSize, search);
             var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search);
-            var medications = await _medicationRepository.GetMedicationsPendingAsync(pageNumber, pageSize, search);
 
             var dtos = medications
                 .Select(m => MapToDTO(m))
                 .ToList();
 
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
+
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize.Value);
 
             return new PageResult<MedicationDTO>
             {
                 Items = dtos,
                 TotalItems = totalItems,
                 TotalPages = totalPages,
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber.Value
             };
         }
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search);
+            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search);
 
-            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
 
             var dtos = medications.Select(m => MapToDTO(m)).ToList();
+
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
 
             return new PageResult<MedicationDTO>
             {
                 Items = dtos,
                 TotalItems = totalItems,
                 TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber.Value
             };
         }
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsActivesByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search);
+            var medications = await _medicationRepository
+                .GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search);
 
-            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
+            var dtos = medications.Select(m => MapToDTO(m)).ToList();
 
-            var medicationDTOs = medications.Select(m => MapToDTO(m)).ToList();
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
 
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize.Value);
 
             return new PageResult<MedicationDTO>
             {
-                Items = medicationDTOs,
+                Items = dtos,
                 TotalItems = totalItems,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                CurrentPage = pageNumber.Value
             };
         }
+
 
         public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
         {
@@ -168,7 +203,6 @@ namespace backend.Services
                 StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
-                StudentClassName = medication.Student?.Class?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
 
@@ -212,5 +246,7 @@ namespace backend.Services
         {
             return await _medicationRepository.GetMedicationCountsAsync();
         }
+
+
     }
 }

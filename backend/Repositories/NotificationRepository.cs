@@ -24,7 +24,13 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query
@@ -42,7 +48,13 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search));
+                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query.CountAsync();
@@ -71,7 +83,12 @@ namespace backend.Repositories
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                            ns.Student.Name.Contains(search));
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query
@@ -90,7 +107,12 @@ namespace backend.Repositories
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                            ns.Student.Name.Contains(search));
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query.CountAsync();
@@ -106,7 +128,12 @@ namespace backend.Repositories
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                            ns.Student.Name.Contains(search));
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query
@@ -125,7 +152,12 @@ namespace backend.Repositories
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                            ns.Student.Name.Contains(search));
+                                          ns.Student.Name.Contains(search) ||
+                                          ns.Status.Contains(search) ||
+                                          ns.Notification.Name.Contains(search) ||
+                                          ns.Notification.Message.Contains(search) ||
+                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
+                                          ns.Notification.Type.Contains(search));
             }
 
             return await query.CountAsync();
@@ -145,12 +177,18 @@ namespace backend.Repositories
             var query = _context.Notifications
                 .Include(n => n.NotificationStudents)
                     .ThenInclude(ns => ns.Student)
-                        .ThenInclude(s => s.Class)
+                        .ThenInclude(c => c.Class)
                 .Where(n => n.IsActive);
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(n => n.Title.Contains(search));
+                query = query.Where(n => n.Title.Contains(search) ||
+                                         n.Location.Contains(search) ||
+                                         n.Type.Contains(search) ||
+                                         n.Message.Contains(search) ||
+                                         n.ClassName.Contains(search) ||
+                                         n.CreatedAt.ToString().Contains(search) ||
+                                         n.Id.ToString().Contains(search));
             }
 
             return await query
@@ -162,11 +200,21 @@ namespace backend.Repositories
 
         public async Task<int> CountNotificationsAsync(string? search)
         {
-            var query = _context.Notifications.AsQueryable().Where(n => n.IsActive);
+            var query = _context.Notifications
+               .Include(n => n.NotificationStudents)
+                   .ThenInclude(ns => ns.Student)
+                       .ThenInclude(s => s.Class)
+               .Where(n => n.IsActive);
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(n => n.Title.Contains(search));
+                query = query.Where(n => n.Title.Contains(search) ||
+                                         n.Location.Contains(search) ||
+                                         n.Type.Contains(search) ||
+                                         n.Message.Contains(search) ||
+                                         n.ClassName.Contains(search) ||
+                                         n.CreatedAt.ToString().Contains(search) ||
+                                         n.Id.ToString().Contains(search));
             }
 
             return await query.CountAsync();

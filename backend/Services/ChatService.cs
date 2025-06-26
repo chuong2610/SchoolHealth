@@ -23,9 +23,9 @@ namespace backend.Services
 
         public async Task SendMessageAsync(int from, int? to, string message)
         {
-           var utcTime = DateTime.UtcNow;
-           var vnTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime,
-            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+            var utcTime = DateTime.UtcNow;
+            var vnTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime,
+                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
             var msg = new ChatMessage
             {
                 FromUserId = from,
@@ -36,7 +36,7 @@ namespace backend.Services
 
             await _repo.SaveMessageAsync(msg);
 
-            await _hub.Clients.Users(from.ToString(), to.ToString()).SendAsync("ReceiveMessage", new
+            await _hub.Clients.User(msg.ToUserId.ToString()).SendAsync("ReceiveMessage", new
             {
                 from = msg.FromUserId,
                 to = msg.ToUserId,

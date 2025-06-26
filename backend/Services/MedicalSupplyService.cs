@@ -19,7 +19,7 @@ namespace backend.Services
             return _medicalSupplyRepository.UpdateMedicalSupplyQuantityAsync(supplyId, quantity);
         }
 
-        public async Task<PageResult<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync(int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicalSupplyDTO>> GetAllMedicalSuppliesAsync(int? pageNumber, int? pageSize, string? search)
         {
             var supplies = await _medicalSupplyRepository.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
             var totalCount = await _medicalSupplyRepository.CountAllMedicalSuppliesAsync(search);
@@ -31,13 +31,28 @@ namespace backend.Services
                 Quantity = s.Quantity
             }).ToList();
 
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            // Nếu không truyền pageSize thì trả về tất cả
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicalSupplyDTO>
+                {
+                    Items = items,
+                    TotalItems = totalCount,
+                    CurrentPage = 1,
+                    TotalPages = 1
+                };
+            }
+
+            // Nếu có phân trang
+            int currentPage = pageNumber.Value;
+            int perPage = pageSize.Value;
+            int totalPages = (int)Math.Ceiling(totalCount / (double)perPage);
 
             return new PageResult<MedicalSupplyDTO>
             {
                 Items = items,
                 TotalItems = totalCount,
-                CurrentPage = pageNumber,
+                CurrentPage = currentPage,
                 TotalPages = totalPages
             };
         }

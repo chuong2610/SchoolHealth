@@ -21,11 +21,11 @@ namespace backend.Services
             _userService = userService;
             _medicalSupplyService = medicalSupplyService;
         }
-        public async Task<HomeNurseDTO> GetHomeNurseAsync(int nurseId, int pageNumber, int pageSize, string? search)
+        public async Task<HomeNurseDTO> GetHomeNurseAsync(int nurseId)
         {
-            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize, search);
-            var activeMedications = await _medicationService.GetMedicationsActiveByNurseIdAsync(nurseId, pageNumber, pageSize, search);
-            var completedMedications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(nurseId, pageNumber, pageSize, search);
+            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(null, null, null);
+            var activeMedications = await _medicationService.GetMedicationsActivesByNurseIdAsync(nurseId, null, null, null);
+            var completedMedications = await _medicationService.GetMedicationsCompletedByNurseIdAsync(nurseId, null, null, null);
             var notifications = await _notificationService.GetNotificationsByNurseIdAsync(nurseId);
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
@@ -45,18 +45,18 @@ namespace backend.Services
             };
         }
 
-        public async Task<HomeAdminDTO> GetHomeAdminAsync(int pageNumber, int pageSize, string? search)
+        public async Task<HomeAdminDTO> GetHomeAdminAsync()
         {
             var numberOfStudents = await _studentService.GetNumberOfStudents();
             var numberOfNurses = await _userService.GetNumberOfUsersAsync("Nurse");
             var numberOfParents = await _userService.GetNumberOfUsersAsync("Parent");
-            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(pageNumber, pageSize, search);
+            var pendingMedications = await _medicationService.GetMedicationsPendingAsync(null, null, null);
             var activeMedications = await _medicationService.GetMedicationsActiveAsync();
             var completedMedications = await _medicationService.GetMedicationsCompletedAsync();
             var notifications = await _notificationService.Get5Notifications();
             var medicalEvents = await _medicalEventService.GetMedicalEventsTodayAsync();
             var weeklyMedicalEventCounts = await _medicalEventService.GetWeeklyMedicalEventCountsAsync();
-            var medicalSupplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(pageNumber, pageSize, search);
+            var medicalSupplies = await _medicalSupplyService.GetAllMedicalSuppliesAsync(null, null, null);
 
             return new HomeAdminDTO
             {
