@@ -1,0 +1,291 @@
+/* ========================================
+   NURSE PROFILE - INFO ITEMS
+   ======================================== */
+
+/* Enhanced Info Items */
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 1.2rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(240, 98, 146, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.info-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.info-item:hover {
+    background: linear-gradient(135deg, #f8bbd9 0%, #ffffff 100%);
+    transform: translateX(6px);
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.15);
+    border-color: #F06292;
+}
+
+.info-item:hover::before {
+    opacity: 1;
+}
+
+/* Icon Styling */
+.info-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.info-item:hover .info-icon {
+    transform: scale(1.1);
+}
+
+.info-icon.primary {
+    background: linear-gradient(135deg, rgba(240, 98, 146, 0.2), rgba(233, 30, 99, 0.2));
+    color: #F06292;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.2);
+}
+
+.info-icon.success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2));
+    color: #4caf50;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.info-icon.warning {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 87, 34, 0.2));
+    color: #ff9800;
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+}
+
+.info-icon.purple {
+    background: linear-gradient(135deg, rgba(240, 98, 146, 0.2), rgba(194, 24, 91, 0.2));
+    color: #C2185B;
+    box-shadow: 0 4px 12px rgba(194, 24, 91, 0.2);
+}
+
+/* Info Content */
+.info-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.info-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+/* Animation delays for staggered effect */
+.info-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.info-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.info-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.info-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.info-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.info-item:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* Badge within info items */
+.info-item .badge {
+    background: linear-gradient(135deg, #F8BBD9, #F06292);
+    color: white;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.info-item .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3);
+}
+
+/* Button within info items */
+.info-item .btn {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.info-item .btn-outline-primary {
+    border-color: #F06292;
+    color: #F06292;
+}
+
+.info-item .btn-outline-primary:hover {
+    background-color: #F06292;
+    border-color: #F06292;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.info-item .btn-outline-success {
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.info-item .btn-outline-success:hover {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Form elements within info items */
+.info-item .form-control,
+.info-item .form-select {
+    border: 2px solid #fce4ec;
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 0.9rem;
+}
+
+.info-item .form-control:focus,
+.info-item .form-select:focus {
+    border-color: #F06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    background: #fefefe;
+    transform: translateY(-1px);
+}
+
+.info-item .form-control[as="textarea"] {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Switch styling */
+.info-item .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+    border-radius: 0.75em;
+    transition: all 0.3s ease;
+}
+
+.info-item .form-check-input:checked {
+    background-color: #F06292;
+    border-color: #F06292;
+}
+
+.info-item .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+}
+
+.info-item .form-check-label {
+    margin-left: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .info-item {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .info-icon {
+        margin-bottom: 0.5rem;
+        margin-right: 0;
+    }
+
+    .info-content {
+        text-align: center;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+    }
+
+    .info-value {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .info-item {
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .info-label {
+        font-size: 0.8rem;
+    }
+
+    .info-value {
+        font-size: 0.85rem;
+    }
+
+    .info-item .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .info-item .form-control,
+    .info-item .form-select {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
+    }
+
+    .info-item .badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}

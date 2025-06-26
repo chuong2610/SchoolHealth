@@ -1,0 +1,362 @@
+/* ========================================
+   NURSE DASHBOARD - CHARTS
+   ======================================== */
+
+.nurse-chart-card {
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.nurse-chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    border-color: #F06292;
+}
+
+.nurse-chart-card .ant-card-head {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border-bottom: 2px solid #f8bbd9;
+    padding: 16px 24px;
+}
+
+.nurse-chart-card .ant-card-head-title {
+    color: #E91E63;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.nurse-chart-card .ant-card-head-title svg {
+    margin-right: 12px;
+    color: inherit;
+}
+
+.nurse-chart-card .ant-card-body {
+    padding: 24px;
+    background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%);
+}
+
+/* Chart Container */
+.nurse-chart {
+    width: 100%;
+    height: 280px;
+    position: relative;
+}
+
+/* Chart Title Icons Animation */
+.chart-title-icon {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.chart-title-icon.rotating {
+    animation: rotate 8s linear infinite;
+}
+
+.chart-title-icon.scaling {
+    animation: scale 2s infinite;
+}
+
+.chart-title-icon.rotating-swing {
+    animation: rotateSwing 2s infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes scale {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes rotateSwing {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(15deg);
+    }
+
+    75% {
+        transform: rotate(-15deg);
+    }
+}
+
+/* Recharts Custom Styling */
+.nurse-chart .recharts-wrapper {
+    margin: 0 auto;
+}
+
+.nurse-chart .recharts-cartesian-grid line {
+    stroke: #fce4ec;
+    stroke-dasharray: 3 3;
+}
+
+.nurse-chart .recharts-cartesian-axis line {
+    stroke: #F06292;
+}
+
+.nurse-chart .recharts-cartesian-axis-tick text {
+    fill: #666;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Pie Chart Specific */
+.nurse-chart .recharts-pie-label {
+    fill: #333;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.nurse-chart .recharts-legend-wrapper {
+    padding-top: 20px;
+}
+
+.nurse-chart .recharts-legend-item {
+    margin-right: 16px;
+}
+
+.nurse-chart .recharts-legend-item-text {
+    color: #666 !important;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* Tooltip Styling */
+.nurse-chart .recharts-tooltip-wrapper {
+    z-index: 1000;
+}
+
+.nurse-chart .recharts-default-tooltip {
+    background: white !important;
+    border: 2px solid #F06292 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(240, 98, 146, 0.2) !important;
+    font-weight: 600;
+    padding: 12px !important;
+}
+
+.nurse-chart .recharts-tooltip-label {
+    color: #E91E63 !important;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.nurse-chart .recharts-tooltip-item {
+    color: #666 !important;
+    font-weight: 600;
+}
+
+/* Area Chart Specific */
+.nurse-chart .recharts-area {
+    filter: drop-shadow(0 2px 4px rgba(240, 98, 146, 0.1));
+}
+
+.nurse-chart .recharts-line .recharts-curve {
+    filter: drop-shadow(0 2px 4px rgba(240, 98, 146, 0.2));
+}
+
+.nurse-chart .recharts-dot {
+    filter: drop-shadow(0 2px 4px rgba(240, 98, 146, 0.3));
+}
+
+.nurse-chart .recharts-active-dot {
+    filter: drop-shadow(0 2px 8px rgba(240, 98, 146, 0.4));
+}
+
+/* Charts Row */
+.charts-row {
+    margin-bottom: 24px;
+}
+
+/* Enhanced Chart Animations */
+.nurse-chart-card:hover .nurse-chart .recharts-pie-sector {
+    filter: brightness(1.1);
+    transition: filter 0.3s ease;
+}
+
+.nurse-chart-card:hover .nurse-chart .recharts-area {
+    filter: drop-shadow(0 4px 8px rgba(240, 98, 146, 0.2));
+    transition: filter 0.3s ease;
+}
+
+/* Loading State for Charts */
+.chart-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+    color: #F06292;
+}
+
+.chart-loading svg {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    animation: spin 1s linear infinite;
+}
+
+.chart-loading p {
+    color: #666;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty Chart State */
+.chart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+    color: #999;
+    text-align: center;
+}
+
+.chart-empty svg {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.chart-empty h4 {
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.chart-empty p {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .nurse-chart {
+        height: 250px;
+    }
+
+    .nurse-chart-card .ant-card-body {
+        padding: 20px;
+    }
+
+    .nurse-chart-card .ant-card-head {
+        padding: 12px 20px;
+    }
+
+    .nurse-chart-card .ant-card-head-title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-chart {
+        height: 220px;
+    }
+
+    .nurse-chart-card .ant-card-body {
+        padding: 16px;
+    }
+
+    .nurse-chart-card .ant-card-head {
+        padding: 10px 16px;
+    }
+
+    .nurse-chart-card .ant-card-head-title {
+        font-size: 0.95rem;
+    }
+
+    .nurse-chart .recharts-cartesian-axis-tick text {
+        font-size: 10px;
+    }
+
+    .nurse-chart .recharts-legend-item-text {
+        font-size: 11px;
+    }
+
+    .nurse-chart .recharts-pie-label {
+        font-size: 10px;
+    }
+
+    .charts-row {
+        margin-bottom: 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-chart {
+        height: 200px;
+    }
+
+    .nurse-chart-card .ant-card-body {
+        padding: 12px;
+    }
+
+    .nurse-chart-card .ant-card-head {
+        padding: 8px 12px;
+    }
+
+    .nurse-chart-card .ant-card-head-title {
+        font-size: 0.9rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .chart-title-icon {
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+
+    .nurse-chart .recharts-cartesian-axis-tick text {
+        font-size: 9px;
+    }
+
+    .nurse-chart .recharts-legend-item {
+        margin-right: 8px;
+    }
+
+    .nurse-chart .recharts-legend-item-text {
+        font-size: 10px;
+    }
+
+    .chart-loading,
+    .chart-empty {
+        height: 200px;
+    }
+
+    .chart-loading svg,
+    .chart-empty svg {
+        font-size: 1.5rem;
+    }
+}

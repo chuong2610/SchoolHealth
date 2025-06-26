@@ -4,7 +4,6 @@
 
 /* Core Application Styles */
 @import './main.css';
-@import './themes.css';
 
 /* Layout Components */
 @import './sidebar.css';
@@ -12,4 +11,3 @@
 @import './layout-fix.css';
 
 /* Dashboard (shared by all roles) */
-@import './dashboard.css';

@@ -41,7 +41,7 @@ namespace backend.Services
                  issuer: _configuration["Jwt:Issuer"],
                  audience: _configuration["Jwt:Audience"],
                  claims: clamims,
-                 expires: DateTime.Now.AddMinutes(30),
+                 expires: DateTime.Now.AddMinutes(1000),
                  signingCredentials: credentials
             );
             return new JwtSecurityTokenHandler().WriteToken(token);

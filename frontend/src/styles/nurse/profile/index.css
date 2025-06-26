@@ -1,0 +1,293 @@
+/* ========================================
+   NURSE PROFILE - MAIN CSS INDEX
+   Import all modular CSS files
+   ======================================== */
+
+/* Core Modules */
+@import './layout.css';
+@import './header.css';
+@import './tabs.css';
+@import './info-items.css';
+@import './modal.css';
+
+/* Global CSS Variables for Nurse Profile Theme */
+:root {
+    --nurse-primary: #F06292;
+    --nurse-secondary: #E91E63;
+    --nurse-accent: #F8BBD9;
+    --nurse-success: #4CAF50;
+    --nurse-warning: #FF9800;
+    --nurse-info: #87CEEB;
+    --nurse-danger: #E57373;
+    --nurse-text: #333;
+    --nurse-text-secondary: #666;
+    --nurse-text-muted: #999;
+    --nurse-border: #fce4ec;
+    --nurse-bg-light: #fefefe;
+    --nurse-bg-gradient: linear-gradient(135deg, #f8f9fc 0%, #fce4ec 100%);
+    --nurse-shadow: 0 4px 12px rgba(240, 98, 146, 0.08);
+    --nurse-shadow-hover: 0 8px 25px rgba(240, 98, 146, 0.15);
+}
+
+/* Global Nurse Profile Styles */
+.nurse-profile * {
+    box-sizing: border-box;
+}
+
+.nurse-profile {
+    color: var(--nurse-text);
+}
+
+/* Enhanced Badge Colors */
+.nurse-profile .badge {
+    background: linear-gradient(135deg, #F8BBD9, #F06292);
+    color: white;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nurse-profile .badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3);
+}
+
+/* Bootstrap Component Overrides */
+.nurse-profile .container-fluid {
+    padding: 0;
+}
+
+.nurse-profile .row {
+    margin: 0;
+}
+
+.nurse-profile .col-lg-6,
+.nurse-profile .col-lg-8,
+.nurse-profile .col-md,
+.nurse-profile .col-md-auto {
+    padding: 0 15px;
+}
+
+/* Form Controls Global Styling */
+.nurse-profile .form-control {
+    border: 2px solid var(--nurse-border);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 0.95rem;
+}
+
+.nurse-profile .form-control:focus {
+    border-color: var(--nurse-primary);
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    background: var(--nurse-bg-light);
+    transform: translateY(-1px);
+}
+
+.nurse-profile .form-select {
+    border: 2px solid var(--nurse-border);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 0.95rem;
+}
+
+.nurse-profile .form-select:focus {
+    border-color: var(--nurse-primary);
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    transform: translateY(-1px);
+}
+
+.nurse-profile .form-check-input:checked {
+    background-color: var(--nurse-primary);
+    border-color: var(--nurse-primary);
+}
+
+.nurse-profile .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+}
+
+/* Alert Styling */
+.nurse-profile .alert {
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.nurse-profile .alert-success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+    color: #2e7d32;
+    border-left: 4px solid #4caf50;
+}
+
+.nurse-profile .alert-danger {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(229, 115, 115, 0.1));
+    color: #c62828;
+    border-left: 4px solid #f44336;
+}
+
+.nurse-profile .alert-warning {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.1));
+    color: #ef6c00;
+    border-left: 4px solid #ff9800;
+}
+
+.nurse-profile .alert-info {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(100, 181, 246, 0.1));
+    color: #1565c0;
+    border-left: 4px solid #2196f3;
+}
+
+/* Utility Classes */
+.nurse-profile .text-primary {
+    color: var(--nurse-primary) !important;
+}
+
+.nurse-profile .text-secondary {
+    color: var(--nurse-secondary) !important;
+}
+
+.nurse-profile .text-success {
+    color: var(--nurse-success) !important;
+}
+
+.nurse-profile .text-warning {
+    color: var(--nurse-warning) !important;
+}
+
+.nurse-profile .text-danger {
+    color: var(--nurse-danger) !important;
+}
+
+.nurse-profile .text-muted {
+    color: var(--nurse-text-muted) !important;
+}
+
+.nurse-profile .bg-primary {
+    background-color: var(--nurse-primary) !important;
+}
+
+.nurse-profile .bg-light {
+    background: var(--nurse-bg-light) !important;
+}
+
+/* Custom Scrollbar */
+.nurse-profile ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.nurse-profile ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.nurse-profile ::-webkit-scrollbar-thumb {
+    background: var(--nurse-primary);
+    border-radius: 3px;
+}
+
+.nurse-profile ::-webkit-scrollbar-thumb:hover {
+    background: var(--nurse-secondary);
+}
+
+/* Text Selection */
+.nurse-profile ::selection {
+    background: var(--nurse-accent);
+    color: white;
+}
+
+.nurse-profile ::-moz-selection {
+    background: var(--nurse-accent);
+    color: white;
+}
+
+/* Focus States */
+.nurse-profile *:focus {
+    outline: 2px solid var(--nurse-primary);
+    outline-offset: 2px;
+}
+
+.nurse-profile button:focus,
+.nurse-profile .btn:focus {
+    outline: 2px solid var(--nurse-primary);
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .nurse-profile {
+        background: white !important;
+    }
+
+    .profile-header {
+        background: var(--nurse-primary) !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .profile-card,
+    .info-item {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .edit-btn,
+    .save-btn,
+    .cancel-btn {
+        display: none;
+    }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    .nurse-profile * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .nurse-profile {
+        --nurse-primary: #D81B60;
+        --nurse-secondary: #AD1457;
+        --nurse-text: #000000;
+        --nurse-text-secondary: #333333;
+        --nurse-border: #cccccc;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .nurse-profile {
+        --nurse-bg-light: #2d2d2d;
+        --nurse-text: #ffffff;
+        --nurse-text-secondary: #cccccc;
+        --nurse-text-muted: #999999;
+        --nurse-border: #444444;
+        --nurse-bg-gradient: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 100%);
+    }
+
+    .nurse-profile .info-item {
+        background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+        color: var(--nurse-text);
+    }
+
+    .nurse-profile .form-control,
+    .nurse-profile .form-select {
+        background: var(--nurse-bg-light);
+        color: var(--nurse-text);
+        border-color: var(--nurse-border);
+    }
+
+    .nurse-profile .profile-card {
+        background: var(--nurse-bg-light);
+        color: var(--nurse-text);
+    }
+}

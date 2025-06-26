@@ -1,0 +1,212 @@
+/* ========================================
+   HEALTH EVENTS - ACTION BUTTONS
+   ======================================== */
+
+.health-events-action-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.health-events-btn-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    border: none;
+    color: white;
+}
+
+.health-events-btn-action.view {
+    background: #F06292;
+    border: 1px solid #F06292;
+    box-shadow: 0 2px 6px rgba(240, 98, 146, 0.25);
+}
+
+.health-events-btn-action.view:hover {
+    background: #E91E63;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(240, 98, 146, 0.35);
+}
+
+/* Enhanced Action Buttons */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    margin: 0 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    position: relative;
+}
+
+.btn-action.view {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    border: 1px solid #F06292;
+    color: white;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.3);
+}
+
+.btn-action.view:hover {
+    background: linear-gradient(135deg, #E91E63, #C2185B);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.4);
+}
+
+.btn-action svg {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* Loading Icon */
+.loading-icon {
+    color: #F06292;
+    font-size: 2rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Filter and Export Buttons */
+.filter-btn {
+    border: 2px solid #F06292;
+    color: #F06292;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+}
+
+.export-btn {
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Show More Button */
+.show-more-btn {
+    color: #F06292;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+}
+
+.show-more-btn:hover {
+    color: white;
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .health-events-btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .btn-action svg {
+        font-size: 14px;
+    }
+
+    .filter-btn,
+    .export-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .loading-icon {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .health-events-action-buttons {
+        gap: 4px;
+    }
+
+    .health-events-btn-action {
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+    }
+
+    .btn-action {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    .btn-action svg {
+        font-size: 12px;
+    }
+
+    .filter-btn,
+    .export-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .loading-icon {
+        font-size: 1.5rem;
+    }
+}

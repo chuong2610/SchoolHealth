@@ -1,0 +1,258 @@
+/* ==================== CHAT TABS ==================== */
+.chat-tabs {
+    margin-bottom: 2rem;
+}
+
+.chat-tabs .nav-link {
+    border: none !important;
+    background: transparent !important;
+    color: #718096 !important;
+    padding: 1rem 1.5rem !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    border-radius: 12px 12px 0 0 !important;
+    margin-right: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.chat-tabs .nav-link:hover {
+    background: #f8faff !important;
+    color: #667eea !important;
+    transform: translateY(-2px) !important;
+}
+
+.chat-tabs .nav-link.active {
+    background: white !important;
+    color: #667eea !important;
+    border-bottom: 3px solid #667eea !important;
+    box-shadow: 0 -2px 10px rgba(102, 126, 234, 0.1) !important;
+}
+
+.chat-tabs .nav-link.active::before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px 2px 0 0;
+}
+
+/* ==================== TAB CONTENT ==================== */
+.chat-tabs .tab-content {
+    border: none;
+    background: transparent;
+}
+
+.chat-tabs .tab-pane {
+    animation: fadeInUp 0.3s ease;
+}
+
+/* ==================== TAB TITLE BADGES ==================== */
+.tab-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-icon {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.chat-tabs .nav-link:hover .tab-icon {
+    transform: scale(1.1);
+}
+
+.chat-tabs .nav-link.active .tab-icon {
+    color: #667eea;
+}
+
+.tab-badge {
+    background: #667eea;
+    color: white;
+    border-radius: 12px;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 20px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.tab-badge.warning {
+    background: linear-gradient(135deg, #ffc107, #ff8f00);
+}
+
+.tab-badge.primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.unread-indicator {
+    width: 8px;
+    height: 8px;
+    background: #dc3545;
+    border-radius: 50%;
+    animation: pulse-red 2s infinite;
+}
+
+/* ==================== TAB NAVIGATION ==================== */
+.nav-tabs {
+    border-bottom: 2px solid #f1f5f9 !important;
+    padding: 0 1rem;
+    background: #fafbfc;
+    border-radius: 16px 16px 0 0;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -2px;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-red {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+    .chat-tabs .nav-link {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.875rem !important;
+        margin-right: 0.25rem !important;
+    }
+
+    .nav-tabs {
+        padding: 0 0.5rem;
+    }
+
+    .tab-badge {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.375rem;
+        min-width: 18px;
+        height: 16px;
+    }
+
+    .tab-icon {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-tabs .nav-link {
+        padding: 0.625rem 0.75rem !important;
+        font-size: 0.8rem !important;
+        gap: 0.25rem !important;
+    }
+
+    .tab-title-wrapper {
+        gap: 0.25rem;
+    }
+
+    .tab-badge {
+        font-size: 0.6rem;
+        padding: 0.05rem 0.25rem;
+        min-width: 16px;
+        height: 14px;
+    }
+
+    .tab-icon {
+        font-size: 0.85rem;
+    }
+
+    .nav-tabs {
+        padding: 0 0.25rem;
+    }
+}
+
+/* ==================== HOVER EFFECTS ==================== */
+.chat-tabs .nav-link:not(.active):hover {
+    background: linear-gradient(135deg, #f8faff, #e8f0fe) !important;
+    color: #667eea !important;
+}
+
+.chat-tabs .nav-link:not(.active):hover .tab-badge {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.chat-tabs .nav-link.active .tab-badge {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ==================== FOCUS STATES ==================== */
+.chat-tabs .nav-link:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* ==================== LOADING STATES ==================== */
+.tab-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(102, 126, 234, 0.2),
+            transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}

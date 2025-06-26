@@ -1,0 +1,68 @@
+/* ========================================
+   HEALTH EVENTS - LAYOUT & CONTAINER
+   ======================================== */
+
+.medicine-management {
+    background: linear-gradient(135deg, #f8f9fc 0%, #fce4ec 100%);
+    min-height: 100vh;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    z-index: 1;
+}
+
+.container-fluid.nurse-theme {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.main-content {
+    position: relative;
+    z-index: 1;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    min-height: 300px;
+}
+
+.loading-container p {
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid.nurse-theme {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .medicine-management {
+        padding: 0 5px;
+    }
+
+    .loading-container {
+        padding: 3rem 1rem;
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid.nurse-theme {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .loading-container {
+        padding: 2rem 0.5rem;
+        min-height: 200px;
+    }
+}

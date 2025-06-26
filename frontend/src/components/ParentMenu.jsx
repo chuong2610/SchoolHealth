@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaFileAlt, FaPills, FaBell, FaHistory, FaBars, FaTimes } from 'react-icons/fa';
+import { FaHome, FaFileAlt, FaPills, FaBell, FaHistory, FaBars, FaTimes, FaComments } from 'react-icons/fa';
+import NotificationIcon from './NotificationIcon';
+import ChatNotificationBadge from './ChatNotificationBadge';
 
 const ParentMenu = () => {
     const location = useLocation();
@@ -10,7 +12,8 @@ const ParentMenu = () => {
         { path: '/parent', icon: <FaHome />, label: 'Trang chủ' },
         { path: '/parent/health-declaration', icon: <FaFileAlt />, label: 'Khai báo sức khỏe' },
         { path: '/parent/send-medicine', icon: <FaPills />, label: 'Gửi thuốc' },
-        { path: '/parent/notifications', icon: <FaBell />, label: 'Thông báo' },
+        { path: '/parent/chat', icon: <ChatNotificationBadge showIcon={true} iconSize="sm" />, label: 'Tin nhắn tư vấn' },
+        { path: '/parent/notifications', icon: <NotificationIcon />, label: 'Thông báo' },
         { path: '/parent/health-history', icon: <FaHistory />, label: 'Lịch sử sức khỏe' },
     ];
 

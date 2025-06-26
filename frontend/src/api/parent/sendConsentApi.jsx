@@ -11,11 +11,9 @@ export const sendConsentApi = async (data) => {
     if (res.data.success === true) {
       return res.data.data;
     } else {
-      console.error("❌ Error in sendConsentApi:", res.data.message);
       throw new Error(res.data.message || "Failed to send consent");
     }
   } catch (error) {
-    console.error("❌ Send consent failed:", error);
     throw error;
   }
 };

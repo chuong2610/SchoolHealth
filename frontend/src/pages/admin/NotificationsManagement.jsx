@@ -28,6 +28,9 @@ import {
   postNotification,
 } from "../../api/admin/notification";
 
+
+
+
 const icons = [
   {
     id: 1,
@@ -83,6 +86,8 @@ const NotificationsManagement = () => {
   const [reload, setReload] = useState(false);
   const [classList, setClassList] = useState([]);
   const [nurseList, setNurseList] = useState([]);
+  const [loadingClasses, setLoadingClasses] = useState(false);
+  const [loadingNurses, setLoadingNurses] = useState(false);
   const [datetime, setDatetime] = useState(
     new Date().toISOString().slice(0, 16)
   );
@@ -144,39 +149,199 @@ const NotificationsManagement = () => {
     setDatetime(getMinDateTime());
   }, [modalAdd?.status]);
 
-  const fetchClassList = async () => {
+  const fetchClassList = async (force = false) => {
+    if (classList.length > 0 && !force) {
+
+      return true;
+    }
+
+    setLoadingClasses(true);
     try {
-      const res = await getClassList();
-      if (res) {
-        setClassList([...res]);
+      const res = await getClassList(); // This will return sample data if API fails
+
+      // getClassList now handles fallbacks internally, so res should always be valid
+      if (res && Array.isArray(res) && res.length > 0) {
+        // Validate each class has proper id and name
+        const validClasses = res.filter(cls => {
+          const hasValidId = cls.id && !isNaN(parseInt(cls.id));
+          const hasValidName = cls.name || cls.className || cls.ClassName;
+
+          if (!hasValidId || !hasValidName) {
+
+            return false;
+          }
+          return true;
+        });
+
+
+        setClassList([...validClasses]);
+
+        // Check if this is sample data (sample data has predictable IDs 1-4)
+        const isSampleData = validClasses.every(cls => [1, 2, 3, 4].includes(cls.id));
+
+        if (isSampleData) {
+          toast.info(`Sử dụng dữ liệu mẫu: ${validClasses.length} lớp học`);
+        } else {
+          toast.success(`Đã tải ${validClasses.length} lớp học từ hệ thống`);
+        }
+
+        return true;
+      } else {
+
+        setClassList([]);
+        toast.error("Không có dữ liệu lớp học");
+        return false;
       }
     } catch (error) {
-      console.error(error);
+
+      setClassList([]);
+      toast.error("Lỗi không mong đợi khi tải lớp học");
+      return false;
+    } finally {
+      setLoadingClasses(false);
     }
   };
 
-  const fetchNurseList = async () => {
+  const fetchNurseList = async (force = false) => {
+    if (nurseList.length > 0 && !force) {
+
+      return true;
+    }
+
+    setLoadingNurses(true);
     try {
-      const res = await getNurseList();
-      if (res) {
-        setNurseList([...res]);
+      const res = await getNurseList(); // This will return sample data if API fails
+
+      // getNurseList now handles fallbacks internally, so res should always be valid
+      if (res && Array.isArray(res) && res.length > 0) {
+        // Validate each nurse has proper id and name
+        const validNurses = res.filter(nurse => {
+          const hasValidId = nurse.id && !isNaN(parseInt(nurse.id));
+          const hasValidName = nurse.fullName || nurse.name || nurse.Name;
+
+          if (!hasValidId || !hasValidName) {
+
+            return false;
+          }
+          return true;
+        });
+
+
+        setNurseList([...validNurses]);
+
+        // Check if this is sample data (sample data has predictable IDs 1-4)
+        const isSampleData = validNurses.every(nurse => [1, 2, 3, 4].includes(nurse.id));
+
+        if (isSampleData) {
+          toast.info(`Sử dụng dữ liệu mẫu: ${validNurses.length} y tá`);
+        } else {
+          toast.success(`Đã tải ${validNurses.length} y tá từ hệ thống`);
+        }
+
+        return true;
+      } else {
+
+        setNurseList([]);
+        toast.error("Không có dữ liệu y tá");
+        return false;
       }
     } catch (error) {
-      console.error(error);
+
+      setNurseList([]);
+      toast.error("Lỗi không mong đợi khi tải y tá");
+      return false;
+    } finally {
+      setLoadingNurses(false);
     }
   };
 
-  useEffect(() => {}, [classList]);
+  // Function to handle opening modal with data loading
+  const handleOpenCreateModal = async () => {
+
+
+    // Show loading state
+    toast.info("Đang tải dữ liệu...", { autoClose: 1000 });
+
+    try {
+      // Load both APIs in parallel
+      const [classSuccess, nurseSuccess] = await Promise.all([
+        fetchClassList(),
+        fetchNurseList()
+      ]);
+
+      if (!classSuccess) {
+        toast.error("Không thể tải danh sách lớp học. Vui lòng thử lại.");
+        return;
+      }
+
+      if (!nurseSuccess) {
+        toast.error("Không thể tải danh sách y tá. Vui lòng thử lại.");
+        return;
+      }
+
+      // Only open modal if both APIs succeeded
+
+      setModalAdd({ ...modalAdd, status: true });
+
+    } catch (error) {
+
+      toast.error("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.");
+    }
+  };
+
+  useEffect(() => { }, [classList]);
 
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
     e.preventDefault();
     e.stopPropagation();
+
     if (form.checkValidity() === false) {
       setValidated(true);
       return;
     }
+
     const notificationData = { ...modalAdd?.notification };
+
+    // Additional validation
+    if (!notificationData.classId || notificationData.classId === "") {
+      toast.error("Vui lòng chọn lớp học");
+      setValidated(true);
+      return;
+    }
+
+    if (!notificationData.assignedToId || notificationData.assignedToId === "") {
+      toast.error("Vui lòng chọn y tá phụ trách");
+      setValidated(true);
+      return;
+    }
+
+    // Validate vaccine name only for Vaccination type
+    if (notificationData.type === "Vaccination") {
+      if (!notificationData.vaccineName || notificationData.vaccineName.trim() === "") {
+        toast.error("Vui lòng nhập tên vắc xin cho thông báo tiêm chủng");
+        setValidated(true);
+        return;
+      }
+    }
+
+    // Check for invalid ID values (emojis, non-numeric)
+    if (isNaN(parseInt(notificationData.classId)) || notificationData.classId.includes("🎓")) {
+      toast.error(`Lỗi: ID lớp học không hợp lệ: "${notificationData.classId}". Vui lòng chọn lại.`);
+
+      setValidated(true);
+      return;
+    }
+
+    if (isNaN(parseInt(notificationData.assignedToId)) || notificationData.assignedToId.includes("👩‍⚕️")) {
+      toast.error(`Lỗi: ID y tá không hợp lệ: "${notificationData.assignedToId}". Vui lòng chọn lại.`);
+
+      setValidated(true);
+      return;
+    }
+
+
+
     try {
       const res = await postNotification(notificationData);
       toast.success("Tạo và gửi thông báo thành công");
@@ -197,8 +362,15 @@ const NotificationsManagement = () => {
       });
       setValidated(false);
     } catch (error) {
-      toast.error("Tạo và gửi thông báo thất bại");
-      console.error(error);
+
+
+      if (error.response?.status === 400) {
+        toast.error("Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.");
+      } else if (error.response?.status === 401) {
+        toast.error("Bạn không có quyền thực hiện thao tác này.");
+      } else {
+        toast.error("Tạo và gửi thông báo thất bại. Vui lòng thử lại.");
+      }
     }
   };
 
@@ -231,10 +403,10 @@ const NotificationsManagement = () => {
       if (res) {
         setModalDetail({ notificationDetail: { ...res }, status: true });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
-  useEffect(() => {}, [modalDetail]);
+  useEffect(() => { }, [modalDetail]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
     try {
@@ -251,7 +423,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => {}, [modalResultDetail]);
+  useEffect(() => { }, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
     try {
@@ -268,7 +440,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => {}, [modalResultDetail]);
+  useEffect(() => { }, [modalResultDetail]);
 
   const fetchNotification = async (pageNumber = 1) => {
     try {
@@ -296,6 +468,41 @@ const NotificationsManagement = () => {
   useEffect(() => {
     fetchNotification(currentPage);
   }, [reload, currentPage]);
+
+  // Force refresh data function for testing
+  const forceRefreshData = async () => {
+
+
+    // Clear existing data first
+    setClassList([]);
+    setNurseList([]);
+
+    // Reload data with force=true to bypass cache
+    try {
+      await Promise.all([
+        fetchClassList(true), // Force refresh
+        fetchNurseList(true)  // Force refresh
+      ]);
+      toast.success("Dữ liệu đã được refresh thành công!");
+    } catch (error) {
+
+      toast.error("Có lỗi khi refresh dữ liệu");
+    }
+  };
+
+  // Preload class and nurse data when component mounts
+  useEffect(() => {
+
+
+    // Don't wait for these, just start loading in background
+    fetchClassList().catch(error => {
+
+    });
+
+    fetchNurseList().catch(error => {
+
+    });
+  }, []); // Empty dependency array - only run once on mount
 
   return (
     <div className="admin-notifications-container">
@@ -396,14 +603,11 @@ const NotificationsManagement = () => {
 
         <button
           className="admin-notifications-btn-primary"
-          onClick={() => {
-            fetchClassList();
-            fetchNurseList();
-            setModalAdd({ ...modalAdd, status: true });
-          }}
+          onClick={handleOpenCreateModal}
+          disabled={loadingClasses || loadingNurses}
         >
-          <i className="fas fa-plus"></i>
-          Tạo thông báo
+          <i className={loadingClasses || loadingNurses ? "fas fa-spinner fa-spin" : "fas fa-plus"}></i>
+          {loadingClasses || loadingNurses ? "Đang tải..." : "Tạo thông báo"}
         </button>
       </div>
 
@@ -420,14 +624,11 @@ const NotificationsManagement = () => {
             </p>
             <button
               className="admin-notifications-btn-primary"
-              onClick={() => {
-                fetchClassList();
-                fetchNurseList();
-                setModalAdd({ ...modalAdd, status: true });
-              }}
+              onClick={handleOpenCreateModal}
+              disabled={loadingClasses || loadingNurses}
             >
-              <i className="fas fa-plus"></i>
-              Tạo thông báo đầu tiên
+              <i className={loadingClasses || loadingNurses ? "fas fa-spinner fa-spin" : "fas fa-plus"}></i>
+              {loadingClasses || loadingNurses ? "Đang tải..." : "Tạo thông báo đầu tiên"}
             </button>
           </div>
         ) : (
@@ -524,7 +725,24 @@ const NotificationsManagement = () => {
       {/* Add Notification Modal */}
       <Modal
         show={modalAdd.status}
-        onHide={() => setModalAdd({ ...modalAdd, status: false })}
+        onHide={() => {
+          // Reset form when closing modal
+          setModalAdd({
+            status: false,
+            notification: {
+              classId: null,
+              location: "",
+              type: "",
+              vaccineName: "",
+              title: "",
+              date: "",
+              message: "",
+              note: "",
+              assignedToId: null,
+            }
+          });
+          setValidated(false);
+        }}
         size="xl"
         className="admin-modal"
         centered
@@ -608,15 +826,18 @@ const NotificationsManagement = () => {
                       className="admin-form-control"
                       required
                       value={modalAdd.notification.type}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const selectedType = e.target.value;
                         setModalAdd({
                           ...modalAdd,
                           notification: {
                             ...modalAdd.notification,
-                            type: e.target.value,
+                            type: selectedType,
+                            // Clear vaccine name if switching to HealthCheck
+                            vaccineName: selectedType === "HealthCheck" ? "" : modalAdd.notification.vaccineName,
                           },
                         })
-                      }
+                      }}
                       style={{
                         padding: '0.75rem 1rem',
                         borderRadius: '12px',
@@ -626,9 +847,9 @@ const NotificationsManagement = () => {
                         background: 'white'
                       }}
                     >
-                      <option value="">Chọn loại thông báo</option>
-                      <option value="Vaccination">💉 Tiêm chủng</option>
-                      <option value="HealthCheck">🩺 Kiểm tra sức khỏe</option>
+                      <option key="empty-type" value="">Chọn loại thông báo</option>
+                      <option key="vaccination" value="Vaccination">💉 Tiêm chủng</option>
+                      <option key="healthcheck" value="HealthCheck">🩺 Kiểm tra sức khỏe</option>
                     </Form.Select>
                   </div>
                 </Col>
@@ -648,15 +869,25 @@ const NotificationsManagement = () => {
                       className="admin-form-control"
                       required
                       value={modalAdd.notification.classId || ""}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+
+
+                        // Safety check: If selected value contains emoji, warn user
+                        if (selectedValue && (selectedValue.includes("🎓") || isNaN(parseInt(selectedValue)))) {
+
+                          toast.error("Lỗi: Giá trị lớp học không hợp lệ. Vui lòng refresh trang và thử lại.");
+                          return;
+                        }
+
                         setModalAdd({
                           ...modalAdd,
                           notification: {
                             ...modalAdd.notification,
-                            classId: e.target.value,
+                            classId: selectedValue,
                           },
                         })
-                      }
+                      }}
                       style={{
                         padding: '0.75rem 1rem',
                         borderRadius: '12px',
@@ -666,12 +897,36 @@ const NotificationsManagement = () => {
                         background: 'white'
                       }}
                     >
-                      <option style={{ color: 'blackhay' }} value="">Chọn lớp học</option>
-                      {classList.map((cls) => (
-                        <option key={cls.id} value={cls.id}>
-                          🎓 {cls.name}
+                      {loadingClasses ? (
+                        <option key="loading-classes" value="" disabled>
+                          🔄 Đang tải danh sách lớp học...
                         </option>
-                      ))}
+                      ) : classList.length === 0 ? (
+                        <>
+                          <option key="empty-class" value="">Chọn lớp học</option>
+                          <option key="no-classes" value="" disabled style={{ color: '#dc3545' }}>
+                            ❌ Không có lớp học nào
+                          </option>
+                        </>
+                      ) : (
+                        <>
+                          <option key="empty-class" value="">Chọn lớp học</option>
+                          {classList.map((cls) => {
+                            // Safety check to ensure we have valid data
+                            const className = cls.name || cls.className || cls.ClassName;
+                            if (!cls.id || !className) {
+
+                              return null;
+                            }
+
+                            return (
+                              <option key={cls.id} value={cls.id}>
+                                🎓 {className}
+                              </option>
+                            );
+                          })}
+                        </>
+                      )}
                     </Form.Select>
                   </div>
                 </Col>
@@ -714,41 +969,93 @@ const NotificationsManagement = () => {
                 />
               </div>
 
-              <div className="admin-form-group" style={{ marginBottom: '0' }}>
-                <label className="admin-form-label" style={{
-                  display: 'block',
-                  fontWeight: '600',
-                  marginBottom: '0.5rem',
-                  color: '#374151',
-                  fontSize: '0.95rem'
+              {/* Vaccine Name Field - Only show for Vaccination type */}
+              {modalAdd.notification.type === "Vaccination" && (
+                <div className="admin-form-group" style={{ marginBottom: '0' }}>
+                  <label className="admin-form-label" style={{
+                    display: 'block',
+                    fontWeight: '600',
+                    marginBottom: '0.5rem',
+                    color: '#374151',
+                    fontSize: '0.95rem'
+                  }}>
+                    <i className="fas fa-syringe" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
+                    Tên Vắc Xin <span style={{ color: '#dc3545' }}>*</span>
+                  </label>
+                  <Form.Control
+                    type="text"
+                    className="admin-form-control"
+                    placeholder="Nhập tên vắc xin cụ thể (ví dụ: Vaccine COVID-19, Vaccine cúm mùa)..."
+                    required={modalAdd.notification.type === "Vaccination"}
+                    value={modalAdd.notification.vaccineName}
+                    onChange={(e) =>
+                      setModalAdd({
+                        ...modalAdd,
+                        notification: {
+                          ...modalAdd.notification,
+                          vaccineName: e.target.value,
+                        },
+                      })
+                    }
+                    style={{
+                      padding: '0.75rem 1rem',
+                      borderRadius: '12px',
+                      border: '2px solid #e5e7eb',
+                      fontSize: '0.95rem',
+                      transition: 'all 0.3s ease',
+                      background: 'white'
+                    }}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập tên vắc xin
+                  </Form.Control.Feedback>
+                  <small style={{
+                    display: 'block',
+                    marginTop: '0.5rem',
+                    color: '#6b7280',
+                    fontSize: '0.85rem'
+                  }}>
+                    <i className="fas fa-info-circle" style={{ marginRight: '0.25rem' }}></i>
+                    Tên vắc xin sẽ hiển thị trong thông báo gửi tới phụ huynh
+                  </small>
+                </div>
+              )}
+
+              {/* Info message for HealthCheck */}
+              {modalAdd.notification.type === "HealthCheck" && (
+                <div style={{
+                  background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
+                  border: '2px solid #0ea5e9',
+                  borderRadius: '12px',
+                  padding: '1rem',
+                  marginBottom: '0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem'
                 }}>
-                  <i className="fas fa-syringe" style={{ color: '#059669', marginRight: '0.5rem' }}></i>
-                  Tên Vắc Xin
-                </label>
-                <Form.Control
-                  type="text"
-                  className="admin-form-control"
-                  placeholder="Nhập tên vắc xin cụ thể (ví dụ: Vaccine COVID-19, Vaccine cúm mùa)..."
-                  value={modalAdd.notification.vaccineName}
-                  onChange={(e) =>
-                    setModalAdd({
-                      ...modalAdd,
-                      notification: {
-                        ...modalAdd.notification,
-                        vaccineName: e.target.value,
-                      },
-                    })
-                  }
-                  style={{
-                    padding: '0.75rem 1rem',
-                    borderRadius: '12px',
-                    border: '2px solid #e5e7eb',
-                    fontSize: '0.95rem',
-                    transition: 'all 0.3s ease',
-                    background: 'white'
-                  }}
-                />
-              </div>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: '#0ea5e9',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '1.25rem'
+                  }}>
+                    <i className="fas fa-stethoscope"></i>
+                  </div>
+                  <div>
+                    <h6 style={{ margin: 0, color: '#0c4a6e', fontWeight: '600' }}>
+                      Thông báo kiểm tra sức khỏe
+                    </h6>
+                    <p style={{ margin: '0.25rem 0 0 0', color: '#075985', fontSize: '0.9rem' }}>
+                      Không cần nhập tên vắc xin cho loại thông báo này. Thông báo sẽ được gửi để thông báo lịch kiểm tra sức khỏe định kỳ.
+                    </p>
+                  </div>
+                </div>
+              )}
             </fieldset>
 
             {/* Section 2: Notification Details */}
@@ -942,15 +1249,25 @@ const NotificationsManagement = () => {
                   className="admin-form-control"
                   required
                   value={modalAdd.notification.assignedToId || ""}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+
+
+                    // Safety check: If selected value contains emoji, warn user
+                    if (selectedValue && (selectedValue.includes("👩‍⚕️") || isNaN(parseInt(selectedValue)))) {
+
+                      toast.error("Lỗi: Giá trị y tá không hợp lệ. Vui lòng refresh trang và thử lại.");
+                      return;
+                    }
+
                     setModalAdd({
                       ...modalAdd,
                       notification: {
                         ...modalAdd.notification,
-                        assignedToId: e.target.value,
+                        assignedToId: selectedValue,
                       },
                     })
-                  }
+                  }}
                   style={{
                     padding: '0.75rem 1rem',
                     borderRadius: '12px',
@@ -960,12 +1277,36 @@ const NotificationsManagement = () => {
                     background: 'white'
                   }}
                 >
-                  <option value="">Chọn y tá phụ trách</option>
-                  {nurseList.map((nurse) => (
-                    <option key={nurse.id} value={nurse.id}>
-                      👩‍⚕️ {nurse.fullName}
+                  {loadingNurses ? (
+                    <option key="loading-nurses" value="" disabled>
+                      🔄 Đang tải danh sách y tá...
                     </option>
-                  ))}
+                  ) : nurseList.length === 0 ? (
+                    <>
+                      <option key="empty-nurse" value="">Chọn y tá phụ trách</option>
+                      <option key="no-nurses" value="" disabled style={{ color: '#dc3545' }}>
+                        ❌ Không có y tá nào
+                      </option>
+                    </>
+                  ) : (
+                    <>
+                      <option key="empty-nurse" value="">Chọn y tá phụ trách</option>
+                      {nurseList.map((nurse) => {
+                        // Safety check to ensure we have valid data
+                        const nurseName = nurse.fullName || nurse.name || nurse.Name;
+                        if (!nurse.id || !nurseName) {
+
+                          return null;
+                        }
+
+                        return (
+                          <option key={nurse.id} value={nurse.id}>
+                            👩‍⚕️ {nurseName}
+                          </option>
+                        );
+                      })}
+                    </>
+                  )}
                 </Form.Select>
               </div>
 
@@ -1026,7 +1367,24 @@ const NotificationsManagement = () => {
             }}>
               <button
                 type="button"
-                onClick={() => setModalAdd({ ...modalAdd, status: false })}
+                onClick={() => {
+                  // Reset form when canceling
+                  setModalAdd({
+                    status: false,
+                    notification: {
+                      classId: null,
+                      location: "",
+                      type: "",
+                      vaccineName: "",
+                      title: "",
+                      date: "",
+                      message: "",
+                      note: "",
+                      assignedToId: null,
+                    }
+                  });
+                  setValidated(false);
+                }}
                 style={{
                   padding: '0.75rem 2rem',
                   borderRadius: '12px',
@@ -1082,6 +1440,26 @@ const NotificationsManagement = () => {
                 <i className="fas fa-paper-plane"></i>
                 Tạo và gửi thông báo
               </button>
+
+              {/* Debug Info - Development only */}
+              {process.env.NODE_ENV === 'development' && (
+                <details style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#6b7280' }}>
+                  <summary style={{ cursor: 'pointer', fontWeight: '600' }}>
+                    🐛 Debug: Current Form Data
+                  </summary>
+                  <pre style={{
+                    background: '#f3f4f6',
+                    padding: '0.5rem',
+                    borderRadius: '0.5rem',
+                    marginTop: '0.5rem',
+                    fontSize: '0.75rem',
+                    overflow: 'auto',
+                    maxHeight: '200px'
+                  }}>
+                    {JSON.stringify(modalAdd.notification, null, 2)}
+                  </pre>
+                </details>
+              )}
             </div>
           </Form>
         </Modal.Body>
@@ -1301,6 +1679,9 @@ const NotificationsManagement = () => {
           )}
         </Modal.Body>
       </Modal>
+
+
+
     </div>
   );
 };

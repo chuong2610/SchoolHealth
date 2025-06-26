@@ -62,7 +62,9 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
-// CSS được import tự động từ main.jsx
+import axiosInstance from "../../api/axiosInstance";
+// Import CSS cho HealthEvents
+import "../../styles/nurse/health-events/index.css";
 
 // Force CSS reload with timestamp
 const timestamp = Date.now();
@@ -75,6 +77,9 @@ const HealthEvents = () => {
   const [modalEventDetail, setModalEventDetail] = useState({});
   const [modalAdd, setModalAdd] = useState(false);
   const [medicalSupplies, setMedicalSupplies] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [studentsList, setStudentsList] = useState([]);
+  const [selectedClassId, setSelectedClassId] = useState("");
   const [formAdd, setFormAdd] = useState({
     eventType: "",
     location: "",
@@ -90,6 +95,7 @@ const HealthEvents = () => {
   const [animateStats, setAnimateStats] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [nurseNote, setNurseNote] = useState("");
   const [filterOptions, setFilterOptions] = useState({
     dateFrom: "",
     dateTo: "",
@@ -197,6 +203,9 @@ const HealthEvents = () => {
 
   // Enhanced filter functionality
   const applyFilters = (data) => {
+    if (!Array.isArray(data)) {
+      return [];
+    }
     return data.filter((event) => {
       const eventDate = new Date(event.date);
       const fromDate = filterOptions.dateFrom
@@ -236,7 +245,7 @@ const HealthEvents = () => {
   const today = new Date().toDateString();
   const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-  const allEvents = applyFilters(events).filter(
+  const allEvents = applyFilters(events || []).filter(
     (event) =>
       event.eventType?.toLowerCase().includes(searchAll.toLowerCase()) ||
       event.location?.toLowerCase().includes(searchAll.toLowerCase()) ||
@@ -244,7 +253,7 @@ const HealthEvents = () => {
       event.nurseName?.toLowerCase().includes(searchAll.toLowerCase())
   );
 
-  const recentEvents = applyFilters(events).filter((event) => {
+  const recentEvents = applyFilters(events || []).filter((event) => {
     const eventDate = new Date(event.date);
     return (
       eventDate >= lastWeek &&
@@ -255,7 +264,7 @@ const HealthEvents = () => {
     );
   });
 
-  const todayEvents = applyFilters(events).filter((event) => {
+  const todayEvents = applyFilters(events || []).filter((event) => {
     const eventDate = new Date(event.date);
     return (
       eventDate.toDateString() === today &&
@@ -267,10 +276,10 @@ const HealthEvents = () => {
   });
 
   // Statistics
-  const totalEvents = events.length;
+  const totalEvents = (events || []).length;
   const totalRecent = recentEvents.length;
   const totalToday = todayEvents.length;
-  const totalEmergency = events.filter(
+  const totalEmergency = (events || []).filter(
     (e) => e.eventType === "emergency"
   ).length;
 
@@ -339,6 +348,9 @@ const HealthEvents = () => {
       return;
     }
 
+    // Check if studentNumber is provided and not empty - moved outside try block
+    const hasStudentNumber = formAdd.studentNumber && formAdd.studentNumber.trim() !== "";
+
     try {
       // Validate required fields according to API
       if (!formAdd.eventType || formAdd.eventType.trim() === "") {
@@ -374,61 +386,63 @@ const HealthEvents = () => {
 
       // No validation error for medical supplies - they're optional
 
-      // Check if studentNumber is provided and not empty
-      const hasStudentNumber = formAdd.studentNumber.trim() !== "";
-
       // Prepare data exactly as API expects
       const data = {
         eventType: formAdd.eventType,
         location: formAdd.location,
         description: formAdd.description,
         date: new Date().toISOString(),
-        medicalEventSupplys:
-          validSupplies.length > 0
-            ? validSupplies.map((supply) => ({
-              medicalSupplyId: parseInt(supply.medicalSupplyId),
-              quantity: parseInt(supply.quantity),
-            }))
-            : [
-              {
-                medicalSupplyId: 0,
-                quantity: 0,
-              },
-            ],
         nurseId: parseInt(user.id),
       };
 
-      // Only include studentNumber if provided (backend might require existing student)
-      if (hasStudentNumber) {
-        data.studentNumber = formAdd.studentNumber.trim();
-      } else {
-        // Try empty string for general events
-        data.studentNumber = "";
+      // Validate student selection - yêu cầu bắt buộc chọn học sinh
+      if (!hasStudentNumber) {
+        showNotification("Vui lòng chọn lớp và học sinh!", "error");
+        return;
       }
 
+      data.studentNumber = formAdd.studentNumber.trim();
+
+      // Only include medicalEventSupplys if there are valid supplies
+      // Backend might not handle empty arrays or supplies with ID 0
+      if (validSupplies.length > 0) {
+        data.medicalEventSupplys = validSupplies.map((supply) => ({
+          medicalSupplyId: parseInt(supply.medicalSupplyId),
+          quantity: parseInt(supply.quantity),
+        }));
+      }
+
+
+
       const res = await postMedicalEvent(data);
-      showNotification("Thêm sự kiện thành công!", "success");
+      showNotification(
+        `✅ Sự kiện y tế đã được tạo thành công cho học sinh ${formAdd.studentNumber}! 
+        📋 Thông tin đã được lưu vào hệ thống.
+        ⚠️ Lưu ý: Hệ thống chưa tự động gửi thông báo cho phụ huynh.`,
+        "success"
+      );
       setModalAdd(false);
       resetFormAdd();
 
       // Refresh data
       const updatedEvents = await getMedicalEvents();
-      setEvents(updatedEvents);
+      setEvents(Array.isArray(updatedEvents) ? updatedEvents : Array.isArray(updatedEvents?.items) ? updatedEvents.items : []);
     } catch (error) {
       // More detailed error handling
       let errorMessage = "Lỗi khi thêm sự kiện!";
 
       if (error.response?.status === 500) {
         if (hasStudentNumber) {
-          errorMessage = `❌ Lỗi: Mã học sinh "${formAdd.studentNumber.trim()}" không tồn tại trong hệ thống!`;
+          errorMessage = `Lỗi: Mã học sinh "${formAdd.studentNumber.trim()}" không tồn tại trong hệ thống!`;
         } else {
-          errorMessage =
-            "❌ Lỗi: Không thể tạo sự kiện chung. Vui lòng thử với mã học sinh hợp lệ.";
+          errorMessage = "Lỗi server: Không thể tạo sự kiện. Vui lòng kiểm tra dữ liệu đầu vào.";
         }
+      } else if (error.response?.status === 400) {
+        errorMessage = `Dữ liệu không hợp lệ: ${error.response?.data?.message || 'Vui lòng kiểm tra lại thông tin'}`;
       } else if (error.response?.data?.message) {
-        errorMessage = `❌ Lỗi: ${error.response.data.message}`;
+        errorMessage = `Lỗi: ${error.response.data.message}`;
       } else if (error.message) {
-        errorMessage = `❌ Lỗi: ${error.message}`;
+        errorMessage = `Lỗi: ${error.message}`;
       }
 
       showNotification(errorMessage, "error");
@@ -443,13 +457,81 @@ const HealthEvents = () => {
       studentNumber: "",
       medicalEventSupplys: [{ medicalSupplyId: "", quantity: 1 }],
     });
+    setSelectedClassId("");
+    setStudentsList([]);
     setValidated(false);
+  };
+
+  // Fetch class list
+  const fetchClassList = async () => {
+    try {
+      const res = await axiosInstance.get("/Class");
+      if (res.data && res.data.success) {
+        // Filter out invalid class objects - API returns classId not id
+        const validClasses = (res.data.data || []).filter(
+          cls => cls && (cls.classId !== undefined && cls.classId !== null || cls.id !== undefined && cls.id !== null) && cls.className
+        ).map(cls => ({
+          // Normalize to use 'id' field for consistency
+          id: cls.classId || cls.id,
+          className: cls.className
+        }));
+        setClassList(validClasses);
+      } else {
+        setClassList([]);
+      }
+    } catch (error) {
+      setClassList([]);
+      showNotification("Lỗi khi tải danh sách lớp!", "error");
+    }
+  };
+
+  // Fetch students by class
+  const fetchStudentsByClass = async (classId) => {
+    try {
+      const res = await axiosInstance.get(`/Students/${classId}?pageNumber=1&pageSize=100`);
+      if (res.data && res.data.success) {
+        // Filter out invalid student objects
+        const validStudents = (res.data.data.items || []).filter(
+          student => student && student.id !== undefined && student.id !== null && student.studentNumber
+        );
+        setStudentsList(validStudents);
+      } else {
+        setStudentsList([]);
+      }
+    } catch (error) {
+      setStudentsList([]);
+      // Handle 404 specifically - no students in class
+      if (error.response?.status === 404) {
+        showNotification("Lớp này chưa có học sinh nào!", "info");
+      } else {
+        showNotification("Lỗi khi tải danh sách học sinh!", "error");
+      }
+    }
+  };
+
+  // Handle class selection
+  const handleClassChange = async (classId) => {
+    setSelectedClassId(classId);
+    setFormAdd(prev => ({ ...prev, studentNumber: "" })); // Reset student selection
+    if (classId && classId !== "") {
+      // Ensure classId is a number
+      const numericClassId = parseInt(classId);
+      if (!isNaN(numericClassId)) {
+        await fetchStudentsByClass(numericClassId);
+      } else {
+        setStudentsList([]);
+        showNotification("ID lớp không hợp lệ!", "error");
+      }
+    } else {
+      setStudentsList([]);
+    }
   };
 
   const fetchMedicalSupply = async () => {
     try {
       const res = await getMedicalSupply();
       setMedicalSupplies(res || []);
+      await fetchClassList(); // Load classes when opening modal
       setModalAdd(true);
     } catch (error) {
       showNotification("Lỗi khi tải danh sách vật tư!", "error");
@@ -468,7 +550,6 @@ const HealthEvents = () => {
         showNotification("Không tìm thấy thông tin chi tiết sự kiện!", "error");
       }
     } catch (error) {
-      console.error("Error loading medical event detail:", error);
       let errorMessage = "Lỗi khi tải chi tiết sự kiện!";
 
       if (error.response?.status === 404) {
@@ -487,46 +568,11 @@ const HealthEvents = () => {
 
   // Enhanced action buttons
   const renderActionButtons = (event) => (
-    <div
-      className="medicine-action-buttons"
-      style={{
-        display: "flex",
-        gap: "6px",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
-      }}
-    >
+    <div className="health-events-action-buttons">
       <button
-        className="btn-action view"
+        className="health-events-btn-action view"
         onClick={() => loadMedicalEventDetailModal(event.id)}
         title="Xem chi tiết"
-        style={{
-          background: '#F06292',
-          border: '1px solid #F06292',
-          color: 'white',
-          width: '30px',
-          height: '30px',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
-          outline: 'none'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = '#E91E63';
-          e.target.style.transform = 'scale(1.05)';
-          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = '#F06292';
-          e.target.style.transform = 'scale(1)';
-          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
-        }}
       >
         <FaEye />
       </button>
@@ -557,16 +603,6 @@ const HealthEvents = () => {
           </div>
           <div className="action-buttons">
             <Button
-              style={{
-                backgroundColor: "#F06292",
-                border: "1px solid #F06292",
-                color: "white",
-                width: "100px",
-                height: "40px",
-                borderRadius: "8px",
-                fontSize: "1.2rem",
-                fontWeight: "600",
-              }}
               variant="outline-secondary"
               className="filter-btn"
               onClick={() => setShowFilterModal(true)}
@@ -574,16 +610,6 @@ const HealthEvents = () => {
               <FaFilter /> Lọc
             </Button>
             <Button
-              style={{
-                backgroundColor: "#F06292",
-                border: "1px solid #F06292",
-                color: "white",
-                width: "100px",
-                height: "40px",
-                borderRadius: "8px",
-                fontSize: "1.2rem",
-                fontWeight: "600",
-              }}
               variant="outline-success"
               className="export-btn"
               onClick={() => {
@@ -604,87 +630,47 @@ const HealthEvents = () => {
         </div>
       </div>
 
-      <div
-        className="table-responsive medicine-table-wrapper"
-        style={{ overflowX: "auto", width: "100%", maxWidth: "100%" }}
-      >
-        <Table
-          className="medicine-table"
-          style={{
-            width: "100%",
-            tableLayout: "fixed",
-            minWidth: "760px", // 150+120+120+120+100+150 = 760px
-          }}
-        >
+      <div className="health-events-table-responsive">
+        <Table className="health-events-table">
           <thead>
             <tr>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Loại sự kiện</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Địa điểm</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Ngày</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Học sinh</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Y tá</th>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Thao tác</th>
+              <th>Loại sự kiện</th>
+              <th>Địa điểm</th>
+              <th>Ngày</th>
+              <th>Học sinh</th>
+              <th>Y tá</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {(showAll ? data : data.slice(0, ROW_LIMIT)).map((event, index) => (
               <tr key={event.id || `event-${index}`} className="table-row">
-                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
-                  <div className="medicine-id" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaHeartbeat className="medicine-icon pill-bounce" style={{ marginRight: '0.5rem' }} />
+                <td>
+                  <div className="event-type-info">
                     {event.eventType || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="location-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaMapMarkerAlt className="me-1" />
+                <td>
+                  <div className="location-info">
                     {event.location || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="date-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaCalendarAlt className="date-icon" />
+                <td>
+                  <div className="date-info">
                     {formatDateTime(event.date) || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="student-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaUser className="me-1" />
+                <td>
+                  <div className="student-info">
                     <strong>{event.studentName || "N/A"}</strong>
                   </div>
                 </td>
-                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-                  <div className="parent-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaUserNurse className="me-1" />
+                <td>
+                  <div className="nurse-info">
                     {event.nurseName || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
+                <td>
                   {renderActionButtons(event)}
                 </td>
               </tr>
@@ -694,7 +680,17 @@ const HealthEvents = () => {
                 <td colSpan={6} className="text-center empty-state">
                   <div className="empty-content">
                     <FaCalendarAlt className="empty-icon" />
-                    <p>Không có sự kiện nào</p>
+                    <h5 className="empty-title">Không có sự kiện nào</h5>
+                    <p className="empty-description">
+                      {type === "all"
+                        ? "Hiện tại chưa có sự kiện y tế nào trong hệ thống"
+                        : type === "recent"
+                          ? "Không có sự kiện y tế nào trong 7 ngày qua"
+                          : type === "today"
+                            ? "Hôm nay chưa có sự kiện y tế nào được ghi nhận"
+                            : "Không có sự kiện nào trong danh mục này"
+                      }
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -707,7 +703,7 @@ const HealthEvents = () => {
         <div className="table-footer">
           <Button
             variant="link"
-            className="show-more-btn"
+            className="health-events-show-more-btn"
             onClick={() => setShowAll(!showAll)}
           >
             {showAll
@@ -727,13 +723,23 @@ const HealthEvents = () => {
         setLoading(true);
         const res = await getMedicalEvents(currentPage, pageSize, search);
 
-        setEvents(Array.isArray(res.items) ? res.items : []);
-        setCurrentPage(res.currentPage);
-        setTotalPages(res.totalPages);
-        setTotalItems(res.totalItems);
+        // Ensure res and res.items exist, fallback to empty array
+        if (res && typeof res === 'object') {
+          setEvents(Array.isArray(res.items) ? res.items : Array.isArray(res) ? res : []);
+          setCurrentPage(res.currentPage || currentPage);
+          setTotalPages(res.totalPages || 1);
+          setTotalItems(res.totalItems || 0);
+        } else {
+          // If res is an array directly
+          setEvents(Array.isArray(res) ? res : []);
+          setCurrentPage(1);
+          setTotalPages(1);
+          setTotalItems(Array.isArray(res) ? res.length : 0);
+        }
 
         setTimeout(() => setAnimateStats(true), 100);
       } catch (error) {
+        setEvents([]); // Ensure events is always an array even on error
         showNotification("Lỗi khi tải dữ liệu!", "error");
       } finally {
         setLoading(false);
@@ -744,486 +750,7 @@ const HealthEvents = () => {
 
   //
   return (
-    <div
-      className="container-fluid nurse-theme medicine-management"
-      style={{
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        backgroundColor: "#f8f9fc",
-        minHeight: "100vh",
-        position: "relative",
-        zIndex: 1,
-      }}
-    >
-      {/* Updated CSS Styles with Pink Theme */}
-      <style>
-        {`
-                    .medicine-management {
-                        background: linear-gradient(135deg, #f8f9fc 0%, #fce4ec 100%) !important;
-                        min-height: 100vh !important;
-                        padding: 0 !important;
-                    }
-                    
-                    .page-header {
-                        background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%) !important;
-                        color: white !important;
-                        padding: 2rem 2rem 3rem 2rem !important;
-                        margin: 0rem -1.5rem 2rem -1.5rem !important;
-                        border-radius: 0 0 20px 20px !important;
-                        position: relative !important;
-                        overflow: hidden !important;
-                    }
-                    
-                    .stats-card {
-                        background: white !important;
-                        border-radius: 16px !important;
-                        box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08) !important;
-                        border: none !important;
-                        overflow: hidden !important;
-                        transition: all 0.3s ease !important;
-                        position: relative !important;
-                    }
-                    
-                    .stats-card:hover {
-                        transform: translateY(-4px) !important;
-                        box-shadow: 0 16px 48px rgba(240, 98, 146, 0.15) !important;
-                    }
-                    
-                    /* Enhanced Table Styling */
-                    .medicine-table {
-                        margin: 0 !important;
-                        border: none !important;
-                        background: white !important;
-                        border-radius: 12px !important;
-                        overflow: hidden !important;
-                        box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
-                    }
-                    
-                    .medicine-table thead th {
-                        background: rgba(248, 187, 217, 0.15) !important;
-                        color: #1a1a1a !important;
-                        font-weight: 600 !important;
-                        font-size: 0.85rem !important;
-                        text-transform: uppercase !important;
-                        letter-spacing: 0.5px !important;
-                        padding: 1.25rem 1rem !important;
-                        border: none !important;
-                        position: sticky !important;
-                        top: 0 !important;
-                        z-index: 10 !important;
-                        box-shadow: 0 2px 4px rgba(240, 98, 146, 0.2) !important;
-                    }
-                    
-                    .medicine-table tbody td {
-                        padding: 1.2rem 1rem !important;
-                        border-bottom: 1px solid #fce4ec !important;
-                        vertical-align: middle !important;
-                        border-left: none !important;
-                        border-right: none !important;
-                        background: white !important;
-                        transition: all 0.3s ease !important;
-                        position: relative !important;
-                    }
-                    
-                    .medicine-table .table-row:nth-child(even) {
-                        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 5%) !important;
-                    }
-                    
-                    .medicine-table .table-row:hover {
-                        background: linear-gradient(135deg, #f8bbd9 0%, #f06292 10%) !important;
-                        transform: translateY(-2px) !important;
-                        box-shadow: 0 8px 25px rgba(240, 98, 146, 0.15) !important;
-                        border-radius: 8px !important;
-                    }
-                    
-                    .medicine-table .table-row:hover td {
-                        color: #4a1a2a !important;
-                        font-weight: 500 !important;
-                    }
-                    
-                    /* Enhanced Table Container */
-                    .medicine-table-wrapper {
-                        border-radius: 12px !important;
-                        overflow: hidden !important;
-                        box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
-                        border: 2px solid #fce4ec !important;
-                    }
-                    
-                    .medicine-table-container {
-                        background: white !important;
-                        border-radius: 16px !important;
-                        padding: 1.5rem !important;
-                        margin-bottom: 2rem !important;
-                        box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08) !important;
-                    }
-                    
-                    /* Enhanced Medicine Tabs */
-                    .medicine-tabs {
-                        background: white !important;
-                        border-radius: 16px !important;
-                        box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08) !important;
-                        overflow: hidden !important;
-                        border: none !important;
-                    }
-                    
-                    .medicine-tabs .nav-tabs {
-                        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
-                        border-bottom: none !important;
-                        padding: 1rem 1.5rem 0 1.5rem !important;
-                    }
-                    
-                    /* Enhanced Action Buttons */
-                    .btn-action {
-                        width: 32px !important;
-                        height: 32px !important;
-                        padding: 6px !important;
-                        margin: 0 2px !important;
-                        display: inline-flex !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        border-radius: 8px !important;
-                        border: 1px solid !important;
-                        transition: all 0.3s ease !important;
-                        font-size: 14px !important;
-                        position: relative !important;
-                    }
-                    
-                    .btn-action.view {
-                        background: linear-gradient(135deg, #F06292, #E91E63) !important;
-                        border: 1px solid #F06292 !important;
-                        color: white !important;
-                        box-shadow: 0 2px 8px rgba(240, 98, 146, 0.3) !important;
-                    }
-                    
-                    .btn-action.view:hover {
-                        background: linear-gradient(135deg, #E91E63, #C2185B) !important;
-                        transform: scale(1.1) !important;
-                        box-shadow: 0 4px 15px rgba(240, 98, 146, 0.4) !important;
-                    }
-                    
-                    .btn-action svg {
-                        font-size: 16px !important;
-                        width: 16px !important;
-                        height: 16px !important;
-                    }
-                    
-                    /* Enhanced Stats Cards */
-                    .stats-card.pending .stats-icon {
-                        background: linear-gradient(135deg, #F8BBD9 0%, #F06292 100%) !important;
-                        color: white !important;
-                        border-radius: 12px !important;
-                        width: 50px !important;
-                        height: 50px !important;
-                    }
-                    
-                    .stats-card.active .stats-icon {
-                        background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 100%) !important;
-                        color: #E91E63 !important;
-                        border-radius: 12px !important;
-                        width: 50px !important;
-                        height: 50px !important;
-                    }
-                    
-                    .stats-card.today .stats-icon {
-                        background: linear-gradient(135deg, #FF4081 0%, #F06292 100%) !important;
-                        color: white !important;
-                        border-radius: 12px !important;
-                        width: 50px !important;
-                        height: 50px !important;
-                    }
-                    
-                    .stats-card.completed .stats-icon {
-                        background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%) !important;
-                        color: white !important;
-                        border-radius: 12px !important;
-                        width: 50px !important;
-                        height: 50px !important;
-                    }
-                    
-                    /* Enhanced Tab Navigation */
-                    .nurse-theme .nav-tabs .nav-link {
-                        border: none !important;
-                        border-radius: 12px 12px 0 0 !important;
-                        margin-right: 0.5rem !important;
-                        padding: 1rem 1.5rem !important;
-                        font-weight: 600 !important;
-                        color: #666 !important;
-                        background: transparent !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .nurse-theme .nav-tabs .nav-link.active {
-                        background: white !important;
-                        color: #E91E63 !important;
-                        border-bottom: 3px solid #F06292 !important;
-                        box-shadow: 0 -4px 16px rgba(240, 98, 146, 0.1) !important;
-                        border-radius: 12px 12px 0 0 !important;
-                    }
-                    
-                    .nurse-theme .nav-tabs .nav-link:hover {
-                        color: #F06292 !important;
-                        background: rgba(248, 187, 217, 0.3) !important;
-                        border-radius: 12px 12px 0 0 !important;
-                    }
-                    
-                    .nurse-theme .tab-content {
-                        padding: 2rem !important;
-                        background: white !important;
-                    }
-                    
-                    .nurse-theme .card {
-                        border: none !important;
-                        box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08) !important;
-                    }
-                    
-                    .nurse-theme .btn {
-                        border-radius: 8px !important;
-                        font-weight: 600 !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    /* Enhanced Form Controls */
-                    .nurse-theme .form-control {
-                        border: 2px solid #fce4ec !important;
-                        border-radius: 10px !important;
-                        background: #ffffff !important;
-                        transition: all 0.3s ease !important;
-                        padding: 0.75rem 1rem !important;
-                    }
-                    
-                    .nurse-theme .form-control:focus {
-                        border-color: #F06292 !important;
-                        box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-                        background: #fefefe !important;
-                    }
-                    
-                    .nurse-theme .form-select {
-                        border: 2px solid #fce4ec !important;
-                        border-radius: 10px !important;
-                        padding: 0.75rem 1rem !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .nurse-theme .form-select:focus {
-                        border-color: #F06292 !important;
-                        box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-                    }
-                    
-                    /* Enhanced Search and Filter */
-                    .search-input {
-                        border: 2px solid #fce4ec !important;
-                        border-radius: 25px !important;
-                        padding: 0.75rem 1rem 0.75rem 3rem !important;
-                        background: white !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .search-input:focus {
-                        border-color: #F06292 !important;
-                        box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-                        background: #fefefe !important;
-                    }
-                    
-                    .search-box {
-                        position: relative !important;
-                        flex: 1 !important;
-                    }
-                    
-                    .search-icon {
-                        position: absolute !important;
-                        left: 1rem !important;
-                        top: 50% !important;
-                        transform: translateY(-50%) !important;
-                        color: #F06292 !important;
-                        z-index: 5 !important;
-                    }
-                    
-                    .filter-btn {
-                        border: 2px solid #F06292 !important;
-                        color: #F06292 !important;
-                        border-radius: 10px !important;
-                        padding: 0.75rem 1.5rem !important;
-                        font-weight: 600 !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .filter-btn:hover {
-                        background: linear-gradient(135deg, #F06292, #E91E63) !important;
-                        color: white !important;
-                        transform: translateY(-2px) !important;
-                        box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3) !important;
-                    }
-                    
-                    .export-btn {
-                        border: 2px solid #4CAF50 !important;
-                        color: #4CAF50 !important;
-                        border-radius: 10px !important;
-                        padding: 0.75rem 1.5rem !important;
-                        font-weight: 600 !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .export-btn:hover {
-                        background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
-                        color: white !important;
-                        transform: translateY(-2px) !important;
-                        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3) !important;
-                    }
-                    
-                    /* Enhanced Modal Styling */
-                    .medicine-detail-modal .modal-content {
-                        border: none !important;
-                        border-radius: 20px !important;
-                        box-shadow: 0 25px 80px rgba(240, 98, 146, 0.2) !important;
-                        overflow: hidden !important;
-                    }
-                    
-                    .modal-header-custom {
-                        background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%) !important;
-                        color: white !important;
-                        padding: 1.5rem 2rem !important;
-                        border-bottom: none !important;
-                    }
-                    
-                    .modal-body-custom {
-                        background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%) !important;
-                        padding: 2rem !important;
-                    }
-                    
-                    .modal-footer-custom {
-                        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
-                        border-top: none !important;
-                        padding: 1.5rem 2rem !important;
-                    }
-                    
-                    .detail-content {
-                        background: white !important;
-                        border-radius: 12px !important;
-                        padding: 1.5rem !important;
-                        box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08) !important;
-                    }
-                    
-                    .detail-section {
-                        margin-bottom: 1.5rem !important;
-                        padding: 1rem !important;
-                        background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%) !important;
-                        border-radius: 10px !important;
-                        border: 1px solid #f8bbd9 !important;
-                    }
-                    
-                    .detail-section h6 {
-                        color: #F06292 !important;
-                        font-weight: 700 !important;
-                        margin-bottom: 1rem !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        gap: 0.5rem !important;
-                    }
-                    
-                    .detail-row {
-                        display: flex !important;
-                        justify-content: space-between !important;
-                        padding: 0.5rem 0 !important;
-                        border-bottom: 1px solid #fce4ec !important;
-                    }
-                    
-                    .detail-row .label {
-                        font-weight: 600 !important;
-                        color: #E91E63 !important;
-                        min-width: 120px !important;
-                    }
-                    
-                    .detail-row .value {
-                        color: #4a1a2a !important;
-                        font-weight: 500 !important;
-                    }
-                    
-                    /* Enhanced Icons and Badges */
-                    .medicine-id .medicine-icon {
-                        color: #F06292 !important;
-                        animation: pulse 2s infinite !important;
-                    }
-                    
-                    @keyframes pulse {
-                        0% { transform: scale(1); }
-                        50% { transform: scale(1.1); }
-                        100% { transform: scale(1); }
-                    }
-                    
-                    .date-icon {
-                        color: #F06292 !important;
-                    }
-                    
-                    .tab-badge {
-                        background: linear-gradient(135deg, #F06292, #E91E63) !important;
-                        color: white !important;
-                        border-radius: 12px !important;
-                        padding: 0.25rem 0.75rem !important;
-                        font-weight: 600 !important;
-                    }
-                    
-                    .show-more-btn {
-                        color: #F06292 !important;
-                        text-decoration: none !important;
-                        font-weight: 600 !important;
-                        padding: 0.5rem 1rem !important;
-                        border-radius: 8px !important;
-                        transition: all 0.3s ease !important;
-                    }
-                    
-                    .show-more-btn:hover {
-                        color: white !important;
-                        background: linear-gradient(135deg, #F06292, #E91E63) !important;
-                        text-decoration: none !important;
-                        transform: translateY(-2px) !important;
-                    }
-                    
-                    .loading-icon {
-                        color: #F06292 !important;
-                        font-size: 2rem !important;
-                    }
-                    
-                    .empty-icon {
-                        color: #F8BBD9 !important;
-                        font-size: 3rem !important;
-                    }
-                    
-                    .empty-content {
-                        text-align: center !important;
-                        padding: 2rem !important;
-                        color: #999 !important;
-                    }
-                    
-                    /* Force responsive design */
-                    .nurse-theme .container-fluid {
-                        padding-left: 15px !important;
-                        padding-right: 15px !important;
-                    }
-                    
-                    @media (max-width: 768px) {
-                        .nurse-theme .medicine-table thead th {
-                            background: rgba(248, 187, 217, 0.15) !important;
-                            color: #1a1a1a !important;
-                            font-size: 0.75rem !important;
-                            padding: 0.75rem 0.5rem !important;
-                        }
-                        
-                        .nurse-theme .medicine-table tbody td {
-                            padding: 0.75rem 0.5rem !important;
-                            font-size: 0.85rem !important;
-                        }
-                        
-                        .nurse-theme .btn-action {
-                            width: 28px !important;
-                            height: 28px !important;
-                            font-size: 12px !important;
-                        }
-                        
-                        .nurse-theme .btn-action svg {
-                            font-size: 14px !important;
-                        }
-                    }
-                `}
-      </style>
+    <div className="container-fluid nurse-theme medicine-management">
 
       {/* Notification */}
       {notification && (
@@ -1238,40 +765,14 @@ const HealthEvents = () => {
       )}
 
       {/* Page Header */}
-      <div
-        style={{
-          backgroundColor: "#F06292",
-          padding: "20px 0",
-          borderRadius: "10px",
-          marginBottom: "25px",
-          height: "180px",
-        }}
-      >
+      <div className="health-events-header">
         <div className="header-content">
           <div className="header-left">
-            <div
-              className="page-title"
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "700",
-                color: "rgb(255, 255, 255)",
-                lineHeight: "1.4",
-                textAlign: "center",
-              }}
-            >
+            <div className="page-title">
               <FaHeartbeat className="page-icon" />
               <h1>Quản lý Sự kiện Y tế</h1>
             </div>
-            <p
-              className="page-subtitle"
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "600",
-                color: "rgb(255, 255, 255)",
-                lineHeight: "1.4",
-                textAlign: "center",
-              }}
-            >
+            <p className="page-subtitle">
               Theo dõi và quản lý các sự kiện y tế trong trường
             </p>
           </div>
@@ -1279,131 +780,49 @@ const HealthEvents = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div
-        className="nurse-events-stats-row"
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "stretch",
-          gap: "32px",
-          marginBottom: "32px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          className="nurse-events-stat-card"
-          style={{
-            minWidth: 180,
-            flex: 1,
-            maxWidth: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
-            padding: 24,
-          }}
-        >
+      <div className="nurse-events-stats-row">
+        <div className="nurse-events-stat-card">
           <div className="nurse-events-stat-icon">
-            <img
-              src={cendal}
-              alt="Calendar"
-              style={{ width: 55, height: 55 }}
-            />
+            <img src={cendal} alt="Calendar" />
           </div>
-          <div
-            className="nurse-events-stat-label"
-            style={{ fontWeight: 600, marginTop: 8 }}
-          >
+          <div className="nurse-events-stat-label">
             Tổng sự kiện
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#43a047", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value">
             {totalItems}
           </div>
         </div>
-        <div
-          className="nurse-events-stat-card"
-          style={{
-            minWidth: 180,
-            flex: 1,
-            maxWidth: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
-            padding: 24,
-          }}
-        >
+        <div className="nurse-events-stat-card">
           <div className="nurse-events-stat-icon">
-            <img src={nearly} alt="Nearly" style={{ width: 55, height: 55 }} />
+            <img src={nearly} alt="Nearly" />
           </div>
-          <div
-            className="nurse-events-stat-label"
-            style={{ fontWeight: 600, marginTop: 8 }}
-          >
+          <div className="nurse-events-stat-label">
             Gần đây (7 ngày)
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#ffa000", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value">
             {totalRecent}
           </div>
         </div>
-        <div
-          className="nurse-events-stat-card"
-          style={{
-            minWidth: 180,
-            flex: 1,
-            maxWidth: 260,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            background: "#fff",
-            borderRadius: 16,
-            boxShadow: "0 8px 32px rgba(240, 98, 146, 0.08)",
-            padding: 24,
-          }}
-        >
+        <div className="nurse-events-stat-card">
           <div className="nurse-events-stat-icon">
-            <img src={Today} alt="Today" style={{ width: 55, height: 55 }} />
+            <img src={Today} alt="Today" />
           </div>
-          <div
-            className="nurse-events-stat-label"
-            style={{ fontWeight: 600, marginTop: 8 }}
-          >
+          <div className="nurse-events-stat-label">
             Hôm nay
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#039be5", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value">
             {totalToday}
           </div>
         </div>
       </div>
 
       {/* Add Event Button */}
-      <div className="mb-4 text-end">
+      <div className="add-event-container">
         <Button
           variant="success"
           size="lg"
           onClick={() => fetchMedicalSupply()}
-          style={{
-            background: "linear-gradient(135deg, #F06292, #E91E63)",
-            border: "none",
-            borderRadius: "25px",
-            padding: "12px 30px",
-            fontWeight: "600",
-            boxShadow: "0 4px 15px rgba(240, 98, 146, 0.3)",
-          }}
+          className="add-event-btn"
         >
           <FaPlus className="me-2" /> Thêm Sự kiện Y tế
         </Button>
@@ -1787,13 +1206,13 @@ const HealthEvents = () => {
                         className="form-control-enhanced"
                         required
                       >
-                        <option value="">Chọn loại sự kiện...</option>
-                        <option value="health_check">Khám sức khỏe</option>
-                        <option value="vaccination">Tiêm phòng</option>
-                        <option value="emergency">Cấp cứu</option>
-                        <option value="medication">Cho thuốc</option>
-                        <option value="injury">Chấn thương</option>
-                        <option value="other">Khác</option>
+                        <option key="empty-event-type" value="">Chọn loại sự kiện...</option>
+                        <option key="health_check" value="health_check">Khám sức khỏe</option>
+                        <option key="vaccination" value="vaccination">Tiêm phòng</option>
+                        <option key="emergency" value="emergency">Cấp cứu</option>
+                        <option key="medication" value="medication">Cho thuốc</option>
+                        <option key="injury" value="injury">Chấn thương</option>
+                        <option key="other" value="other">Khác</option>
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         Vui lòng chọn loại sự kiện
@@ -1827,15 +1246,41 @@ const HealthEvents = () => {
                     </Form.Group>
                   </div>
 
-                  <div className="input-group full-width">
-                    <Form.Group controlId="studentNumber">
+                  <div className="input-group">
+                    <Form.Group controlId="classSelect">
+                      <Form.Label>
+                        <FaUserGraduate />
+                        Chọn lớp <span className="required">*</span>
+                      </Form.Label>
+                      <Form.Select
+                        value={selectedClassId}
+                        onChange={(e) => handleClassChange(e.target.value)}
+                        className="form-control-enhanced"
+                        required
+                      >
+                        <option key="empty-class" value="">Chọn lớp...</option>
+                        {classList.map((cls, index) => (
+                          <option
+                            key={cls.id ? `class-${cls.id}` : `class-fallback-${index}`}
+                            value={cls.id || ""}
+                          >
+                            {cls.className || "Lớp không xác định"}
+                          </option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        Vui lòng chọn lớp
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </div>
+
+                  <div className="input-group">
+                    <Form.Group controlId="studentSelect">
                       <Form.Label>
                         <FaUser />
-                        Mã học sinh liên quan
+                        Chọn học sinh <span className="required">*</span>
                       </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="VD: HS001, ST2024001... (để trống cho sự kiện chung)"
+                      <Form.Select
                         value={formAdd.studentNumber}
                         onChange={(e) =>
                           setFormAdd({
@@ -1844,11 +1289,34 @@ const HealthEvents = () => {
                           })
                         }
                         className="form-control-enhanced"
-                      />
+                        disabled={!selectedClassId}
+                        required
+                      >
+                        <option key="empty-student" value="">
+                          {selectedClassId
+                            ? (studentsList.length > 0
+                              ? "Chọn học sinh..."
+                              : "Không có học sinh trong lớp")
+                            : "Vui lòng chọn lớp trước"
+                          }
+                        </option>
+                        {studentsList.map((student, index) => (
+                          <option
+                            key={student.id ? `student-${student.id}` : `student-fallback-${index}`}
+                            value={student.studentNumber || ""}
+                          >
+                            {(student.studentNumber || "N/A")} - {(student.studentName || "Tên không xác định")}
+                          </option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        Vui lòng chọn học sinh
+                      </Form.Control.Feedback>
                       <div className="form-help">
                         <FaInfoCircle />
-                        Chỉ nhập mã học sinh đã tồn tại trong hệ thống. Để trống
-                        để tạo sự kiện chung.
+                        Chọn lớp trước, sau đó chọn học sinh cụ thể.
+                        <br />
+                        <strong>Lưu ý:</strong> Sự kiện sẽ được lưu nhưng chưa tự động gửi thông báo cho phụ huynh.
                       </div>
                     </Form.Group>
                   </div>
@@ -1930,10 +1398,13 @@ const HealthEvents = () => {
                             }
                             className="form-control-enhanced"
                           >
-                            <option value="">-- Chọn vật tư y tế --</option>
-                            {medicalSupplies.map((supply) => (
-                              <option key={supply.id} value={supply.id}>
-                                {supply.name} (Tồn kho: {supply.quantity})
+                            <option key="empty-supply" value="">-- Chọn vật tư y tế --</option>
+                            {medicalSupplies.map((supply, index) => (
+                              <option
+                                key={supply.id ? `supply-${supply.id}` : `supply-fallback-${index}`}
+                                value={supply.id || ""}
+                              >
+                                {(supply.name || "Vật tư không xác định")} (Tồn kho: {supply.quantity || 0})
                               </option>
                             ))}
                           </Form.Select>

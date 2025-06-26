@@ -166,7 +166,7 @@ const SendMedicine = () => {
 
       {/* Main Content */}
       <Container className="medicine-main-container ">
-        <div className="medicine-form-wrapper animate-scale-in-center delay-500 animate-card" style={{backgroundColor: 'white', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
+        <div className="medicine-form-wrapper animate-scale-in-center delay-500 animate-card" style={{ backgroundColor: 'white', padding: '1rem', marginTop: '-2rem', border: '1px solid #2563eb', borderRadius: '10px' }}>
           {/* Form Header */}
           <div className="form-header-section">
             <h2 className="form-main-title">

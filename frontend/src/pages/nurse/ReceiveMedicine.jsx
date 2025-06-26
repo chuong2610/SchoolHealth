@@ -37,7 +37,8 @@ import {
   FaHistory,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
-// CSS được import tự động từ main.jsx
+// Import CSS cho ReceiveMedicine
+import "../../styles/nurse/receive-medicine/index.css";
 
 const ReceiveMedicine = () => {
   const { user } = useAuth();
@@ -434,114 +435,27 @@ const ReceiveMedicine = () => {
 
   // Render Action Buttons
   const renderActionButtons = (req, type) => (
-    <div
-      className="medicine-action-buttons"
-      style={{
-        display: "flex",
-        gap: "6px",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
-      }}
-    >
+    <div className="medicine-action-buttons">
       <button
-        className="btn-action view"
+        className="medicine-btn-action view"
         onClick={() => setModalDetail({ type, data: req })}
         title="Xem chi tiết"
-        style={{
-          background: '#F06292',
-          border: '1px solid #F06292',
-          color: 'white',
-          width: '30px',
-          height: '30px',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
-          outline: 'none'
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = '#E91E63';
-          e.target.style.transform = 'scale(1.05)';
-          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = '#F06292';
-          e.target.style.transform = 'scale(1)';
-          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
-        }}
       >
         <FaEye />
       </button>
       {type === "pending" && (
         <>
           <button
-            className="btn-action confirm"
+            className="medicine-btn-action confirm"
             onClick={() => handleConfirm(req, "pending", "")}
             title="Xác nhận nhận thuốc"
-            style={{
-              background: '#81C784',
-              border: '1px solid #81C784',
-              color: 'white',
-              width: '30px',
-              height: '30px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 6px rgba(129, 199, 132, 0.25)',
-              outline: 'none'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = '#66BB6A';
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 3px 10px rgba(129, 199, 132, 0.35)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = '#81C784';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 6px rgba(129, 199, 132, 0.25)';
-            }}
           >
             <FaCheckCircle />
           </button>
           <button
-            className="btn-action reject"
+            className="medicine-btn-action reject"
             onClick={() => handleReject(req)}
             title="Từ chối"
-            style={{
-              background: '#E57373',
-              border: '1px solid #E57373',
-              color: 'white',
-              width: '30px',
-              height: '30px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 6px rgba(229, 115, 115, 0.25)',
-              outline: 'none'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = '#EF5350';
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 3px 10px rgba(229, 115, 115, 0.35)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = '#E57373';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 6px rgba(229, 115, 115, 0.25)';
-            }}
           >
             <FaTimesCircle />
           </button>
@@ -549,35 +463,9 @@ const ReceiveMedicine = () => {
       )}
       {type === "active" && (
         <button
-          className="btn-action complete"
+          className="medicine-btn-action complete"
           onClick={() => handleConfirm(req, "active", "")}
           title="Hoàn thành sử dụng thuốc"
-          style={{
-            background: '#81C784',
-            border: '1px solid #81C784',
-            color: 'white',
-            width: '30px',
-            height: '30px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '12px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 6px rgba(129, 199, 132, 0.25)',
-            outline: 'none'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = '#66BB6A';
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.boxShadow = '0 3px 10px rgba(129, 199, 132, 0.35)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = '#81C784';
-            e.target.style.transform = 'scale(1)';
-            e.target.style.boxShadow = '0 2px 6px rgba(129, 199, 132, 0.25)';
-          }}
         >
           <FaCheckDouble />
         </button>
@@ -609,13 +497,6 @@ const ReceiveMedicine = () => {
           </div>
           <div className="action-buttons">
             <Button
-              style={{
-                width: '100px',
-                height: '40px',
-                borderRadius: '8px',
-                fontSize: '1.2rem',
-                fontWeight: '600',
-              }}
               variant="outline-secondary"
               className="filter-btn"
               onClick={() => setShowFilterModal(true)}
@@ -623,13 +504,6 @@ const ReceiveMedicine = () => {
               <FaFilter /> Lọc
             </Button>
             <Button
-              style={{
-                width: '100px',
-                height: '40px',
-                borderRadius: '8px',
-                fontSize: '1.2rem',
-                fontWeight: '600',
-              }}
               variant="outline-success"
               className="export-btn"
               onClick={() => {
@@ -648,126 +522,72 @@ const ReceiveMedicine = () => {
         </div>
       </div>
 
-      <div
-        className="table-responsive medicine-table-wrapper"
-        style={{ overflowX: "auto", width: "100%", maxWidth: "100%" }}
-      >
-        <Table
-          className="medicine-table"
-          style={{
-            width: "100%",
-            tableLayout: "fixed",
-            minWidth: type === "pending" ? "920px" : "800px",
-          }}
-        >
+      <div className="medicine-table-responsive">
+        <Table className="medicine-table">
           <thead>
             <tr>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Mã đơn</th>
-              <th style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}>Lớp</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Học sinh</th>
-              {/* {type === "pending" && <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Phụ huynh</th>} */}
-              <th style={{ width: type === "pending" ? '150px' : '180px', minWidth: type === "pending" ? '150px' : '180px', maxWidth: type === "pending" ? '150px' : '180px' }}>Loại thuốc</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Liều lượng</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Ngày</th>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Thao tác</th>
+              <th>Mã đơn</th>
+              <th>Lớp</th>
+              <th>Học sinh</th>
+              <th>Loại thuốc</th>
+              <th>Liều lượng</th>
+              <th>Ngày</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {(showAll ? data : data.slice(0, ROW_LIMIT)).map((req, index) => (
-              <tr
-                key={req.id || `req-${index}`}
-                className="table-row"
-                style={{}}>
-                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-                  <div className="medicine-id" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-
-                  }}>
+              <tr key={req.id || `req-${index}`} className="table-row">
+                <td>
+                  <div className="medicine-id">
                     #{req.id || 'N/A'}
                   </div>
                 </td>
-                <td style={{
-                  width: '80px', minWidth: '80px', maxWidth: '80px', fontSize: '1.9rem',
-                  fontWeight: '700',
-                  color: '#111827',
-                  lineHeight: '4.4',
-                }}>
-                  {/* <Badge bg="" className="class-badge"> */}
-                  {req.studentClassName || 'N/A'}
-                  {/* </Badge> */}
+                <td>
+                  <div className="class-info">
+                    {req.studentClassName || 'N/A'}
+                  </div>
                 </td>
-                <td style={{
-                  width: '120px', minWidth: '120px', maxWidth: '120px', fontSize: '1.2rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  lineHeight: '1.4',
-                }}>
+                <td>
                   <div className="student-info">
                     {req.student || 'N/A'}
                   </div>
                 </td>
-                {/* {type === "pending" && (
-                  <td style={{
-                    width: '120px', minWidth: '120px', maxWidth: '120px', fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <div className="parent-info">
-                      {req.parent || 'N/A'}
-                    </div>
-                  </td>
-                )} */}
-                <td style={{ width: type === "pending" ? '150px' : '180px', minWidth: type === "pending" ? '150px' : '180px', maxWidth: type === "pending" ? '150px' : '180px' }}>
+                <td>
                   <div className="medicine-info">
                     <strong>{req.medicine || "N/A"}</strong>
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "100px",
-                    minWidth: "100px",
-                    maxWidth: "100px",
-                  }}
-                >
+                <td>
                   <Badge bg="info" className="dosage-badge">
                     {req.dosage || "N/A"}
                   </Badge>
                 </td>
-                <td style={{
-                  width: '100px', minWidth: '100px', maxWidth: '100px', fontSize: '1.2rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  lineHeight: '1.4',
-                }}>
+                <td>
                   <div className="date-info">
                     <FaCalendarAlt className="date-icon" />
                     {req.date || "N/A"}
                   </div>
                 </td>
-                <td
-                  style={{
-                    width: "150px",
-                    minWidth: "150px",
-                    maxWidth: "150px",
-                  }}
-                >
+                <td>
                   {renderActionButtons(req, type)}
                 </td>
               </tr>
             ))}
             {data.length === 0 && (
               <tr>
-                <td
-                  colSpan={type === "pending" ? 8 : 7}
-                  className="text-center empty-state"
-                >
+                <td colSpan={7} className="text-center empty-state">
                   <div className="empty-content">
                     <FaCapsules className="empty-icon" />
-                    <p>Không có đơn thuốc nào</p>
+                    <h5 className="empty-title">Không có đơn thuốc nào</h5>
+                    <p className="empty-description">
+                      {type === "pending"
+                        ? "Hiện tại không có đơn thuốc nào chờ xác nhận"
+                        : type === "active"
+                          ? "Không có học sinh nào đang sử dụng thuốc"
+                          : "Chưa có đơn thuốc nào được hoàn thành"
+                      }
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -780,7 +600,7 @@ const ReceiveMedicine = () => {
         <div className="table-footer">
           <Button
             variant="link"
-            className="show-more-btn"
+            className="medicine-show-more-btn"
             onClick={() => setShowAll(!showAll)}
           >
             {showAll ? "Thu gọn" : `Xem thêm ${data.length - ROW_LIMIT} đơn`}
@@ -791,14 +611,8 @@ const ReceiveMedicine = () => {
   );
 
   return (
-    <div
-      className="container-fluid nurse-theme medicine-management"
-      style={{
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        backgroundColor: "#f8f9fc",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="container-fluid nurse-theme medicine-management">
+
       {/* Notification */}
       {notification && (
         <Alert
@@ -812,31 +626,14 @@ const ReceiveMedicine = () => {
       )}
 
       {/* Page Header */}
-      <div className="page-header" style={{
-        backgroundColor: '#F06292',
-        padding: '20px 0',
-        borderRadius: '10px',
-        marginBottom: '20px'
-      }}  >
+      <div className="page-header">
         <div className="header-content">
           <div className="header-left">
-            <div className="page-title" style={{
-              fontSize: '2.5rem',
-              fontWeight: '700',
-              color: 'rgb(255, 255, 255)',
-              lineHeight: '1.4',
-              textAlign: 'center'
-            }}>
+            <div className="page-title">
               <FaStethoscope className="page-icon" />
               <h1>Quản lý Thuốc Y tế</h1>
             </div>
-            <p style={{
-              fontSize: '1.2rem',
-              fontWeight: '600',
-              color: 'rgb(255, 255, 255)',
-              lineHeight: '1.4',
-              textAlign: 'center'
-            }}>
+            <p className="page-subtitle">
               Theo dõi và xử lý các đơn thuốc từ phụ huynh
             </p>
           </div>
@@ -847,16 +644,15 @@ const ReceiveMedicine = () => {
       <div className="nurse-medicine-stats">
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={waiting} alt="Waiting" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img src={waiting} alt="Waiting" />
           </div>
           <div className="nurse-medicine-stat-label">Yêu cầu chờ duyệt</div>
           <div className="nurse-medicine-stat-value">{pendingRequests.length}</div>
-
         </div>
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={using} alt="Using" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img src={using} alt="Using" />
           </div>
           <div className="nurse-medicine-stat-label">Đang sử dụng thuốc</div>
           <div className="nurse-medicine-stat-value">{activeRequests.length}</div>
@@ -864,7 +660,7 @@ const ReceiveMedicine = () => {
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={done} alt="Done" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img src={done} alt="Done" />
           </div>
           <div className="nurse-medicine-stat-label">Đã hoàn thành</div>
           <div className="nurse-medicine-stat-value">{completedRequests.length}</div>
@@ -872,7 +668,7 @@ const ReceiveMedicine = () => {
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={CalendarClockIcon} alt="Calendar Clock" style={{ width: '55px', height: '55px' }} />
+            <img src={CalendarClockIcon} alt="Calendar Clock" />
           </div>
           <div className="nurse-medicine-stat-label">Yêu cầu hôm nay</div>
           <div className="nurse-medicine-stat-value">{totalToday}</div>
@@ -894,7 +690,7 @@ const ReceiveMedicine = () => {
                 setActiveTab(key);
                 setCurrentPage(1);
               }}
-              className="medicine-tabs"
+              className="nurse-medicine-tabs nurse-theme"
             >
               <Tab
                 eventKey="pending"
@@ -909,6 +705,15 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
+                  <div className="tab-content-header">
+                    <div className="content-icon pending">
+                      <FaExclamationTriangle />
+                    </div>
+                    <div className="content-info">
+                      <h3>Đơn thuốc chờ xác nhận</h3>
+                      <p>Danh sách các đơn thuốc từ phụ huynh cần được y tá xác nhận nhận thuốc</p>
+                    </div>
+                  </div>
                   {renderTable(
                     filteredPending,
                     "pending",
@@ -933,6 +738,15 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
+                  <div className="tab-content-header">
+                    <div className="content-icon active">
+                      <FaClock />
+                    </div>
+                    <div className="content-info">
+                      <h3>Thuốc đang sử dụng</h3>
+                      <p>Danh sách học sinh hiện đang sử dụng thuốc theo đơn đã được xác nhận</p>
+                    </div>
+                  </div>
                   {renderTable(
                     filteredActive,
                     "active",
@@ -957,6 +771,15 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
+                  <div className="tab-content-header">
+                    <div className="content-icon completed">
+                      <FaCheckCircle />
+                    </div>
+                    <div className="content-info">
+                      <h3>Đã hoàn thành sử dụng</h3>
+                      <p>Danh sách học sinh đã hoàn thành việc sử dụng thuốc theo đơn</p>
+                    </div>
+                  </div>
                   {renderTable(
                     filteredCompleted,
                     "completed",
@@ -1304,7 +1127,7 @@ const ReceiveMedicine = () => {
       >
         <Modal.Header closeButton className="modal-header-custom">
           <Modal.Title>
-            <FaFilter style={{ color: '#F06292', fontSize: '1.5rem' }} />
+            <FaFilter className="modal-icon" />
             Bộ lọc nâng cao
           </Modal.Title>
         </Modal.Header>

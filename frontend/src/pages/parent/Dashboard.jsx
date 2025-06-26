@@ -27,6 +27,7 @@ import {
   FaExclamationTriangle,
 
 } from "react-icons/fa";
+
 import PaginationBar from "../../components/common/PaginationBar";
 // Styles được import từ main.jsx
 
@@ -73,14 +74,9 @@ const ParentDashboard = () => {
 
   const fetchBlogs = async (page = 1) => {
     try {
-      console.log(
-        "API URL:",
-        `/BlogPosts?pageNumber=${page}&pageSize=${pageSize}`
-      );
       const response = await axiosInstance.get(
         `/BlogPosts?pageNumber=${page}&pageSize=${pageSize}`
       );
-      console.log("Response:", response);
       setBlogs(response.data.items);
       setTotalPages(response.data.totalPages);
       setTotalItems(response.data.totalItems);
@@ -150,7 +146,7 @@ const ParentDashboard = () => {
       <Container className="parent-dashboard" >
         {/* About School Section */}
         <section className="about-section">
-        
+
           <h2 className="section-title scroll-animate"><FaSchool />Giới thiệu về trường học</h2>
           <Row className="align-items-center">
             <Col lg={6}>
@@ -344,6 +340,8 @@ const ParentDashboard = () => {
             )}
           </div>
         </div>
+
+
       </Container>
     </div>
   );

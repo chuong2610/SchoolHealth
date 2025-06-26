@@ -1,0 +1,164 @@
+/* ========================================
+   RECEIVE MEDICINE - STATISTICS CARDS
+   ======================================== */
+
+.nurse-medicine-stats {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.nurse-medicine-stat-card {
+    min-width: 180px;
+    flex: 1;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08);
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nurse-medicine-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(240, 98, 146, 0.15);
+}
+
+.nurse-medicine-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.nurse-medicine-stat-icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.nurse-medicine-stat-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.nurse-medicine-stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #F06292;
+    text-align: center;
+    line-height: 1;
+    margin: 0;
+}
+
+/* Animation for stat values */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-medicine-stat-value.animate {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .nurse-medicine-stats {
+        gap: 24px;
+    }
+
+    .nurse-medicine-stat-card {
+        min-width: 160px;
+        max-width: 220px;
+        padding: 20px;
+    }
+
+    .nurse-medicine-stat-icon img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .nurse-medicine-stat-value {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-medicine-stats {
+        gap: 16px;
+        justify-content: space-around;
+    }
+
+    .nurse-medicine-stat-card {
+        min-width: 140px;
+        max-width: 180px;
+        padding: 16px;
+    }
+
+    .nurse-medicine-stat-icon img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nurse-medicine-stat-label {
+        font-size: 0.9rem;
+    }
+
+    .nurse-medicine-stat-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-medicine-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .nurse-medicine-stat-card {
+        min-width: 200px;
+        max-width: 300px;
+        flex-direction: row;
+        text-align: left;
+        padding: 16px 20px;
+    }
+
+    .nurse-medicine-stat-icon {
+        margin-bottom: 0;
+        margin-right: 16px;
+    }
+
+    .nurse-medicine-stat-content {
+        flex: 1;
+    }
+
+    .nurse-medicine-stat-label {
+        text-align: left;
+        margin-bottom: 4px;
+    }
+
+    .nurse-medicine-stat-value {
+        text-align: left;
+        font-size: 1.8rem;
+    }
+}

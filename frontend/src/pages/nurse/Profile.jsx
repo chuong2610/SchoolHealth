@@ -49,7 +49,8 @@ import {
   FaMedkit,
   FaUserMd
 } from 'react-icons/fa';
-// CSS được import tự động từ main.jsx
+// Import CSS cho Nurse Profile
+import "../../styles/nurse/profile/index.css";
 
 const nurseInfo = {
   avatar: "https://randomuser.me/api/portraits/women/44.jpg",
@@ -128,424 +129,8 @@ const Profile = () => {
   };
 
   return (
-    <div
-      className="container-fluid nurse-theme medicine-management"
-      style={{
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        backgroundColor: "#f8f9fc",
-        minHeight: "100vh",
-        position: "relative",
-        zIndex: 1
-      }}
+    <div className="container-fluid nurse-profile"
     >
-      {/* Updated CSS Styles with Pink Theme */}
-      <style>
-        {`
-          .profile-management {
-            background: linear-gradient(135deg, #f8f9fc 0%, #fce4ec 100%) !important;
-            min-height: 100vh !important;
-            padding: 0 !important;
-          }
-          
-          .profile-header {
-            background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%) !important;
-            color: white !important;
-            padding: 2rem !important;
-            margin: -1.5rem -1.5rem 2rem -1.5rem !important;
-            border-radius: 0 0 20px 20px !important;
-            position: relative !important;
-            overflow: hidden !important;
-          }
-          
-          .profile-avatar-container {
-            position: relative !important;
-            display: inline-block !important;
-          }
-          
-          .profile-avatar {
-            width: 120px !important;
-            height: 120px !important;
-            border-radius: 50% !important;
-            border: 4px solid white !important;
-            box-shadow: 0 8px 32px rgba(240, 98, 146, 0.3) !important;
-            object-fit: cover !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .profile-avatar:hover {
-            transform: scale(1.05) !important;
-            box-shadow: 0 12px 40px rgba(240, 98, 146, 0.4) !important;
-          }
-          
-          .avatar-upload-btn {
-            position: absolute !important;
-            bottom: 0 !important;
-            right: 0 !important;
-            width: 36px !important;
-            height: 36px !important;
-            border-radius: 50% !important;
-            background: linear-gradient(135deg, #F06292, #E91E63) !important;
-            border: 3px solid white !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3) !important;
-          }
-          
-          .avatar-upload-btn:hover {
-            transform: scale(1.1) !important;
-            box-shadow: 0 6px 20px rgba(240, 98, 146, 0.5) !important;
-          }
-          
-          .profile-card {
-            background: white !important;
-            border-radius: 16px !important;
-            box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08) !important;
-            border: none !important;
-            overflow: hidden !important;
-            transition: all 0.3s ease !important;
-            margin-bottom: 2rem !important;
-          }
-          
-          .profile-card:hover {
-            transform: translateY(-4px) !important;
-            box-shadow: 0 16px 48px rgba(240, 98, 146, 0.12) !important;
-          }
-          
-          .profile-tabs .nav-tabs {
-            border-bottom: none !important;
-            background: linear-gradient(135deg, #fce4ec, #f8bbd9) !important;
-            padding: 1rem !important;
-            border-radius: 16px 16px 0 0 !important;
-          }
-          
-          .profile-tabs .nav-link {
-            border: none !important;
-            border-radius: 12px !important;
-            margin-right: 0.5rem !important;
-            padding: 0.75rem 1.5rem !important;
-            font-weight: 600 !important;
-            color: #666 !important;
-            background: transparent !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .profile-tabs .nav-link:hover {
-            background: rgba(255, 255, 255, 0.7) !important;
-            color: #E91E63 !important;
-            transform: translateY(-2px) !important;
-          }
-          
-          .profile-tabs .nav-link.active {
-            background: white !important;
-            color: #E91E63 !important;
-            border-bottom: 3px solid #F06292 !important;
-            box-shadow: 0 4px 16px rgba(240, 98, 146, 0.15) !important;
-            transform: translateY(-2px) !important;
-          }
-          
-          /* Enhanced Info Items */
-          .info-item {
-            display: flex !important;
-            align-items: center !important;
-            padding: 1.2rem !important;
-            border-radius: 12px !important;
-            background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%) !important;
-            margin-bottom: 1rem !important;
-            transition: all 0.3s ease !important;
-            border: 2px solid rgba(240, 98, 146, 0.1) !important;
-            position: relative !important;
-            overflow: hidden !important;
-          }
-          
-          .info-item::before {
-            content: '' !important;
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 4px !important;
-            height: 100% !important;
-            background: linear-gradient(135deg, #F06292, #E91E63) !important;
-            opacity: 0 !important;
-            transition: opacity 0.3s ease !important;
-          }
-          
-          .info-item:hover {
-            background: linear-gradient(135deg, #f8bbd9 0%, #ffffff 100%) !important;
-            transform: translateX(6px) !important;
-            box-shadow: 0 8px 25px rgba(240, 98, 146, 0.15) !important;
-            border-color: #F06292 !important;
-          }
-          
-          .info-item:hover::before {
-            opacity: 1 !important;
-          }
-          
-          .info-icon {
-            width: 45px !important;
-            height: 45px !important;
-            border-radius: 12px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin-right: 1rem !important;
-            font-size: 1.3rem !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .info-item:hover .info-icon {
-            transform: scale(1.1) !important;
-          }
-          
-          .info-icon.primary {
-            background: linear-gradient(135deg, rgba(240, 98, 146, 0.2), rgba(233, 30, 99, 0.2)) !important;
-            color: #F06292 !important;
-            box-shadow: 0 4px 12px rgba(240, 98, 146, 0.2) !important;
-          }
-          
-          .info-icon.success {
-            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(139, 195, 74, 0.2)) !important;
-            color: #4caf50 !important;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2) !important;
-          }
-          
-          .info-icon.warning {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 87, 34, 0.2)) !important;
-            color: #ff9800 !important;
-            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2) !important;
-          }
-          
-          .info-icon.purple {
-            background: linear-gradient(135deg, rgba(240, 98, 146, 0.2), rgba(194, 24, 91, 0.2)) !important;
-            color: #C2185B !important;
-            box-shadow: 0 4px 12px rgba(194, 24, 91, 0.2) !important;
-          }
-          
-          .status-badge {
-            padding: 0.6rem 1.2rem !important;
-            border-radius: 20px !important;
-            font-weight: 600 !important;
-            font-size: 0.85rem !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            transition: all 0.3s ease !important;
-          }
-          
-          .status-badge.active {
-            background: linear-gradient(135deg, #F8BBD9, #F06292) !important;
-            color: white !important;
-            border: 2px solid rgba(240, 98, 146, 0.3) !important;
-            box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3) !important;
-          }
-          
-          .status-badge:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 16px rgba(240, 98, 146, 0.4) !important;
-          }
-          
-          /* Enhanced Buttons */
-          .edit-btn,
-          .save-btn,
-          .cancel-btn {
-            padding: 0.8rem 2rem !important;
-            border-radius: 25px !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 0.5rem !important;
-            transition: all 0.3s ease !important;
-            border: none !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-          }
-          
-          .edit-btn {
-            background: linear-gradient(135deg, #F06292, #E91E63) !important;
-            color: white !important;
-          }
-          
-          .edit-btn:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 8px 25px rgba(240, 98, 146, 0.4) !important;
-            background: linear-gradient(135deg, #E91E63, #C2185B) !important;
-          }
-          
-          .save-btn {
-            background: linear-gradient(135deg, #4CAF50, #388E3C) !important;
-            color: white !important;
-          }
-          
-          .save-btn:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4) !important;
-          }
-          
-          .cancel-btn {
-            background: linear-gradient(135deg, #6c757d, #495057) !important;
-            color: white !important;
-          }
-          
-          .cancel-btn:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4) !important;
-          }
-          
-          /* Enhanced Form Elements */
-          .form-control {
-            border: 2px solid #fce4ec !important;
-            border-radius: 10px !important;
-            padding: 0.8rem 1rem !important;
-            transition: all 0.3s ease !important;
-            background: white !important;
-          }
-          
-          .form-control:focus {
-            border-color: #F06292 !important;
-            box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-            background: #fefefe !important;
-            transform: translateY(-1px) !important;
-          }
-          
-          .form-select {
-            border: 2px solid #fce4ec !important;
-            border-radius: 10px !important;
-            padding: 0.8rem 1rem !important;
-            transition: all 0.3s ease !important;
-            background: white !important;
-          }
-          
-          .form-select:focus {
-            border-color: #F06292 !important;
-            box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-            transform: translateY(-1px) !important;
-          }
-          
-          .form-check-input:checked {
-            background-color: #F06292 !important;
-            border-color: #F06292 !important;
-          }
-          
-          .form-check-input:focus {
-            box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1) !important;
-          }
-          
-          /* Enhanced Modal Styling */
-          .medicine-detail-modal .modal-content {
-            border: none !important;
-            border-radius: 20px !important;
-            box-shadow: 0 25px 80px rgba(240, 98, 146, 0.2) !important;
-            overflow: hidden !important;
-          }
-          
-          .modal-header-custom {
-            background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%) !important;
-            color: white !important;
-            padding: 1.5rem 2rem !important;
-            border-bottom: none !important;
-          }
-          
-          .modal-body-custom {
-            background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%) !important;
-            padding: 2rem !important;
-          }
-          
-          .modal-footer-custom {
-            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%) !important;
-            border-top: none !important;
-            padding: 1.5rem 2rem !important;
-          }
-          
-          .modal-icon {
-            color: white !important;
-            margin-right: 0.5rem !important;
-            font-size: 1.3rem !important;
-          }
-          
-          /* Enhanced Badge Colors */
-          .badge {
-            background: linear-gradient(135deg, #F8BBD9, #F06292) !important;
-            color: white !important;
-            border-radius: 8px !important;
-            padding: 0.4rem 0.8rem !important;
-            font-weight: 600 !important;
-          }
-          
-          .badge:hover {
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3) !important;
-          }
-          
-          /* Enhanced Notification Styling */
-          .notification-alert {
-            border-radius: 12px !important;
-            border: none !important;
-            box-shadow: 0 8px 32px rgba(240, 98, 146, 0.15) !important;
-            backdrop-filter: blur(10px) !important;
-          }
-          
-          /* Section Headers */
-          h5 {
-            color: #E91E63 !important;
-            font-weight: 700 !important;
-            margin-bottom: 1.5rem !important;
-          }
-          
-          /* Loading and Animation Effects */
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          
-          .info-item {
-            animation: fadeInUp 0.5s ease-out !important;
-          }
-          
-          .info-item:nth-child(1) { animation-delay: 0.1s !important; }
-          .info-item:nth-child(2) { animation-delay: 0.2s !important; }
-          .info-item:nth-child(3) { animation-delay: 0.3s !important; }
-          .info-item:nth-child(4) { animation-delay: 0.4s !important; }
-          
-          /* Responsive Design */
-          @media (max-width: 768px) {
-            .profile-header {
-              padding: 1.5rem !important;
-              text-align: center !important;
-            }
-            
-            .profile-avatar {
-              width: 100px !important;
-              height: 100px !important;
-            }
-            
-            .info-item {
-              flex-direction: column !important;
-              text-align: center !important;
-              padding: 1rem !important;
-            }
-            
-            .info-icon {
-              margin-bottom: 0.5rem !important;
-              margin-right: 0 !important;
-            }
-            
-            .edit-btn,
-            .save-btn,
-            .cancel-btn {
-              width: 100% !important;
-              justify-content: center !important;
-              margin-bottom: 0.5rem !important;
-            }
-          }
-        `}
-      </style>
 
       {/* Notification */}
       {notification && (
@@ -570,32 +155,32 @@ const Profile = () => {
                 className="profile-avatar"
               />
               <div className="avatar-upload-btn" title="Đổi ảnh đại diện">
-                <FaCamera style={{ color: 'white', fontSize: '14px' }} />
+                <FaCamera />
               </div>
             </div>
           </div>
           <div className="col-md">
             <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start justify-content-md-between">
-              <div className="text-center text-md-start mb-3 mb-md-0">
-                <h1 style={{ fontSize: '2.5rem', fontWeight: '700', margin: '0 0 0.5rem 0' }}>
+              <div className="profile-info text-center text-md-start mb-3 mb-md-0">
+                <h1>
                   {formData.name}
                 </h1>
-                <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                <div className="profile-badges d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
                   <Badge className="status-badge active">
                     <FaStethoscope className="me-1" />
                     {formData.position}
                   </Badge>
-                  <Badge bg="light" text="dark" style={{ padding: '0.5rem 1rem', borderRadius: '20px', fontWeight: '600' }}>
+                  <Badge className="profile-badge-light">
                     <FaIdCard className="me-1" />
                     {formData.id}
                   </Badge>
-                  <Badge bg="info" style={{ padding: '0.5rem 1rem', borderRadius: '20px', fontWeight: '600' }}>
+                  <Badge className="profile-badge-info">
                     <FaBuilding className="me-1" />
                     {formData.department}
                   </Badge>
                 </div>
               </div>
-              <div className="d-flex gap-2">
+              <div className="profile-action-buttons d-flex gap-2">
                 {!editMode ? (
                   <Button
                     onClick={() => setEditMode(true)}
@@ -660,130 +245,134 @@ const Profile = () => {
               </Nav.Item>
             </Nav>
 
-            <Tab.Content style={{ padding: '2rem' }}>
+            <Tab.Content>
               <Tab.Pane eventKey="profile">
                 <Row>
                   <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaUser className="me-2" style={{ color: '#667eea' }} />
-                      Thông tin cơ bản
-                    </h5>
+                    <div className="tab-section">
+                      <h5>
+                        <FaUser />
+                        Thông tin cơ bản
+                      </h5>
 
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaEnvelope />
+                      <div className="info-item">
+                        <div className="info-icon primary">
+                          <FaEnvelope />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Email</div>
+                          {editMode ? (
+                            <Form.Control
+                              type="email"
+                              value={formData.email}
+                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+                          ) : (
+                            <div className="info-value">{formData.email}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Email</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.email}</div>
-                        )}
-                      </div>
-                    </div>
 
-                    <div className="info-item">
-                      <div className="info-icon success">
-                        <FaPhone />
+                      <div className="info-item">
+                        <div className="info-icon success">
+                          <FaPhone />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Số điện thoại</div>
+                          {editMode ? (
+                            <Form.Control
+                              type="tel"
+                              value={formData.phone}
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            />
+                          ) : (
+                            <div className="info-value">{formData.phone}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Số điện thoại</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.phone}</div>
-                        )}
-                      </div>
-                    </div>
 
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaBirthdayCake />
+                      <div className="info-item">
+                        <div className="info-icon warning">
+                          <FaBirthdayCake />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Ngày sinh</div>
+                          {editMode ? (
+                            <Form.Control
+                              type="date"
+                              value={formData.dob}
+                              onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                            />
+                          ) : (
+                            <div className="info-value">{formData.dob}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Ngày sinh</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="date"
-                            value={formData.dob}
-                            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.dob}</div>
-                        )}
-                      </div>
-                    </div>
 
-                    <div className="info-item">
-                      <div className="info-icon purple">
-                        <FaVenusMars />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Giới tính</div>
-                        {editMode ? (
-                          <Form.Select
-                            value={formData.gender}
-                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                          >
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                          </Form.Select>
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.gender}</div>
-                        )}
+                      <div className="info-item">
+                        <div className="info-icon purple">
+                          <FaVenusMars />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Giới tính</div>
+                          {editMode ? (
+                            <Form.Select
+                              value={formData.gender}
+                              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                            >
+                              <option value="Nam">Nam</option>
+                              <option value="Nữ">Nữ</option>
+                            </Form.Select>
+                          ) : (
+                            <div className="info-value">{formData.gender}</div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </Col>
 
                   <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaMapMarkerAlt className="me-2" style={{ color: '#667eea' }} />
-                      Thông tin liên hệ
-                    </h5>
-
-                    <div className="info-item">
-                      <div className="info-icon primary">
+                    <div className="tab-section">
+                      <h5>
                         <FaMapMarkerAlt />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Địa chỉ</div>
-                        {editMode ? (
-                          <Form.Control
-                            as="textarea"
-                            rows={2}
-                            value={formData.address}
-                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.address}</div>
-                        )}
-                      </div>
-                    </div>
+                        Thông tin liên hệ
+                      </h5>
 
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaPhone />
+                      <div className="info-item">
+                        <div className="info-icon primary">
+                          <FaMapMarkerAlt />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Địa chỉ</div>
+                          {editMode ? (
+                            <Form.Control
+                              as="textarea"
+                              rows={2}
+                              value={formData.address}
+                              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            />
+                          ) : (
+                            <div className="info-value">{formData.address}</div>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Liên hệ khẩn cấp</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="tel"
-                            value={formData.emergencyContact}
-                            onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.emergencyContact}</div>
-                        )}
+
+                      <div className="info-item">
+                        <div className="info-icon warning">
+                          <FaPhone />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Liên hệ khẩn cấp</div>
+                          {editMode ? (
+                            <Form.Control
+                              type="tel"
+                              value={formData.emergencyContact}
+                              onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
+                            />
+                          ) : (
+                            <div className="info-value">{formData.emergencyContact}</div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -940,26 +529,28 @@ const Profile = () => {
               <Tab.Pane eventKey="security">
                 <Row>
                   <Col lg={8}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaShieldAlt className="me-2" style={{ color: '#667eea' }} />
-                      Bảo mật tài khoản
-                    </h5>
+                    <div className="tab-section">
+                      <h5>
+                        <FaShieldAlt />
+                        Bảo mật tài khoản
+                      </h5>
 
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaLock />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Mật khẩu</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Đổi mật khẩu để bảo vệ tài khoản</div>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => setShowChangePassword(true)}
-                        >
-                          <FaKey className="me-1" />
-                          Đổi mật khẩu
-                        </Button>
+                      <div className="info-item">
+                        <div className="info-icon primary">
+                          <FaLock />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Mật khẩu</div>
+                          <div className="info-value">Đổi mật khẩu để bảo vệ tài khoản</div>
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={() => setShowChangePassword(true)}
+                          >
+                            <FaKey className="me-1" />
+                            Đổi mật khẩu
+                          </Button>
+                        </div>
                       </div>
                     </div>
 
@@ -983,30 +574,32 @@ const Profile = () => {
               <Tab.Pane eventKey="settings">
                 <Row>
                   <Col lg={8}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaCog className="me-2" style={{ color: '#667eea' }} />
-                      Cài đặt ứng dụng
-                    </h5>
+                    <div className="tab-section">
+                      <h5>
+                        <FaCog />
+                        Cài đặt ứng dụng
+                      </h5>
 
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaBell />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Thông báo</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Quản lý thông báo và cảnh báo</div>
-                        <Form.Check
-                          type="switch"
-                          id="notifications"
-                          label="Nhận thông báo qua email"
-                          defaultChecked
-                        />
-                        <Form.Check
-                          type="switch"
-                          id="push-notifications"
-                          label="Thông báo đẩy"
-                          defaultChecked
-                        />
+                      <div className="info-item">
+                        <div className="info-icon primary">
+                          <FaBell />
+                        </div>
+                        <div className="info-content flex-grow-1">
+                          <div className="info-label">Thông báo</div>
+                          <div className="info-value">Quản lý thông báo và cảnh báo</div>
+                          <Form.Check
+                            type="switch"
+                            id="notifications"
+                            label="Nhận thông báo qua email"
+                            defaultChecked
+                          />
+                          <Form.Check
+                            type="switch"
+                            id="push-notifications"
+                            label="Thông báo đẩy"
+                            defaultChecked
+                          />
+                        </div>
                       </div>
                     </div>
 

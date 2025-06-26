@@ -253,7 +253,7 @@ namespace backend.Repositories
 
             var total = await _context.Notifications.CountAsync();
             var vaccination = await _context.Notifications.CountAsync(n => n.Type == "Vaccination");
-            var healthcheck = await _context.Notifications.CountAsync(n => n.Type == "Healthcheck");
+            var healthcheck = await _context.Notifications.CountAsync(n => n.Type == "HealthCheck");
             var sentToday = await _context.Notifications.CountAsync(
                 n => n.Date >= today && n.Date < tomorrow);
 

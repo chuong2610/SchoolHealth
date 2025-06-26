@@ -59,7 +59,7 @@ const Header = ({ onLogout }) => {
                 {user?.role === 'parent' && <ParentMenu />}
             </div>
 
-            {/* Right: Account user dropdown */}
+            {/* Right: Account user dropdown (Notification Bell is now integrated in ParentMenu) */}
             <div className="app-header-right">
                 <div className="app-header-account" ref={dropdownRef}>
                     <div

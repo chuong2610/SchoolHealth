@@ -9,12 +9,14 @@ public class NotificationHub : Hub
         Console.WriteLine($"Client connected: {Context.ConnectionId}");
         return base.OnConnectedAsync();
     }
-    public async Task JoinClassGroup(string classId)
+    public async Task JoinClassGroup(string className)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, classId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, className);
+        await Clients.Caller.SendAsync("JoinedGroup", $"Joined class group: {className}");
     }
-    public async Task LeaveClassGroup(string classId)
+    public async Task LeaveClassGroup(string className)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, classId);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, className);
+        await Clients.Caller.SendAsync("LeftGroup", $"Left class group: {className}");
     }
 }

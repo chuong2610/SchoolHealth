@@ -70,7 +70,7 @@
   width: 100%;
 }
 
-.table {
+.dashboard-bg .table {
   width: 100%;
   margin-bottom: 0;
   background-color: #fff;
@@ -79,7 +79,7 @@
   table-layout: auto;
 }
 
-.table th {
+.dashboard-bg .table th {
   background-color: #f8f9fa;
   font-weight: 600;
   padding: 1rem;
@@ -90,17 +90,17 @@
   white-space: nowrap;
 }
 
-.table td {
+.dashboard-bg .table td {
   padding: 1rem;
   vertical-align: middle;
   border-bottom: 1px solid #dee2e6;
 }
 
-.table tbody tr:hover {
+.dashboard-bg .table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
-.table .badge {
+.dashboard-bg .table .badge {
   font-size: 0.875rem;
   padding: 0.5em 0.75em;
   position: static !important;
@@ -108,26 +108,26 @@
   vertical-align: baseline !important;
 }
 
-.table-responsive {
+.dashboard-bg .table-responsive {
   min-width: 100%;
 }
 
-.table {
+.dashboard-bg .table {
   min-width: 100%;
 }
 
-.card-body {
+.dashboard-bg .card-body {
   padding: 1.5rem;
 }
 
-.table th,
-.table td {
+.dashboard-bg .table th,
+.dashboard-bg .table td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.table td:hover {
+.dashboard-bg .table td:hover {
   overflow: visible;
   white-space: normal;
   word-break: break-word;

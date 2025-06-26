@@ -1,0 +1,167 @@
+/* ========================================
+   RECEIVE MEDICINE - ACTION BUTTONS
+   ======================================== */
+
+.medicine-action-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.medicine-btn-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    border: none;
+    color: white;
+}
+
+.medicine-btn-action.view {
+    background: #F06292;
+    border: 1px solid #F06292;
+    box-shadow: 0 2px 6px rgba(240, 98, 146, 0.25);
+}
+
+.medicine-btn-action.view:hover {
+    background: #E91E63;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(240, 98, 146, 0.35);
+}
+
+.medicine-btn-action.confirm {
+    background: #81C784;
+    border: 1px solid #81C784;
+    box-shadow: 0 2px 6px rgba(129, 199, 132, 0.25);
+}
+
+.medicine-btn-action.confirm:hover {
+    background: #66BB6A;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(129, 199, 132, 0.35);
+}
+
+.medicine-btn-action.reject {
+    background: #E57373;
+    border: 1px solid #E57373;
+    box-shadow: 0 2px 6px rgba(229, 115, 115, 0.25);
+}
+
+.medicine-btn-action.reject:hover {
+    background: #EF5350;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(229, 115, 115, 0.35);
+}
+
+.medicine-btn-action.complete {
+    background: #81C784;
+    border: 1px solid #81C784;
+    box-shadow: 0 2px 6px rgba(129, 199, 132, 0.25);
+}
+
+.medicine-btn-action.complete:hover {
+    background: #66BB6A;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(129, 199, 132, 0.35);
+}
+
+/* Filter and Export Buttons */
+.filter-btn {
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 2px solid #F06292;
+    color: #F06292;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+}
+
+.export-btn {
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: 2px solid #4CAF50;
+    color: #4CAF50;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Show More Button */
+.medicine-show-more-btn {
+    color: #F06292;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+}
+
+.medicine-show-more-btn:hover {
+    color: white;
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .medicine-btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+
+    .filter-btn,
+    .export-btn {
+        width: 80px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .medicine-action-buttons {
+        gap: 4px;
+    }
+
+    .medicine-btn-action {
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+    }
+
+    .filter-btn,
+    .export-btn {
+        width: 70px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+}

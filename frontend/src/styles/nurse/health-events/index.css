@@ -1,0 +1,196 @@
+/* ========================================
+   HEALTH EVENTS - MAIN CSS INDEX
+   Import all modular CSS files
+   ======================================== */
+
+/* Core Layout */
+@import './layout.css';
+
+/* Page Header */
+@import './page-header.css';
+
+/* Statistics Cards */
+@import './statistics-cards.css';
+
+/* Health Events Table */
+@import './health-table.css';
+
+/* Action Buttons */
+@import './action-buttons.css';
+
+/* Tabs */
+@import './tabs.css';
+
+/* Loading & Empty States */
+@import './loading-empty.css';
+
+/* Modal */
+@import './modal.css';
+
+/* Global Overrides for HealthEvents */
+.notification-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.notification-alert.alert-success {
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    color: white;
+}
+
+.notification-alert.alert-danger {
+    background: linear-gradient(135deg, #F44336, #EF5350);
+    color: white;
+}
+
+.notification-alert.alert-warning {
+    background: linear-gradient(135deg, #FF9800, #FFB74D);
+    color: white;
+}
+
+.notification-alert.alert-info {
+    background: linear-gradient(135deg, #2196F3, #42A5F5);
+    color: white;
+}
+
+/* Bootstrap Override for Health Events */
+.nurse-theme .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nurse-theme .form-control {
+    border: 2px solid #fce4ec;
+    border-radius: 10px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    padding: 0.75rem 1rem;
+}
+
+.nurse-theme .form-control:focus {
+    border-color: #F06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    background: #fefefe;
+}
+
+.nurse-theme .form-select {
+    border: 2px solid #fce4ec;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.nurse-theme .form-select:focus {
+    border-color: #F06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+}
+
+/* Enhanced Icons and Badges */
+.medicine-id .medicine-icon {
+    color: #F06292;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.date-icon {
+    color: #F06292;
+}
+
+/* Pagination */
+.d-flex.justify-content-center.mt-4 {
+    margin-top: 2rem;
+}
+
+/* Force responsive design */
+.nurse-theme .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+    .notification-alert {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+
+    .nurse-theme .medicine-table thead th {
+        background: rgba(248, 187, 217, 0.15);
+        color: #1a1a1a;
+        font-size: 0.75rem;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .nurse-theme .medicine-table tbody td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .nurse-theme .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .nurse-theme .btn-action svg {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex.justify-content-center.mt-4 {
+        margin-top: 1.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .medicine-management {
+        background: white !important;
+    }
+
+    .health-events-header {
+        background: #F06292 !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .health-events-action-buttons,
+    .medicine-action-buttons {
+        display: none !important;
+    }
+
+    .action-buttons {
+        display: none !important;
+    }
+
+    .medicine-tabs .nav-tabs {
+        display: none !important;
+    }
+
+    .add-event-container {
+        display: none !important;
+    }
+}

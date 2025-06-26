@@ -1,0 +1,316 @@
+/* ========================================
+   HEALTH EVENTS - HEALTH TABLE
+   ======================================== */
+
+.medicine-table-container {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08);
+}
+
+.table-header {
+    margin-bottom: 1.5rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #F06292;
+    z-index: 5;
+}
+
+.search-input {
+    width: 100%;
+    border: 2px solid #fce4ec;
+    border-radius: 25px;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    border-color: #F06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    background: #fefefe;
+    outline: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.health-events-table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08);
+    border: 2px solid #fce4ec;
+}
+
+.health-events-table {
+    width: 100%;
+    table-layout: fixed;
+    min-width: 760px;
+    margin: 0;
+    border: none;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.health-events-table thead th {
+    background: rgba(248, 187, 217, 0.15);
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1.25rem 1rem;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(240, 98, 146, 0.2);
+    text-align: center;
+    vertical-align: middle;
+}
+
+.health-events-table tbody td {
+    padding: 1.2rem 1rem;
+    border-bottom: 1px solid #fce4ec;
+    vertical-align: middle;
+    border-left: none;
+    border-right: none;
+    background: white;
+    transition: all 0.3s ease;
+    position: relative;
+    text-align: center;
+}
+
+.health-events-table .table-row:nth-child(even) {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 5%);
+}
+
+.health-events-table .table-row:hover {
+    background: linear-gradient(135deg, #f8bbd9 0%, #f06292 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(240, 98, 146, 0.15);
+    border-radius: 8px;
+}
+
+.health-events-table .table-row:hover td {
+    color: #4a1a2a;
+    font-weight: 500;
+}
+
+/* Table Cell Content */
+.event-type-info {
+    font-weight: 600;
+    color: #F06292;
+    font-size: 0.9rem;
+}
+
+.location-info {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.9rem;
+}
+
+.date-info {
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.student-info {
+    font-weight: 600;
+    color: #111827;
+}
+
+.student-info strong {
+    color: #F06292;
+}
+
+.nurse-info {
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.table-footer {
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #fce4ec;
+}
+
+.health-events-show-more-btn {
+    color: #F06292;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+}
+
+.health-events-show-more-btn:hover {
+    color: white;
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Enhanced Medicine Table Wrapper */
+.medicine-table-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(240, 98, 146, 0.08);
+    border: 2px solid #fce4ec;
+}
+
+/* Filter Buttons */
+.filter-btn {
+    background-color: #F06292;
+    border: 1px solid #F06292;
+    color: white;
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+}
+
+.export-btn {
+    background-color: #F06292;
+    border: 1px solid #F06292;
+    color: white;
+    width: 100px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .health-events-table {
+        min-width: 680px;
+    }
+
+    .health-events-table thead th {
+        font-size: 0.8rem;
+        padding: 1rem 0.8rem;
+    }
+
+    .health-events-table tbody td {
+        padding: 1rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        min-width: auto;
+    }
+
+    .action-buttons {
+        justify-content: center;
+    }
+
+    .health-events-table {
+        min-width: 600px;
+    }
+
+    .health-events-table thead th {
+        font-size: 0.75rem;
+        padding: 0.8rem 0.6rem;
+    }
+
+    .health-events-table tbody td {
+        padding: 0.8rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .filter-btn,
+    .export-btn {
+        width: 80px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .medicine-table-container {
+        padding: 1rem;
+    }
+
+    .health-events-table {
+        min-width: 500px;
+    }
+
+    .health-events-table thead th {
+        font-size: 0.7rem;
+        padding: 0.6rem 0.4rem;
+    }
+
+    .health-events-table tbody td {
+        padding: 0.6rem 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    .search-input {
+        padding: 0.6rem 0.8rem 0.6rem 2.5rem;
+        font-size: 0.9rem;
+    }
+
+    .filter-btn,
+    .export-btn {
+        width: 70px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+}

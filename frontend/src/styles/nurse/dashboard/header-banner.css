@@ -1,0 +1,224 @@
+/* ========================================
+   NURSE DASHBOARD - HEADER BANNER
+   ======================================== */
+
+.nurse-header-banner {
+    background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.nurse-header-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
+    background-size: 30px 30px;
+    animation: move 4s linear infinite;
+}
+
+@keyframes move {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 30px 30px;
+    }
+}
+
+.nurse-header-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Avatar Styling */
+.nurse-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nurse-avatar:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.nurse-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Welcome Text */
+.nurse-welcome-title {
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nurse-welcome-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nurse-welcome-subtitle svg {
+    margin-right: 8px;
+}
+
+.nurse-welcome-subtitle span {
+    margin: 0 16px;
+    opacity: 0.7;
+}
+
+/* Header Left Column */
+.nurse-header-left {
+    margin-left: 24px;
+}
+
+/* Header Right SVG */
+.nurse-header-svg {
+    margin-left: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    min-width: 150px;
+}
+
+.nurse-header-svg img {
+    max-width: 150px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .nurse-header-banner {
+        padding: 24px;
+    }
+
+    .nurse-header-svg {
+        margin-left: 16px;
+        min-width: 120px;
+    }
+
+    .nurse-header-svg img {
+        max-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-header-banner {
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .nurse-avatar {
+        width: 64px;
+        height: 64px;
+    }
+
+    .nurse-welcome-title {
+        font-size: 1.8rem;
+    }
+
+    .nurse-welcome-subtitle {
+        font-size: 1rem;
+    }
+
+    .nurse-header-left {
+        margin-left: 16px;
+    }
+
+    .nurse-header-svg {
+        margin-left: 16px;
+        min-width: 100px;
+    }
+
+    .nurse-header-svg img {
+        max-width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-header-banner {
+        padding: 16px;
+        text-align: center;
+    }
+
+    .nurse-avatar {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 16px auto;
+    }
+
+    .nurse-welcome-title {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .nurse-welcome-subtitle {
+        font-size: 0.9rem;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .nurse-header-left {
+        margin-left: 0;
+        text-align: center;
+    }
+
+    .nurse-header-svg {
+        margin: 16px auto 0 auto;
+        justify-content: center;
+        min-width: auto;
+    }
+
+    .nurse-header-svg img {
+        max-width: 80px;
+    }
+
+    /* Stack vertically on mobile */
+    .nurse-header-banner .ant-row {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nurse-header-banner .ant-col {
+        width: 100% !important;
+        flex: none !important;
+    }
+}

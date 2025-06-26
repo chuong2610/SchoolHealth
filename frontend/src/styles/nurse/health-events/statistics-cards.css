@@ -1,0 +1,235 @@
+/* ========================================
+   HEALTH EVENTS - STATISTICS CARDS
+   ======================================== */
+
+.nurse-events-stats-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.nurse-events-stat-card {
+    min-width: 180px;
+    flex: 1;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08);
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nurse-events-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(240, 98, 146, 0.15);
+}
+
+.nurse-events-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.nurse-events-stat-icon img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+}
+
+.nurse-events-stat-label {
+    font-weight: 600;
+    margin-top: 8px;
+    font-size: 1rem;
+    color: #666;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.nurse-events-stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1;
+    margin: 0;
+}
+
+/* Specific color scheme for each card */
+.nurse-events-stat-card:nth-child(1) .nurse-events-stat-value {
+    color: #43a047;
+    /* Green for total events */
+}
+
+.nurse-events-stat-card:nth-child(2) .nurse-events-stat-value {
+    color: #ffa000;
+    /* Orange for recent events */
+}
+
+.nurse-events-stat-card:nth-child(3) .nurse-events-stat-value {
+    color: #039be5;
+    /* Blue for today events */
+}
+
+/* Animation for stat values */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-events-stat-value.animate {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Enhanced Stats Cards (from the inline styles) */
+.stats-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(240, 98, 146, 0.08);
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(240, 98, 146, 0.15);
+}
+
+.stats-card.pending .stats-icon {
+    background: linear-gradient(135deg, #F8BBD9 0%, #F06292 100%);
+    color: white;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+}
+
+.stats-card.active .stats-icon {
+    background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD9 100%);
+    color: #E91E63;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+}
+
+.stats-card.today .stats-icon {
+    background: linear-gradient(135deg, #FF4081 0%, #F06292 100%);
+    color: white;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+}
+
+.stats-card.completed .stats-icon {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+    color: white;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .nurse-events-stats-row {
+        gap: 24px;
+    }
+
+    .nurse-events-stat-card {
+        min-width: 160px;
+        max-width: 220px;
+        padding: 20px;
+    }
+
+    .nurse-events-stat-icon img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 28px;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-events-stats-row {
+        gap: 16px;
+        justify-content: space-around;
+    }
+
+    .nurse-events-stat-card {
+        min-width: 140px;
+        max-width: 180px;
+        padding: 16px;
+    }
+
+    .nurse-events-stat-icon img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.85rem;
+        margin-top: 6px;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-events-stats-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .nurse-events-stat-card {
+        min-width: 200px;
+        max-width: 300px;
+        flex-direction: row;
+        text-align: left;
+        padding: 16px 20px;
+    }
+
+    .nurse-events-stat-icon {
+        margin-bottom: 0;
+        margin-right: 16px;
+    }
+
+    .nurse-events-stat-content {
+        flex: 1;
+    }
+
+    .nurse-events-stat-label {
+        text-align: left;
+        margin-bottom: 4px;
+        margin-top: 0;
+    }
+
+    .nurse-events-stat-value {
+        text-align: left;
+        font-size: 20px;
+    }
+}

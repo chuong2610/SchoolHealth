@@ -1,0 +1,398 @@
+/* ========================================
+   NURSE DASHBOARD - TABLES
+   ======================================== */
+
+.nurse-data-card {
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.nurse-data-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    border-color: #F06292;
+}
+
+.nurse-data-card .ant-card-head {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border-bottom: 2px solid #f8bbd9;
+    padding: 16px 24px;
+}
+
+.nurse-data-card .ant-card-head-title {
+    color: #E91E63;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+
+.nurse-data-card .ant-card-head-title svg {
+    margin-right: 12px;
+    color: inherit;
+}
+
+.nurse-data-card .ant-card-body {
+    padding: 24px;
+    background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%);
+}
+
+/* Table Container */
+.nurse-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.08);
+}
+
+/* Custom Table Styling */
+.nurse-table .ant-table {
+    background: transparent;
+}
+
+.nurse-table .ant-table-thead>tr>th {
+    background: linear-gradient(135deg, #F8BBD9 0%, #F06292 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    padding: 16px 12px;
+    text-align: center;
+}
+
+.nurse-table .ant-table-thead>tr>th::before {
+    display: none;
+}
+
+.nurse-table .ant-table-tbody>tr>td {
+    padding: 12px;
+    border-bottom: 1px solid #fce4ec;
+    text-align: center;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+.nurse-table .ant-table-tbody>tr {
+    transition: all 0.3s ease;
+}
+
+.nurse-table .ant-table-tbody>tr:hover {
+    background: linear-gradient(135deg, #f8bbd9 0%, #fce4ec 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.1);
+}
+
+.nurse-table .ant-table-tbody>tr:hover>td {
+    color: #4a1a2a;
+    font-weight: 500;
+}
+
+/* Table Cell Content Styling */
+.nurse-table td span {
+    color: var(--nurse-text, #333);
+    font-weight: 500;
+}
+
+.nurse-table td span[style*="color: var(--nurse-text)"] {
+    color: #333 !important;
+}
+
+.nurse-table td span[style*="fontSize: 0.9em"] {
+    font-size: 0.9em !important;
+    color: #666 !important;
+}
+
+.nurse-table td span[style*="fontWeight: 600"] {
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Badge Styling */
+.nurse-badge .ant-badge-count {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    min-width: auto;
+    height: auto;
+    line-height: 1.4;
+}
+
+/* Status Tags */
+.nurse-tag-success {
+    background: linear-gradient(135deg, #A3D8A0, #81C784);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(129, 199, 132, 0.3);
+}
+
+.nurse-tag-warning {
+    background: linear-gradient(135deg, #F5A623, #FFB300);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(255, 179, 0, 0.3);
+}
+
+.nurse-tag-success svg,
+.nurse-tag-warning svg {
+    font-size: 10px;
+}
+
+/* Table Pagination */
+.nurse-table .ant-pagination {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.nurse-table .ant-pagination-item {
+    border: 2px solid #F06292;
+    border-radius: 8px;
+}
+
+.nurse-table .ant-pagination-item-active {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    border-color: #F06292;
+}
+
+.nurse-table .ant-pagination-item-active a {
+    color: white;
+}
+
+.nurse-table .ant-pagination-item:hover {
+    border-color: #E91E63;
+}
+
+.nurse-table .ant-pagination-item a {
+    color: #F06292;
+    font-weight: 600;
+}
+
+.nurse-table .ant-pagination-prev,
+.nurse-table .ant-pagination-next {
+    border: 2px solid #F06292;
+    border-radius: 8px;
+}
+
+.nurse-table .ant-pagination-prev:hover,
+.nurse-table .ant-pagination-next:hover {
+    border-color: #E91E63;
+}
+
+.nurse-table .ant-pagination-prev a,
+.nurse-table .ant-pagination-next a {
+    color: #F06292;
+}
+
+/* Empty Table State */
+.nurse-table .ant-empty {
+    margin: 32px 0;
+}
+
+.nurse-table .ant-empty-image svg {
+    fill: #F8BBD9;
+    opacity: 0.6;
+}
+
+.nurse-table .ant-empty-description {
+    color: #999;
+    font-weight: 500;
+}
+
+/* Tables Row */
+.tables-row {
+    margin-bottom: 0;
+}
+
+/* Table Title Icon Animations */
+.table-title-icon {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.table-title-icon.scaling {
+    animation: tableIconScale 2s infinite;
+}
+
+.table-title-icon.swinging {
+    animation: tableIconSwing 2s infinite;
+}
+
+@keyframes tableIconScale {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes tableIconSwing {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(15deg);
+    }
+
+    75% {
+        transform: rotate(-15deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .nurse-data-card .ant-card-body {
+        padding: 20px;
+    }
+
+    .nurse-data-card .ant-card-head {
+        padding: 12px 20px;
+    }
+
+    .nurse-data-card .ant-card-head-title {
+        font-size: 1rem;
+    }
+
+    .nurse-table .ant-table-thead>tr>th {
+        padding: 12px 8px;
+        font-size: 0.8rem;
+    }
+
+    .nurse-table .ant-table-tbody>tr>td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nurse-data-card .ant-card-body {
+        padding: 16px;
+    }
+
+    .nurse-data-card .ant-card-head {
+        padding: 10px 16px;
+    }
+
+    .nurse-data-card .ant-card-head-title {
+        font-size: 0.95rem;
+    }
+
+    .nurse-table .ant-table-thead>tr>th {
+        padding: 10px 6px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-table .ant-table-tbody>tr>td {
+        padding: 8px 6px;
+        font-size: 0.8rem;
+    }
+
+    .nurse-badge .ant-badge-count {
+        font-size: 0.7rem;
+        padding: 1px 6px;
+    }
+
+    .nurse-tag-success,
+    .nurse-tag-warning {
+        padding: 2px 8px;
+        font-size: 0.7rem;
+    }
+
+    .nurse-tag-success svg,
+    .nurse-tag-warning svg {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-data-card .ant-card-body {
+        padding: 12px;
+    }
+
+    .nurse-data-card .ant-card-head {
+        padding: 8px 12px;
+    }
+
+    .nurse-data-card .ant-card-head-title {
+        font-size: 0.9rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .table-title-icon {
+        margin-right: 0;
+        margin-bottom: 4px;
+    }
+
+    .nurse-table .ant-table-thead>tr>th {
+        padding: 8px 4px;
+        font-size: 0.7rem;
+    }
+
+    .nurse-table .ant-table-tbody>tr>td {
+        padding: 6px 4px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-badge .ant-badge-count {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+    }
+
+    .nurse-tag-success,
+    .nurse-tag-warning {
+        padding: 1px 6px;
+        font-size: 0.65rem;
+        gap: 2px;
+    }
+
+    .nurse-tag-success svg,
+    .nurse-tag-warning svg {
+        font-size: 7px;
+    }
+
+    /* Hide less important columns on mobile */
+    .nurse-table .ant-table-thead>tr>th:nth-child(2),
+    .nurse-table .ant-table-tbody>tr>td:nth-child(2) {
+        display: none;
+    }
+}
+
+/* Table Hover Effects */
+.nurse-data-card:hover .nurse-table .ant-table-thead>tr>th {
+    background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+    transition: background 0.3s ease;
+}
+
+.nurse-data-card:hover .nurse-table {
+    box-shadow: 0 4px 16px rgba(240, 98, 146, 0.12);
+    transition: box-shadow 0.3s ease;
+}

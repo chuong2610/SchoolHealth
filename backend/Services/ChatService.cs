@@ -23,12 +23,15 @@ namespace backend.Services
 
         public async Task SendMessageAsync(int from, int? to, string message)
         {
+           var utcTime = DateTime.UtcNow;
+           var vnTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime,
+            TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
             var msg = new ChatMessage
             {
                 FromUserId = from,
                 ToUserId = to,
                 Message = message,
-                Timestamp = DateTime.UtcNow
+                Timestamp = vnTime
             };
 
             await _repo.SaveMessageAsync(msg);

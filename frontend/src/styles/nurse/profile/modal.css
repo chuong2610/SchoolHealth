@@ -1,0 +1,257 @@
+/* ========================================
+   NURSE PROFILE - MODAL
+   ======================================== */
+
+/* Enhanced Modal Styling */
+.medicine-detail-modal .modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 25px 80px rgba(240, 98, 146, 0.2);
+    overflow: hidden;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header-custom {
+    background: linear-gradient(135deg, #F8BBD9 0%, #F06292 50%, #E91E63 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header-custom .modal-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.modal-icon {
+    color: white;
+    margin-right: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.modal-header-custom .btn-close {
+    background: none;
+    border: none;
+    color: white;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.modal-header-custom .btn-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.modal-body-custom {
+    background: linear-gradient(135deg, #fefefe 0%, #fce4ec 100%);
+    padding: 2rem;
+}
+
+.modal-footer-custom {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border-top: none;
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Form styling within modal */
+.modal-body-custom .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-body-custom .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.modal-body-custom .form-control {
+    border: 2px solid #fce4ec;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    font-size: 0.95rem;
+}
+
+.modal-body-custom .form-control:focus {
+    border-color: #F06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    background: #fefefe;
+    transform: translateY(-1px);
+}
+
+.modal-body-custom .form-control::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Modal buttons */
+.modal-footer-custom .btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.modal-footer-custom .btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.modal-footer-custom .btn-secondary:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(108, 117, 125, 0.4);
+    color: white;
+}
+
+.modal-footer-custom .btn-primary {
+    background: linear-gradient(135deg, #F06292, #E91E63);
+    color: white;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.3);
+}
+
+.modal-footer-custom .btn-primary:hover {
+    background: linear-gradient(135deg, #E91E63, #C2185B);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(240, 98, 146, 0.4);
+    color: white;
+}
+
+.modal-footer-custom .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 4px 12px rgba(240, 98, 146, 0.2);
+}
+
+/* Loading state in modal */
+.modal-footer-custom .btn .fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+    background-color: rgba(240, 98, 146, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+/* Modal dialog sizing */
+.medicine-detail-modal .modal-dialog {
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .medicine-detail-modal .modal-dialog {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .modal-header-custom {
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-header-custom .modal-title {
+        font-size: 1.1rem;
+    }
+
+    .modal-body-custom {
+        padding: 1.5rem;
+    }
+
+    .modal-footer-custom {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+    }
+
+    .modal-footer-custom .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-footer-custom .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .medicine-detail-modal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100vw - 1rem);
+    }
+
+    .modal-header-custom {
+        padding: 0.8rem 1rem;
+    }
+
+    .modal-header-custom .modal-title {
+        font-size: 1rem;
+    }
+
+    .modal-icon {
+        font-size: 1.1rem;
+    }
+
+    .modal-body-custom {
+        padding: 1rem;
+    }
+
+    .modal-footer-custom {
+        padding: 0.8rem 1rem;
+    }
+
+    .modal-body-custom .form-control {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .modal-footer-custom .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}

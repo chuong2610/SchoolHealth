@@ -58,7 +58,7 @@ export const getMedicalEvents = async (
 export const getMedicalEventDetail = async (eventId) => {
   try {
     const res = await axiosInstance.get(`/MedicalEvent/${eventId}`);
-    console.log("res.data.data:", res.data.data); // 👉 THÊM DÒNG NÀY
+
     if (res.data.success === true) {
       // Map response để đảm bảo tương thích với frontend
       const data = res.data.data;
@@ -75,7 +75,7 @@ export const getMedicalEventDetail = async (eventId) => {
       return {};
     }
   } catch (error) {
-    console.error('Error fetching medical event detail:', error);
+
     throw error;
   }
 };
@@ -93,7 +93,7 @@ export const postMedicalEvent = async (data) => {
   }
 };
 
-export const getMedicalSupply = async (pageNumber = 1, pageSize = 1) => {
+export const getMedicalSupply = async (pageNumber = 1, pageSize = 100) => {
   try {
     const res = await axiosInstance.get(
       `/MedicalSupply?pageNumber=${pageNumber}&pageSize=${pageSize}`

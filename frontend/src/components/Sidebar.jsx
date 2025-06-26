@@ -17,8 +17,10 @@ import {
   FaPills,
   FaBoxes,
   FaCalendarAlt,
+  FaComments,
 } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import ChatNotificationBadge from "./ChatNotificationBadge";
 
 const Sidebar = (props) => {
   const location = useLocation();
@@ -137,6 +139,11 @@ const Sidebar = (props) => {
         icon: <FaCalendarAlt />,
         label: "Sự kiện sức khỏe",
       },
+      {
+        path: "/nurse/chat",
+        icon: <ChatNotificationBadge showIcon={true} iconSize="sm" />,
+        label: "Tư vấn sức khỏe"
+      },
       { path: "/nurse/profile", icon: <FaUserCog />, label: "Hồ sơ cá nhân" },
     ];
   }
@@ -200,9 +207,8 @@ const Sidebar = (props) => {
               <li key={idx} role="none">
                 <Link
                   to={item.path}
-                  className={`app-sidebar-link${
-                    location.pathname === item.path ? " active" : ""
-                  }`}
+                  className={`app-sidebar-link${location.pathname === item.path ? " active" : ""
+                    }`}
                   role="menuitem"
                   aria-current={
                     location.pathname === item.path ? "page" : undefined
