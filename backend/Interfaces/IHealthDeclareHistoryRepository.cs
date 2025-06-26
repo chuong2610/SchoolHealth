@@ -7,5 +7,6 @@ namespace backend.Interfaces
         Task<List<HealthDeclareHistory>> GetHistoryByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
         Task<int> CountByParentIdAsync(int parentId, string? search);
         Task<HealthHistoryCountDTO> GetCountsByParentIdAsync(int parentId);
+        Task<bool> AddAsync(HealthDeclareHistory history);
     }
 }

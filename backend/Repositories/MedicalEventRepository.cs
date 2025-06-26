@@ -47,7 +47,11 @@ namespace backend.Repositories
                 query = query.Where(me =>
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
-                    me.Status.Contains(search));
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search) ||
+
+                    me.Date.ToString().Contains(search));
+
             }
 
             return await query
@@ -66,7 +70,10 @@ namespace backend.Repositories
                 query = query.Where(me =>
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
-                    me.Status.Contains(search));
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search) ||
+
+                    me.Date.ToString().Contains(search));
             }
 
             return await query.CountAsync();

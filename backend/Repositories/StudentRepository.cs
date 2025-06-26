@@ -81,7 +81,13 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(s => s.Name.Contains(search));
+                var searchLower = search.ToLower();
+
+                query = query.Where(s => s.Name.Contains(search) ||
+                                         s.Class.ClassName.Contains(search) ||
+                                         s.DateOfBirth.ToString().Contains(search) ||
+                                         s.StudentNumber.Contains(search) ||
+                                         s.Gender.ToLower() == searchLower);
             }
 
             return await query
@@ -101,7 +107,14 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(s => s.Name.Contains(search));
+                var searchLower = search.ToLower();
+
+                query = query.Where(s => s.Name.Contains(search) ||
+                                         s.Class.ClassName.Contains(search) ||
+                                         s.DateOfBirth.ToString().Contains(search) ||
+                                         s.StudentNumber.Contains(search) ||
+                                         s.Gender.ToLower() == searchLower ||
+                                         s.Parent.Name.Contains(search));
             }
 
             return await query.CountAsync();
