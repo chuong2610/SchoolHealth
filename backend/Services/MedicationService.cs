@@ -5,6 +5,7 @@ using backend.Models.Request;
 using backend.Repositories;
 
 using backend.Interfaces;
+using System.Globalization;
 
 
 namespace backend.Services
@@ -66,9 +67,20 @@ namespace backend.Services
 
         public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int? pageNumber, int? pageSize, string? search)
         {
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
             var medications = await _medicationRepository
-                .GetMedicationsPendingAsync(pageNumber, pageSize, search);
-            var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search);
+                .GetMedicationsPendingAsync(pageNumber, pageSize, search, searchDate);
+            var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search, searchDate);
 
             var dtos = medications
                 .Select(m => MapToDTO(m))
@@ -98,9 +110,20 @@ namespace backend.Services
 
         public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search, searchDate);
+
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search, searchDate);
 
             var dtos = medications.Select(m => MapToDTO(m)).ToList();
 
@@ -126,9 +149,20 @@ namespace backend.Services
 
         public async Task<PageResult<MedicationDTO>> GetMedicationsActivesByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
             var medications = await _medicationRepository
-                .GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
-            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search);
+                .GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search, searchDate);
+            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search, searchDate);
 
             var dtos = medications.Select(m => MapToDTO(m)).ToList();
 
@@ -210,9 +244,20 @@ namespace backend.Services
 
         public async Task<PageResult<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId, search, searchDate);
+
+            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var dtos = medications
                 .Select(m => MapToDTO(m))

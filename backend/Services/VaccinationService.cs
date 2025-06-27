@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -22,9 +23,22 @@ namespace backend.Services
 
         public async Task<PageResult<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalCount = await _vaccinationRepository.CountVaccinationsByParentIdAsync(parentId, search);
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
+            var totalCount = await _vaccinationRepository.CountVaccinationsByParentIdAsync(parentId, search, searchDate);
             var vaccinations = await _vaccinationRepository
-                .GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+                .GetVaccinationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var dtos = vaccinations.Select(v => MapToDTO(v)).ToList();
 
@@ -62,11 +76,24 @@ namespace backend.Services
         }
         public async Task<PageResult<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
         {
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
             var totalItems = await _vaccinationRepository
-                .CountVaccinationsByNotificationIdAsync(notificationId, search);
+                .CountVaccinationsByNotificationIdAsync(notificationId, search, searchDate);
 
             var vaccinations = await _vaccinationRepository
-                .GetVaccinationsByNotificationIdAsync(notificationId, pageNumber, pageSize, search);
+                .GetVaccinationsByNotificationIdAsync(notificationId, pageNumber, pageSize, search, searchDate);
 
             var vaccinationDTOs = vaccinations.Select(v => MapToDTO(v)).ToList();
 

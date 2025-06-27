@@ -4,6 +4,7 @@ using backend.Models.DTO;
 
 using backend.Models;
 using backend.Models.Request;
+using System.Globalization;
 
 
 namespace backend.Services
@@ -12,11 +13,13 @@ namespace backend.Services
     {
 
         private readonly IStudentRepository _studentRepository;
+        private readonly IUserRepository _userRepository;
 
 
-        public StudentService(IStudentRepository repository)
+        public StudentService(IStudentRepository repository, IUserRepository userRepository)
         {
             _studentRepository = repository;
+            _userRepository = userRepository;
         }
 
         public async Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId)
@@ -88,11 +91,22 @@ namespace backend.Services
 
         public async Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
         {
+            DateOnly? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
             var students = await _studentRepository
-                .GetAllStudentAsync(classId, pageNumber, pageSize, search);
+                .GetAllStudentAsync(classId, pageNumber, pageSize, search, searchDate);
 
             var totalItems = await _studentRepository
-                .CountStudentsAsync(classId, search);
+                .CountStudentsAsync(classId, search, searchDate);
 
             var studentDtos = students.Select(s => new StudentsDTO
             {

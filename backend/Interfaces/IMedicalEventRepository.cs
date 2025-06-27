@@ -7,8 +7,8 @@ namespace backend.Interfaces
     {
         Task<MedicalEvent> CreateMedicalEventAsync(MedicalEvent medicalEvent);
         Task<MedicalEvent?> GetMedicalEventByIdAsync(int id);
-        Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search);
-        Task<int> CountMedicalEventsAsync(string? search);
+        Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search, DateTime? searchDate);
+        Task<int> CountMedicalEventsAsync(string? search, DateTime? searchDate);
         Task<List<MedicalEvent>> GetMedicalEventsTodayAsync();
         Task<Dictionary<string, int>> GetWeeklyMedicalEventCountsAsync();
         Task<MedicalEventCountDTO> GetMedicalEventCountsAsync();

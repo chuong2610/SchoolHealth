@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Hubs;
 using backend.Interfaces;
 using backend.Models;
@@ -27,8 +28,18 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification,
@@ -46,8 +57,19 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountVaccinationsNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountVaccinationsNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification, item.Student.Id, item.Student.Name
@@ -63,8 +85,19 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountHealthChecksNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountHealthChecksNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification,
@@ -203,8 +236,19 @@ namespace backend.Services
 
         public async Task<PageResult<NotificationClassDTO>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountNotificationsAsync(search);
-            var notifications = await _notificationRepository.GetAllNotificationsAsync(pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountNotificationsAsync(search, searchDate);
+            var notifications = await _notificationRepository.GetAllNotificationsAsync(pageNumber, pageSize, search, searchDate);
 
             var notificationDtos = notifications
                     .Select(n => new NotificationClassDTO

@@ -31,7 +31,7 @@ namespace backend.Repositories
         }
 
         public async Task<List<HealthCheck>> GetHealthChecksByParentIdAsync(
-    int parentId, int pageNumber, int pageSize, string? search)
+    int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.HealthChecks
                 .Include(h => h.Nurse)
@@ -44,16 +44,23 @@ namespace backend.Repositories
                     // Các trường dạng chuỗi
                     h.Nurse.Name.Contains(search) ||
                     h.Student.Name.Contains(search) ||
+                    h.Location.Contains(search) ||
+                    h.Description.Contains(search) ||
                     h.Conclusion.Contains(search) ||
+                    h.BloodPressure.Contains(search) ||
+                    h.HeartRate.Contains(search) ||
 
                     // Các trường dạng số 
                     h.Height.ToString().Contains(search) ||
                     h.Weight.ToString().Contains(search) ||
-                    h.Bmi.ToString().Contains(search) ||
-
-                    // Các trường kiểu ngày tháng
-                    h.Date.ToString().Contains(search)
+                    h.VisionLeft.ToString().Contains(search) ||
+                    h.VisionRight.ToString().Contains(search) ||
+                    h.Bmi.ToString().Contains(search)
                 );
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
             }
 
             return await query
@@ -63,7 +70,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountHealthChecksByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountHealthChecksByParentIdAsync(int parentId, string? search, DateTime? searchDate)
         {
             var query = _context.HealthChecks
                 .Where(h => h.Student.ParentId == parentId);
@@ -74,23 +81,30 @@ namespace backend.Repositories
                     // Các trường dạng chuỗi
                     h.Nurse.Name.Contains(search) ||
                     h.Student.Name.Contains(search) ||
+                    h.Location.Contains(search) ||
+                    h.Description.Contains(search) ||
                     h.Conclusion.Contains(search) ||
+                    h.BloodPressure.Contains(search) ||
+                    h.HeartRate.Contains(search) ||
 
                     // Các trường dạng số 
                     h.Height.ToString().Contains(search) ||
                     h.Weight.ToString().Contains(search) ||
-                    h.Bmi.ToString().Contains(search) ||
-
-                    // Các trường kiểu ngày tháng
-                    h.Date.ToString().Contains(search)
+                    h.VisionLeft.ToString().Contains(search) ||
+                    h.VisionRight.ToString().Contains(search) ||
+                    h.Bmi.ToString().Contains(search)
                 );
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
             }
 
             return await query.CountAsync();
         }
 
         public async Task<List<HealthCheck>> GetHealthChecksByNotificationIdAsync(
-    int notificationId, int pageNumber, int pageSize, string? search)
+    int notificationId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.HealthChecks
                 .Include(h => h.Nurse)
@@ -117,11 +131,12 @@ namespace backend.Repositories
                     h.Weight.ToString().Contains(search) ||
                     h.VisionLeft.ToString().Contains(search) ||
                     h.VisionRight.ToString().Contains(search) ||
-                    h.Bmi.ToString().Contains(search) ||
-
-                    // Các trường kiểu ngày tháng
-                    h.Date.ToString().Contains(search)
+                    h.Bmi.ToString().Contains(search)
                 );
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
             }
 
             return await query
@@ -131,7 +146,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountHealthChecksByNotificationIdAsync(int notificationId, string? search)
+        public async Task<int> CountHealthChecksByNotificationIdAsync(int notificationId, string? search, DateTime? searchDate)
         {
             var query = _context.HealthChecks
                 .Include(h => h.Nurse)
@@ -155,11 +170,12 @@ namespace backend.Repositories
                     h.Weight.ToString().Contains(search) ||
                     h.VisionLeft.ToString().Contains(search) ||
                     h.VisionRight.ToString().Contains(search) ||
-                    h.Bmi.ToString().Contains(search) ||
-
-                    // Các trường kiểu ngày tháng
-                    h.Date.ToString().Contains(search)
+                    h.Bmi.ToString().Contains(search)
                 );
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
             }
 
             return await query.CountAsync();

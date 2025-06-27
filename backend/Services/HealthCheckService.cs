@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -47,10 +48,23 @@ namespace backend.Services
         }
         public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId, search);
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
+            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId, search, searchDate);
 
             var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search);
+                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var dtos = healthChecks
                 .Select(h => MapToDTO(h))
@@ -68,11 +82,24 @@ namespace backend.Services
 
         public async Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
         {
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
             var totalItems = await _healthCheckRepository
-                .CountHealthChecksByNotificationIdAsync(notificationId, search);
+                .CountHealthChecksByNotificationIdAsync(notificationId, search, searchDate);
 
             var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize, search);
+                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize, search, searchDate);
 
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
