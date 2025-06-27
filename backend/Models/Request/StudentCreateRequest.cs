@@ -11,5 +11,6 @@ namespace backend.Models.Request
         public string ParentPhone { get; set; } = string.Empty;
         public string ParentEmail { get; set; } = string.Empty;
         public string ParentAddress { get; set; } = string.Empty;
+        public string ParentGender { get; set; } = string.Empty;
     }
 }
