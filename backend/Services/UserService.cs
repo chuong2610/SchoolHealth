@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.InteropServices;
 using backend.Interfaces;
 using backend.Models;
@@ -71,8 +72,19 @@ namespace backend.Services
         }
         public async Task<PageResult<UserDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _userRepository.CountUsersAsync(search);
-            var users = await _userRepository.GetAllUsersAsync(pageNumber, pageSize, search);
+            DateOnly? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _userRepository.CountUsersAsync(search, searchDate);
+            var users = await _userRepository.GetAllUsersAsync(pageNumber, pageSize, search, searchDate);
 
             var userDtos = users.Select(MapToUserDTO).ToList();
 
@@ -86,9 +98,20 @@ namespace backend.Services
         }
         public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _userRepository.CountUsersByRoleAsync(role, search);
+            DateOnly? searchDate = null;
+            bool isDate = false;
 
-            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _userRepository.CountUsersByRoleAsync(role, search, searchDate);
+
+            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize, search, searchDate);
 
             var userDtos = users.Select(MapToUserDTO).ToList();
 

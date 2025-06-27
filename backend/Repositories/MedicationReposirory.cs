@@ -44,7 +44,7 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<List<Medication>> GetMedicationsActiveByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
+        public async Task<List<Medication>> GetMedicationsActiveByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -59,13 +59,19 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
                         d.Note.Contains(search))
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
                 );
             }
 
@@ -81,7 +87,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicationsActiveByNurseIdAsync(int id, string? search)
+        public async Task<int> CountMedicationsActiveByNurseIdAsync(int id, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -96,9 +102,7 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
@@ -106,11 +110,19 @@ namespace backend.Repositories
                 );
             }
 
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
+                );
+            }
+
 
             return await query.CountAsync();
         }
 
-        public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
+        public async Task<List<Medication>> GetMedicationsCompletedByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -125,13 +137,19 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
                         d.Note.Contains(search))
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
                 );
             }
 
@@ -149,7 +167,7 @@ namespace backend.Repositories
 
         }
 
-        public async Task<int> CountMedicationsCompletedByNurseIdAsync(int id, string? search)
+        public async Task<int> CountMedicationsCompletedByNurseIdAsync(int id, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -164,9 +182,7 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
@@ -174,10 +190,18 @@ namespace backend.Repositories
                 );
             }
 
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
+                );
+            }
+
             return await query.CountAsync();
         }
 
-        public async Task<List<Medication>> GetMedicationsPendingAsync(int? pageNumber, int? pageSize, string? search)
+        public async Task<List<Medication>> GetMedicationsPendingAsync(int? pageNumber, int? pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -192,13 +216,19 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
                         d.Note.Contains(search))
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
                 );
             }
 
@@ -215,7 +245,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountPendingMedicationsAsync(string? search)
+        public async Task<int> CountPendingMedicationsAsync(string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -230,13 +260,19 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
                         d.Note.Contains(search))
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
                 );
             }
 
@@ -261,7 +297,8 @@ namespace backend.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<List<Medication>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<Medication>> GetMedicationsByParentIdAsync(
+    int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -276,9 +313,7 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
@@ -286,6 +321,13 @@ namespace backend.Repositories
                 );
             }
 
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
+                );
+            }
 
             return await query
                 .OrderByDescending(m => m.Id)
@@ -294,7 +336,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicationsByParentIdAsync(int parentId, string? search = null)
+        public async Task<int> CountMedicationsByParentIdAsync(int parentId, string? search, DateTime? searchDate)
         {
             var query = _context.Medications
                 .Include(m => m.Nurse)
@@ -309,13 +351,32 @@ namespace backend.Repositories
                     m.Student.Name.Contains(search) ||
                     m.Student.Class.ClassName.Contains(search) ||
                     m.Student.Parent.Name.Contains(search) ||
-                    m.Date.ToString().Contains(search) ||
                     m.Nurse.Name.Contains(search) ||
-                    m.ReviceDate.ToString().Contains(search) ||
                     m.MedicationDeclares.Any(d =>
                         d.Name.Contains(search) ||
                         d.Dosage.Contains(search) ||
                         d.Note.Contains(search))
+                );
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(m =>
+                    m.Student.Name.Contains(search) ||
+                    m.Student.Class.ClassName.Contains(search) ||
+                    m.Student.Parent.Name.Contains(search) ||
+                    m.Nurse.Name.Contains(search) ||
+                    m.MedicationDeclares.Any(d =>
+                        d.Name.Contains(search) ||
+                        d.Dosage.Contains(search) ||
+                        d.Note.Contains(search))
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m =>
+                    m.Date.Date == searchDate.Value.Date ||
+                    m.ReviceDate.HasValue && m.ReviceDate.Value.Date == searchDate.Value.Date
                 );
             }
 

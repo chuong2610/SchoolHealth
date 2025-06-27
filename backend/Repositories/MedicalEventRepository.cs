@@ -33,7 +33,7 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(me => me.Id == id);
         }
 
-        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
+        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.MedicalEvents
                 .Include(me => me.Student)
@@ -48,10 +48,12 @@ namespace backend.Repositories
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
                     me.Student.Name.Contains(search) ||
-                    me.Nurse.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search));
+            }
 
-                    me.Date.ToString().Contains(search));
-
+            if (searchDate.HasValue)
+            {
+                query = query.Where(me => me.Date.Date == searchDate.Value.Date);
             }
 
             return await query
@@ -61,7 +63,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicalEventsAsync(string? search)
+        public async Task<int> CountMedicalEventsAsync(string? search, DateTime? searchDate)
         {
             var query = _context.MedicalEvents.AsQueryable();
 
@@ -71,9 +73,12 @@ namespace backend.Repositories
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
                     me.Student.Name.Contains(search) ||
-                    me.Nurse.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search));
+            }
 
-                    me.Date.ToString().Contains(search));
+            if (searchDate.HasValue)
+            {
+                query = query.Where(me => me.Date.Date == searchDate.Value.Date);
             }
 
             return await query.CountAsync();
@@ -143,7 +148,6 @@ namespace backend.Repositories
                 TodayCount = todayCount
             };
         }
-
         public async Task<PageResult<MedicalEvent>> GetMedicalEventsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
             var studentIds = await _context.Students

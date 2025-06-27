@@ -43,6 +43,13 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<User> GetParentByStudentIdAsync(int studentId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            if (student?.ParentId == null) return null;
+            return await _context.Users.FindAsync(student.ParentId);
+        }
+
         public async Task<User?> GetUserByPhoneAsync(string phone)
         {
             return await _context.Users
@@ -81,7 +88,7 @@ namespace backend.Repositories
                 return false;
             }
         }
-        public async Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)
+        public async Task<List<User>> GetAllUsersAsync(int pageNumber, int pageSize, string? search, DateOnly? searchDate)
         {
             var query = _context.Users
                 .Include(u => u.Role)
@@ -94,11 +101,14 @@ namespace backend.Repositories
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
                     u.Phone.Contains(search) ||
-                    u.DateOfBirth.ToString().Contains(search) ||
                     u.Gender.ToLower() == searchLower ||
                     u.Address.Contains(search));
             }
 
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
+            }
 
             var items = await query
                 .OrderBy(u => u.Id)
@@ -108,7 +118,7 @@ namespace backend.Repositories
 
             return items;
         }
-        public async Task<int> CountUsersAsync(string? search)
+        public async Task<int> CountUsersAsync(string? search, DateOnly? searchDate)
         {
             var query = _context.Users
                 .Where(u => u.IsActive);
@@ -120,16 +130,19 @@ namespace backend.Repositories
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
                     u.Phone.Contains(search) ||
-                    u.DateOfBirth.ToString().Contains(search) ||
                     u.Gender.ToLower() == searchLower ||
                     u.Address.Contains(search));
             }
 
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
+            }
 
             return await query.CountAsync();
         }
 
-        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search)
+        public async Task<List<User>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search, DateOnly? searchDate)
         {
             var query = _context.Users
                 .Include(u => u.Role)
@@ -142,9 +155,12 @@ namespace backend.Repositories
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
                     u.Phone.Contains(search) ||
-                    u.DateOfBirth.ToString().Contains(search) ||
                     u.Gender.ToLower() == searchLower ||
                     u.Address.Contains(search));
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
             }
 
 
@@ -155,7 +171,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountUsersByRoleAsync(string role, string? search)
+        public async Task<int> CountUsersByRoleAsync(string role, string? search, DateOnly? searchDate)
         {
             var query = _context.Users
                 .Include(u => u.Role)
@@ -168,9 +184,12 @@ namespace backend.Repositories
                     u.Name.Contains(search) ||
                     u.Email.Contains(search) ||
                     u.Phone.Contains(search) ||
-                    u.DateOfBirth.ToString().Contains(search) ||
                     u.Gender.ToLower() == searchLower ||
                     u.Address.Contains(search));
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
             }
 
             return await query.CountAsync();

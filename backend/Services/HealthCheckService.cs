@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -47,10 +48,23 @@ namespace backend.Services
         }
         public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId, search);
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
+            var totalCount = await _healthCheckRepository.CountHealthChecksByParentIdAsync(parentId, search, searchDate);
 
             var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search);
+                .GetHealthChecksByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var dtos = healthChecks
                 .Select(h => MapToDTO(h))
@@ -66,23 +80,10 @@ namespace backend.Services
             };
         }
 
-        public async Task<PageResult<HealthCheck>> GetHealthChecksByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
+        public async Task<List<HealthCheckDTO>> GetHealthChecksByNotificationIdAsync(int notificationId)
         {
-            var totalItems = await _healthCheckRepository
-                .CountHealthChecksByNotificationIdAsync(notificationId, search);
-
-            var healthChecks = await _healthCheckRepository
-                .GetHealthChecksByNotificationIdAsync(notificationId, pageNumber, pageSize, search);
-
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return new PageResult<HealthCheck>
-            {
-                Items = healthChecks,
-                TotalItems = totalItems,
-                TotalPages = totalPages,
-                CurrentPage = pageNumber
-            };
+            var healthChecks = await _healthCheckRepository.GetHealthChecksByNotificationIdAsync(notificationId);
+            return healthChecks.Select(p => MapToDTO(p)).ToList();
         }
         public async Task<bool> CreateHealthCheckAsync(HealthCheck healthCheck)
         {

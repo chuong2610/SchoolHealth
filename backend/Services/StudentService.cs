@@ -4,6 +4,7 @@ using backend.Models.DTO;
 
 using backend.Models;
 using backend.Models.Request;
+using System.Globalization;
 
 
 namespace backend.Services
@@ -90,11 +91,22 @@ namespace backend.Services
 
         public async Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
         {
+            DateOnly? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
             var students = await _studentRepository
-                .GetAllStudentAsync(classId, pageNumber, pageSize, search);
+                .GetAllStudentAsync(classId, pageNumber, pageSize, search, searchDate);
 
             var totalItems = await _studentRepository
-                .CountStudentsAsync(classId, search);
+                .CountStudentsAsync(classId, search, searchDate);
 
             var studentDtos = students.Select(s => new StudentsDTO
             {
@@ -123,7 +135,7 @@ namespace backend.Services
             {
                 return false;
             }
-             var newStudent = new Student
+            var newStudent = new Student
             {
                 Name = request.Name,
                 StudentNumber = request.StudentNumber,
@@ -142,20 +154,21 @@ namespace backend.Services
                     Email = request.ParentEmail,
                     Address = request.ParentAddress,
                     IsActive = true,
+
                     RoleId = 3,
                     Password = "defaultPassword",
                     Gender = request.ParentGender,
                     DateOfBirth = request.DateOfBirth,
                     IsVerified = false,
                     ImageUrl = "default.jpg"
-
                 };
-            }else
+            }
+            else
             {
                 newStudent.ParentId = parent.Id;
             }
 
-           
+
             return await _studentRepository.CreateStudentAsync(newStudent);
         }
 
@@ -220,7 +233,7 @@ namespace backend.Services
                 await _userRepository.DeleteUserAsync(user.ParentId);
             }
             return await _studentRepository.DeleteStudentAsync(user);
-        }    
+        }
     }
 
 }

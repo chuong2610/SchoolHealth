@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -87,9 +88,22 @@ namespace backend.Services
         }
         public async Task<PageResult<MedicalEventDTO>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _medicalEventRepository.CountMedicalEventsAsync(search);
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync(pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
+            var totalItems = await _medicalEventRepository.CountMedicalEventsAsync(search, searchDate);
+
+            var medicalEvents = await _medicalEventRepository.GetAllMedicalEventsAsync(pageNumber, pageSize, search, searchDate);
 
             var eventDTOs = medicalEvents.Select(me => new MedicalEventDTO
             {
