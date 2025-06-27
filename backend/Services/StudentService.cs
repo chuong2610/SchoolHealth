@@ -154,17 +154,13 @@ namespace backend.Services
                     Email = request.ParentEmail,
                     Address = request.ParentAddress,
                     IsActive = true,
-<<<<<<< HEAD
-                    RoleId = 3
-=======
+
                     RoleId = 3,
                     Password = "defaultPassword",
                     Gender = request.ParentGender,
                     DateOfBirth = request.DateOfBirth,
                     IsVerified = true,
                     ImageUrl = "default.jpg"
-
->>>>>>> d07cd1d53e30c071212eec2cffb4a3398b2ca521
                 };
             }
             else
