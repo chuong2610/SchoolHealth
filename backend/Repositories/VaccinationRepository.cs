@@ -26,61 +26,15 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<List<Vaccination>> GetVaccinationsByNotificationIdAsync(
-            int notificationId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+        public Task<List<Vaccination>> GetVaccinationByNotificationIdAsync(int notificationId)
         {
-            var query = _context.Vaccinations
+            return _context.Vaccinations
                 .Include(v => v.Nurse)
                 .Include(v => v.Student)
-                .Where(v => v.NotificationId == notificationId);
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(v =>
-                    v.Nurse.Name.Contains(search) ||
-                    v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search) ||
-                    v.Location.Contains(search) ||
-                    v.Description.Contains(search) ||
-                    v.Student.Class.ClassName.Contains(search));
-            }
-            if (searchDate.HasValue)
-            {
-                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
-            }
-
-
-            return await query
-                .OrderByDescending(v => v.Id)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
+                .Where(v => v.NotificationId == notificationId)
                 .ToListAsync();
         }
 
-        public async Task<int> CountVaccinationsByNotificationIdAsync(int notificationId, string? search, DateTime? searchDate)
-        {
-            var query = _context.Vaccinations
-                .Include(v => v.Nurse)
-                .Include(v => v.Student)
-                .Where(v => v.NotificationId == notificationId);
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                query = query.Where(v =>
-                    v.Nurse.Name.Contains(search) ||
-                    v.Student.Name.Contains(search) ||
-                    v.VaccineName.Contains(search) ||
-                    v.Location.Contains(search) ||
-                    v.Description.Contains(search) ||
-                    v.Student.Class.ClassName.Contains(search));
-            }
-            if (searchDate.HasValue)
-            {
-                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
-            }
-
-            return await query.CountAsync();
-        }
 
         public async Task<List<Vaccination>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {

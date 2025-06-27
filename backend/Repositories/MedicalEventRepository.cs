@@ -65,12 +65,7 @@ namespace backend.Repositories
 
         public async Task<int> CountMedicalEventsAsync(string? search, DateTime? searchDate)
         {
-            var query = _context.MedicalEvents
-                .Include(me => me.Student)
-                .Include(me => me.Nurse)
-                .Include(me => me.MedicalEventSupplys)
-                    .ThenInclude(mes => mes.MedicalSupply)
-                .AsQueryable();
+            var query = _context.MedicalEvents.AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -153,7 +148,6 @@ namespace backend.Repositories
                 TodayCount = todayCount
             };
         }
-
         public async Task<PageResult<MedicalEvent>> GetMedicalEventsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
             var studentIds = await _context.Students

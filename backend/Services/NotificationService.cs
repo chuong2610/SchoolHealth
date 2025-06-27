@@ -32,7 +32,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -61,7 +61,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -89,7 +89,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -153,10 +153,13 @@ namespace backend.Services
                 ClassName = n.ClassName ?? string.Empty
             }).ToList();
         }
-        public async Task<NotificationDetailAdminDTO?> GetNotificationDetailAdminDTOAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<NotificationDetailAdminDTO> GetNotificationDetailAdminDTOAsync(int id)
         {
             var notification = await _notificationRepository.GetNotificationByIdAsync(id);
-            if (notification == null) return null;
+            if (notification == null)
+            {
+                return null;
+            }
 
             var dto = new NotificationDetailAdminDTO
             {
@@ -177,47 +180,23 @@ namespace backend.Services
             switch (notification.Type)
             {
                 case "HealthCheck":
-                    {
-                        var healthCheckPage = await _healthCheckService
-                            .GetHealthChecksByNotificationIdAsync(notification.Id, pageNumber, pageSize, search);
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = healthCheckPage.Items.Cast<object>().ToList(),
-                            TotalPages = healthCheckPage.TotalPages,
-                            CurrentPage = healthCheckPage.CurrentPage,
-                            TotalItems = healthCheckPage.TotalItems
-                        };
-                        break;
-                    }
-                case "Vaccination":
-                    {
-                        var vaccinationPage = await _vaccinationService
-                            .GetVaccinationByNotificationIdAsync(notification.Id, pageNumber, pageSize, search);
+                    var healthChecks = await _healthCheckService.GetHealthChecksByNotificationIdAsync(notification.Id);
+                    dto.Results = healthChecks.Cast<object>().ToList();
+                    break;
 
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = vaccinationPage.Items.Cast<object>().ToList(),
-                            TotalPages = vaccinationPage.TotalPages,
-                            CurrentPage = vaccinationPage.CurrentPage,
-                            TotalItems = vaccinationPage.TotalItems
-                        };
-                        break;
-                    }
+
+                case "Vaccination":
+                    var vaccinations = await _vaccinationService.GetVaccinationByNotificationIdAsync(notification.Id);
+                    dto.Results = vaccinations.Cast<object>().ToList();
+                    break;
+
 
                 default:
-                    {
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = new(),
-                            TotalPages = 0,
-                            CurrentPage = pageNumber,
-                            TotalItems = 0
-                        };
-                        break;
-                    }
+                    dto.Results = new List<object>();
+                    break;
             }
-
             return dto;
+
         }
         public async Task<List<NotificationSummaryDTO>> Get5Notifications()
         {
@@ -240,7 +219,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;

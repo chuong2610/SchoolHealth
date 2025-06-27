@@ -71,7 +71,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -114,7 +114,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -153,7 +153,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -248,7 +248,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;

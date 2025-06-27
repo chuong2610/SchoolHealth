@@ -95,7 +95,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateOnly.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -135,7 +135,7 @@ namespace backend.Services
             {
                 return false;
             }
-             var newStudent = new Student
+            var newStudent = new Student
             {
                 Name = request.Name,
                 StudentNumber = request.StudentNumber,
@@ -154,14 +154,15 @@ namespace backend.Services
                     Email = request.ParentEmail,
                     Address = request.ParentAddress,
                     IsActive = true,
-                    RoleId=3
+                    RoleId = 3
                 };
-            }else
+            }
+            else
             {
                 newStudent.ParentId = parent.Id;
             }
 
-           
+
             return await _studentRepository.CreateStudentAsync(newStudent);
         }
 
@@ -226,7 +227,7 @@ namespace backend.Services
                 await _userRepository.DeleteUserAsync(user.ParentId);
             }
             return await _studentRepository.DeleteStudentAsync(user);
-        }    
+        }
     }
 
 }

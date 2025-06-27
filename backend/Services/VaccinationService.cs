@@ -28,7 +28,7 @@ namespace backend.Services
             bool isDate = false;
 
             if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
                 searchDate = parsedDate;
                 isDate = true;
@@ -74,38 +74,10 @@ namespace backend.Services
                 NurseName = vaccination.Nurse?.Name ?? string.Empty
             };
         }
-        public async Task<PageResult<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId, int pageNumber, int pageSize, string? search)
+        public async Task<List<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId)
         {
-            // Tách DateTime nếu chuỗi là ngày hợp lệ
-            DateTime? searchDate = null;
-            bool isDate = false;
-
-            if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "d/M/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-            {
-                searchDate = parsedDate;
-                isDate = true;
-            }
-
-            search = isDate ? null : search;
-
-            var totalItems = await _vaccinationRepository
-                .CountVaccinationsByNotificationIdAsync(notificationId, search, searchDate);
-
-            var vaccinations = await _vaccinationRepository
-                .GetVaccinationsByNotificationIdAsync(notificationId, pageNumber, pageSize, search, searchDate);
-
-            var vaccinationDTOs = vaccinations.Select(v => MapToDTO(v)).ToList();
-
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return new PageResult<VaccinationDTO>
-            {
-                Items = vaccinationDTOs,
-                TotalItems = totalItems,
-                TotalPages = totalPages,
-                CurrentPage = pageNumber
-            };
+            var vaccinations = await _vaccinationRepository.GetVaccinationByNotificationIdAsync(notificationId);
+            return vaccinations.Select(v => MapToDTO(v)).ToList();
         }
         public async Task<bool> CreateVaccinationAsync(Vaccination vaccination)
         {

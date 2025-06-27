@@ -149,9 +149,9 @@ namespace backend.Services
 
             return result;
         }
-        public async Task<byte[]> ExportFormResultAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<byte[]> ExportFormResultAsync(int id)
         {
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize, search);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
             if (notification == null)
             {
                 throw new Exception("Không tìm thấy thông báo");
@@ -207,10 +207,10 @@ namespace backend.Services
             return stream.ToArray();
         }
 
-        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId, int pageNumber, int pageSize, string? search)
+        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId)
         {
             var importResult = new ImportResult();
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId, pageNumber, pageSize, search);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId);
             if (notification == null)
                 throw new Exception("Không tìm thấy thông báo");
 
