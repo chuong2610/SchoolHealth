@@ -29,14 +29,16 @@ namespace backend.Repositories
         {
             return await _context.Students
             .Include(s => s.Class)
-            .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
+             .Include(s => s.Parent)
+            .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber && s.Parent.IsActive);
         }
 
         public async Task<Student?> GetByIdAsync(int id)
         {
             return await _context.Students
                 .Include(s => s.Class)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .Include(s => s.Parent)
+                .FirstOrDefaultAsync(s => s.Id == id && s.Parent.IsActive);
         }
 
         public async Task<bool> CreateAsync(Student student)
@@ -55,12 +57,13 @@ namespace backend.Repositories
         public async Task<int> GetNumberOfStudents()
         {
             return await _context.Students
+                .Where(s => s.IsActive && s.Parent.IsActive)
                 .CountAsync(s => s.IsActive);
         }
         public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
         {
             return await _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .ToListAsync();
         }
 
@@ -74,7 +77,7 @@ namespace backend.Repositories
         public async Task<List<Student>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
         {
             var query = _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .Include(s => s.Parent)
                 .Include(s => s.Class)
                 .AsNoTracking();
@@ -100,7 +103,7 @@ namespace backend.Repositories
         public async Task<int> CountStudentsAsync(int classId, string? search)
         {
             var query = _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .Include(s => s.Parent)
                 .Include(s => s.Class)
                 .AsNoTracking();

@@ -64,7 +64,7 @@ namespace backend.Controllers
             return Ok(successResponse);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateStudent([FromBody] StudentRequest request)
+        public async Task<IActionResult> CreateStudent([FromBody] StudentCreateRequest request)
         {
             var isCreated = await _studentService.CreateStudentAsync(request);
 
