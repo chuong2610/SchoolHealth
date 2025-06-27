@@ -146,7 +146,7 @@ namespace backend.Services
                     Password = "defaultPassword",
                     Gender = request.ParentGender,
                     DateOfBirth = request.DateOfBirth,
-                    IsVerified = true,
+                    IsVerified = false,
                     ImageUrl = "default.jpg"
 
                 };

@@ -22,5 +22,10 @@ namespace backend.Repositories
         {
             return await _context.Classes.FirstOrDefaultAsync(c => c.Id == classId);
         }
+
+        public Task<Class?> GetClassByNameAsync(string className)
+        {
+            return _context.Classes.FirstOrDefaultAsync(c => c.ClassName == className);
+        }
     }
 }
