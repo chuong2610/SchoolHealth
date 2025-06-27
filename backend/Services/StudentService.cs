@@ -141,7 +141,8 @@ namespace backend.Services
                     Phone = request.ParentPhone,
                     Email = request.ParentEmail,
                     Address = request.ParentAddress,
-                    IsActive = true
+                    IsActive = true,
+                    RoleId=3
                 };
             }else
             {

@@ -70,7 +70,7 @@ namespace backend.Controllers
                 return Ok(new BaseResponse<MedicalEventCountDTO>(null, $"Có lỗi xảy ra: {ex.Message}", false));
             }
         }
-        [HttpGet("/parent/{parentId}")]
+        [HttpGet("parent/{parentId}")]
         public async Task<IActionResult> GetMedicalEventsByParentId(int parentId, int pageNumber, int pageSize, string? search)
         {
             try
