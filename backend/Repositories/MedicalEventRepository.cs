@@ -153,5 +153,56 @@ namespace backend.Repositories
                 TodayCount = todayCount
             };
         }
+
+        public async Task<PageResult<MedicalEvent>> GetMedicalEventsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            var studentIds = await _context.Students
+                .Where(s => s.ParentId == parentId)
+                .Select(s => s.Id)
+                .ToListAsync();
+
+            if (!studentIds.Any())
+            {
+                return new PageResult<MedicalEvent>
+                {
+                    Items = new List<MedicalEvent>(),
+                    TotalItems = 0,
+                    CurrentPage = pageNumber,
+                    TotalPages = 0
+                };
+            }
+
+            var query = _context.MedicalEvents
+                .Include(me => me.Student)
+                .Include(me => me.Nurse)
+                .Where(me => studentIds.Contains(me.StudentId))
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search) ||
+                    me.Date.ToString().Contains(search));
+            }
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(me => me.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PageResult<MedicalEvent>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            };
+        }
     }
 }

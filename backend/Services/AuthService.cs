@@ -35,7 +35,8 @@ namespace backend.Services
             var clamims = new[]{
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.Name)
+                new Claim(ClaimTypes.Role, user.Role.Name),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
            };
             var token = new JwtSecurityToken(
                  issuer: _configuration["Jwt:Issuer"],

@@ -54,7 +54,7 @@ namespace backend.Repositories
         {
             return await _context.Users
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Phone == phone);
+                .FirstOrDefaultAsync(u => u.Phone == phone && u.IsActive);
         }
         public async Task<bool> UpdateUserAsync(User user)
         {

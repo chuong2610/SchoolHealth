@@ -147,5 +147,29 @@ namespace backend.Services
         {
             return await _medicalEventRepository.GetMedicalEventCountsAsync();
         }
+
+        public async Task<PageResult<MedicalEventDTO>> GetMedicalEventsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            var pageResult = await _medicalEventRepository.GetMedicalEventsByParentIdAsync(parentId, pageNumber, pageSize, search);
+
+            var eventDTOs = pageResult.Items.Select(me => new MedicalEventDTO
+            {
+                Id = me.Id,
+                EventType = me.EventType,
+                Location = me.Location,
+                Date = me.Date,
+                StudentName = me.Student?.Name,
+                NurseName = me.Nurse?.Name
+            }).ToList();
+
+            return new PageResult<MedicalEventDTO>
+            {
+                Items = eventDTOs,
+                TotalItems = pageResult.TotalItems,
+                CurrentPage = pageResult.CurrentPage,
+                TotalPages = pageResult.TotalPages
+            };
+        }
+
     }
 }

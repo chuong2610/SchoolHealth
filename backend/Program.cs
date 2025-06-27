@@ -18,6 +18,9 @@ using backend.Infrastructure;
 using System.Net.WebSockets;
 using backend.Hubs;
 using StackExchange.Redis;
+using Microsoft.AspNetCore.SignalR;
+using backend.SignalR;
+using System.Security.Claims;
 
 
 
@@ -59,7 +62,24 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidateAudience = true,
-        ValidAudience = "http://localhost:5182"
+        ValidAudience = "http://localhost:5182",
+        NameClaimType = ClaimTypes.NameIdentifier
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+
+            // 👇 Kiểm tra endpoint là SignalR hub
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/chatHub") || path.StartsWithSegments("/notificationHub")))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 // .AddCookie(options =>
@@ -198,6 +218,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     return ConnectionMultiplexer.Connect(config);
 });
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
 
 

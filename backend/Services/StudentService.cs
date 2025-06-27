@@ -128,27 +128,40 @@ namespace backend.Services
             };
         }
 
-        public async Task<bool> CreateStudentAsync(StudentRequest request)
+        public async Task<bool> CreateStudentAsync(StudentCreateRequest request)
         {
-            // Kiểm tra student number đã tồn tại chưa
             var existing = await _studentRepository.GetStudentByStudentNumberAsync(request.StudentNumber);
             if (existing != null)
             {
-                // Nếu đã tồn tại thì trả false hoặc throw exception
                 return false;
             }
-            var defaultDate = DateOnly.FromDateTime(DateTime.Today);
-
-            var newStudent = new Student
+             var newStudent = new Student
             {
                 Name = request.Name,
                 StudentNumber = request.StudentNumber,
                 Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth ?? defaultDate,
-                ClassId = request.ClassId ?? 0,
-                ParentId = request.ParentId ?? 0,
+                DateOfBirth = request.DateOfBirth,
+                ClassId = request.ClassId,
                 IsActive = true
             };
+            var parent = await _userRepository.GetUserByPhoneAsync(request.ParentPhone);
+            if (parent == null)
+            {
+                newStudent.Parent = new User
+                {
+                    Name = request.ParentName,
+                    Phone = request.ParentPhone,
+                    Email = request.ParentEmail,
+                    Address = request.ParentAddress,
+                    IsActive = true,
+                    RoleId=3
+                };
+            }else
+            {
+                newStudent.ParentId = parent.Id;
+            }
+
+           
             return await _studentRepository.CreateStudentAsync(newStudent);
         }
 
@@ -207,9 +220,13 @@ namespace backend.Services
             {
                 return false;
             }
-
+            if (_studentRepository.GetStudentIdsByParentIdAsync(user.ParentId).Result.Count == 1)
+            {
+                user.IsActive = false;
+                await _userRepository.DeleteUserAsync(user.ParentId);
+            }
             return await _studentRepository.DeleteStudentAsync(user);
-        }
+        }    
     }
 
 }
