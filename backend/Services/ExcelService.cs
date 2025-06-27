@@ -193,24 +193,23 @@ namespace backend.Services
                     };
                     break;
             }
-            // Thêm dữ liệu
-
-
+            
             for (int i = 0; i < headers.Count; i++)
             {
+                Console.WriteLine($"Adding header: {headers[i]}");
                 worksheet.Cell(5, i + 1).Value = headers[i];
                 worksheet.Cell(5, i + 1).Style.Font.Bold = true;
                 worksheet.Column(i + 1).Width = 15;
             }
             int currentRow = 6;
             var students = await _studentService.GetStudentsByNotificationIdAndConfirmedAsync(id);
-            if (students != null && students.Any())
+            if (students != null && students.Count > 0)
             {
                 foreach (var student in students)
                 {
                     worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
                     worksheet.Cell(currentRow, 2).Value = student.StudentName;
-                    Console.WriteLine($"Exporting student: {student.StudentName}");
+                    currentRow++;
                 }
             }
             else
