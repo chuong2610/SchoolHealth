@@ -12,11 +12,13 @@ namespace backend.Services
         private readonly IUserRepository _userRepository;
         private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
+        private readonly IStudentService _studentService;
+        public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor, IStudentService studentService)
         {
             _userRepository = userRepository;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
+            _studentService = studentService;
         }
 
         public async Task<bool> CreateUserAsync(CreateUserRequest userRequest)
@@ -68,6 +70,11 @@ namespace backend.Services
         }
         public async Task<bool> DeleteUserAsync(int id)
         {
+            var students = await _studentService.GetStudentIdsByParentIdAsync(id);
+            foreach (var student in students)
+            {
+               await _studentService.DeleteStudentAsync(student.Id);
+            }
             return await _userRepository.DeleteUserAsync(id);
         }
         public async Task<PageResult<UserDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)

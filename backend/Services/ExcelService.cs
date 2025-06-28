@@ -46,6 +46,8 @@ namespace backend.Services
 
             worksheet.Cell(2, 5).Style.DateFormat.Format = "dd/MM/yyyy";
             worksheet.Cell(2, 8).Style.DateFormat.Format = "dd/MM/yyyy";
+            worksheet.Cell(2, 5).SetValue("dd/MM/yyyy");
+            worksheet.Cell(2, 8).SetValue("dd/MM/yyyy");
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
