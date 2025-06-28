@@ -13,6 +13,7 @@ import './styles/common/sidebar.css';
 import './styles/common/header.css';
 
 import './styles/common/animations.css';
+import './styles/common/chat-notifications.css';
 
 // Admin styles - Only keeping CSS for existing pages
 import './styles/admin/accounts.css';

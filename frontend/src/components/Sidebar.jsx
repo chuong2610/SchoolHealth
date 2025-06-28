@@ -141,7 +141,9 @@ const Sidebar = (props) => {
       },
       {
         path: "/nurse/chat",
-        icon: <ChatNotificationBadge showIcon={true} iconSize="sm" />,
+        icon: <div className="chat-icon-container">
+          <ChatNotificationBadge showIcon={true} iconSize="lg" />
+        </div>,
         label: "Tư vấn sức khỏe"
       },
       { path: "/nurse/profile", icon: <FaUserCog />, label: "Hồ sơ cá nhân" },
@@ -171,7 +173,7 @@ const Sidebar = (props) => {
 
       <div
         id="sidebar"
-        className={`${user.role} ${collapsed ? "" : "expand"}`.trim()}
+        className={`sidebar ${user.role} ${collapsed ? "" : "expand"}`.trim()}
         role="navigation"
         aria-label="Navigation chính"
       >
@@ -207,7 +209,7 @@ const Sidebar = (props) => {
               <li key={idx} role="none">
                 <Link
                   to={item.path}
-                  className={`app-sidebar-link${location.pathname === item.path ? " active" : ""
+                  className={`app-sidebar-link menu-item${location.pathname === item.path ? " active" : ""
                     }`}
                   role="menuitem"
                   aria-current={

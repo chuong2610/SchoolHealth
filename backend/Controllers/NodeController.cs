@@ -26,22 +26,5 @@ namespace backend.Controllers
         var hasUnreadMessage = await _chatService.HasMessageAsync(userId);
         return Ok(new { hasUnreadMessage });
     }
-
-    [HttpPost("mark-read/{userId}")]
-    public async Task<IActionResult> MarkNotificationsAsRead(int userId)
-    {
-        try
-        {
-            // TODO: Implement mark all notifications as read for user
-            // For now, return success - real implementation needed
-            // await _notificationService.MarkAllAsReadAsync(userId);
-            return Ok(new { success = true, message = "Notifications marked as read" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { success = false, message = ex.Message });
-        }
-    }
-
 }
 }

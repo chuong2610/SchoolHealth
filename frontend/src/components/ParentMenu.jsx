@@ -12,20 +12,26 @@ const ParentMenu = () => {
         { path: '/parent', icon: <FaHome />, label: 'Trang chủ' },
         { path: '/parent/health-declaration', icon: <FaFileAlt />, label: 'Khai báo sức khỏe' },
         { path: '/parent/send-medicine', icon: <FaPills />, label: 'Gửi thuốc' },
-        { path: '/parent/chat', icon: <ChatNotificationBadge showIcon={true} iconSize="sm" />, label: 'Tin nhắn tư vấn' },
+        {
+            path: '/parent/chat',
+            icon: <div className="chat-icon-container">
+                <ChatNotificationBadge showIcon={true} iconSize="lg" />
+            </div>,
+            label: 'Tin nhắn tư vấn'
+        },
         { path: '/parent/notifications', icon: <NotificationIcon />, label: 'Thông báo' },
         { path: '/parent/health-history', icon: <FaHistory />, label: 'Lịch sử sức khỏe' },
     ];
 
     return (
-        <>
+        <div className="parent-menu">
             {/* Desktop menu - menu ngang */}
             <nav className="parent-menu-desktop d-none d-md-flex">
                 {parentMenuItems.map((item, idx) => (
                     <Link
                         key={idx}
                         to={item.path}
-                        className={`parent-menu-link${location.pathname === item.path ? ' active' : ''}`}
+                        className={`parent-menu-link menu-item${location.pathname === item.path ? ' active' : ''}`}
                     >
                         <i className="parent-menu-icon">{item.icon}</i>
                         <span>{item.label}</span>
@@ -50,7 +56,7 @@ const ParentMenu = () => {
                             <Link
                                 key={idx}
                                 to={item.path}
-                                className={`mobile-dropdown-item${location.pathname === item.path ? ' active' : ''}`}
+                                className={`mobile-dropdown-item menu-item${location.pathname === item.path ? ' active' : ''}`}
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 <i className="mobile-menu-icon">{item.icon}</i>
@@ -60,7 +66,7 @@ const ParentMenu = () => {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 

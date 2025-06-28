@@ -1,131 +1,132 @@
-import React, { useState, useEffect } from 'react';
-import { Badge } from 'react-bootstrap';
-import { FaComments, FaBell } from 'react-icons/fa';
+import React from 'react';
+import { FaComments } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
-import chatAPI from '../api/chatApi';
-import chatSignalR from '../services/chatSignalR';
 
 const ChatNotificationBadge = ({
     showIcon = true,
     iconSize = 'lg',
-    badgeVariant = 'danger',
     style = {},
-    className = '',
-    refreshInterval = 30000 // 30 seconds
+    className = ''
 }) => {
-    const { user } = useAuth();
-    const [hasUnread, setHasUnread] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    const { user, hasUnreadMessages, hasUnassignedMessages } = useAuth();
 
-    useEffect(() => {
-        if (user?.id) {
-            checkUnreadMessages();
-            setupRealTimeUpdates();
+    // Determine if badge should be shown
+    const shouldShowBadge = () => {
+        // Get current role to avoid stale closure
+        const currentRole = localStorage.getItem('role');
 
-            // Reduced auto-refresh as backup (real-time is primary)
-            const interval = setInterval(() => {
-                checkUnreadMessages();
-            }, refreshInterval * 2); // Doubled interval since we have real-time
-
-            return () => {
-                clearInterval(interval);
-                cleanup();
-            };
-        }
-    }, [user, refreshInterval]);
-
-    const setupRealTimeUpdates = () => {
-        // Listen for real-time message events to update notification badge
-        chatSignalR.addEventListener('messageReceived', () => {
-            checkUnreadMessages();
-        });
-
-        chatSignalR.addEventListener('messageAssigned', () => {
-            checkUnreadMessages();
-        });
-    };
-
-    const cleanup = () => {
-        chatSignalR.removeEventListener('messageReceived', checkUnreadMessages);
-        chatSignalR.removeEventListener('messageAssigned', checkUnreadMessages);
-    };
-
-    const checkUnreadMessages = async () => {
-        if (!user?.id || isLoading) return;
-
-        setIsLoading(true);
-        try {
-            const response = await chatAPI.hasUnreadMessages(user.id);
-            setHasUnread(response?.hasUnread || false);
-            setUnreadCount(response?.count || 0);
-        } catch (error) {
-            console.error('Error checking unread messages:', error);
-            setHasUnread(false);
-            setUnreadCount(0);
-        } finally {
-            setIsLoading(false);
+        if (currentRole?.toLowerCase() === 'nurse') {
+            // Nurses: show badge if there are unread messages OR unassigned messages
+            return hasUnreadMessages || hasUnassignedMessages;
+        } else {
+            // Parents/Admins: show badge only for unread messages
+            return hasUnreadMessages;
         }
     };
 
-    // Don't render if no unread messages
-    if (!hasUnread || unreadCount === 0) {
-        return showIcon ? (
-            <div className={`chat-notification-container ${className}`} style={style}>
-                <FaComments size={iconSize} />
-            </div>
-        ) : null;
+    const showBadge = shouldShowBadge();
+
+    // Debug logging for nurses
+    const currentRole = localStorage.getItem('role');
+    if (currentRole?.toLowerCase() === 'nurse') {
+        console.log('👩‍⚕️ [NurseBadge] State:', {
+            hasUnreadMessages,
+            hasUnassignedMessages,
+            showBadge,
+            timestamp: new Date().toISOString()
+        });
+
+        // Extra debug: Check why hasUnassignedMessages might be false
+        if (!hasUnassignedMessages) {
+            console.log('❓ [NurseBadge] hasUnassignedMessages is FALSE - checking reasons...');
+            console.log('❓ [NurseBadge] AuthContext state:', {
+                'user exists': !!user,
+                'user role': user?.role,
+                'hasUnreadMessages': hasUnreadMessages,
+                'hasUnassignedMessages': hasUnassignedMessages
+            });
+        }
     }
+
+    // Get role-specific colors
+    const getRoleColors = () => {
+        const role = user?.role?.toLowerCase();
+
+        switch (role) {
+            case 'parent':
+                return {
+                    primary: '#2563eb',    // Parent primary blue
+                    gradient: 'linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)'
+                };
+            case 'nurse':
+                return {
+                    primary: '#667eea',    // Nurse primary purple
+                    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                };
+            case 'admin':
+                return {
+                    primary: '#059669',    // Admin primary emerald
+                    gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)'
+                };
+            default:
+                return {
+                    primary: '#6b7280',    // Default gray
+                    gradient: 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)'
+                };
+        }
+    };
+
+    const roleColors = getRoleColors();
 
     return (
         <div
-            className={`chat-notification-container ${className}`}
+            className={`chat-icon-container ${showBadge ? 'has-unread' : ''} ${className}`}
             style={{
                 position: 'relative',
                 display: 'inline-block',
                 ...style
             }}
         >
-            {showIcon && <FaComments size={iconSize} />}
+            {showIcon && (
+                <FaComments
+                    size={iconSize}
+                    className={showBadge ? 'has-unread' : ''}
+                    style={{
+                        color: showBadge ? roleColors.primary : 'inherit',
+                        transition: 'all 0.3s ease',
+                        filter: showBadge ? `drop-shadow(0 0 8px ${roleColors.primary}60)` : 'none',
+                        animation: showBadge ? 'pulse 2s infinite' : 'none'
+                    }}
+                />
+            )}
 
-            <Badge
-                bg={badgeVariant}
-                style={{
-                    position: 'absolute',
-                    top: showIcon ? '-8px' : '0',
-                    right: showIcon ? '-8px' : '0',
-                    borderRadius: '50%',
-                    minWidth: '20px',
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: '600',
-                    animation: 'pulse-notification 2s ease-in-out infinite',
-                    boxShadow: '0 2px 8px rgba(220, 53, 69, 0.4)'
-                }}
-            >
-                {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
-
-            <style>{`
-        @keyframes pulse-notification {
-          0%, 100% { 
-            transform: scale(1); 
-            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
-          }
-          50% { 
-            transform: scale(1.1); 
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.6);
-          }
-        }
-        
-        .chat-notification-container:hover .badge {
-          animation-play-state: paused;
-          transform: scale(1.05);
-        }
-      `}</style>
+            {/* Show red dot badge when there are unread messages */}
+            {showBadge && (
+                <div
+                    className="chat-notification-badge"
+                    style={{
+                        position: 'absolute',
+                        top: '-8px',
+                        right: '-8px',
+                        background: roleColors.gradient,
+                        color: 'white',
+                        borderRadius: '50%',
+                        minWidth: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        border: '2px solid white',
+                        boxShadow: `0 2px 8px ${roleColors.primary}50`,
+                        animation: 'pulse 2s infinite',
+                        zIndex: 10
+                    }}
+                >
+                    •
+                </div>
+            )}
         </div>
     );
 };

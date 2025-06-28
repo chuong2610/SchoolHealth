@@ -1,0 +1,731 @@
+/* ===========================================
+   CHAT NOTIFICATION BADGE STYLES
+   Separate CSS to avoid conflicts between Parent and Nurse
+   =========================================== */
+
+/* Base Chat Notification Container */
+.chat-notification-container {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Chat Icon Wrapper */
+.chat-icon-container {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
+/* ===========================================
+   CRITICAL FIX FOR NURSE SIDEBAR BADGE
+   =========================================== */
+
+/* FIXED: Ensure sidebar-link-icon can contain absolute positioned elements */
+.sidebar-link-icon {
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+}
+
+/* FIXED: Ensure chat notification badge appears in sidebar */
+.sidebar-link-icon .chat-notification-badge,
+.sidebar-link-icon .chat-icon-container .chat-notification-badge {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    z-index: 10 !important;
+    pointer-events: none !important;
+}
+
+/* FIXED: Ensure sidebar navigation doesn't clip badges */
+#sidebar .app-sidebar-nav,
+#sidebar .app-sidebar-link {
+    overflow: visible !important;
+}
+
+/* ===========================================
+   PARENT NAVIGATION SPECIFIC STYLES
+   =========================================== */
+
+/* Parent Menu Icon Container */
+.parent-menu-icon .chat-icon-container,
+.mobile-menu-icon .chat-icon-container {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Parent Navigation Chat Icon */
+.parent-menu-icon .chat-notification-container svg,
+.mobile-menu-icon .chat-notification-container svg {
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Parent Navigation - Unread State */
+.parent-menu-icon .chat-notification-container.has-unread svg,
+.mobile-menu-icon .chat-notification-container.has-unread svg {
+    color: #dc3545 !important;
+    animation: parent-chat-glow 2s ease-in-out infinite !important;
+    filter: drop-shadow(0 0 6px rgba(220, 53, 69, 0.6)) !important;
+}
+
+/* Parent Menu Hover Effects */
+.parent-menu-link:hover .chat-notification-container.has-unread svg {
+    animation-play-state: paused !important;
+    filter: drop-shadow(0 0 8px rgba(220, 53, 69, 0.8)) !important;
+    transform: scale(1.1) !important;
+}
+
+/* ===========================================
+   NURSE SIDEBAR SPECIFIC STYLES
+   =========================================== */
+
+/* Nurse Sidebar Icon Container */
+.sidebar-link-icon .chat-icon-container {
+    position: relative !important;
+    overflow: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Nurse Sidebar Chat Icon */
+.sidebar-link-icon .chat-notification-container svg {
+    font-size: 1.3rem !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Nurse Sidebar - Unread State */
+.sidebar-link-icon .chat-notification-container.has-unread svg {
+    color: #dc3545 !important;
+    animation: nurse-chat-glow 2s ease-in-out infinite !important;
+    filter: drop-shadow(0 0 8px rgba(220, 53, 69, 0.7)) !important;
+}
+
+/* Nurse Sidebar Hover Effects */
+.app-sidebar-link:hover .chat-notification-container.has-unread svg {
+    animation-play-state: paused !important;
+    filter: drop-shadow(0 0 10px rgba(220, 53, 69, 0.9)) !important;
+    transform: scale(1.15) !important;
+}
+
+/* ===========================================
+   BADGE STYLES
+   =========================================== */
+
+/* Notification Badge */
+.chat-notification-badge {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    background: #dc3545 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4) !important;
+    animation: badge-pulse 2s ease-in-out infinite !important;
+    z-index: 10 !important;
+}
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+
+/* Parent Chat Icon Glow Animation */
+@keyframes parent-chat-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 6px rgba(220, 53, 69, 0.6));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 10px rgba(220, 53, 69, 0.8));
+        transform: scale(1.05);
+    }
+}
+
+/* Nurse Chat Icon Glow Animation */
+@keyframes nurse-chat-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 8px rgba(220, 53, 69, 0.7));
+        transform: scale(1);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 12px rgba(220, 53, 69, 0.9));
+        transform: scale(1.08);
+    }
+}
+
+/* Badge Pulse Animation */
+@keyframes badge-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.6);
+    }
+}
+
+/* ===========================================
+   RESPONSIVE ADJUSTMENTS
+   =========================================== */
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+
+    .parent-menu-icon .chat-notification-container svg,
+    .mobile-menu-icon .chat-notification-container svg {
+        font-size: 14px !important;
+    }
+
+    .sidebar-link-icon .chat-notification-container svg {
+        font-size: 1.2rem !important;
+    }
+
+    .chat-notification-badge {
+        min-width: 18px !important;
+        height: 18px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Large Screen Adjustments */
+@media (min-width: 1200px) {
+
+    .parent-menu-icon .chat-notification-container svg,
+    .mobile-menu-icon .chat-notification-container svg {
+        font-size: 18px !important;
+    }
+
+    .sidebar-link-icon .chat-notification-container svg {
+        font-size: 1.4rem !important;
+    }
+}
+
+/* ===========================================
+   OVERRIDE CONFLICTS
+   =========================================== */
+
+/* Force override any conflicting styles */
+.parent-menu-link .chat-notification-container svg,
+.app-sidebar-link .chat-notification-container svg {
+    color: inherit !important;
+}
+
+.parent-menu-link .chat-notification-container.has-unread svg,
+.app-sidebar-link .chat-notification-container.has-unread svg {
+    color: #dc3545 !important;
+}
+
+/* Ensure proper display */
+.chat-notification-container,
+.chat-icon-container {
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
+/* ===========================================
+   CONVERSATION LIST STYLES
+   Bold unread messages like Messenger
+   =========================================== */
+
+/* Conversation Item Base */
+.conversation-item {
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+    margin: 4px 8px !important;
+    cursor: pointer !important;
+}
+
+/* Unread Conversation - Bold Style */
+.conversation-item.has-unread {
+    background: rgba(220, 53, 69, 0.05) !important;
+    border-left: 3px solid #dc3545 !important;
+    font-weight: 600 !important;
+}
+
+.conversation-item.has-unread:hover {
+    background: rgba(220, 53, 69, 0.1) !important;
+    transform: translateX(2px) !important;
+}
+
+/* Unread Conversation Name - Bold */
+.conversation-item.has-unread .conversation-name {
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+}
+
+/* Unread Conversation Preview - Bold */
+.conversation-item.has-unread .conversation-preview {
+    font-weight: 600 !important;
+    color: #4a5568 !important;
+}
+
+/* Unread Conversation Time - Bold */
+.conversation-item.has-unread .conversation-time {
+    font-weight: 600 !important;
+    color: #dc3545 !important;
+}
+
+/* Normal (Read) Conversation */
+.conversation-item:not(.has-unread) .conversation-name {
+    font-weight: 500 !important;
+    color: #4a5568 !important;
+}
+
+.conversation-item:not(.has-unread) .conversation-preview {
+    font-weight: 400 !important;
+    color: #718096 !important;
+}
+
+.conversation-item:not(.has-unread) .conversation-time {
+    font-weight: 400 !important;
+    color: #a0aec0 !important;
+}
+
+/* Active Conversation Override */
+.conversation-item.active {
+    background: rgba(102, 126, 234, 0.1) !important;
+    border-left: 3px solid #667eea !important;
+    font-weight: 600 !important;
+}
+
+.conversation-item.active .conversation-name {
+    color: #667eea !important;
+    font-weight: 700 !important;
+}
+
+/* Unread Badge Enhancement */
+.unread-badge {
+    background: #dc3545 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    animation: pulse-badge 2s ease-in-out infinite !important;
+    margin-top: 4px !important;
+}
+
+@keyframes pulse-badge {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 6px rgba(220, 53, 69, 0);
+    }
+}
+
+/* Messenger-like styling */
+.conversation-item:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    transform: translateX(1px) !important;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .conversation-item {
+        margin: 2px 4px !important;
+        border-radius: 6px !important;
+    }
+
+    .conversation-item.has-unread .conversation-name,
+    .conversation-item.active .conversation-name {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ==================== CHAT NOTIFICATION SYSTEM ==================== */
+/* Simplified notification styling for new AuthContext system */
+
+/* ==================== PARENT CHAT NOTIFICATIONS ==================== */
+/* Parent theme colors: #2563eb, #3b82f6 (blue) */
+
+/* Parent Navigation Icons */
+.parent-menu .chat-icon-container svg,
+.mobile-menu-icon .chat-icon-container svg {
+    color: #6b7280 !important;
+    /* Default gray */
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+}
+
+.parent-menu .chat-icon-container.has-unread svg,
+.mobile-menu-icon .chat-icon-container.has-unread svg {
+    color: #2563eb !important;
+    /* Parent primary blue */
+    animation: parent-chat-glow 2s ease-in-out infinite !important;
+}
+
+.parent-menu .chat-icon-container svg:hover,
+.mobile-menu-icon .chat-icon-container svg:hover {
+    color: #3b82f6 !important;
+    /* Parent secondary blue */
+    transform: scale(1.1) !important;
+}
+
+/* Parent Chat Glow Animation */
+@keyframes parent-chat-glow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+        transform: scale(1);
+    }
+
+    50% {
+        text-shadow:
+            0 0 10px rgba(37, 99, 235, 0.8),
+            0 0 20px rgba(37, 99, 235, 0.6),
+            0 0 30px rgba(37, 99, 235, 0.4);
+        transform: scale(1.05);
+    }
+}
+
+/* ==================== NURSE CHAT NOTIFICATIONS ==================== */
+/* Nurse theme colors: #667eea, #764ba2 (purple/indigo) */
+
+/* Nurse Sidebar Icons */
+.sidebar .menu-item .chat-icon-container svg,
+.sidebar-link-icon .chat-icon-container svg {
+    color: #6b7280 !important;
+    /* Default gray */
+    font-size: 1.3rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.sidebar .menu-item .chat-icon-container.has-unread svg,
+.sidebar-link-icon .chat-icon-container.has-unread svg {
+    color: #667eea !important;
+    /* Nurse primary purple */
+    animation: nurse-chat-glow 2s ease-in-out infinite !important;
+}
+
+.sidebar .menu-item .chat-icon-container svg:hover,
+.sidebar-link-icon .chat-icon-container svg:hover {
+    color: #764ba2 !important;
+    /* Nurse secondary purple */
+    transform: scale(1.1) !important;
+}
+
+/* Nurse Chat Glow Animation */
+@keyframes nurse-chat-glow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        transform: scale(1);
+    }
+
+    50% {
+        text-shadow:
+            0 0 10px rgba(102, 126, 234, 0.8),
+            0 0 20px rgba(102, 126, 234, 0.6),
+            0 0 30px rgba(102, 126, 234, 0.4);
+        transform: scale(1.05);
+    }
+}
+
+/* ==================== CHAT NOTIFICATION BADGES ==================== */
+
+/* Parent Notification Badge */
+.parent-menu .chat-notification-badge {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+    color: white !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
+    animation: badge-pulse 2s ease-in-out infinite !important;
+}
+
+/* Nurse Notification Badge */
+.sidebar .chat-notification-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    animation: badge-pulse 2s ease-in-out infinite !important;
+}
+
+/* Badge Pulse Animation */
+@keyframes badge-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.9;
+    }
+}
+
+/* ==================== CONVERSATION LIST STYLING ==================== */
+/* Messenger-style unread conversation highlighting for each role */
+
+/* Parent Conversation List - Blue Theme */
+.parent-chat-container .conversation-item.has-unread,
+.parent-chat-page .conversation-item.has-unread {
+    background: rgba(37, 99, 235, 0.08) !important;
+    border-left: 4px solid #2563eb !important;
+    font-weight: 600 !important;
+    position: relative;
+}
+
+.parent-chat-container .conversation-item.has-unread::before,
+.parent-chat-page .conversation-item.has-unread::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(37, 99, 235, 0.02);
+    pointer-events: none;
+}
+
+.parent-chat-container .conversation-item.has-unread:hover,
+.parent-chat-page .conversation-item.has-unread:hover {
+    background: rgba(37, 99, 235, 0.12) !important;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+/* Parent Unread Badge */
+.parent-chat-container .unread-badge,
+.parent-chat-page .unread-badge {
+    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+    color: white !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3) !important;
+    animation: badge-pulse 2s ease-in-out infinite !important;
+}
+
+/* Nurse Conversation List - Purple Theme */
+.nurse-chat-container .conversation-item.has-unread {
+    background: rgba(102, 126, 234, 0.08) !important;
+    border-left: 4px solid #667eea !important;
+    font-weight: 600 !important;
+    position: relative;
+}
+
+.nurse-chat-container .conversation-item.has-unread::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(102, 126, 234, 0.02);
+    pointer-events: none;
+}
+
+.nurse-chat-container .conversation-item.has-unread:hover {
+    background: rgba(102, 126, 234, 0.12) !important;
+    transform: translateX(3px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* Nurse Unread Badge */
+.nurse-chat-container .unread-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+    animation: badge-pulse 2s ease-in-out infinite !important;
+}
+
+/* ==================== ICON CONTAINERS ==================== */
+/* Prevent CSS conflicts by wrapping icons */
+
+.chat-icon-container {
+    position: relative !important;
+    display: inline-block !important;
+}
+
+/* High specificity to override existing styles */
+.parent-menu .menu-item .chat-icon-container,
+.sidebar .menu-item .chat-icon-container {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ==================== HOVER EFFECTS ==================== */
+
+/* Parent Chat Icon Hover */
+.parent-menu .chat-icon-container:hover .fa-comments {
+    transform: scale(1.1) rotate(5deg) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Nurse Chat Icon Hover */
+.sidebar .menu-item .chat-icon-container:hover i {
+    transform: scale(1.1) rotate(-5deg) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ==================== CONVERSATION TRANSITIONS ==================== */
+
+.conversation-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.conversation-item:hover {
+    transform: translateX(2px);
+}
+
+.unread-badge {
+    transition: all 0.3s ease !important;
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .parent-menu .chat-icon-container .fa-comments.has-unread {
+        color: #1e40af !important;
+        /* Darker blue for better contrast */
+        font-weight: bold !important;
+    }
+
+    .sidebar .menu-item .chat-icon-container i.has-unread {
+        color: #5b21b6 !important;
+        /* Darker purple for better contrast */
+        font-weight: bold !important;
+    }
+
+    .parent-chat-container .conversation-item.has-unread,
+    .parent-chat-page .conversation-item.has-unread {
+        border-left-width: 6px !important;
+        border-left-color: #1e40af !important;
+    }
+
+    .nurse-chat-container .conversation-item.has-unread {
+        border-left-width: 6px !important;
+        border-left-color: #5b21b6 !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .parent-menu .chat-icon-container .fa-comments.has-unread,
+    .sidebar .menu-item .chat-icon-container i.has-unread {
+        animation: none !important;
+    }
+
+    .parent-menu .chat-notification-badge,
+    .sidebar .chat-notification-badge {
+        animation: none !important;
+    }
+
+    .parent-chat-container .unread-badge,
+    .parent-chat-page .unread-badge,
+    .nurse-chat-container .unread-badge {
+        animation: none !important;
+    }
+
+    .chat-icon-container:hover *,
+    .conversation-item:hover {
+        transform: none !important;
+    }
+}
+
+/* ==================== FOCUS STATES ==================== */
+
+/* Parent Chat Focus */
+.parent-menu .chat-icon-container:focus-within .fa-comments {
+    outline: 2px solid #2563eb !important;
+    outline-offset: 2px !important;
+    border-radius: 4px !important;
+}
+
+/* Nurse Chat Focus */
+.sidebar .menu-item .chat-icon-container:focus-within i {
+    outline: 2px solid #667eea !important;
+    outline-offset: 2px !important;
+    border-radius: 4px !important;
+}
+
+/* Conversation Item Focus */
+.conversation-item:focus-within {
+    outline: 2px solid currentColor !important;
+    outline-offset: 2px !important;
+}
+
+.parent-chat-container .conversation-item:focus-within,
+.parent-chat-page .conversation-item:focus-within {
+    outline-color: #2563eb !important;
+}
+
+.nurse-chat-container .conversation-item:focus-within {
+    outline-color: #667eea !important;
+}
+
+/* ADDITIONAL FIXES: Ensure badge is always visible */
+.sidebar-link-icon .chat-icon-container {
+    position: relative !important;
+    overflow: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* FORCE: Chat notification badge to be visible in all sidebar states */
+#sidebar .sidebar-link-icon .chat-notification-badge,
+#sidebar.expand .sidebar-link-icon .chat-notification-badge,
+#sidebar:not(.expand) .sidebar-link-icon .chat-notification-badge {
+    position: absolute !important;
+    top: -8px !important;
+    right: -8px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    color: white !important;
+    border: 2px solid white !important;
+    z-index: 999 !important;
+    pointer-events: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+}
