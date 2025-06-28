@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Card,
@@ -38,6 +38,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaUser,
+  FaBirthdayCake,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 // Styles được import từ main.jsx
@@ -47,6 +48,17 @@ import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import axiosInstance from "../../api/axiosInstance";
 import PaginationBar from "../../components/common/PaginationBar";
+import { useDebounce } from "use-debounce";
+import { formatDDMMYYYY } from "../../utils/dateFormatter";
+import {
+  addStudentAndParent,
+  deleteStudentById,
+  exportExcelFile,
+  getClasses,
+  getStudentsByClassId,
+  importExcelFile,
+  updateStudent,
+} from "../../api/admin/AccountAPI";
 
 // Animation variants for framer-motion
 const containerVariants = {
@@ -73,7 +85,92 @@ const Accounts = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [totalPage, setTotalPage] = useState(0);
+  const fileInputRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("parent");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
+  const [students, setStudents] = useState([
+    // {
+    //   id: 1,
+    //   studentName: "Tom Smith",
+    //   studentNumber: "STU001",
+    //   gender: "Male",
+    //   dateOfBirth: "2015-04-10",
+    //   className: "Grade 1A",
+    //   parentName: "Peter Parent 1",
+    // },
+  ]);
+  const [newStudent, setNewStudent] = useState({
+    name: "",
+    studentNumber: "",
+    gender: "",
+    dateOfBirth: "",
+    classId: null,
+    parentName: "",
+    parentPhone: "",
+    parentEmail: "",
+    parentAddress: "",
+    parentGender: "",
+  });
+  const [selectedStudent, setSelectedStudent] = useState({});
+  const [classes, setClasses] = useState([
+    {
+      classId: "",
+      className: "",
+    },
+  ]);
+  const [selectedClassId, setSelectedClassId] = useState(1);
+
+  const fetchClasses = async () => {
+    try {
+      const res = await getClasses();
+      if (res) {
+        setClasses(res);
+        setSelectedClassId(res[0].classId);
+      } else {
+        setClasses([
+          {
+            classId: 1,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await getStudentsByClassId(
+        selectedClassId,
+        currentPage,
+        pageSize,
+        debouncedSearch
+      );
+      if (res) {
+        setStudents(res.items);
+        setTotalPages(res.totalPages);
+      } else {
+        setStudents([]);
+      }
+    } catch (err) {
+      console.log(err);
+      setStudents([]);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "student") {
+      fetchStudents();
+    }
+  }, [selectedClassId]);
 
   // Helper function để chuyển đổi giới tính từ tiếng Anh sang tiếng Việt
   const translateGender = (gender) => {
@@ -89,11 +186,10 @@ const Accounts = () => {
     }
   };
 
-  const [activeTab, setActiveTab] = useState("parent");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(2);
-  const [totalPages, setTotalPages] = useState(0);
+  // Reset trang về 1 khi search thay đổi
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -118,12 +214,14 @@ const Accounts = () => {
 
     try {
       const response = await axiosInstance.get(
-        `/User/role/${roleName}?pageNumber=${currentPage}&pageSize=${pageSize}`
+        `/User/role/${roleName}?pageNumber=${currentPage}&pageSize=${pageSize}` +
+          `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`
       );
       console.log(response.data);
       if (response.data.success) {
-        setUsers(response.data.data.items || []);
-        setTotalPages(response.data.data.totalPages || 1);
+        console.log("totopages", response.data.data.totalPages);
+        setTotalPages(response.data?.data?.totalPages || 1);
+        setUsers(response.data?.data?.items || []);
       } else {
         setError(response.data.message || "Failed to fetch users.");
         setUsers([]);
@@ -139,10 +237,17 @@ const Accounts = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, [activeTab, currentPage]);
+    if (activeTab === "student") {
+      fetchStudents();
+    } else {
+      fetchUsers();
+    }
+  }, [activeTab, currentPage, debouncedSearch]);
 
-  const [search, setSearch] = useState("");
+  useEffect(() => {
+    console.log("totalPages dsa", totalPages);
+  }, [totalPages]);
+
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("add");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -200,21 +305,9 @@ const Accounts = () => {
     setShowFilterDropdown(false);
   };
 
-  // Reset trang về 1 khi search thay đổi
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search]);
-
   const handleDownloadTemplate = () => {
     const wsData = [
-      ["STT",
-        "Name",
-        "Email",
-        "Phone",
-        "Address",
-        "Gender",
-        "Role"
-      ],
+      ["STT", "Name", "Email", "Phone", "Address", "Gender", "Role"],
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(wsData);
@@ -251,36 +344,69 @@ const Accounts = () => {
     phone: "",
     address: "",
     gender: "",
-    role: "",
+    role: null,
+    dateOfBirth: "",
     password: "",
     confirmPassword: "",
   });
 
   const handleShowModal = (type, user = null) => {
     setModalType(type);
-    if (user) {
-      setNewUser({
-        id: user.id,
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || "",
-        gender: user.gender || "",
-        role: user.role || activeTab, // Use current tab as default role
-        password: "", // Don't populate password for edit
-        confirmPassword: "",
-      });
+    if (activeTab !== "student") {
+      if (user) {
+        setNewUser({
+          id: user.id,
+          name: user.name || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          address: user.address || "",
+          gender: user.gender || "",
+          role: user.role || activeTab, // Use current tab as default role
+          dateOfBirth: user.dateOfBirth || "",
+          password: "", // Don't populate password for edit
+          confirmPassword: "",
+        });
+      } else {
+        setNewUser({
+          name: "",
+          email: "",
+          phone: "",
+          address: "",
+          gender: "",
+          role: null, // Default to current tab role
+          dateOfBirth: "",
+          password: "",
+          confirmPassword: "",
+        });
+      }
     } else {
-      setNewUser({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        gender: "",
-        role: activeTab, // Default to current tab role
-        password: "",
-        confirmPassword: "",
-      });
+      if (user) {
+        setNewStudent({
+          name: user.studentName || "",
+          studentNumber: user.studentNumber || "",
+          gender: user.gender || "",
+          dateOfBirth: user.dateOfBirth || "",
+          classId: selectedClassId || null,
+          // parentName: "",
+          // parentPhone: "",
+          // parentEmail: "",
+          // parentAddress: "",
+          // parentGender: "",
+        });
+      } else {
+        setNewStudent({
+          name: "",
+          studentNumber: "",
+          gender: "",
+          dateOfBirth: "",
+          classId: null,
+          parentName: "",
+          parentPhone: "",
+          parentEmail: "",
+          parentAddress: "",
+          parentGender: "",
+        });
+      }
     }
     setShowModal(true);
   };
@@ -297,6 +423,7 @@ const Accounts = () => {
   };
 
   const handleSaveUser = async () => {
+    console.log("new user", newUser);
     // Validation
     if (!newUser.name.trim()) {
       alert("Vui lòng nhập họ và tên!");
@@ -312,6 +439,11 @@ const Accounts = () => {
     }
     if (!newUser.role.trim()) {
       alert("Vui lòng chọn vai trò!");
+      return;
+    }
+
+    if (!newUser.dateOfBirth.trim()) {
+      alert("Vui lòng chọn ngày sinh!");
       return;
     }
 
@@ -364,7 +496,8 @@ const Accounts = () => {
         address: newUser.address.trim() || "",
         phone: newUser.phone.trim(),
         gender: convertGenderToEnglish(newUser.gender) || "",
-        role: newUser.role.trim(),
+        roleId: parseInt(newUser.role),
+        dateOfBirth: newUser.dateOfBirth.trim(),
       };
 
       // Add password for new users
@@ -416,7 +549,8 @@ const Accounts = () => {
           phone: "",
           address: "",
           gender: "",
-          role: "",
+          role: null,
+          dateOfBirth: "",
           password: "",
           confirmPassword: "",
         });
@@ -444,7 +578,7 @@ const Accounts = () => {
         } else {
           alert(
             "Dữ liệu không hợp lệ: " +
-            (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
+              (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
           );
         }
       } else if (err.response?.status === 409) {
@@ -454,9 +588,9 @@ const Accounts = () => {
       } else {
         alert(
           "Lỗi: " +
-          (err.response?.data?.title ||
-            err.response?.data?.message ||
-            err.message)
+            (err.response?.data?.title ||
+              err.response?.data?.message ||
+              err.message)
         );
       }
     } finally {
@@ -473,21 +607,152 @@ const Accounts = () => {
       } else {
         toast.error(
           "Lỗi khi xóa người dùng: " +
-          (response.data.message || "Lỗi không xác định")
+            (response.data.message || "Lỗi không xác định")
         );
       }
     } catch (err) {
       toast.error(
         "Lỗi khi xóa người dùng: " +
-        (err.response?.data?.message || err.message)
+          (err.response?.data?.message || err.message)
       );
     }
     setShowDeleteModal(false);
   };
 
+  const handleDeleteStudent = async () => {
+    try {
+      console.log("heheh");
+      const res = await deleteStudentById(userToDelete?.id);
+      if (res) {
+        toast.success("Xóa học sinh thành công");
+      } else {
+        toast.error("Xóa học sinh thất bại");
+      }
+    } catch (err) {
+      toast.error(
+        "Lỗi khi xóa học sinh: " + (err.response?.data?.message || err.message)
+      );
+    }
+    setShowDeleteModal(false);
+    fetchStudents();
+  };
+
   const handleSavePermissions = () => {
     // Xử lý lưu quyền
     setShowPermModal(false);
+  };
+
+  const handleAddStudent = async () => {
+    console.log("new student", newStudent);
+    // Validation
+    if (!newStudent.name.trim()) {
+      toast.error("Tên học sinh không được để trống");
+      return false;
+    }
+
+    if (!newStudent.studentNumber.trim()) {
+      toast.error("Mã học sinh không được để trống");
+      return false;
+    }
+
+    if (!newStudent.gender) {
+      toast.error("Vui lòng chọn giới tính học sinh");
+      return false;
+    }
+
+    if (!newStudent.dateOfBirth) {
+      toast.error("Vui lòng nhập ngày sinh");
+      return false;
+    }
+
+    if (!newStudent.classId) {
+      toast.error("Vui lòng chọn lớp");
+      return false;
+    }
+
+    if (!newStudent.parentName.trim()) {
+      toast.error("Tên phụ huynh không được để trống");
+      return false;
+    }
+
+    if (!newStudent.parentPhone.trim()) {
+      toast.error("Số điện thoại phụ huynh không được để trống");
+      return false;
+    }
+    // else if (!/^\d{10,11}$/.test(newStudent.parentPhone)) {
+    //   toast.error("Số điện thoại không hợp lệ");
+    //   return false;
+    // }
+
+    if (!newStudent.parentEmail.trim()) {
+      toast.error("Email phụ huynh không được để trống");
+      return false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newStudent.parentEmail)) {
+      toast.error("Email không hợp lệ");
+      return false;
+    }
+
+    if (!newStudent.parentAddress.trim()) {
+      toast.error("Địa chỉ phụ huynh không được để trống");
+      return false;
+    }
+
+    if (!newStudent.parentGender) {
+      toast.error("Vui lòng chọn giới tính phụ huynh");
+      return false;
+    }
+
+    try {
+      const res = await addStudentAndParent(newStudent);
+      if (res) {
+        toast.success("Thêm học sinh thành công");
+        setNewStudent({
+          name: "",
+          studentNumber: "",
+          gender: "",
+          dateOfBirth: "",
+          classId: null,
+          parentName: "",
+          parentPhone: "",
+          parentEmail: "",
+          parentAddress: "",
+          parentGender: "",
+        });
+        fetchStudents();
+      } else {
+        toast.error("Thêm học sinh thất bại");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUpdateStudent = async () => {
+    try {
+      const res = await updateStudent(newStudent, selectedStudent.id);
+      if (res) {
+        toast.success("Cập nhật học sinh thành công");
+        setNewStudent({
+          name: "",
+          studentNumber: "",
+          gender: "",
+          dateOfBirth: "",
+          classId: null,
+          parentName: "",
+          parentPhone: "",
+          parentEmail: "",
+          parentAddress: "",
+          parentGender: "",
+        });
+        fetchStudents(); // Refresh lại danh sách
+        setShowModal(false);
+      } else {
+        toast.error("Cập nhật học sinh thất bại");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Có lỗi xảy ra khi cập nhật");
+    }
   };
 
   const handleBulkAction = (action) => {
@@ -603,11 +868,9 @@ const Accounts = () => {
     const formData = new FormData();
     formData.append("file", importedFile);
     try {
-      const res = await axiosInstance.post(
-        '/Excel/import-users',
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      const res = await axiosInstance.post("/Excel/import-users", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       if (res.data && res.data.success) {
         toast.success("Import thành công!");
         fetchUsers(); // Refresh user list
@@ -623,6 +886,29 @@ const Accounts = () => {
       toast.error(
         "Import thất bại: " + (err.response?.data?.message || err.message)
       );
+    }
+  };
+
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    try {
+      await importExcelFile(file);
+      toast.success("Thêm tệp kết quả thành công");
+      fetchUsers(); // Refresh user list
+      fetchStudents();
+    } catch (error) {
+      toast.error("Thêm tệp kết quả thất bại");
+    } finally {
+      e.target.value = ""; // ✅ Reset input để chọn lại cùng file vẫn được
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      await exportExcelFile();
+      // toast.success("Lấy tệp mẫu thành công");
+    } catch (error) {
+      toast.error("Lấy tệp mẫu thất bại");
     }
   };
 
@@ -747,12 +1033,14 @@ const Accounts = () => {
           {modalType === "add" ? (
             <>
               <FaUserPlus />
-              Thêm tài khoản mới
+              {activeTab !== "student" ? "Thêm tài khoản mới" : "Thêm học sinh"}
             </>
           ) : (
             <>
               <FaEdit />
-              Chỉnh sửa tài khoản
+              {activeTab !== "student"
+                ? "Cập nhật tài khoản"
+                : "Cập nhật học sinh"}
             </>
           )}
         </Modal.Title>
@@ -760,155 +1048,78 @@ const Accounts = () => {
       <Modal.Body>
         <Form>
           {/* Basic Info Section */}
-          <div className="row">
-            <div className="col-md-6">
-              <div className="admin-form-group">
-                <label className="admin-form-label">
-                  <FaUser />
-                  Họ và tên
-                </label>
-                <input
-                  type="text"
-                  placeholder="Nhập họ và tên"
-                  value={newUser.name}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, name: e.target.value })
-                  }
-                  className="admin-form-control"
-                />
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="admin-form-group">
-                <label className="admin-form-label">
-                  <FaUserShield />
-                  Vai trò
-                </label>
-                <select
-                  value={newUser.role}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, role: e.target.value })
-                  }
-                  className="admin-form-select"
-                >
-                  <option value="">Chọn vai trò</option>
-                  <option value="parent">Phụ huynh</option>
-                  <option value="nurse">Nhân viên y tế</option>
-                  <option value="admin">Quản trị viên</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="admin-form-group">
-            <label className="admin-form-label">
-              <i className="fas fa-envelope"></i>
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="Nhập email"
-              value={newUser.email}
-              onChange={(e) =>
-                setNewUser({ ...newUser, email: e.target.value })
-              }
-              className="admin-form-control"
-            />
-          </div>
-
-          <div className="row">
-            <div className="col-md-6">
-              <div className="admin-form-group">
-                <label className="admin-form-label">
-                  <i className="fas fa-phone"></i>
-                  Số điện thoại
-                </label>
-                <input
-                  type="tel"
-                  placeholder="Nhập số điện thoại"
-                  value={newUser.phone}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, phone: e.target.value })
-                  }
-                  className="admin-form-control"
-                />
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="admin-form-group">
-                <label className="admin-form-label">
-                  <FaVenusMars />
-                  Giới tính
-                </label>
-                <select
-                  value={newUser.gender}
-                  onChange={(e) =>
-                    setNewUser({ ...newUser, gender: e.target.value })
-                  }
-                  className="admin-form-select"
-                >
-                  <option value="">Chọn giới tính</option>
-                  <option value="Male">Nam</option>
-                  <option value="Female">Nữ</option>
-                  <option value="Other">Khác</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="admin-form-group">
-            <label className="admin-form-label">
-              <FaMapMarkerAlt />
-              Địa chỉ
-            </label>
-            <input
-              type="text"
-              placeholder="Nhập địa chỉ"
-              value={newUser.address}
-              onChange={(e) =>
-                setNewUser({ ...newUser, address: e.target.value })
-              }
-              className="admin-form-control"
-            />
-          </div>
-
-          {/* Password Section - Only for Add Mode */}
-          {modalType === "add" && (
+          {activeTab !== "student" ? (
             <>
-              <div className="admin-form-section-divider" style={{
-                margin: '1.5rem 0',
-                padding: '0.75rem 0',
-                borderTop: '1px solid #E0E0E0',
-                position: 'relative'
-              }}>
-                <span style={{
-                  position: 'absolute',
-                  top: '-0.5rem',
-                  left: '1rem',
-                  background: 'white',
-                  padding: '0 0.5rem',
-                  color: '#757575',
-                  fontSize: '0.875rem',
-                  fontWeight: '600'
-                }}>
-                  <FaKey style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
-                  Thông tin bảo mật
-                </span>
+              <div className="row">
+                <div className="col-md-6">
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      <FaUser />
+                      Họ và tên
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Nhập họ và tên"
+                      value={newUser.name}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, name: e.target.value })
+                      }
+                      className="admin-form-control"
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      <FaUserShield />
+                      Vai trò
+                    </label>
+                    <select
+                      disabled={modalType === "edit"}
+                      value={newUser.role}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, role: e.target.value })
+                      }
+                      className="admin-form-select"
+                    >
+                      <option value="">Chọn vai trò</option>
+                      <option value={3}>Phụ huynh</option>
+                      <option value={2}>Nhân viên y tế</option>
+                      <option value={1}>Quản trị viên</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label className="admin-form-label">
+                  <i className="fas fa-envelope"></i>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Nhập email"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                  className="admin-form-control"
+                />
               </div>
 
               <div className="row">
                 <div className="col-md-6">
                   <div className="admin-form-group">
                     <label className="admin-form-label">
-                      <FaKey />
-                      Mật khẩu
+                      <i className="fas fa-phone"></i>
+                      Số điện thoại
                     </label>
                     <input
-                      type="password"
-                      placeholder="Nhập mật khẩu"
-                      value={newUser.password}
+                      type="tel"
+                      placeholder="Nhập số điện thoại"
+                      value={newUser.phone}
                       onChange={(e) =>
-                        setNewUser({ ...newUser, password: e.target.value })
+                        setNewUser({ ...newUser, phone: e.target.value })
                       }
                       className="admin-form-control"
                     />
@@ -917,61 +1128,535 @@ const Accounts = () => {
                 <div className="col-md-6">
                   <div className="admin-form-group">
                     <label className="admin-form-label">
-                      <FaKey />
-                      Xác nhận mật khẩu
+                      <FaVenusMars />
+                      Giới tính
                     </label>
-                    <input
-                      type="password"
-                      placeholder="Nhập lại mật khẩu"
-                      value={newUser.confirmPassword}
+                    <select
+                      value={newUser.gender}
                       onChange={(e) =>
-                        setNewUser({
-                          ...newUser,
-                          confirmPassword: e.target.value,
-                        })
+                        setNewUser({ ...newUser, gender: e.target.value })
                       }
-                      className="admin-form-control"
-                    />
+                      className="admin-form-select"
+                    >
+                      <option value="">Chọn giới tính</option>
+                      <option value="Male">Nam</option>
+                      <option value="Female">Nữ</option>
+                      <option value="Other">Khác</option>
+                    </select>
                   </div>
                 </div>
               </div>
 
-              {/* Password Requirements */}
-              <div style={{
-                background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-                border: '1px solid rgba(78, 205, 196, 0.2)',
-                borderRadius: '8px',
-                padding: '0.875rem',
-                fontSize: '0.8rem',
-                color: '#757575'
-              }}>
-                <div style={{ fontWeight: '600', marginBottom: '0.5rem', color: '#424242' }}>
-                  <i className="fas fa-info-circle" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
-                  Yêu cầu mật khẩu:
-                </div>
-                <ul style={{ margin: "0", paddingLeft: "1.25rem" }}>
-                  <li>Ít nhất 6 ký tự</li>
-                  <li>Bao gồm chữ hoa và chữ thường</li>
-                  <li>Ít nhất 1 số</li>
-                </ul>
+              <div className="admin-form-group">
+                <Row>
+                  <Col md={6}>
+                    <label className="admin-form-label">
+                      <FaMapMarkerAlt />
+                      Địa chỉ
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Nhập địa chỉ"
+                      value={newUser.address}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, address: e.target.value })
+                      }
+                      className="admin-form-control"
+                    />
+                  </Col>
+                  <Col md={6}>
+                    <label className="admin-form-label">
+                      <FaBirthdayCake />
+                      Ngày sinh
+                    </label>
+                    <input
+                      type="date"
+                      placeholder="Nhập ngày sinh"
+                      value={newUser.dateOfBirth}
+                      onChange={(e) =>
+                        setNewUser({ ...newUser, dateOfBirth: e.target.value })
+                      }
+                      className="admin-form-control"
+                      max={
+                        new Date().toISOString().split("T")[0] // chỉ cho chọn đến hôm nay
+                      }
+                    />
+                  </Col>
+                </Row>
               </div>
-            </>
-          )}
 
-          {/* Password Change Option for Edit Mode */}
-          {modalType === "edit" && (
-            <div style={{
-              background: 'linear-gradient(135deg, #FFF8F3, #FDF4FF)',
-              border: '1px solid rgba(78, 205, 196, 0.2)',
-              borderRadius: '8px',
-              padding: '0.875rem',
-              fontSize: '0.875rem',
-              color: '#757575',
-              marginTop: '1rem'
-            }}>
-              <i className="fas fa-lock" style={{ marginRight: '0.5rem', color: '#4ECDC4' }} />
-              Để thay đổi mật khẩu, vui lòng sử dụng chức năng "Đặt lại mật khẩu" riêng biệt.
-            </div>
+              {/* Password Section - Only for Add Mode */}
+              {modalType === "add" && (
+                <>
+                  <div
+                    className="admin-form-section-divider"
+                    style={{
+                      margin: "1.5rem 0",
+                      padding: "0.75rem 0",
+                      borderTop: "1px solid #E0E0E0",
+                      position: "relative",
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-0.5rem",
+                        left: "1rem",
+                        background: "white",
+                        padding: "0 0.5rem",
+                        color: "#757575",
+                        fontSize: "0.875rem",
+                        fontWeight: "600",
+                      }}
+                    >
+                      <FaKey
+                        style={{ marginRight: "0.5rem", color: "#4ECDC4" }}
+                      />
+                      Thông tin bảo mật
+                    </span>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaKey />
+                          Mật khẩu
+                        </label>
+                        <input
+                          type="password"
+                          placeholder="Nhập mật khẩu"
+                          value={newUser.password}
+                          onChange={(e) =>
+                            setNewUser({ ...newUser, password: e.target.value })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaKey />
+                          Xác nhận mật khẩu
+                        </label>
+                        <input
+                          type="password"
+                          placeholder="Nhập lại mật khẩu"
+                          value={newUser.confirmPassword}
+                          onChange={(e) =>
+                            setNewUser({
+                              ...newUser,
+                              confirmPassword: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Password Requirements */}
+                  <div
+                    style={{
+                      background: "linear-gradient(135deg, #FFF8F3, #FDF4FF)",
+                      border: "1px solid rgba(78, 205, 196, 0.2)",
+                      borderRadius: "8px",
+                      padding: "0.875rem",
+                      fontSize: "0.8rem",
+                      color: "#757575",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: "600",
+                        marginBottom: "0.5rem",
+                        color: "#424242",
+                      }}
+                    >
+                      <i
+                        className="fas fa-info-circle"
+                        style={{ marginRight: "0.5rem", color: "#4ECDC4" }}
+                      />
+                      Yêu cầu mật khẩu:
+                    </div>
+                    <ul style={{ margin: "0", paddingLeft: "1.25rem" }}>
+                      <li>Ít nhất 6 ký tự</li>
+                      <li>Bao gồm chữ hoa và chữ thường</li>
+                      <li>Ít nhất 1 số</li>
+                    </ul>
+                  </div>
+                </>
+              )}
+
+              {/* Password Change Option for Edit Mode */}
+              {modalType === "edit" && (
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #FFF8F3, #FDF4FF)",
+                    border: "1px solid rgba(78, 205, 196, 0.2)",
+                    borderRadius: "8px",
+                    padding: "0.875rem",
+                    fontSize: "0.875rem",
+                    color: "#757575",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <i
+                    className="fas fa-lock"
+                    style={{ marginRight: "0.5rem", color: "#4ECDC4" }}
+                  />
+                  Để thay đổi mật khẩu, vui lòng sử dụng chức năng "Đặt lại mật
+                  khẩu" riêng biệt.
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {modalType === "add" ? (
+                <>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaUser />
+                          Họ và tên học sinh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập họ và tên"
+                          value={newStudent.name}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              name: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaUser />
+                          Mã học sinh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập mã học sinh"
+                          value={newStudent.studentNumber}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              studentNumber: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <i className="fas fa-phone"></i>
+                          Ngày sinh
+                        </label>
+                        <input
+                          type="date"
+                          placeholder="Nhập ngày sinh"
+                          value={newStudent.dateOfBirth}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              dateOfBirth: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                          max={new Date().toISOString().split("T")[0]} // chỉ cho chọn đến hôm nay
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaVenusMars />
+                          Giới tính
+                        </label>
+                        <select
+                          value={newStudent.gender}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              gender: e.target.value,
+                            })
+                          }
+                          className="admin-form-select"
+                        >
+                          <option value="">Chọn giới tính</option>
+                          <option value="Male">Nam</option>
+                          <option value="Female">Nữ</option>
+                          <option value="Other">Khác</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaVenusMars />
+                          Lớp
+                        </label>
+                        <select
+                          value={newStudent.classId}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              classId: e.target.value,
+                            })
+                          }
+                          className="admin-form-select"
+                        >
+                          <option value="">Chọn lớp</option>
+                          {classes.map((c) => (
+                            <option key={c.classId} value={c.classId}>
+                              {c.className}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaUser />
+                          Họ tên phụ huynh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập họ tên phụ huynh"
+                          value={newStudent.parentName}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              parentName: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <i className="fas fa-phone"></i>
+                          Số điện thoại phụ huynh
+                        </label>
+                        <input
+                          type="tel"
+                          placeholder="Nhập số điện thoại"
+                          value={newStudent.parentPhone}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              parentPhone: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <i className="fas fa-envelope"></i>
+                          Email phụ huynh
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="Nhập email"
+                          value={newStudent.parentEmail}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              parentEmail: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaMapMarkerAlt />
+                          Địa chỉ phụ huynh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập địa chỉ"
+                          value={newStudent.parentAddress}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              parentAddress: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="admin-form-group">
+                    <label className="admin-form-label">
+                      <FaVenusMars />
+                      Giới tính phụ huynh
+                    </label>
+                    <select
+                      value={newStudent.parentGender}
+                      onChange={(e) =>
+                        setNewStudent({
+                          ...newStudent,
+                          parentGender: e.target.value,
+                        })
+                      }
+                      className="admin-form-select"
+                    >
+                      <option value="">Chọn giới tính</option>
+                      <option value="Male">Nam</option>
+                      <option value="Female">Nữ</option>
+                      <option value="Other">Khác</option>
+                    </select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaUser />
+                          Họ và tên học sinh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập họ và tên"
+                          value={newStudent.name}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              name: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaUser />
+                          Mã học sinh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nhập mã học sinh"
+                          value={newStudent.studentNumber}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              studentNumber: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <i className="fas fa-phone"></i>
+                          Ngày sinh
+                        </label>
+                        <input
+                          type="date"
+                          placeholder="Nhập ngày sinh"
+                          value={newStudent.dateOfBirth}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              dateOfBirth: e.target.value,
+                            })
+                          }
+                          className="admin-form-control"
+                          max={new Date().toISOString().split("T")[0]} // chỉ cho chọn đến hôm nay
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaVenusMars />
+                          Giới tính
+                        </label>
+                        <select
+                          value={newStudent.gender}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              gender: e.target.value,
+                            })
+                          }
+                          className="admin-form-select"
+                        >
+                          <option value="">Chọn giới tính</option>
+                          <option value="Male">Nam</option>
+                          <option value="Female">Nữ</option>
+                          <option value="Other">Khác</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="admin-form-group">
+                        <label className="admin-form-label">
+                          <FaVenusMars />
+                          Lớp
+                        </label>
+                        <select
+                          value={newStudent.classId}
+                          onChange={(e) =>
+                            setNewStudent({
+                              ...newStudent,
+                              classId: e.target.value,
+                            })
+                          }
+                          className="admin-form-select"
+                        >
+                          <option value="">Chọn lớp</option>
+                          {classes.map((c) => (
+                            <option key={c.classId} value={c.classId}>
+                              {c.className}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
           )}
         </Form>
       </Modal.Body>
@@ -982,25 +1667,59 @@ const Accounts = () => {
         >
           Hủy
         </button>
-        <button
-          className="admin-primary-btn"
-          onClick={handleSaveUser}
-          disabled={saving}
-        >
-          {saving ? (
-            <>
-              <div
-                className="admin-loading-spinner"
-                style={{ width: "16px", height: "16px", marginRight: "0.5rem" }}
-              ></div>
-              Đang lưu...
-            </>
-          ) : modalType === "add" ? (
-            "Thêm tài khoản"
-          ) : (
-            "Cập nhật"
-          )}
-        </button>
+        {activeTab !== "student" ? (
+          <button
+            className="admin-primary-btn"
+            onClick={handleSaveUser}
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <div
+                  className="admin-loading-spinner"
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    marginRight: "0.5rem",
+                  }}
+                ></div>
+                Đang lưu...
+              </>
+            ) : modalType === "add" ? (
+              <>
+                {activeTab !== "student" ? "Thêm tài khoản" : "Thêm học sinh"}
+              </>
+            ) : (
+              "Cập nhật"
+            )}
+          </button>
+        ) : (
+          <button
+            className="admin-primary-btn"
+            onClick={
+              modalType === "add" ? handleAddStudent : handleUpdateStudent
+            }
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <div
+                  className="admin-loading-spinner"
+                  style={{
+                    width: "16px",
+                    height: "16px",
+                    marginRight: "0.5rem",
+                  }}
+                ></div>
+                Đang lưu...
+              </>
+            ) : modalType === "add" ? (
+              "Thêm học sinh"
+            ) : (
+              "Cập nhật"
+            )}
+          </button>
+        )}
       </Modal.Footer>
     </Modal>
   );
@@ -1021,7 +1740,8 @@ const Accounts = () => {
               Quản lý tài khoản
             </h1>
             <p className="admin-accounts-subtitle mb-0">
-              Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện gradient cam tím đẹp mắt
+              Quản lý và theo dõi tất cả tài khoản trong hệ thống với giao diện
+              gradient cam tím đẹp mắt
             </p>
           </Col>
         </Row>
@@ -1029,11 +1749,14 @@ const Accounts = () => {
 
       <div className="d-flex">
         <div className="flex-grow-1">
-          <Nav  className="admin-accounts-nav">
+          <Nav className="admin-accounts-nav">
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "parent"}
-                onClick={() => setActiveTab("parent")}
+                onClick={() => {
+                  setActiveTab("parent");
+                  setCurrentPage(1);
+                }}
                 data-role="parent"
                 className={activeTab === "parent" ? "active" : ""}
               >
@@ -1043,7 +1766,10 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "nurse"}
-                onClick={() => setActiveTab("nurse")}
+                onClick={() => {
+                  setActiveTab("nurse");
+                  setCurrentPage(1);
+                }}
                 data-role="nurse"
                 className={activeTab === "nurse" ? "active" : ""}
               >
@@ -1053,11 +1779,28 @@ const Accounts = () => {
             <Nav.Item>
               <Nav.Link
                 active={activeTab === "admin"}
-                onClick={() => setActiveTab("admin")}
+                onClick={() => {
+                  setActiveTab("admin");
+                  setCurrentPage(1);
+                }}
                 data-role="admin"
                 className={activeTab === "admin" ? "active" : ""}
               >
                 <FaUserShield /> Quản trị viên
+              </Nav.Link>
+            </Nav.Item>
+
+            <Nav.Item>
+              <Nav.Link
+                active={activeTab === "student"}
+                onClick={() => {
+                  setActiveTab("student");
+                  setCurrentPage(1);
+                }}
+                data-role="admin"
+                className={activeTab === "student" ? "active" : ""}
+              >
+                <FaUserShield /> Học sinh
               </Nav.Link>
             </Nav.Item>
           </Nav>
@@ -1070,150 +1813,293 @@ const Accounts = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="admin-search-input"
-                style={{ borderRadius: '25px', border: '2px solid #10B981' }}
+                style={{ borderRadius: "25px", border: "2px solid #10B981" }}
               />
             </InputGroup>
 
             {/* Filter Dropdown */}
-
           </div>
 
           {/* Accounts Table */}
           <div className="admin-accounts-table-container">
-            <table className="admin-accounts-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Người dùng</th>
-                  <th>Email</th>
-                  <th>Số điện thoại</th>
-                  <th>
-                    <FaMapMarkerAlt className="me-2" />
-                    Địa chỉ
-                  </th>
-                  <th>
-                    <FaVenusMars className="me-2" />
-                    Giới tính
-                  </th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
+            {activeTab !== "student" ? (
+              <table className="admin-accounts-table">
+                <thead>
                   <tr>
-                    <td colSpan="7" className="text-center">
-                      <div className="admin-loading">
-                        <div className="admin-loading-spinner"></div>
-                        Đang tải dữ liệu...
-                      </div>
-                    </td>
+                    <th>ID</th>
+                    <th>Người dùng</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>
+                      <FaMapMarkerAlt className="me-2" />
+                      Địa chỉ
+                    </th>
+                    <th>
+                      <FaVenusMars className="me-2" />
+                      Giới tính
+                    </th>
+                    <th>Thao tác</th>
                   </tr>
-                ) : error ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">
-                      <div className="p-4 text-danger">
-                        <i className="fas fa-exclamation-triangle me-2"></i>
-                        {error}
-                      </div>
-                    </td>
-                  </tr>
-                ) : users.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" className="text-center">
-                      <div className="p-4 text-muted">
-                        <i className="fas fa-users me-2"></i>
-                        Chưa có tài khoản nào cho vai trò này
-                      </div>
-                    </td>
-                  </tr>
-                ) : (
-                  users.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>
-                        <div className="admin-user-profile">
-                          <div className="admin-user-info">
-                            <div className="admin-user-name">{user.name}</div>
-
-                          </div>
-                        </div>
-                      </td>
-                      <td>{user.email}</td>
-                      <td>{user.phone}</td>
-                      <td title={user.address}>
-                        <FaMapMarkerAlt className="me-2 text-muted" />
-                        {user.address}
-                      </td>
-                      <td>
-                        <div
-                          className={`admin-role-badge ${user.gender?.toLowerCase() === "male" ||
-                              user.gender === "Nam"
-                              ? "parent"
-                              : user.gender?.toLowerCase() === "female" ||
-                                user.gender === "Nữ"
-                                ? "parent"
-                                : "nurse"
-                            }`}
-                        >
-                          {user.gender?.toLowerCase() === "male" ||
-                            user.gender === "Nam" ? (
-                            <FaMars />
-                          ) : user.gender?.toLowerCase() === "female" ||
-                            user.gender === "Nữ" ? (
-                            <FaVenus />
-                          ) : (
-                            <FaVenusMars />
-                          )}
-                          {translateGender(user.gender)}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="admin-table-actions">
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={<Tooltip>Chỉnh sửa</Tooltip>}
-                          >
-                            <button
-                              className="admin-table-btn edit"
-                              onClick={() => handleShowModal("edit", user)}
-                            >
-                              <FaEdit />
-                            </button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={<Tooltip>Xóa</Tooltip>}
-                          >
-                            <button
-                              className="admin-table-btn delete"
-                              onClick={() => {
-                                setUserToDelete(user);
-                                setShowDeleteModal(true);
-                              }}
-                            >
-                              <FaTrash />
-                            </button>
-                          </OverlayTrigger>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        <div className="admin-loading">
+                          <div className="admin-loading-spinner"></div>
+                          Đang tải dữ liệu...
                         </div>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : error ? (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        <div className="p-4 text-danger">
+                          <i className="fas fa-exclamation-triangle me-2"></i>
+                          {error}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : users.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        <div className="p-4 text-muted">
+                          <i className="fas fa-users me-2"></i>
+                          Chưa có tài khoản nào cho vai trò này
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    users.map((user) => (
+                      <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td>
+                          <div className="admin-user-profile">
+                            <div className="admin-user-info">
+                              <div className="admin-user-name">{user.name}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{user.email}</td>
+                        <td>{user.phone}</td>
+                        <td title={user.address}>
+                          <FaMapMarkerAlt className="me-2 text-muted" />
+                          {user.address}
+                        </td>
+                        <td>
+                          <div
+                            className={`admin-role-badge ${
+                              user.gender?.toLowerCase() === "male" ||
+                              user.gender === "Nam"
+                                ? "parent"
+                                : user.gender?.toLowerCase() === "female" ||
+                                  user.gender === "Nữ"
+                                ? "parent"
+                                : "nurse"
+                            }`}
+                          >
+                            {user.gender?.toLowerCase() === "male" ||
+                            user.gender === "Nam" ? (
+                              <FaMars />
+                            ) : user.gender?.toLowerCase() === "female" ||
+                              user.gender === "Nữ" ? (
+                              <FaVenus />
+                            ) : (
+                              <FaVenusMars />
+                            )}
+                            {translateGender(user.gender)}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="admin-table-actions">
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={<Tooltip>Chỉnh sửa</Tooltip>}
+                            >
+                              <button
+                                className="admin-table-btn edit"
+                                onClick={() => {
+                                  handleShowModal("edit", user);
+                                }}
+                              >
+                                <FaEdit />
+                              </button>
+                            </OverlayTrigger>
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={<Tooltip>Xóa</Tooltip>}
+                            >
+                              <button
+                                className="admin-table-btn delete"
+                                onClick={() => {
+                                  setUserToDelete(user);
+                                  setShowDeleteModal(true);
+                                }}
+                              >
+                                <FaTrash />
+                              </button>
+                            </OverlayTrigger>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <>
+                {/* Chọn lớp để hiển thị danh sách học sinh theo lớp */}
+                <Row>
+                  <Col>
+                    <Form.Select
+                      value={selectedClassId}
+                      onChange={(e) => setSelectedClassId(e.target.value)}
+                      className="admin-select-class"
+                    >
+                      <option value="">Chọn lớp</option>
+                      {classes.map((cls) => (
+                        <option key={cls.classId} value={cls.classId}>
+                          {cls.className}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Col>
+                </Row>
+                <table className="admin-accounts-table">
+                  <thead>
+                    <tr>
+                      {/* <th>STT</th> */}
+                      <th>Tên học sinh</th>
+                      <th>Mã học sinh</th>
+                      <th>Ngày sinh</th>
+                      <th>Giới tính</th>
+                      <th>Tên phụ huynh</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          <div className="admin-loading">
+                            <div className="admin-loading-spinner"></div>
+                            Đang tải dữ liệu...
+                          </div>
+                        </td>
+                      </tr>
+                    ) : error ? (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          <div className="p-4 text-danger">
+                            <i className="fas fa-exclamation-triangle me-2"></i>
+                            {error}
+                          </div>
+                        </td>
+                      </tr>
+                    ) : students.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" className="text-center">
+                          <div className="p-4 text-muted">
+                            <i className="fas fa-users me-2"></i>
+                            Danh sách học sinh trống
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      students?.map((student, idx) => (
+                        <tr key={idx}>
+                          {/* <td>{idx + 1}</td> */}
+                          <td>
+                            <div className="admin-user-profile">
+                              <div className="admin-user-info">
+                                <div className="admin-user-name">
+                                  {student.studentName}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{student.studentNumber}</td>
+                          <td>{formatDDMMYYYY(student.dateOfBirth)}</td>
+                          <td>
+                            <div
+                              className={`admin-role-badge ${
+                                student.gender?.toLowerCase() === "male" ||
+                                student.gender === "Nam"
+                                  ? "parent"
+                                  : student.gender?.toLowerCase() ===
+                                      "female" || student.gender === "Nữ"
+                                  ? "parent"
+                                  : "nurse"
+                              }`}
+                            >
+                              {student.gender?.toLowerCase() === "male" ||
+                              student.gender === "Nam" ? (
+                                <FaMars />
+                              ) : student.gender?.toLowerCase() === "female" ||
+                                student.gender === "Nữ" ? (
+                                <FaVenus />
+                              ) : (
+                                <FaVenusMars />
+                              )}
+                              {translateGender(student.gender)}
+                            </div>
+                          </td>
+                          <td>{student.parentName}</td>
+
+                          <td>
+                            <div className="admin-table-actions justify-content-center">
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Chỉnh sửa</Tooltip>}
+                              >
+                                <button
+                                  className="admin-table-btn edit"
+                                  onClick={() => {
+                                    handleShowModal("edit", student);
+                                    setSelectedStudent(student);
+                                  }}
+                                >
+                                  <FaEdit />
+                                </button>
+                              </OverlayTrigger>
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Xóa</Tooltip>}
+                              >
+                                <button
+                                  className="admin-table-btn delete"
+                                  onClick={() => {
+                                    setUserToDelete(student);
+                                    setShowDeleteModal(true);
+                                  }}
+                                >
+                                  <FaTrash />
+                                </button>
+                              </OverlayTrigger>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </>
+            )}
           </div>
 
           {/* Pagination */}
-          <div className="admin-pagination-container">
-            <div className="text-muted">
+          {totalPages > 1 && (
+            <div className="justify-content-center">
+              {/* <div className="text-muted">
               Hiển thị {users.length} / {filteredUsers.length} kết quả
+            </div> */}
+              <PaginationBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
-            <PaginationBar
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          </div>
+          )}
         </div>
       </div>
 
@@ -1234,7 +2120,10 @@ const Accounts = () => {
         </Modal.Header>
         <Modal.Body>
           <i className="fas fa-user-times"></i>
-          <h5>Bạn có chắc chắn muốn xóa tài khoản?</h5>
+          <h5>
+            Bạn có chắc chắn muốn xóa{" "}
+            {activeTab === "student" ? "học sinh" : "tài khoản"}?
+          </h5>
           <p>
             <strong>{userToDelete?.name}</strong>
           </p>
@@ -1244,9 +2133,14 @@ const Accounts = () => {
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Hủy
           </Button>
-          <Button variant="danger" onClick={handleDeleteUser}>
+          <Button
+            variant="danger"
+            onClick={
+              activeTab === "student" ? handleDeleteStudent : handleDeleteUser
+            }
+          >
             <i className="fas fa-trash"></i>
-            Xóa tài khoản
+            {activeTab === "student" ? "Xóa học sinh" : "Xóa tài khoản"}
           </Button>
         </Modal.Footer>
       </Modal>
@@ -1351,21 +2245,31 @@ const Accounts = () => {
       {renderStatsModal()}
 
       {/* Import User Modal */}
-      <Modal show={showImportModal} onHide={() => setShowImportModal(false)} className="admin-modal" size="lg">
-        <Modal.Header closeButton style={{
-          background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-          color: 'white',
-          borderBottom: 'none',
-          padding: '2rem'
-        }}>
-          <Modal.Title style={{
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            margin: 0
-          }}>
+      <Modal
+        show={showImportModal}
+        onHide={() => setShowImportModal(false)}
+        className="admin-modal"
+        size="lg"
+      >
+        <Modal.Header
+          closeButton
+          style={{
+            background: "linear-gradient(135deg, #4ECDC4, #26D0CE)",
+            color: "white",
+            borderBottom: "none",
+            padding: "2rem",
+          }}
+        >
+          <Modal.Title
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "700",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              margin: 0,
+            }}
+          >
             <FaFileUpload />
             Nhập tài khoản từ Excel
           </Modal.Title>
@@ -1373,24 +2277,29 @@ const Accounts = () => {
         <Modal.Body style={{ padding: "2rem", background: "white" }}>
           <div className="admin-form-group">
             <label className="admin-form-label">
-              <i className="fas fa-file-excel" style={{ color: '#4ECDC4' }}></i>
+              <i className="fas fa-file-excel" style={{ color: "#4ECDC4" }}></i>
               Chọn file Excel
             </label>
-            <div style={{
-              border: '2px dashed rgba(78, 205, 196, 0.3)',
-              borderRadius: '12px',
-              padding: '2rem',
-              textAlign: 'center',
-              background: 'linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(38, 208, 206, 0.05))',
-              position: 'relative',
-              transition: 'all 0.3s ease',
-              cursor: 'pointer'
-            }}>
-              <div style={{
-                marginBottom: '1rem',
-                color: '#4ECDC4',
-                fontSize: '3rem'
-              }}>
+            <div
+              style={{
+                border: "2px dashed rgba(78, 205, 196, 0.3)",
+                borderRadius: "12px",
+                padding: "2rem",
+                textAlign: "center",
+                background:
+                  "linear-gradient(135deg, rgba(78, 205, 196, 0.05), rgba(38, 208, 206, 0.05))",
+                position: "relative",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+              }}
+            >
+              <div
+                style={{
+                  marginBottom: "1rem",
+                  color: "#4ECDC4",
+                  fontSize: "3rem",
+                }}
+              >
                 <i className="fas fa-cloud-upload-alt"></i>
               </div>
               <h6
@@ -1425,15 +2334,17 @@ const Accounts = () => {
                   cursor: "pointer",
                 }}
               />
-              <div style={{
-                display: 'inline-block',
-                background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                fontWeight: '600'
-              }}>
+              <div
+                style={{
+                  display: "inline-block",
+                  background: "linear-gradient(135deg, #4ECDC4, #26D0CE)",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "8px",
+                  fontSize: "0.875rem",
+                  fontWeight: "600",
+                }}
+              >
                 Chọn file
               </div>
             </div>
@@ -1485,19 +2396,23 @@ const Accounts = () => {
                 </div>
               </div>
 
-              <div style={{
-                maxHeight: '300px',
-                overflowY: 'auto',
-                border: '1px solid rgba(78, 205, 196, 0.2)',
-                borderRadius: '8px'
-              }}>
-                <Table style={{ margin: 0, fontSize: '0.875rem' }}>
-                  <thead style={{
-                    background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                    color: 'white',
-                    position: 'sticky',
-                    top: 0
-                  }}>
+              <div
+                style={{
+                  maxHeight: "300px",
+                  overflowY: "auto",
+                  border: "1px solid rgba(78, 205, 196, 0.2)",
+                  borderRadius: "8px",
+                }}
+              >
+                <Table style={{ margin: 0, fontSize: "0.875rem" }}>
+                  <thead
+                    style={{
+                      background: "linear-gradient(135deg, #4ECDC4, #26D0CE)",
+                      color: "white",
+                      position: "sticky",
+                      top: 0,
+                    }}
+                  >
                     <tr>
                       <th style={{ padding: "0.75rem" }}>STT</th>
                       <th style={{ padding: "0.75rem" }}>Họ tên</th>
@@ -1508,21 +2423,29 @@ const Accounts = () => {
                   </thead>
                   <tbody>
                     {importedUsers.slice(0, 10).map((u, i) => (
-                      <tr key={i} style={{
-                        background: i % 2 === 0 ? '#FAFAFA' : 'white'
-                      }}>
-                        <td style={{ padding: '0.75rem' }}>{i + 1}</td>
-                        <td style={{ padding: '0.75rem', fontWeight: '500' }}>{u.name}</td>
-                        <td style={{ padding: '0.75rem' }}>{u.email}</td>
-                        <td style={{ padding: '0.75rem' }}>{u.phone}</td>
-                        <td style={{ padding: '0.75rem' }}>
-                          <span style={{
-                            background: 'linear-gradient(135deg, #4ECDC4, #26D0CE)',
-                            color: 'white',
-                            padding: '0.25rem 0.5rem',
-                            borderRadius: '4px',
-                            fontSize: '0.75rem'
-                          }}>
+                      <tr
+                        key={i}
+                        style={{
+                          background: i % 2 === 0 ? "#FAFAFA" : "white",
+                        }}
+                      >
+                        <td style={{ padding: "0.75rem" }}>{i + 1}</td>
+                        <td style={{ padding: "0.75rem", fontWeight: "500" }}>
+                          {u.name}
+                        </td>
+                        <td style={{ padding: "0.75rem" }}>{u.email}</td>
+                        <td style={{ padding: "0.75rem" }}>{u.phone}</td>
+                        <td style={{ padding: "0.75rem" }}>
+                          <span
+                            style={{
+                              background:
+                                "linear-gradient(135deg, #4ECDC4, #26D0CE)",
+                              color: "white",
+                              padding: "0.25rem 0.5rem",
+                              borderRadius: "4px",
+                              fontSize: "0.75rem",
+                            }}
+                          >
                             {u.role || activeTab}
                           </span>
                         </td>
@@ -1665,7 +2588,10 @@ const Accounts = () => {
 
           {/* Nhập từ file */}
           <button
-            onClick={() => setShowImportModal(true)}
+            onClick={() => {
+              // setShowImportModal(true);
+              fileInputRef.current.click();
+            }}
             style={{
               width: 44,
               height: 44,
@@ -1697,10 +2623,17 @@ const Accounts = () => {
           >
             <FaFileUpload />
           </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            accept=".xlsx,.xls"
+            onChange={(e) => handleImport(e)}
+          />
 
           {/* Tải file mẫu */}
           <button
-            onClick={handleDownloadTemplate}
+            onClick={handleExport}
             style={{
               width: 44,
               height: 44,

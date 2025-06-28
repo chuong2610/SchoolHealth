@@ -106,3 +106,18 @@ export const getMedicalSupply = async (pageNumber = 1, pageSize = 1) => {
     throw error;
   }
 };
+
+export const getHealthEventStatistics = async () => {
+  try {
+    const res = await axiosInstance.get("/MedicalEvent/medical-event-count");
+    if(res.data.success === true) {
+      return res.data.data;
+    } else {
+      console.log("Loi getHealthEventStatistics ", res.data.message)
+    }
+  } catch (error) {
+    console.log("Loi getHealthEventStatistics", error);
+    throw error;
+  }
+}
+

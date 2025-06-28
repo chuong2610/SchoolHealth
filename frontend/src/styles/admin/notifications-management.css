@@ -1369,16 +1369,29 @@
 
 .admin-table {
     margin: 0;
-    background: white;
+    background: #f8fafc;
 }
 
-.admin-table thead th {
+/* .admin-table thead th {
     background: #f8fafc;
     color: #374151;
     font-weight: 600;
     font-size: 0.875rem;
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 0.75rem;
+} */
+
+.admin-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #f8fafc;
+    color: #374151;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 0.75rem;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.05); /* đổ bóng nhẹ */
 }
 
 .admin-table tbody td {

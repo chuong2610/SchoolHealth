@@ -79,12 +79,16 @@ const recentActivities = [
     type: "success",
   },
 ];
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import axiosInstance from "../../api/axiosInstance";
+import { uploadAvatar } from "../../api/parent/ProfileApi";
+import { useAvatar } from "../../context/AvatarContext";
 
 const Profile = () => {
+  const { updateAvatarVersion } = useAvatar();
+  const fileInputRef = useRef(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const userId = localStorage.getItem("userId");
@@ -115,22 +119,30 @@ const Profile = () => {
     }
   }, [showEditModal, userInfo]);
 
-  const uploadAvatar = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
+  // const uploadAvatar = async (file) => {
+  //   const formData = new FormData();
+  //   formData.append("file", file);
 
-    const response = await fetch("http://localhost:5182/api/Upload/image", {
-      method: "POST",
-      body: formData,
-    });
+  //   const response = await fetch("http://localhost:5182/api/Upload/image", {
+  //     method: "POST",
+  //     body: formData,
+  //   });
 
-    if (!response.ok) throw new Error("Upload ảnh thất bại!");
+  //   if (!response.ok) throw new Error("Upload ảnh thất bại!");
 
-    const data = await response.json();
-    return data.fileName; // hoặc data.filePath nếu backend yêu cầu
+  //   const data = await response.json();
+  //   return data.fileName; // hoặc data.filePath nếu backend yêu cầu
+  // };
+
+  const handleChangeImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // console.log("dsad", selectedImage);
+      handleSaveProfile(file);
+    }
   };
 
-  const handleSaveProfile = async () => {
+  const handleSaveProfile = async (file) => {
     try {
       let imageUrl = userInfo.imageUrl;
 
@@ -140,8 +152,8 @@ const Profile = () => {
         imageUrl = imageUrl.split("/").pop();
       }
 
-      if (selectedImage) {
-        imageUrl = await uploadAvatar(selectedImage);
+      if (selectedImage || file) {
+        imageUrl = await uploadAvatar(selectedImage || file);
       }
 
       await axiosInstance.patch(`/User/profile/${userId}`, {
@@ -153,6 +165,8 @@ const Profile = () => {
       // Reload lại userInfo nếu muốn cập nhật giao diện ngay
       const response = await axiosInstance.get(`/User/${userId}`);
       setUserInfo(response.data);
+      // Reload lai Header
+      updateAvatarVersion();
     } catch (error) {
       alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
       console.error(error);
@@ -179,9 +193,17 @@ const Profile = () => {
         confirmNewPassword, // xác nhận mật khẩu mới
       };
 
-      await axiosInstance.patch(`/User/change-password/${userId}`, payload);
+      const res = await axiosInstance.patch(`/User/change-password/${userId}`, payload);
 
-      alert("Đổi mật khẩu thành công!");
+      if(res?.data?.message) {
+        if(res?.data?.success === false) {
+          alert(res?.data?.message);
+          return;
+        }
+          alert(res?.data?.message);
+      }
+  
+      // alert("Đổi mật khẩu thành công!");
       setShowPasswordModal(false);
       setCurrentPassword("");
       setNewPassword("");
@@ -228,9 +250,23 @@ const Profile = () => {
           <div className="admin-profile-avatar-section">
             <div className="admin-profile-avatar">
               <img src={userInfo.imageUrl} alt="Avatar" />
-              <button className="admin-profile-avatar-edit">
+              <button
+                className="admin-profile-avatar-edit"
+                onClick={
+                  // Trigger click vào input type="file"
+                  () => fileInputRef.current.click()
+                }
+              >
                 <FaCamera />
               </button>
+              {/* Input ẩn để chọn file */}
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleChangeImage}
+              />
             </div>
             <div className="admin-profile-info">
               <h2 className="admin-profile-name">{userInfo.name}</h2>
@@ -238,10 +274,10 @@ const Profile = () => {
                 <FaUserTie className="me-2" />
                 {adminProfile.position} - {adminProfile.department}
               </p>
-              <p className="admin-profile-id">
+              {/* <p className="admin-profile-id">
                 <FaIdCard className="me-2" />
                 ID: {adminProfile.employeeId}
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="admin-profile-actions">
@@ -494,6 +530,8 @@ const Profile = () => {
                   type={showPasswordCurrent ? "text" : "password"}
                   placeholder="Nhập mật khẩu hiện tại"
                   className="admin-form-control"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -511,6 +549,8 @@ const Profile = () => {
                   type={showPasswordNew ? "text" : "password"}
                   placeholder="Nhập mật khẩu mới"
                   className="admin-form-control"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -530,6 +570,8 @@ const Profile = () => {
                   type={showPasswordConfirm ? "text" : "password"}
                   placeholder="Nhập lại mật khẩu mới"
                   className="admin-form-control"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
                 />
                 <button
                   type="button"
@@ -540,7 +582,7 @@ const Profile = () => {
                 </button>
               </div>
             </Form.Group>
-            <div className="admin-password-requirements">
+            {/* <div className="admin-password-requirements">
               <h6>Yêu cầu mật khẩu:</h6>
               <ul>
                 <li>Ít nhất 8 ký tự</li>
@@ -548,7 +590,7 @@ const Profile = () => {
                 <li>Chứa ít nhất 1 số</li>
                 <li>Chứa ít nhất 1 ký tự đặc biệt</li>
               </ul>
-            </div>
+            </div> */}
           </Form>
         </Modal.Body>
         <Modal.Footer className="admin-modal-footer">

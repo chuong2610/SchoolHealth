@@ -27,7 +27,6 @@ import AdminAccounts from "./pages/admin/Accounts";
 
 import AdminMedicineInventory from "./pages/admin/MedicineInventory";
 
-
 import AdminReports from "./pages/admin/Reports";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
@@ -64,6 +63,7 @@ import BlogPostList from "./pages/admin/BlogPostList";
 import CreateBlogPost from "./pages/admin/CreateBlogPost";
 import EditBlogPost from "./pages/admin/EditBlogPost";
 import EditProfile from "./pages/admin/EditProfile";
+import { AvatarProvider } from "./context/AvatarContext";
 
 // Google OAuth Configuration
 const GOOGLE_CLIENT_ID =
@@ -73,113 +73,120 @@ const GOOGLE_CLIENT_ID =
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Router>
-        <AuthProvider>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+      <AvatarProvider>
+        <Router>
+          <AuthProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
 
-          <Routes>
-            {/* Public Routes - No Layout */}
-            <Route path="/login" element={<LoginLayout />}>
-              <Route index element={<Login />} />
-            </Route>
-
-            {/* Google OAuth Callback */}
-            <Route path="/auth/google/callback" element={<AuthCallback />} />
-
-            {/* Unauthorized Page */}
-            <Route path="/unauthorized" element={<Unauthorized />} />
-
-            {/* Root redirect */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
-
-            {/* Protected Routes with MainLayout */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout />}>
-                {/* Admin Routes */}
-                <Route path="admin">
-                  <Route index element={<AdminDashboard />} />
-                  <Route path="accounts" element={<AdminAccounts />} />
-              
-                  
-                  <Route
-                    path="medicines/inventory"
-                    element={<AdminMedicineInventory />}
-                  />
-                  <Route
-                    path="notification/management"
-                    element={<NotificationsManagement />}
-                  />
-                  <Route path="reports" element={<AdminReports />} />
-                  <Route path="profile" element={<AdminProfile />} />
-                  <Route path="settings" element={<AdminSettings />} />
-                  <Route path="blog-posts" element={<BlogPostList />} />
-                  <Route path="create-blog" element={<CreateBlogPost />} />
-                  <Route path="edit-blog/:id" element={<EditBlogPost />} />
-                  <Route path="edit-profile" element={<EditProfile />} />
-                </Route>
-
-                {/* Nurse Routes */}
-                <Route path="nurse">
-                  <Route index element={<NurseDashboard />} />
-                  <Route
-                    path="receive-medicine"
-                    element={<NurseReceiveMedicine />}
-                  />
-                  <Route path="health-events" element={<NurseHealthEvents />} />
-                  <Route path="profile" element={<NurseProfile />} />
-                  <Route path="settings" element={<NurseSettings />} />
-                </Route>
-
-                {/* Parent Routes */}
-                <Route path="parent">
-                  <Route index element={<ParentDashboard />} />
-                  <Route
-                    path="health-declaration"
-                    element={<ParentHealthDeclaration />}
-                  />
-                  <Route
-                    path="notifications"
-                    element={<ParentNotifications />}
-                  />
-                  <Route
-                    path="health-history"
-                    element={<ParentHealthHistory />}
-                  />
-                  <Route
-                    path="send-medicine"
-                    element={<ParentSendMedicine />}
-                  />
-                  <Route path="profile" element={<ParentProfile />} />
-                  <Route path="settings" element={<ParentSettings />} />
-                  <Route path="blog/:id" element={<BlogDetail />} />
-                  <Route path="more-know" element={<MoreKnow />} />
-                  <Route path="health-check" element={<StudentHealthCheck />} />
-                </Route>
-
-                {/* Public Pages (accessible when logged in) */}
-                <Route path="about" element={<About />} />
-                <Route path="contact" element={<Contact />} />
-                <Route path="faq" element={<FAQ />} />
-                <Route path="privacy" element={<Privacy />} />
+            <Routes>
+              {/* Public Routes - No Layout */}
+              <Route path="/login" element={<LoginLayout />}>
+                <Route index element={<Login />} />
               </Route>
-            </Route>
 
-            {/* Catch-all route */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </AuthProvider>
-      </Router>
+              {/* Google OAuth Callback */}
+              <Route path="/auth/google/callback" element={<AuthCallback />} />
+
+              {/* Unauthorized Page */}
+              <Route path="/unauthorized" element={<Unauthorized />} />
+
+              {/* Root redirect */}
+              <Route path="/" element={<Navigate to="/login" replace />} />
+
+              {/* Protected Routes with MainLayout */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<MainLayout />}>
+                  {/* Admin Routes */}
+                  <Route path="admin">
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="accounts" element={<AdminAccounts />} />
+
+                    <Route
+                      path="medicines/inventory"
+                      element={<AdminMedicineInventory />}
+                    />
+                    <Route
+                      path="notification/management"
+                      element={<NotificationsManagement />}
+                    />
+                    <Route path="reports" element={<AdminReports />} />
+                    <Route path="profile" element={<AdminProfile />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                    <Route path="blog-posts" element={<BlogPostList />} />
+                    <Route path="create-blog" element={<CreateBlogPost />} />
+                    <Route path="edit-blog/:id" element={<EditBlogPost />} />
+                    <Route path="edit-profile" element={<EditProfile />} />
+                  </Route>
+
+                  {/* Nurse Routes */}
+                  <Route path="nurse">
+                    <Route index element={<NurseDashboard />} />
+                    <Route
+                      path="receive-medicine"
+                      element={<NurseReceiveMedicine />}
+                    />
+                    <Route
+                      path="health-events"
+                      element={<NurseHealthEvents />}
+                    />
+                    <Route path="profile" element={<NurseProfile />} />
+                    <Route path="settings" element={<NurseSettings />} />
+                  </Route>
+
+                  {/* Parent Routes */}
+                  <Route path="parent">
+                    <Route index element={<ParentDashboard />} />
+                    <Route
+                      path="health-declaration"
+                      element={<ParentHealthDeclaration />}
+                    />
+                    <Route
+                      path="notifications"
+                      element={<ParentNotifications />}
+                    />
+                    <Route
+                      path="health-history"
+                      element={<ParentHealthHistory />}
+                    />
+                    <Route
+                      path="send-medicine"
+                      element={<ParentSendMedicine />}
+                    />
+                    <Route path="profile" element={<ParentProfile />} />
+                    <Route path="settings" element={<ParentSettings />} />
+                    <Route path="blog/:id" element={<BlogDetail />} />
+                    <Route path="more-know" element={<MoreKnow />} />
+                    <Route
+                      path="health-check"
+                      element={<StudentHealthCheck />}
+                    />
+                  </Route>
+
+                  {/* Public Pages (accessible when logged in) */}
+                  <Route path="about" element={<About />} />
+                  <Route path="contact" element={<Contact />} />
+                  <Route path="faq" element={<FAQ />} />
+                  <Route path="privacy" element={<Privacy />} />
+                </Route>
+              </Route>
+
+              {/* Catch-all route */}
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </Routes>
+          </AuthProvider>
+        </Router>
+      </AvatarProvider>
     </GoogleOAuthProvider>
   );
 };

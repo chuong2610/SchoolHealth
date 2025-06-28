@@ -34,7 +34,7 @@ import {
   FaFilter,
   FaEye,
   FaCheck,
-  FaTags
+  FaTags,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
@@ -44,6 +44,7 @@ import {
   getNotifications,
   getHealthCheckNotifications,
   getVaccinationNotifications,
+  getNotificationsStatistics,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
 import PaginationBar from "../../components/common/PaginationBar";
@@ -117,7 +118,35 @@ export default function Notifications() {
   const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 1;
+  const pageSize = 5;
+  const [notificationStats, setNotificationStats] = useState({
+    totalNotification: 0,
+    pendingNotification: 0,
+    confirmedNotification: 0,
+    rejectedNotification: 0,
+  });
+  // Fetch notifications stats
+  const fetchNotificationsStats = async () => {
+    if (!user?.id) {
+      console.log("❌ No user ID found:", user);
+      return;
+    }
+
+    try {
+      const res = await getNotificationsStatistics(user.id);
+      console.log("📊 Notifications statistics:", stats);
+      if (res) {
+        setNotificationStats({
+          totalNotification: res.totalNotification || 0,
+          pendingNotification: res.pendingNotification || 0,
+          confirmedNotification: res.confirmedNotification || 0,
+          rejectedNotification: res.rejectedNotification || 0,
+        });
+      }
+    } catch (error) {
+      console.error("❌ Error fetching notifications statistics:", error);
+    }
+  };
 
   // Fetch notifications based on active tab
   const fetchNotifications = async () => {
@@ -176,6 +205,7 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
+    fetchNotificationsStats();
   }, [user?.id, activeTab, page, debouncedSearch]);
 
   const handlePageChange = (pageNumber) => {
@@ -189,10 +219,10 @@ export default function Notifications() {
 
   // Statistics
   const stats = {
-    total: notifications.length,
-    pending: notifications.filter((n) => n.status === "Pending").length,
-    confirmed: notifications.filter((n) => n.status === "Confirmed").length,
-    rejected: notifications.filter((n) => n.status === "Rejected").length,
+    total: notificationStats.totalNotification,
+    pending: notificationStats.pendingNotification,
+    confirmed: notificationStats.confirmedNotification,
+    rejected: notificationStats.rejectedNotification,
   };
 
   // Modal logic
@@ -209,8 +239,12 @@ export default function Notifications() {
 
       // Convert to numbers if they're strings
       const data = {
-        notificationId: typeof notificationId === 'string' ? parseInt(notificationId) : notificationId,
-        studentId: typeof studentId === 'string' ? parseInt(studentId) : studentId
+        notificationId:
+          typeof notificationId === "string"
+            ? parseInt(notificationId)
+            : notificationId,
+        studentId:
+          typeof studentId === "string" ? parseInt(studentId) : studentId,
       };
 
       console.log("📋 Processed data:", data);
@@ -258,7 +292,7 @@ export default function Notifications() {
             Theo dõi và phản hồi các thông báo quan trọng từ nhà trường
           </p>
           {/* Debug button */}
-          <Button
+          {/* <Button
             variant="outline-light"
             size="sm"
             onClick={() => {
@@ -271,366 +305,416 @@ export default function Notifications() {
             style={{ marginTop: "1rem" }}
           >
             🔍 Test API
-          </Button>
+          </Button> */}
         </div>
       </div>
-      <div style={{backgroundColor: 'rgb(255, 255, 255)', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
-      <Container>
-        {/* Statistics Cards */}
-        <Row className="mb-4 parent-animate-slide-in">
-          <Col md={3} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon">
-                <FaBell />
+      <div
+        style={{
+          backgroundColor: "rgb(255, 255, 255)",
+          padding: "1rem",
+          marginTop: "-2rem",
+          border: "1px solid #2563eb",
+          borderRadius: "10px",
+        }}
+      >
+        <Container>
+          {/* Statistics Cards */}
+          <Row className="mb-4 parent-animate-slide-in">
+            <Col md={3} className="mb-3">
+              <div className="parent-stat-card">
+                <div className="parent-stat-icon">
+                  <FaBell />
+                </div>
+                <div className="parent-stat-value">{stats.total}</div>
+                <div className="parent-stat-label">Tổng thông báo</div>
               </div>
-              <div className="parent-stat-value">{stats.total}</div>
-              <div className="parent-stat-label">Tổng thông báo</div>
-            </div>
-          </Col>
-          <Col md={3} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: '#F59E0B' }}>
-                <FaExclamationCircle />
+            </Col>
+            <Col md={3} className="mb-3">
+              <div className="parent-stat-card">
+                <div
+                  className="parent-stat-icon"
+                  style={{ background: "#F59E0B" }}
+                >
+                  <FaExclamationCircle />
+                </div>
+                <div className="parent-stat-value">{stats.pending}</div>
+                <div className="parent-stat-label">Chờ phản hồi</div>
               </div>
-              <div className="parent-stat-value">{stats.pending}</div>
-              <div className="parent-stat-label">Chờ phản hồi</div>
-            </div>
-          </Col>
-          <Col md={3} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: '#059669' }}>
-                <FaCheckCircle />
+            </Col>
+            <Col md={3} className="mb-3">
+              <div className="parent-stat-card">
+                <div
+                  className="parent-stat-icon"
+                  style={{ background: "#059669" }}
+                >
+                  <FaCheckCircle />
+                </div>
+                <div className="parent-stat-value">{stats.confirmed}</div>
+                <div className="parent-stat-label">Đã xác nhận</div>
               </div>
-              <div className="parent-stat-value">{stats.confirmed}</div>
-              <div className="parent-stat-label">Đã xác nhận</div>
-            </div>
-          </Col>
-          <Col md={3} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: '#dc2626' }}>
-                <FaTimesCircle />
+            </Col>
+            <Col md={3} className="mb-3">
+              <div className="parent-stat-card">
+                <div
+                  className="parent-stat-icon"
+                  style={{ background: "#dc2626" }}
+                >
+                  <FaTimesCircle />
+                </div>
+                <div className="parent-stat-value">{stats.rejected}</div>
+                <div className="parent-stat-label">Đã từ chối</div>
               </div>
-              <div className="parent-stat-value">{stats.rejected}</div>
-              <div className="parent-stat-label">Đã từ chối</div>
-            </div>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
 
-        {/* Main Content */}
-        <div className="parent-card parent-animate-scale-in">
-          <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
-            {/* Navigation Tabs */}
-            <div className="parent-card-header mb-4">
-              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <h3 className="parent-card-title">
-                  <FaFilter />
-                  Lọc thông báo
-                </h3>
-                <Nav variant="pills" className="d-flex">
-                  {tabList.map((tab) => (
-                    <Nav.Item key={tab.key}>
-                      <Nav.Link
-                        eventKey={tab.key}
-                        className="mx-1"
-                        onClick={() => setPage(1)}
-                        style={{
-                          background: activeTab === tab.key ? '#2563eb' : 'transparent',
-                          color: activeTab === tab.key ? 'white' : 'var(--parent-primary)',
-                          border: `2px solid ${activeTab === tab.key ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
-                          fontWeight: '600',
-                          borderRadius: 'var(--parent-border-radius-lg)',
-                          padding: '0.75rem 1.5rem',
-                          transition: 'all var(--parent-transition-normal)'
+          {/* Main Content */}
+          <div className="parent-card parent-animate-scale-in">
+            <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
+              {/* Navigation Tabs */}
+              <div className="parent-card-header mb-4">
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+                  <h3 className="parent-card-title">
+                    <FaFilter />
+                    Lọc thông báo
+                  </h3>
+                  <Nav variant="pills" className="d-flex">
+                    {tabList.map((tab) => (
+                      <Nav.Item key={tab.key}>
+                        <Nav.Link
+                          eventKey={tab.key}
+                          className="mx-1"
+                          onClick={() => setPage(1)}
+                          style={{
+                            background:
+                              activeTab === tab.key ? "#2563eb" : "transparent",
+                            color:
+                              activeTab === tab.key
+                                ? "white"
+                                : "var(--parent-primary)",
+                            border: `2px solid ${
+                              activeTab === tab.key
+                                ? "transparent"
+                                : "rgba(37, 99, 235, 0.2)"
+                            }`,
+                            fontWeight: "600",
+                            borderRadius: "var(--parent-border-radius-lg)",
+                            padding: "0.75rem 1.5rem",
+                            transition: "all var(--parent-transition-normal)",
+                          }}
+                        >
+                          {tab.label}
+                        </Nav.Link>
+                      </Nav.Item>
+                    ))}
+                  </Nav>
+                </div>
+              </div>
+
+              <Tab.Content>
+                {/* Search Section */}
+                <div className="parent-card-body mb-4">
+                  <Row>
+                    <Col md={8}>
+                      <Form.Group>
+                        <Form.Label className="parent-form-label">
+                          <FaSearch className="me-2" />
+                          Tìm kiếm thông báo
+                        </Form.Label>
+                        <div style={{ position: "relative" }}>
+                          <FaSearch
+                            style={{
+                              position: "absolute",
+                              left: "1rem",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              color: "var(--parent-primary)",
+                              zIndex: 2,
+                            }}
+                          />
+                          <Form.Control
+                            type="text"
+                            className=" "
+                            placeholder="      Tìm theo tiêu đề, nội dung thông báo..."
+                            value={search}
+                            onChange={(e) => {
+                              setSearch(e.target.value);
+                              setPage(1);
+                            }}
+                            style={{ paddingLeft: "2rem" }}
+                          />
+                        </div>
+                      </Form.Group>
+                    </Col>
+                    <Col md={4} className="d-flex align-items-end">
+                      <Button
+                        className="parent-secondary-btn w-100"
+                        onClick={() => {
+                          setSearch("");
+                          // setActiveTab("all"); // Optional: decide if you want to reset tab as well
                         }}
                       >
-                        {tab.label}
-                      </Nav.Link>
-                    </Nav.Item>
-                  ))}
-                </Nav>
-              </div>
-            </div>
+                        <FaTimes className="me-2" />
+                        Xóa bộ lọc
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
 
-            <Tab.Content>
-              {/* Search Section */}
-              <div className="parent-card-body mb-4">
-                <Row>
-                  <Col md={8}>
-                    <Form.Group>
-                      <Form.Label className="parent-form-label">
-                        <FaSearch className="me-2" />
-                        Tìm kiếm thông báo
-                      </Form.Label>
-                      <div style={{ position: "relative" }}>
-                        <FaSearch
-                          style={{
-                            position: "absolute",
-                            left: "1rem",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            color: "var(--parent-primary)",
-                            zIndex: 2,
-                          }}
-                        />
-                        <Form.Control
-                          type="text"
-                          className=" "
-                          placeholder="      Tìm theo tiêu đề, nội dung thông báo..."
-                          value={search}
-                          onChange={(e) => {
-                            setSearch(e.target.value);
-                            setPage(1);
-                          }}
-                          style={{ paddingLeft: '2rem' }}
-                        />
-                      </div>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4} className="d-flex align-items-end">
-                    <Button
-                      className="parent-secondary-btn w-100"
-                      onClick={() => {
-                        setSearch("");
-                        // setActiveTab("all"); // Optional: decide if you want to reset tab as well
+                {loading ? (
+                  <div className="text-center py-5">
+                    <div className="parent-spinner mb-3"></div>
+                    <h5
+                      style={{
+                        color: "var(--parent-primary)",
+                        fontWeight: "600",
                       }}
                     >
-                      <FaTimes className="me-2" />
-                      Xóa bộ lọc
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
-
-              {loading ? (
-                <div className="text-center py-5">
-                  <div className="parent-spinner mb-3"></div>
-                  <h5
-                    style={{
-                      color: "var(--parent-primary)",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Đang tải thông báo...
-                  </h5>
-                  <p className="text-muted">Vui lòng chờ trong giây lát</p>
-                </div>
-              ) : notifications.length === 0 ? (
-                <div className="text-center py-5">
-                  <div
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                      background: "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      margin: "0 auto 1.5rem",
-                      fontSize: "2rem",
-                      color: "#9ca3af",
-                    }}
-                  >
-                    <FaClipboardList />
+                      Đang tải thông báo...
+                    </h5>
+                    <p className="text-muted">Vui lòng chờ trong giây lát</p>
                   </div>
-                  <h5
-                    style={{
-                      color: "var(--parent-primary)",
-                      fontWeight: "700",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    Không có thông báo nào
-                  </h5>
-                  <p className="text-muted">
-                    {search
-                      ? "Không tìm thấy thông báo phù hợp với từ khóa tìm kiếm"
-                      : "Chưa có thông báo nào trong mục này"}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {/* Notifications Table */}
-                  <div className="parent-table-container">
-                    <table className="parent-table">
-                      <thead>
-                        <tr>
-                          <th className="text-center" style={{ width: "80px" }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
-                              <FaTags />
-                              Loại
-                            </div>
-                          </th>
-                          <th>
-                            <FaInfoCircle className="me-2" />
-                            Tiêu đề & Nội dung
-                          </th>
-                          <th className="text-center">
-                            <FaCalendarAlt className="me-2" />
-                            Ngày tạo
-                          </th>
-                          <th className="text-center">
-                            <FaUser className="me-2" />
-                            Học sinh
-                          </th>
-                          <th className="text-center">
-                            <FaCheckCircle className="me-2" />
-                            Trạng thái
-                          </th>
-                          <th className="text-center">
-                            <FaEye className="me-2" />
-                            Thao tác
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {notifications.map((notification, idx) => (
-                          <tr key={notification.id}>
-                            <td className="text-center">
-                              <div style={{
-                                width: '45px',
-                                height: '45px',
-                                borderRadius: '50%',
-                                background: notification.type === 'Vaccination'
-                                  ? 'linear-gradient(135deg,rgba(255, 255, 255, 0.63), #8b5cf6)'
-                                  : notification.type === 'HealthCheck'
-                                    ? 'linear-gradient(135deg,rgb(252, 253, 255), #60a5fa)'
-                                    : 'linear-gradient(135deg,rgb(222, 217, 235), #a78bfa)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto',
-                                fontSize: '1.25rem',
-                                color: 'white',
-                                boxShadow: 'var(--parent-shadow-sm)'
-                              }}>
-                                {icons[notification.type] || <FaBell />}
-                              </div>
-                            </td>
-                            <td>
-                              <div>
-                                <div
-                                  style={{
-                                    fontWeight: "700",
-                                    color: "var(--parent-primary)",
-                                    marginBottom: "0.25rem",
-                                    fontSize: "1rem",
-                                  }}
-                                >
-                                  {notification.title}
-                                </div>
-                                <div
-                                  style={{
-                                    color: "#6b7280",
-                                    fontSize: "0.875rem",
-                                    lineHeight: "1.4",
-                                  }}
-                                >
-                                  {notification.message?.length > 80
-                                    ? notification.message.substring(0, 80) +
-                                      "..."
-                                    : notification.message ||
-                                      "Không có nội dung"}
-                                </div>
-                              </div>
-                            </td>
-                            <td className="text-center">
+                ) : notifications.length === 0 ? (
+                  <div className="text-center py-5">
+                    <div
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        margin: "0 auto 1.5rem",
+                        fontSize: "2rem",
+                        color: "#9ca3af",
+                      }}
+                    >
+                      <FaClipboardList />
+                    </div>
+                    <h5
+                      style={{
+                        color: "var(--parent-primary)",
+                        fontWeight: "700",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      Không có thông báo nào
+                    </h5>
+                    <p className="text-muted">
+                      {search
+                        ? "Không tìm thấy thông báo phù hợp với từ khóa tìm kiếm"
+                        : "Chưa có thông báo nào trong mục này"}
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Notifications Table */}
+                    <div className="parent-table-container">
+                      <table className="parent-table">
+                        <thead>
+                          <tr>
+                            <th
+                              className="text-center"
+                              style={{ width: "80px" }}
+                            >
                               <div
-                                style={{ fontWeight: "500", color: "#374151" }}
-                              >
-                                {formatDateTime(notification.createdAt)}
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <div style={{
-                                fontWeight: '600',
-                                color: 'var(--parent-primary)',
-                                background: '#f8fafc',
-                                padding: '0.5rem',
-                                borderRadius: 'var(--parent-border-radius-md)',
-                                border: '1px solid rgba(37, 99, 235, 0.1)'
-                              }}>
-                                {notification.studentName || "---"}
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <Badge
-                                className={`status-badge ${notification.status === 'Confirmed' ? 'status-confirmed' :
-                                  notification.status === 'Rejected' ? 'status-rejected' : 'status-pending'
-                                  }`}
                                 style={{
-                                  padding: '0.5rem 1rem',
-                                  borderRadius: 'var(--parent-border-radius-lg)',
-                                  fontWeight: '600',
-                                  fontSize: '0.875rem',
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  gap: '0.5rem',
-                                  background: notification.status === 'Confirmed'
-                                    ? '#059669' :
-                                    notification.status === 'Rejected'
-                                      ? '#dc2626'
-                                      : '#F59E0B',
-                                  color: 'white',
-                                  border: 'none',
-                                  textTransform: 'uppercase',
-                                  letterSpacing: '0.5px',
-                                  boxShadow: 'var(--parent-shadow-sm)'
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "0.5rem",
                                 }}
                               >
-                                {notification.status === "Confirmed" && (
-                                  <FaCheckCircle />
-                                )}
-                                {notification.status === "Rejected" && (
-                                  <FaTimesCircle />
-                                )}
-                                {notification.status === "Pending" && (
-                                  <FaExclamationCircle />
-                                )}
-                                {notification.status === "Confirmed"
-                                  ? "Đã xác nhận"
-                                  : notification.status === "Rejected"
-                                  ? "Đã từ chối"
-                                  : "Chờ xác nhận"}
-                              </Badge>
-                            </td>
-                            <td className="text-center">
-                              <Button
-                                size="sm"
-                                className="parent-primary-btn"
-                                onClick={() =>
-                                  openModal(
-                                    notification.id,
-                                    notification.studentId
-                                  )
-                                }
-                                title="Xem chi tiết và phản hồi"
-                              >
-                                <FaEye className="me-1" />
-                                Chi tiết
-                              </Button>
-                            </td>
+                                <FaTags />
+                                Loại
+                              </div>
+                            </th>
+                            <th>
+                              <FaInfoCircle className="me-2" />
+                              Tiêu đề & Nội dung
+                            </th>
+                            <th className="text-center">
+                              <FaCalendarAlt className="me-2" />
+                              Ngày tạo
+                            </th>
+                            <th className="text-center">
+                              <FaUser className="me-2" />
+                              Học sinh
+                            </th>
+                            <th className="text-center">
+                              <FaCheckCircle className="me-2" />
+                              Trạng thái
+                            </th>
+                            <th className="text-center">
+                              <FaEye className="me-2" />
+                              Thao tác
+                            </th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="d-flex justify-content-center mt-4">
-                      <PaginationBar
-                        currentPage={page}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}
-                      />
+                        </thead>
+                        <tbody>
+                          {notifications.map((notification, idx) => (
+                            <tr key={idx}>
+                              <td className="text-center">
+                                <div
+                                  style={{
+                                    width: "45px",
+                                    height: "45px",
+                                    borderRadius: "50%",
+                                    background:
+                                      notification.type === "Vaccination"
+                                        ? "linear-gradient(135deg,rgba(255, 255, 255, 0.63), #8b5cf6)"
+                                        : notification.type === "HealthCheck"
+                                        ? "linear-gradient(135deg,rgb(252, 253, 255), #60a5fa)"
+                                        : "linear-gradient(135deg,rgb(222, 217, 235), #a78bfa)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    margin: "0 auto",
+                                    fontSize: "1.25rem",
+                                    color: "white",
+                                    boxShadow: "var(--parent-shadow-sm)",
+                                  }}
+                                >
+                                  {icons[notification.type] || <FaBell />}
+                                </div>
+                              </td>
+                              <td>
+                                <div>
+                                  <div
+                                    style={{
+                                      fontWeight: "700",
+                                      color: "var(--parent-primary)",
+                                      marginBottom: "0.25rem",
+                                      fontSize: "1rem",
+                                    }}
+                                  >
+                                    {notification.title}
+                                  </div>
+                                  <div
+                                    style={{
+                                      color: "#6b7280",
+                                      fontSize: "0.875rem",
+                                      lineHeight: "1.4",
+                                    }}
+                                  >
+                                    {notification.message?.length > 80
+                                      ? notification.message.substring(0, 80) +
+                                        "..."
+                                      : notification.message ||
+                                        "Không có nội dung"}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="text-center">
+                                <div
+                                  style={{
+                                    fontWeight: "500",
+                                    color: "#374151",
+                                  }}
+                                >
+                                  {formatDateTime(notification.createdAt)}
+                                </div>
+                              </td>
+                              <td className="text-center">
+                                <div
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "var(--parent-primary)",
+                                    background: "#f8fafc",
+                                    padding: "0.5rem",
+                                    borderRadius:
+                                      "var(--parent-border-radius-md)",
+                                    border: "1px solid rgba(37, 99, 235, 0.1)",
+                                  }}
+                                >
+                                  {notification.studentName || "---"}
+                                </div>
+                              </td>
+                              <td className="text-center">
+                                <Badge
+                                  className={`status-badge ${
+                                    notification.status === "Confirmed"
+                                      ? "status-confirmed"
+                                      : notification.status === "Rejected"
+                                      ? "status-rejected"
+                                      : "status-pending"
+                                  }`}
+                                  style={{
+                                    padding: "0.5rem 1rem",
+                                    borderRadius:
+                                      "var(--parent-border-radius-lg)",
+                                    fontWeight: "600",
+                                    fontSize: "0.875rem",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                    background:
+                                      notification.status === "Confirmed"
+                                        ? "#059669"
+                                        : notification.status === "Rejected"
+                                        ? "#dc2626"
+                                        : "#F59E0B",
+                                    color: "white",
+                                    border: "none",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
+                                    boxShadow: "var(--parent-shadow-sm)",
+                                  }}
+                                >
+                                  {notification.status === "Confirmed" && (
+                                    <FaCheckCircle />
+                                  )}
+                                  {notification.status === "Rejected" && (
+                                    <FaTimesCircle />
+                                  )}
+                                  {notification.status === "Pending" && (
+                                    <FaExclamationCircle />
+                                  )}
+                                  {notification.status === "Confirmed"
+                                    ? "Đã xác nhận"
+                                    : notification.status === "Rejected"
+                                    ? "Đã từ chối"
+                                    : "Chờ xác nhận"}
+                                </Badge>
+                              </td>
+                              <td className="text-center">
+                                <Button
+                                  size="sm"
+                                  className="parent-primary-btn"
+                                  onClick={() =>
+                                    openModal(
+                                      notification.id,
+                                      notification.studentId
+                                    )
+                                  }
+                                  title="Xem chi tiết và phản hồi"
+                                >
+                                  <FaEye className="me-1" />
+                                  Chi tiết
+                                </Button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  )}
-                </>
-              )}
-            </Tab.Content>
-          </Tab.Container>
-        </div>
-      </Container>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="d-flex justify-content-center mt-4">
+                        <PaginationBar
+                          currentPage={page}
+                          totalPages={totalPages}
+                          onPageChange={handlePageChange}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </Tab.Content>
+            </Tab.Container>
+          </div>
+        </Container>
       </div>
       {/* Detail Modal */}
       <Modal
@@ -650,24 +734,28 @@ export default function Notifications() {
           {modal.notification && (
             <div>
               {/* Notification Info */}
-              <div style={{
-                background: 'white',
-                padding: '1.5rem',
-                borderRadius: 'var(--parent-border-radius-lg)',
-                marginBottom: '1.5rem',
-                border: '1px solid rgba(37, 99, 235, 0.1)',
-                boxShadow: 'var(--parent-shadow-sm)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '3px',
-                  background: '#2563eb'
-                }}></div>
+              <div
+                style={{
+                  background: "white",
+                  padding: "1.5rem",
+                  borderRadius: "var(--parent-border-radius-lg)",
+                  marginBottom: "1.5rem",
+                  border: "1px solid rgba(37, 99, 235, 0.1)",
+                  boxShadow: "var(--parent-shadow-sm)",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "3px",
+                    background: "#2563eb",
+                  }}
+                ></div>
 
                 <h5
                   style={{
@@ -686,15 +774,20 @@ export default function Notifications() {
                         <FaCalendarAlt className="me-2" />
                         Ngày tạo:
                       </strong>
-                      <div style={{
-                        marginTop: '0.5rem',
-                        padding: '0.75rem',
-                        background: '#f8fafc',
-                        borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(37, 99, 235, 0.1)'
-                      }}>
-                        {modal.notification?.createdAt ?
-                          new Date(modal.notification.createdAt).toLocaleDateString("vi-VN") : "---"}
+                      <div
+                        style={{
+                          marginTop: "0.5rem",
+                          padding: "0.75rem",
+                          background: "#f8fafc",
+                          borderRadius: "var(--parent-border-radius-md)",
+                          border: "1px solid rgba(37, 99, 235, 0.1)",
+                        }}
+                      >
+                        {modal.notification?.createdAt
+                          ? new Date(
+                              modal.notification.createdAt
+                            ).toLocaleDateString("vi-VN")
+                          : "---"}
                       </div>
                     </div>
                     <div className="mb-3">
@@ -702,14 +795,16 @@ export default function Notifications() {
                         <FaUser className="me-2" />
                         Học sinh:
                       </strong>
-                      <div style={{
-                        marginTop: '0.5rem',
-                        padding: '0.75rem',
-                        background: '#f8fafc',
-                        borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(37, 99, 235, 0.1)',
-                        fontWeight: '600'
-                      }}>
+                      <div
+                        style={{
+                          marginTop: "0.5rem",
+                          padding: "0.75rem",
+                          background: "#f8fafc",
+                          borderRadius: "var(--parent-border-radius-md)",
+                          border: "1px solid rgba(37, 99, 235, 0.1)",
+                          fontWeight: "600",
+                        }}
+                      >
                         {modal.notification?.studentName || "---"}
                       </div>
                     </div>
@@ -720,13 +815,15 @@ export default function Notifications() {
                         <FaBuilding className="me-2" />
                         Địa điểm:
                       </strong>
-                      <div style={{
-                        marginTop: '0.5rem',
-                        padding: '0.75rem',
-                        background: '#f8fafc',
-                        borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(37, 99, 235, 0.1)'
-                      }}>
+                      <div
+                        style={{
+                          marginTop: "0.5rem",
+                          padding: "0.75rem",
+                          background: "#f8fafc",
+                          borderRadius: "var(--parent-border-radius-md)",
+                          border: "1px solid rgba(37, 99, 235, 0.1)",
+                        }}
+                      >
                         {modal.notification?.location || "---"}
                       </div>
                     </div>
@@ -734,14 +831,16 @@ export default function Notifications() {
                       <strong style={{ color: "var(--parent-primary)" }}>
                         <FaUserMd className="me-2" />Y tá phụ trách:
                       </strong>
-                      <div style={{
-                        marginTop: '0.5rem',
-                        padding: '0.75rem',
-                        background: '#f8fafc',
-                        borderRadius: 'var(--parent-border-radius-md)',
-                        border: '1px solid rgba(37, 99, 235, 0.1)',
-                        fontWeight: '600'
-                      }}>
+                      <div
+                        style={{
+                          marginTop: "0.5rem",
+                          padding: "0.75rem",
+                          background: "#f8fafc",
+                          borderRadius: "var(--parent-border-radius-md)",
+                          border: "1px solid rgba(37, 99, 235, 0.1)",
+                          fontWeight: "600",
+                        }}
+                      >
                         {modal.notification?.nurseName || "---"}
                       </div>
                     </div>
@@ -753,14 +852,16 @@ export default function Notifications() {
                     <FaInfoCircle className="me-2" />
                     Nội dung thông báo:
                   </strong>
-                  <div style={{
-                    marginTop: '0.5rem',
-                    padding: '1rem',
-                    background: '#f8fafc',
-                    borderRadius: 'var(--parent-border-radius-md)',
-                    lineHeight: '1.6',
-                    border: '1px solid rgba(37, 99, 235, 0.1)'
-                  }}>
+                  <div
+                    style={{
+                      marginTop: "0.5rem",
+                      padding: "1rem",
+                      background: "#f8fafc",
+                      borderRadius: "var(--parent-border-radius-md)",
+                      lineHeight: "1.6",
+                      border: "1px solid rgba(37, 99, 235, 0.1)",
+                    }}
+                  >
                     {modal.notification?.message || "Không có nội dung"}
                   </div>
                 </div>
@@ -771,14 +872,16 @@ export default function Notifications() {
                       <FaInfoCircle className="me-2" />
                       Ghi chú:
                     </strong>
-                    <div style={{
-                      marginTop: '0.5rem',
-                      padding: '1rem',
-                      background: '#f8fafc',
-                      borderRadius: 'var(--parent-border-radius-md)',
-                      lineHeight: '1.6',
-                      border: '1px solid rgba(37, 99, 235, 0.1)'
-                    }}>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        padding: "1rem",
+                        background: "#f8fafc",
+                        borderRadius: "var(--parent-border-radius-md)",
+                        lineHeight: "1.6",
+                        border: "1px solid rgba(37, 99, 235, 0.1)",
+                      }}
+                    >
                       {modal.notification?.note}
                     </div>
                   </div>
@@ -786,27 +889,32 @@ export default function Notifications() {
 
                 <div className="text-center mb-3">
                   <Badge
-                    className={`status-badge ${modal.notification?.status === 'Confirmed' ? 'status-confirmed' :
-                      modal.notification?.status === 'Rejected' ? 'status-rejected' : 'status-pending'
-                      }`}
+                    className={`status-badge ${
+                      modal.notification?.status === "Confirmed"
+                        ? "status-confirmed"
+                        : modal.notification?.status === "Rejected"
+                        ? "status-rejected"
+                        : "status-pending"
+                    }`}
                     style={{
-                      fontSize: '1rem',
-                      padding: '0.75rem 1.5rem',
-                      borderRadius: 'var(--parent-border-radius-lg)',
-                      fontWeight: '600',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      background: modal.notification?.status === 'Confirmed'
-                        ? '#059669' :
-                        modal.notification?.status === 'Rejected'
-                          ? '#dc2626'
-                          : '#F59E0B',
-                      color: 'white',
-                      border: 'none',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      boxShadow: 'var(--parent-shadow-md)'
+                      fontSize: "1rem",
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "var(--parent-border-radius-lg)",
+                      fontWeight: "600",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      background:
+                        modal.notification?.status === "Confirmed"
+                          ? "#059669"
+                          : modal.notification?.status === "Rejected"
+                          ? "#dc2626"
+                          : "#F59E0B",
+                      color: "white",
+                      border: "none",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      boxShadow: "var(--parent-shadow-md)",
                     }}
                   >
                     {modal.notification?.status === "Confirmed" && (
@@ -828,24 +936,29 @@ export default function Notifications() {
               </div>
 
               {/* Response Section */}
-              {(modal.notification?.status === "Pending" || modal.notification?.status === "Chờ xác nhận") && (
-                <div style={{
-                  background: 'white',
-                  padding: '1.5rem',
-                  borderRadius: 'var(--parent-border-radius-lg)',
-                  border: '1px solid rgba(37, 99, 235, 0.1)',
-                  boxShadow: 'var(--parent-shadow-sm)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: '#60A5FA'
-                  }}></div>
+              {(modal.notification?.status === "Pending" ||
+                modal.notification?.status === "Chờ xác nhận") && (
+                <div
+                  style={{
+                    background: "white",
+                    padding: "1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    border: "1px solid rgba(37, 99, 235, 0.1)",
+                    boxShadow: "var(--parent-shadow-sm)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#60A5FA",
+                    }}
+                  ></div>
 
                   <h6
                     style={{
@@ -898,24 +1011,24 @@ export default function Notifications() {
                 <Button
                   className="btn-danger"
                   style={{
-                    background: '#dc2626',
-                    border: 'none',
-                    color: 'white',
-                    fontWeight: '600',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: 'var(--parent-border-radius-lg)',
-                    transition: 'all var(--parent-transition-normal)'
+                    background: "#dc2626",
+                    border: "none",
+                    color: "white",
+                    fontWeight: "600",
+                    padding: "0.75rem 1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    transition: "all var(--parent-transition-normal)",
                   }}
                   onClick={() => handleSubmitConsent(false, "Rejected", reason)}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = 'var(--parent-shadow-md)';
-                    e.target.style.background = '#b91c1c';
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "var(--parent-shadow-md)";
+                    e.target.style.background = "#b91c1c";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                    e.target.style.background = '#dc2626';
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                    e.target.style.background = "#dc2626";
                   }}
                 >
                   <FaTimesCircle className="me-1" />
@@ -924,24 +1037,24 @@ export default function Notifications() {
                 <Button
                   className="btn-success"
                   style={{
-                    background: '#059669',
-                    border: 'none',
-                    color: 'white',
-                    fontWeight: '600',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: 'var(--parent-border-radius-lg)',
-                    transition: 'all var(--parent-transition-normal)'
+                    background: "#059669",
+                    border: "none",
+                    color: "white",
+                    fontWeight: "600",
+                    padding: "0.75rem 1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    transition: "all var(--parent-transition-normal)",
                   }}
                   onClick={() => handleSubmitConsent(true, "Confirmed", reason)}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = 'var(--parent-shadow-md)';
-                    e.target.style.background = '#047857';
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "var(--parent-shadow-md)";
+                    e.target.style.background = "#047857";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                    e.target.style.background = '#059669';
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                    e.target.style.background = "#059669";
                   }}
                 >
                   <FaCheckCircle className="me-1" />

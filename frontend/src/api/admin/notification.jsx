@@ -44,10 +44,10 @@ export const getNurseList = async () => {
   }
 };
 
-export const getNotifications = async (pageNumber = 1, pageSize = 10) => {
+export const getNotifications = async (pageNumber = 1, pageSize = 10, search) => {
   try {
     const res = await axiosInstance.get(
-      `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}` + (search ? `&search=${search}` : "")
     );
     if (res.data) {
       return res.data;
@@ -75,10 +75,11 @@ export const postNotification = async (notificationData) => {
   }
 };
 
-export const getNotificationDetail = async (notificationId) => {
+export const getNotificationDetail = async (notificationId, pageNumber = 1, pageSize = 10) => {
   try {
     const res = await axiosInstance.get(
-      `/Notification/admin/${notificationId}`
+      // `/Notification/admin/${notificationId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+      `/Notification/admin/${notificationId}?pageNumber=1&pageSize=1000`
     );
     if (res.data.success === true) {
       return res.data.data;
@@ -112,6 +113,22 @@ export const getVaccinationResultDeltail = async (vaccinationId) => {
       return {};
     }
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getNotiManagementStats = async () => {
+  try {
+    const res = await axiosInstance.get(
+      "/Notification/notification-admin-count"
+    );
+    if (res.data.success) {
+      return res.data.data;
+    } else {
+      console.log("Loi getNotiManagementStats", res.data.message);
+    }
+  } catch (error) {
+    console.log("error getNotiManagementStats", error);
     throw error;
   }
 };

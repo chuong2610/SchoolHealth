@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
-import { Modal, Button, Form, Table, Badge, Alert, Tabs, Tab } from "react-bootstrap";
-import CalendarClockIcon from '../../assets/calendar-clock-time-svgrepo-com.svg';
-import done from '../../assets/deal-done-partnership-agreement-svgrepo-com.svg';
-import using from '../../assets/clock-watch-svgrepo-com.svg';
-import waiting from '../../assets/wait-hourglass-svgrepo-com.svg';
+import {
+  Modal,
+  Button,
+  Form,
+  Table,
+  Badge,
+  Alert,
+  Tabs,
+  Tab,
+} from "react-bootstrap";
+import CalendarClockIcon from "../../assets/calendar-clock-time-svgrepo-com.svg";
+import done from "../../assets/deal-done-partnership-agreement-svgrepo-com.svg";
+import using from "../../assets/clock-watch-svgrepo-com.svg";
+import waiting from "../../assets/wait-hourglass-svgrepo-com.svg";
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -37,6 +46,7 @@ import {
   FaHistory,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
+import { getMedicineStatistics } from "../../api/nurse/ReceiveMedicineApi";
 // CSS được import tự động từ main.jsx
 
 const ReceiveMedicine = () => {
@@ -56,6 +66,7 @@ const ReceiveMedicine = () => {
   const [activeShowAll, setActiveShowAll] = useState(false);
   const [completedShowAll, setCompletedShowAll] = useState(false);
   const [activeTab, setActiveTab] = useState("pending");
+  const scrollPosition = useRef(0);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -69,28 +80,68 @@ const ReceiveMedicine = () => {
   const [visibleRows, setVisibleRows] = useState({
     pending: true,
     active: true,
-    completed: true
+    completed: true,
   });
   const ROW_LIMIT = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
-  const pageSize = 1;
+  const pageSize = 5;
+  const [ReceiveMedicineStatistics, setReceiveMedicineStatistics] = useState({
+    totalPending: 0,
+    totalActive: 0,
+    totalCompleted: 0,
+    totalToday: 0,
+  });
+
+  const fetchMedicineStatistics = async () => {
+    if (!user?.id) return;
+
+    try {
+      const res = await getMedicineStatistics(user?.id);
+      if (res) {
+        setReceiveMedicineStatistics({
+          totalPending: res.pendingMedication || 0,
+          totalActive: res.activeMedication || 0,
+          totalCompleted: res.completedMedication || 0,
+          totalToday: res.medicationInToday || 0,
+        });
+      } else {
+        setReceiveMedicineStatistics({
+          totalPending: 0,
+          totalActive: 0,
+          totalCompleted: 0,
+          totalToday: 0,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      setReceiveMedicineStatistics({
+        totalPending: 0,
+        totalActive: 0,
+        totalCompleted: 0,
+        totalToday: 0,
+      });
+    }
+  };
 
   const handlePageChange = (pageNumber) => {
     // setLoading(true);
     // fetchActive(pageNumber);
-    if (pageNumber >= 1 && pageNumber <= totalPages) return;
+    if (pageNumber < 1 || pageNumber > totalPages) return;
     setCurrentPage(pageNumber);
   };
 
   // Fetch danh sách đơn thuốc chờ xác nhận
   const fetchPending = async () => {
     try {
-      const res = await axiosInstance.get(`/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`);
+      const res = await axiosInstance.get(
+        `/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` +
+          `${search ? `&search=${search}` : ""}`
+      );
       const data = res.data;
       setPendingRequests(
-        (data.data || []).map((item) => {
+        (data.data.items || []).map((item) => {
           const med =
             item.medications && item.medications[0] ? item.medications[0] : {};
           return {
@@ -106,9 +157,7 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if (data.data.totalPages) {
-        setTotalPages(data.data.totalPages);
-      }
+      setTotalPages(data.data.totalPages || 1);
     } catch (error) {
       showNotification("Failed to load pending medication requests!", "error");
     }
@@ -119,7 +168,8 @@ const ReceiveMedicine = () => {
     if (!nurseId) return;
     try {
       const res = await axiosInstance.get(
-        `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`
+        `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` +
+          `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setActiveRequests(
@@ -137,10 +187,7 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if (data.data.totalPages) {
-        setTotalPages(data.data.totalPages);
-      }
-
+      setTotalPages(data.data.totalPages || 1);
     } catch (error) {
       showNotification("Failed to load active medication requests!", "error");
     }
@@ -151,11 +198,12 @@ const ReceiveMedicine = () => {
     if (!nurseId) return;
     try {
       const res = await axiosInstance.get(
-        `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` + `${search ? `&search=${search}` : ""}`
+        `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` +
+          `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setCompletedRequests(
-        (data.data || []).map((item) => {
+        (data.data.items || []).map((item) => {
           const med =
             item.medications && item.medications[0] ? item.medications[0] : {};
           return {
@@ -169,9 +217,8 @@ const ReceiveMedicine = () => {
           };
         })
       );
-      if (data.data.totalPages) {
-        setTotalPages(data.data.totalPages);
-      }
+
+      setTotalPages(data.data.totalPages || 1);
     } catch (error) {
       showNotification(
         "Failed to load completed medication requests!",
@@ -196,7 +243,15 @@ const ReceiveMedicine = () => {
     const loadData = async () => {
       setLoading(true);
       try {
-        await Promise.all([fetchPending(), fetchActive(), fetchCompleted()]);
+        if (activeTab === "pending") {
+          await fetchPending();
+        }
+        if (activeTab === "active") {
+          await fetchActive();
+        }
+        if (activeTab === "completed") {
+          await fetchCompleted();
+        }
       } catch (error) {
         showNotification("Có lỗi khi tải dữ liệu!", "error");
       } finally {
@@ -204,7 +259,9 @@ const ReceiveMedicine = () => {
       }
     };
     loadData();
-  }, [nurseId, currentPage, debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchMedicineStatistics();
+    window.scrollTo({ top: scrollPosition.current });
+  }, [nurseId, activeTab, currentPage, debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Show notification
   const showNotification = (message, type = "success") => {
@@ -216,7 +273,15 @@ const ReceiveMedicine = () => {
   const exportToExcel = (data, filename) => {
     try {
       // Create CSV content
-      const headers = ["Mã đơn", "Lớp", "Học sinh", "Loại thuốc", "Liều lượng", "Ngày", "Trạng thái"];
+      const headers = [
+        "Mã đơn",
+        "Lớp",
+        "Học sinh",
+        "Loại thuốc",
+        "Liều lượng",
+        "Ngày",
+        "Trạng thái",
+      ];
       const csvContent = [
         headers.join(","),
         ...data.map((row) =>
@@ -231,8 +296,8 @@ const ReceiveMedicine = () => {
             activeTab === "pending"
               ? "Chờ xác nhận"
               : activeTab === "active"
-                ? "Đang sử dụng"
-                : "Đã hoàn thành",
+              ? "Đang sử dụng"
+              : "Đã hoàn thành",
           ].join(",")
         ),
       ].join("\n");
@@ -316,9 +381,15 @@ const ReceiveMedicine = () => {
     try {
       const response = await axiosInstance.patch("/Medication", body);
 
-      await fetchPending();
-      await fetchActive();
-      await fetchCompleted();
+      if (type === "pending") {
+        await fetchPending();
+      }
+      if (type === "active") {
+        await fetchActive();
+      }
+      if (type === "completed") {
+        await fetchCompleted();
+      }
 
       showNotification(
         type === "pending"
@@ -326,6 +397,7 @@ const ReceiveMedicine = () => {
           : "Đã hoàn thành việc cho học sinh uống thuốc!",
         "success"
       );
+      fetchMedicineStatistics();
     } catch (error) {
       showNotification(error.message || "Có lỗi xảy ra khi xác nhận!", "error");
     }
@@ -358,9 +430,7 @@ const ReceiveMedicine = () => {
           .includes(search.toLowerCase()) ||
         (r.student || "").toLowerCase().includes(search.toLowerCase()) ||
         (r.parent || "").toLowerCase().includes(search.toLowerCase()) ||
-        (r.medicine || "")
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
+        (r.medicine || "").toLowerCase().includes(search.toLowerCase()) ||
         (r.dosage || "").toLowerCase().includes(search.toLowerCase()) ||
         (r.date || "").toLowerCase().includes(search.toLowerCase())
     )
@@ -387,15 +457,9 @@ const ReceiveMedicine = () => {
         (r.studentClassName || "")
           .toLowerCase()
           .includes(search.toLowerCase()) ||
-        (r.student || "")
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        (r.medicine || "")
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        (r.dosage || "")
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
+        (r.student || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.medicine || "").toLowerCase().includes(search.toLowerCase()) ||
+        (r.dosage || "").toLowerCase().includes(search.toLowerCase()) ||
         (r.date || "").toLowerCase().includes(search.toLowerCase())
     )
   );
@@ -449,30 +513,30 @@ const ReceiveMedicine = () => {
         onClick={() => setModalDetail({ type, data: req })}
         title="Xem chi tiết"
         style={{
-          background: '#F06292',
-          border: '1px solid #F06292',
-          color: 'white',
-          width: '30px',
-          height: '30px',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
-          outline: 'none'
+          background: "#F06292",
+          border: "1px solid #F06292",
+          color: "white",
+          width: "30px",
+          height: "30px",
+          borderRadius: "8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          boxShadow: "0 2px 6px rgba(240, 98, 146, 0.25)",
+          outline: "none",
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = '#E91E63';
-          e.target.style.transform = 'scale(1.05)';
-          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
+          e.target.style.background = "#E91E63";
+          e.target.style.transform = "scale(1.05)";
+          e.target.style.boxShadow = "0 3px 10px rgba(240, 98, 146, 0.35)";
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = '#F06292';
-          e.target.style.transform = 'scale(1)';
-          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
+          e.target.style.background = "#F06292";
+          e.target.style.transform = "scale(1)";
+          e.target.style.boxShadow = "0 2px 6px rgba(240, 98, 146, 0.25)";
         }}
       >
         <FaEye />
@@ -481,33 +545,35 @@ const ReceiveMedicine = () => {
         <>
           <button
             className="btn-action confirm"
-            onClick={() => handleConfirm(req, "pending", "")}
+            onClick={() => {
+              handleConfirm(req, "pending", "");
+            }}
             title="Xác nhận nhận thuốc"
             style={{
-              background: '#81C784',
-              border: '1px solid #81C784',
-              color: 'white',
-              width: '30px',
-              height: '30px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 6px rgba(129, 199, 132, 0.25)',
-              outline: 'none'
+              background: "#81C784",
+              border: "1px solid #81C784",
+              color: "white",
+              width: "30px",
+              height: "30px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "12px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 6px rgba(129, 199, 132, 0.25)",
+              outline: "none",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#66BB6A';
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 3px 10px rgba(129, 199, 132, 0.35)';
+              e.target.style.background = "#66BB6A";
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 3px 10px rgba(129, 199, 132, 0.35)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#81C784';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 6px rgba(129, 199, 132, 0.25)';
+              e.target.style.background = "#81C784";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 6px rgba(129, 199, 132, 0.25)";
             }}
           >
             <FaCheckCircle />
@@ -517,30 +583,30 @@ const ReceiveMedicine = () => {
             onClick={() => handleReject(req)}
             title="Từ chối"
             style={{
-              background: '#E57373',
-              border: '1px solid #E57373',
-              color: 'white',
-              width: '30px',
-              height: '30px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 2px 6px rgba(229, 115, 115, 0.25)',
-              outline: 'none'
+              background: "#E57373",
+              border: "1px solid #E57373",
+              color: "white",
+              width: "30px",
+              height: "30px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "12px",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 6px rgba(229, 115, 115, 0.25)",
+              outline: "none",
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#EF5350';
-              e.target.style.transform = 'scale(1.05)';
-              e.target.style.boxShadow = '0 3px 10px rgba(229, 115, 115, 0.35)';
+              e.target.style.background = "#EF5350";
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 3px 10px rgba(229, 115, 115, 0.35)";
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#E57373';
-              e.target.style.transform = 'scale(1)';
-              e.target.style.boxShadow = '0 2px 6px rgba(229, 115, 115, 0.25)';
+              e.target.style.background = "#E57373";
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "0 2px 6px rgba(229, 115, 115, 0.25)";
             }}
           >
             <FaTimesCircle />
@@ -553,30 +619,30 @@ const ReceiveMedicine = () => {
           onClick={() => handleConfirm(req, "active", "")}
           title="Hoàn thành sử dụng thuốc"
           style={{
-            background: '#81C784',
-            border: '1px solid #81C784',
-            color: 'white',
-            width: '30px',
-            height: '30px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '12px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 6px rgba(129, 199, 132, 0.25)',
-            outline: 'none'
+            background: "#81C784",
+            border: "1px solid #81C784",
+            color: "white",
+            width: "30px",
+            height: "30px",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            boxShadow: "0 2px 6px rgba(129, 199, 132, 0.25)",
+            outline: "none",
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = '#66BB6A';
-            e.target.style.transform = 'scale(1.05)';
-            e.target.style.boxShadow = '0 3px 10px rgba(129, 199, 132, 0.35)';
+            e.target.style.background = "#66BB6A";
+            e.target.style.transform = "scale(1.05)";
+            e.target.style.boxShadow = "0 3px 10px rgba(129, 199, 132, 0.35)";
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = '#81C784';
-            e.target.style.transform = 'scale(1)';
-            e.target.style.boxShadow = '0 2px 6px rgba(129, 199, 132, 0.25)';
+            e.target.style.background = "#81C784";
+            e.target.style.transform = "scale(1)";
+            e.target.style.boxShadow = "0 2px 6px rgba(129, 199, 132, 0.25)";
           }}
         >
           <FaCheckDouble />
@@ -610,11 +676,11 @@ const ReceiveMedicine = () => {
           <div className="action-buttons">
             <Button
               style={{
-                width: '100px',
-                height: '40px',
-                borderRadius: '8px',
-                fontSize: '1.2rem',
-                fontWeight: '600',
+                width: "100px",
+                height: "40px",
+                borderRadius: "8px",
+                fontSize: "1.2rem",
+                fontWeight: "600",
               }}
               variant="outline-secondary"
               className="filter-btn"
@@ -622,13 +688,13 @@ const ReceiveMedicine = () => {
             >
               <FaFilter /> Lọc
             </Button>
-            <Button
+            {/* <Button
               style={{
-                width: '100px',
-                height: '40px',
-                borderRadius: '8px',
-                fontSize: '1.2rem',
-                fontWeight: '600',
+                width: "100px",
+                height: "40px",
+                borderRadius: "8px",
+                fontSize: "1.2rem",
+                fontWeight: "600",
               }}
               variant="outline-success"
               className="export-btn"
@@ -637,13 +703,13 @@ const ReceiveMedicine = () => {
                   type === "pending"
                     ? "don-thuoc-cho-xac-nhan"
                     : type === "active"
-                      ? "don-thuoc-dang-su-dung"
-                      : "don-thuoc-hoan-thanh";
+                    ? "don-thuoc-dang-su-dung"
+                    : "don-thuoc-hoan-thanh";
                 exportToExcel(data, filename);
               }}
             >
               <FaDownload /> Xuất Excel
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
@@ -662,52 +728,99 @@ const ReceiveMedicine = () => {
         >
           <thead>
             <tr>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Mã đơn</th>
-              <th style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}>Lớp</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Học sinh</th>
+              <th
+                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
+              >
+                Mã đơn
+              </th>
+              {/* <th style={{ width: "80px", minWidth: "80px", maxWidth: "80px" }}>
+                Lớp
+              </th> */}
+              <th
+                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
+              >
+                Học sinh
+              </th>
               {/* {type === "pending" && <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Phụ huynh</th>} */}
-              <th style={{ width: type === "pending" ? '150px' : '180px', minWidth: type === "pending" ? '150px' : '180px', maxWidth: type === "pending" ? '150px' : '180px' }}>Loại thuốc</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Liều lượng</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Ngày</th>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Thao tác</th>
+              <th
+                style={{
+                  width: type === "pending" ? "150px" : "180px",
+                  minWidth: type === "pending" ? "150px" : "180px",
+                  maxWidth: type === "pending" ? "150px" : "180px",
+                }}
+              >
+                Loại thuốc
+              </th>
+              <th
+                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
+              >
+                Liều lượng
+              </th>
+              <th
+                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
+              >
+                Ngày
+              </th>
+              <th
+                style={{ width: "150px", minWidth: "150px", maxWidth: "150px" }}
+              >
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
-            {(showAll ? data : data.slice(0, ROW_LIMIT)).map((req, index) => (
+            {data.map((req, index) => (
               <tr
                 key={req.id || `req-${index}`}
                 className="table-row"
-                style={{}}>
-                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-                  <div className="medicine-id" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-
-                  }}>
-                    #{req.id || 'N/A'}
+                style={{}}
+              >
+                <td
+                  style={{
+                    width: "100px",
+                    minWidth: "100px",
+                    maxWidth: "100px",
+                  }}
+                >
+                  <div
+                    className="medicine-id"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
+                    #{req.id || "N/A"}
                   </div>
                 </td>
-                <td style={{
-                  width: '80px', minWidth: '80px', maxWidth: '80px', fontSize: '1.9rem',
-                  fontWeight: '700',
-                  color: '#111827',
-                  lineHeight: '4.4',
-                }}>
-                  {/* <Badge bg="" className="class-badge"> */}
-                  {req.studentClassName || 'N/A'}
-                  {/* </Badge> */}
-                </td>
-                <td style={{
-                  width: '120px', minWidth: '120px', maxWidth: '120px', fontSize: '1.2rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  lineHeight: '1.4',
-                }}>
-                  <div className="student-info">
-                    {req.student || 'N/A'}
-                  </div>
+                {/* <td
+                  style={{
+                    width: "80px",
+                    minWidth: "80px",
+                    maxWidth: "80px",
+                    fontSize: "1.9rem",
+                    fontWeight: "700",
+                    color: "#111827",
+                    lineHeight: "4.4",
+                  }}
+                >
+                  <Badge bg="" className="class-badge">
+                  {req.studentName || "N/A"}
+                  </Badge> 
+                </td> */}
+                <td
+                  style={{
+                    width: "120px",
+                    minWidth: "120px",
+                    maxWidth: "120px",
+                    fontSize: "1.2rem",
+                    fontWeight: "600",
+                    color: "#111827",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  <div className="student-info">{req.student || "N/A"}</div>
                 </td>
                 {/* {type === "pending" && (
                   <td style={{
@@ -721,7 +834,13 @@ const ReceiveMedicine = () => {
                     </div>
                   </td>
                 )} */}
-                <td style={{ width: type === "pending" ? '150px' : '180px', minWidth: type === "pending" ? '150px' : '180px', maxWidth: type === "pending" ? '150px' : '180px' }}>
+                <td
+                  style={{
+                    width: type === "pending" ? "150px" : "180px",
+                    minWidth: type === "pending" ? "150px" : "180px",
+                    maxWidth: type === "pending" ? "150px" : "180px",
+                  }}
+                >
                   <div className="medicine-info">
                     <strong>{req.medicine || "N/A"}</strong>
                   </div>
@@ -737,12 +856,17 @@ const ReceiveMedicine = () => {
                     {req.dosage || "N/A"}
                   </Badge>
                 </td>
-                <td style={{
-                  width: '100px', minWidth: '100px', maxWidth: '100px', fontSize: '1.2rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  lineHeight: '1.4',
-                }}>
+                <td
+                  style={{
+                    width: "100px",
+                    minWidth: "100px",
+                    maxWidth: "100px",
+                    fontSize: "1.2rem",
+                    fontWeight: "600",
+                    color: "#111827",
+                    lineHeight: "1.4",
+                  }}
+                >
                   <div className="date-info">
                     <FaCalendarAlt className="date-icon" />
                     {req.date || "N/A"}
@@ -812,31 +936,39 @@ const ReceiveMedicine = () => {
       )}
 
       {/* Page Header */}
-      <div className="page-header" style={{
-        backgroundColor: '#F06292',
-        padding: '20px 0',
-        borderRadius: '10px',
-        marginBottom: '20px'
-      }}  >
+      <div
+        className="page-header"
+        style={{
+          backgroundColor: "#F06292",
+          padding: "20px 0",
+          borderRadius: "10px",
+          marginBottom: "20px",
+        }}
+      >
         <div className="header-content">
           <div className="header-left">
-            <div className="page-title" style={{
-              fontSize: '2.5rem',
-              fontWeight: '700',
-              color: 'rgb(255, 255, 255)',
-              lineHeight: '1.4',
-              textAlign: 'center'
-            }}>
+            <div
+              className="page-title"
+              style={{
+                fontSize: "2.5rem",
+                fontWeight: "700",
+                color: "rgb(255, 255, 255)",
+                lineHeight: "1.4",
+                textAlign: "center",
+              }}
+            >
               <FaStethoscope className="page-icon" />
               <h1>Quản lý Thuốc Y tế</h1>
             </div>
-            <p style={{
-              fontSize: '1.2rem',
-              fontWeight: '600',
-              color: 'rgb(255, 255, 255)',
-              lineHeight: '1.4',
-              textAlign: 'center'
-            }}>
+            <p
+              style={{
+                fontSize: "1.2rem",
+                fontWeight: "600",
+                color: "rgb(255, 255, 255)",
+                lineHeight: "1.4",
+                textAlign: "center",
+              }}
+            >
               Theo dõi và xử lý các đơn thuốc từ phụ huynh
             </p>
           </div>
@@ -847,35 +979,61 @@ const ReceiveMedicine = () => {
       <div className="nurse-medicine-stats">
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={waiting} alt="Waiting" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img
+              src={waiting}
+              alt="Waiting"
+              className="tab-icon"
+              style={{ width: "55px", height: "55px" }}
+            />
           </div>
           <div className="nurse-medicine-stat-label">Yêu cầu chờ duyệt</div>
-          <div className="nurse-medicine-stat-value">{pendingRequests.length}</div>
-
+          <div className="nurse-medicine-stat-value">
+            {ReceiveMedicineStatistics.totalPending}
+          </div>
         </div>
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={using} alt="Using" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img
+              src={using}
+              alt="Using"
+              className="tab-icon"
+              style={{ width: "55px", height: "55px" }}
+            />
           </div>
           <div className="nurse-medicine-stat-label">Đang sử dụng thuốc</div>
-          <div className="nurse-medicine-stat-value">{activeRequests.length}</div>
+          <div className="nurse-medicine-stat-value">
+            {ReceiveMedicineStatistics.totalActive}
+          </div>
         </div>
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={done} alt="Done" className="tab-icon" style={{ width: '55px', height: '55px' }} />
+            <img
+              src={done}
+              alt="Done"
+              className="tab-icon"
+              style={{ width: "55px", height: "55px" }}
+            />
           </div>
           <div className="nurse-medicine-stat-label">Đã hoàn thành</div>
-          <div className="nurse-medicine-stat-value">{completedRequests.length}</div>
+          <div className="nurse-medicine-stat-value">
+            {ReceiveMedicineStatistics.totalCompleted}
+          </div>
         </div>
 
         <div className="nurse-medicine-stat-card">
           <div className="nurse-medicine-stat-icon">
-            <img src={CalendarClockIcon} alt="Calendar Clock" style={{ width: '55px', height: '55px' }} />
+            <img
+              src={CalendarClockIcon}
+              alt="Calendar Clock"
+              style={{ width: "55px", height: "55px" }}
+            />
           </div>
           <div className="nurse-medicine-stat-label">Yêu cầu hôm nay</div>
-          <div className="nurse-medicine-stat-value">{totalToday}</div>
+          <div className="nurse-medicine-stat-value">
+            {ReceiveMedicineStatistics.totalToday}
+          </div>
         </div>
       </div>
 
@@ -893,6 +1051,8 @@ const ReceiveMedicine = () => {
               onSelect={(key) => {
                 setActiveTab(key);
                 setCurrentPage(1);
+                // Giữ nguyên vị trí scroll
+                scrollPosition.current = window.scrollY;
               }}
               className="medicine-tabs"
             >
@@ -902,15 +1062,16 @@ const ReceiveMedicine = () => {
                   <div className="tab-title pending">
                     <FaExclamationTriangle className="tab-icon" />
                     <span>Chờ xác nhận</span>
-                    <Badge bg="warning" className="tab-badge">
+                    {/* <Badge bg="warning" className="tab-badge">
                       {totalPending}
-                    </Badge>
+                    </Badge> */}
                   </div>
                 }
               >
                 <div className="tab-content">
                   {renderTable(
-                    filteredPending,
+                    // filteredPending,
+                    pendingRequests,
                     "pending",
                     search,
                     setSearch,
@@ -926,15 +1087,16 @@ const ReceiveMedicine = () => {
                   <div className="tab-title active">
                     <FaClock className="tab-icon" />
                     <span>Đang sử dụng</span>
-                    <Badge bg="info" className="tab-badge">
+                    {/* <Badge bg="info" className="tab-badge">
                       {totalActive}
-                    </Badge>
+                    </Badge> */}
                   </div>
                 }
               >
                 <div className="tab-content">
                   {renderTable(
-                    filteredActive,
+                    // filteredActive,
+                    activeRequests,
                     "active",
                     search,
                     setSearch,
@@ -950,15 +1112,16 @@ const ReceiveMedicine = () => {
                   <div className="tab-title completed">
                     <FaCheckCircle className="tab-icon" />
                     <span>Đã hoàn thành</span>
-                    <Badge bg="success" className="tab-badge">
+                    {/* <Badge bg="success" className="tab-badge">
                       {totalCompleted}
-                    </Badge>
+                    </Badge> */}
                   </div>
                 }
               >
                 <div className="tab-content">
                   {renderTable(
-                    filteredCompleted,
+                    // filteredCompleted,
+                    completedRequests,
                     "completed",
                     search,
                     setSearch,
@@ -971,11 +1134,13 @@ const ReceiveMedicine = () => {
             {console.log("Currentpage", currentPage)}
             {console.log("Totalpages", totalPages)}
 
-            <PaginationBar
-              currentPages={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {totalPages > 1 && (
+              <PaginationBar
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </div>
@@ -1016,11 +1181,20 @@ const ReceiveMedicine = () => {
             </div>
             {detailData && (
               <div className="status-indicator">
-                <div className={`status-badge-enhanced ${detailData.status === "Pending" ? "pending" :
-                  detailData.status === "Active" ? "active" : "completed"
-                  }`}>
-                  {detailData.status === "Pending" ? "⏳ Chờ xác nhận" :
-                    detailData.status === "Active" ? "🔄 Đang sử dụng" : "✅ Đã hoàn thành"}
+                <div
+                  className={`status-badge-enhanced ${
+                    detailData.status === "Pending"
+                      ? "pending"
+                      : detailData.status === "Active"
+                      ? "active"
+                      : "completed"
+                  }`}
+                >
+                  {detailData.status === "Pending"
+                    ? "⏳ Chờ xác nhận"
+                    : detailData.status === "Active"
+                    ? "🔄 Đang sử dụng"
+                    : "✅ Đã hoàn thành"}
                 </div>
               </div>
             )}
@@ -1067,12 +1241,15 @@ const ReceiveMedicine = () => {
                         Ngày tạo đơn
                       </label>
                       <div className="info-value">
-                        {new Date(detailData.createdDate).toLocaleDateString('vi-VN', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
+                        {new Date(detailData.createdDate).toLocaleDateString(
+                          "vi-VN",
+                          {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
                       </div>
                     </div>
                     <div className="info-item">
@@ -1106,7 +1283,9 @@ const ReceiveMedicine = () => {
                         <FaGraduationCap />
                         Lớp học
                       </label>
-                      <div className="info-value">{detailData.studentClass}</div>
+                      <div className="info-value">
+                        {detailData.studentClass}
+                      </div>
                     </div>
                     <div className="info-item">
                       <label>
@@ -1125,7 +1304,8 @@ const ReceiveMedicine = () => {
                     Thông tin thuốc
                   </legend>
                   <div className="medications-list">
-                    {detailData.medications && detailData.medications.length > 0 ? (
+                    {detailData.medications &&
+                    detailData.medications.length > 0 ? (
                       detailData.medications.map((medication, index) => (
                         <div key={index} className="medication-item">
                           <div className="medication-header">
@@ -1135,8 +1315,12 @@ const ReceiveMedicine = () => {
                             <div className="med-details">
                               <h4>{medication.medicationName}</h4>
                               <div className="dosage-info">
-                                <span className="dosage-label">Liều lượng:</span>
-                                <span className="dosage-value">{medication.dosage}</span>
+                                <span className="dosage-label">
+                                  Liều lượng:
+                                </span>
+                                <span className="dosage-value">
+                                  {medication.dosage}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -1183,7 +1367,8 @@ const ReceiveMedicine = () => {
                         />
                         <div className="form-help">
                           <FaStethoscope />
-                          Ghi chú sẽ được lưu vào hồ sơ theo dõi thuốc của học sinh
+                          Ghi chú sẽ được lưu vào hồ sơ theo dõi thuốc của học
+                          sinh
                         </div>
                       </Form.Group>
                     </div>
@@ -1204,7 +1389,11 @@ const ReceiveMedicine = () => {
                         </div>
                         <div className="timeline-content">
                           <h6>Tạo đơn thuốc</h6>
-                          <p>{new Date(detailData.createdDate).toLocaleString('vi-VN')}</p>
+                          <p>
+                            {new Date(detailData.createdDate).toLocaleString(
+                              "vi-VN"
+                            )}
+                          </p>
                         </div>
                       </div>
 
@@ -1215,7 +1404,11 @@ const ReceiveMedicine = () => {
                           </div>
                           <div className="timeline-content">
                             <h6>Đã xác nhận nhận thuốc</h6>
-                            <p>{new Date(detailData.receivedDate).toLocaleString('vi-VN')}</p>
+                            <p>
+                              {new Date(detailData.receivedDate).toLocaleString(
+                                "vi-VN"
+                              )}
+                            </p>
                           </div>
                         </div>
                       )}
@@ -1227,7 +1420,11 @@ const ReceiveMedicine = () => {
                           </div>
                           <div className="timeline-content">
                             <h6>Đã hoàn thành sử dụng</h6>
-                            <p>{new Date(detailData.completedDate).toLocaleString('vi-VN')}</p>
+                            <p>
+                              {new Date(
+                                detailData.completedDate
+                              ).toLocaleString("vi-VN")}
+                            </p>
                           </div>
                         </div>
                       )}
@@ -1304,7 +1501,7 @@ const ReceiveMedicine = () => {
       >
         <Modal.Header closeButton className="modal-header-custom">
           <Modal.Title>
-            <FaFilter style={{ color: '#F06292', fontSize: '1.5rem' }} />
+            <FaFilter style={{ color: "#F06292", fontSize: "1.5rem" }} />
             Bộ lọc nâng cao
           </Modal.Title>
         </Modal.Header>

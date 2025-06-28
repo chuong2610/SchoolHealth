@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Card,
@@ -10,7 +10,7 @@ import {
   Badge,
   Alert,
   Nav,
-  Tab
+  Tab,
 } from "react-bootstrap";
 import {
   FaUser,
@@ -47,34 +47,55 @@ import {
   FaHistory,
   FaChartLine,
   FaMedkit,
-  FaUserMd
-} from 'react-icons/fa';
+  FaUserMd,
+} from "react-icons/fa";
+import {
+  getNurseInfo,
+  updatePassword,
+  updateProfile,
+  uploadAvatar,
+} from "../../api/nurse/ProfileApi";
+import { formatDDMMYYYY } from "../../utils/dateFormatter";
+import { useAvatar } from "../../context/AvatarContext";
+import { toast } from "react-toastify";
 // CSS được import tự động từ main.jsx
 
-const nurseInfo = {
-  avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  name: "Nguyễn Thị B",
-  id: "YT001",
-  dob: "12/05/1985",
-  gender: "Nữ",
-  email: "nguyenthib@nurse.edu.vn",
-  phone: "0901 234 567",
-  address: "123 Đường ABC, Quận 1, TP.HCM",
-  department: "Phòng Y tế Trường",
-  position: "Y tá trưởng",
-  startDate: "01/09/2020",
-  education: "Cử nhân Điều dưỡng",
-  license: "CK-123456789",
-  experience: "5 năm",
-  specialization: "Chăm sóc sức khỏe học đường",
-  emergencyContact: "0912 345 678",
-  bloodType: "A+",
-  allergies: "Không có",
-  status: "Đang làm việc"
-};
+// const nurseInfo = {
+//   avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+//   name: "Nguyễn Thị B",
+//   id: "YT001",
+//   dob: "12/05/1985",
+//   gender: "Nữ",
+//   email: "nguyenthib@nurse.edu.vn",
+//   phone: "0901 234 567",
+//   address: "123 Đường ABC, Quận 1, TP.HCM",
+//   department: "Phòng Y tế Trường",
+//   position: "Y tá trưởng",
+//   startDate: "01/09/2020",
+//   education: "Cử nhân Điều dưỡng",
+//   license: "CK-123456789",
+//   experience: "5 năm",
+//   specialization: "Chăm sóc sức khỏe học đường",
+//   emergencyContact: "0912 345 678",
+//   bloodType: "A+",
+//   allergies: "Không có",
+//   status: "Đang làm việc",
+// };
 
 const Profile = () => {
+  const nurseId = localStorage.userId;
   // Professional state management
+  const [nurseInfo, setNurseInfo] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    gender: "",
+    imageUrl: "",
+    dateOfBirth: "",
+    roleName: "",
+  });
+  const { updateAvatarVersion } = useAvatar();
   const [activeTab, setActiveTab] = useState("profile");
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -84,8 +105,24 @@ const Profile = () => {
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
-    confirmPassword: ""
+    confirmNewPassword: "",
   });
+  const fileInputRef = useRef(null);
+
+  const fetchNurseInfo = async () => {
+    try {
+      const res = await getNurseInfo(nurseId);
+      if (res) {
+        setNurseInfo(res);
+        setFormData(res);
+      }
+    } catch (error) {
+      console.log("Error fetching nurse info:", error);
+    }
+  };
+  useEffect(() => {
+    fetchNurseInfo();
+  }, []);
 
   // Professional notification system
   const showNotification = (message, type = "success") => {
@@ -97,33 +134,104 @@ const Profile = () => {
     setLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       setEditMode(false);
-      showNotification("Cập nhật thông tin thành công!", "success");
+      // showNotification("Cập nhật thông tin thành công!", "success");
+      toast.success("Cập nhật thông tin thành công!");
     } catch (error) {
-      showNotification("Lỗi khi cập nhật thông tin!", "error");
+      // showNotification("Lỗi khi cập nhật thông tin!", "error");
+      toast.error("Lỗi khi cập nhật thông tin!");
     } finally {
       setLoading(false);
     }
   };
 
   const handleChangePassword = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showNotification("Mật khẩu xác nhận không khớp!", "error");
+    if (
+      !passwordData.currentPassword ||
+      !passwordData.newPassword ||
+      !passwordData.confirmNewPassword
+    ) {
+      toast.error("Vui lòng nhập đầy đủ thông tin!");
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmNewPassword) {
+      // showNotification("Mật khẩu xác nhận không khớp!", "error");
+      toast.error("Mật khẩu xác nhận không khớp!");
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
       return;
     }
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setShowChangePassword(false);
-      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      showNotification("Đổi mật khẩu thành công!", "success");
+      const res = await updatePassword(nurseId, passwordData);
+      if (res?.success === true) {
+        toast.success("Đổi mật khẩu thành công!");
+        // showNotification("Đổi mật khẩu thành công!", "success");
+        setShowChangePassword(false);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        });
+      } else {
+        toast.error("Đổi mật khẩu thất bại!");
+        // showNotification("Đổi mật khẩu thất bại!", "error");
+      }
     } catch (error) {
-      showNotification("Lỗi khi đổi mật khẩu!", "error");
+      // alert("Có lỗi khi đổi mật khẩu!");
+      console.error(error);
+      toast.error("Có lỗi khi đổi mật khẩu!");
+      return;
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleChangeImage = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // setSelectedImage(file);
+      // console.log("dsad", selectedImage);
+      hanldeUpdateProfile(file);
+    }
+    // } else {
+    //   setSelectedImage(null);
+    // }
+  };
+
+  const hanldeUpdateProfile = async (file) => {
+    try {
+      let imageUrl = nurseInfo.imageUrl;
+
+      // Nếu userInfo.imageUrl là URL đầy đủ, tách lấy tên file
+      if (imageUrl && imageUrl.startsWith("http")) {
+        // Lấy phần sau cùng của đường dẫn
+        imageUrl = imageUrl.split("/").pop();
+      }
+
+      if (file) {
+        imageUrl = await uploadAvatar(file);
+      }
+
+      await updateProfile(nurseId, {
+        ...formData,
+        imageUrl,
+      });
+
+      setEditMode(false);
+      // Reload lại userInfo nếu muốn cập nhật giao diện ngay
+      fetchNurseInfo(nurseId);
+      // Reload lai Header
+      updateAvatarVersion();
+    } catch (error) {
+      alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
+      console.error(error);
     }
   };
 
@@ -135,7 +243,7 @@ const Profile = () => {
         backgroundColor: "#f8f9fc",
         minHeight: "100vh",
         position: "relative",
-        zIndex: 1
+        zIndex: 1,
       }}
     >
       {/* Updated CSS Styles with Pink Theme */}
@@ -565,35 +673,71 @@ const Profile = () => {
           <div className="col-md-auto text-center text-md-start mb-3 mb-md-0">
             <div className="profile-avatar-container">
               <img
-                src={formData.avatar}
+                src={nurseInfo.imageUrl}
                 alt="Avatar"
                 className="profile-avatar"
               />
-              <div className="avatar-upload-btn" title="Đổi ảnh đại diện">
-                <FaCamera style={{ color: 'white', fontSize: '14px' }} />
+              <div
+                className="avatar-upload-btn"
+                title="Đổi ảnh đại diện"
+                onClick={
+                  // Trigger click vào input type="file"
+                  () => fileInputRef.current.click()
+                }
+              >
+                <FaCamera style={{ color: "white", fontSize: "14px" }} />
               </div>
+              {/* Input ẩn để chọn file */}
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleChangeImage}
+              />
             </div>
           </div>
           <div className="col-md">
             <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start justify-content-md-between">
               <div className="text-center text-md-start mb-3 mb-md-0">
-                <h1 style={{ fontSize: '2.5rem', fontWeight: '700', margin: '0 0 0.5rem 0' }}>
-                  {formData.name}
+                <h1
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "700",
+                    margin: "0 0 0.5rem 0",
+                  }}
+                >
+                  {nurseInfo.name}
                 </h1>
-                <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                {/* <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
                   <Badge className="status-badge active">
                     <FaStethoscope className="me-1" />
-                    {formData.position}
+                    {nurseInfo.position}
                   </Badge>
-                  <Badge bg="light" text="dark" style={{ padding: '0.5rem 1rem', borderRadius: '20px', fontWeight: '600' }}>
+                  <Badge
+                    bg="light"
+                    text="dark"
+                    style={{
+                      padding: "0.5rem 1rem",
+                      borderRadius: "20px",
+                      fontWeight: "600",
+                    }}
+                  >
                     <FaIdCard className="me-1" />
-                    {formData.id}
+                    {nurseInfo.id}
                   </Badge>
-                  <Badge bg="info" style={{ padding: '0.5rem 1rem', borderRadius: '20px', fontWeight: '600' }}>
+                  <Badge
+                    bg="info"
+                    style={{
+                      padding: "0.5rem 1rem",
+                      borderRadius: "20px",
+                      fontWeight: "600",
+                    }}
+                  >
                     <FaBuilding className="me-1" />
-                    {formData.department}
+                    {nurseInfo.department}
                   </Badge>
-                </div>
+                </div> */}
               </div>
               <div className="d-flex gap-2">
                 {!editMode ? (
@@ -607,7 +751,10 @@ const Profile = () => {
                 ) : (
                   <>
                     <Button
-                      onClick={handleSave}
+                      onClick={() => {
+                        handleSave();
+                        hanldeUpdateProfile();
+                      }}
                       disabled={loading}
                       className="save-btn"
                     >
@@ -615,7 +762,10 @@ const Profile = () => {
                       Lưu
                     </Button>
                     <Button
-                      onClick={() => setEditMode(false)}
+                      onClick={() => {
+                        setEditMode(false);
+                        handleUpdateProfile();
+                      }}
                       className="cancel-btn"
                     >
                       <FaTimes />
@@ -652,20 +802,23 @@ const Profile = () => {
                   Bảo mật
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
+              {/* <Nav.Item>
                 <Nav.Link eventKey="settings">
                   <FaCog className="me-2" />
                   Cài đặt
                 </Nav.Link>
-              </Nav.Item>
+              </Nav.Item> */}
             </Nav>
 
-            <Tab.Content style={{ padding: '2rem' }}>
+            <Tab.Content style={{ padding: "2rem" }}>
               <Tab.Pane eventKey="profile">
                 <Row>
                   <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaUser className="me-2" style={{ color: '#667eea' }} />
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaUser className="me-2" style={{ color: "#667eea" }} />
                       Thông tin cơ bản
                     </h5>
 
@@ -674,15 +827,129 @@ const Profile = () => {
                         <FaEnvelope />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Email</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Email
+                        </div>
                         {editMode ? (
                           <Form.Control
+                            disabled
                             type="email"
                             value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                email: e.target.value,
+                              })
+                            }
                           />
                         ) : (
-                          <div style={{ color: '#666' }}>{formData.email}</div>
+                          <div style={{ color: "#666" }}>{nurseInfo.email}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* <div className="info-item">
+                      <div className="info-icon warning">
+                        <FaBirthdayCake />
+                      </div>
+                      <div className="flex-grow-1">
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Ngày sinh
+                        </div>
+                        {editMode ? (
+                          <Form.Control
+                          disabled
+                            type="date"
+                            value={formatDDMMYYYY(nurseInfo.dateOfBirth)}
+                            onChange={(e) =>
+                              setFormData({ ...formData, dob: e.target.value })
+                            }
+                          />
+                        ) : (
+                          <div style={{ color: "#666" }}>{formatDDMMYYYY(nurseInfo.dateOfBirth)}</div>
+                        )}
+                      </div>
+                    </div> */}
+
+                    <div className="info-item">
+                      <div className="info-icon purple">
+                        <FaVenusMars />
+                      </div>
+                      <div className="flex-grow-1">
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Giới tính
+                        </div>
+                        {editMode ? (
+                          <Form.Select
+                            value={formData.gender}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                gender: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="Male">Nam</option>
+                            <option value="Female">Nữ</option>
+                            <option value="Other">Khác</option>
+                          </Form.Select>
+                        ) : (
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.gender === "Male"
+                              ? "Nam"
+                              : nurseInfo.gender === "Female"
+                              ? "Nữ"
+                              : "Khác"}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Col>
+
+                  <Col lg={6}>
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaMapMarkerAlt
+                        className="me-2"
+                        style={{ color: "#667eea" }}
+                      />
+                      Thông tin liên hệ
+                    </h5>
+
+                    <div className="info-item">
+                      <div className="info-icon primary">
+                        <FaMapMarkerAlt />
+                      </div>
+                      <div className="flex-grow-1">
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Địa chỉ
+                        </div>
+                        {editMode ? (
+                          <Form.Control
+                            as="textarea"
+                            rows={2}
+                            value={formData.address}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                address: e.target.value,
+                              })
+                            }
+                          />
+                        ) : (
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.address}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -692,97 +959,24 @@ const Profile = () => {
                         <FaPhone />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Số điện thoại</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Số điện thoại
+                        </div>
                         {editMode ? (
                           <Form.Control
                             type="tel"
                             value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                phone: e.target.value,
+                              })
+                            }
                           />
                         ) : (
-                          <div style={{ color: '#666' }}>{formData.phone}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaBirthdayCake />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Ngày sinh</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="date"
-                            value={formData.dob}
-                            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.dob}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon purple">
-                        <FaVenusMars />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Giới tính</div>
-                        {editMode ? (
-                          <Form.Select
-                            value={formData.gender}
-                            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                          >
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                          </Form.Select>
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.gender}</div>
-                        )}
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaMapMarkerAlt className="me-2" style={{ color: '#667eea' }} />
-                      Thông tin liên hệ
-                    </h5>
-
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaMapMarkerAlt />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Địa chỉ</div>
-                        {editMode ? (
-                          <Form.Control
-                            as="textarea"
-                            rows={2}
-                            value={formData.address}
-                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.address}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaPhone />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Liên hệ khẩn cấp</div>
-                        {editMode ? (
-                          <Form.Control
-                            type="tel"
-                            value={formData.emergencyContact}
-                            onChange={(e) => setFormData({ ...formData, emergencyContact: e.target.value })}
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.emergencyContact}</div>
+                          <div style={{ color: "#666" }}>{nurseInfo.phone}</div>
                         )}
                       </div>
                     </div>
@@ -839,8 +1033,14 @@ const Profile = () => {
               <Tab.Pane eventKey="professional">
                 <Row>
                   <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaUserNurse className="me-2" style={{ color: '#667eea' }} />
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaUserNurse
+                        className="me-2"
+                        style={{ color: "#667eea" }}
+                      />
                       Thông tin công việc
                     </h5>
 
@@ -849,8 +1049,14 @@ const Profile = () => {
                         <FaBuilding />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Phòng ban</div>
-                        <div style={{ color: '#666' }}>{formData.department}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Phòng ban
+                        </div>
+                        <div style={{ color: "#666" }}>
+                          {formData.department}
+                        </div>
                       </div>
                     </div>
 
@@ -859,8 +1065,12 @@ const Profile = () => {
                         <FaStethoscope />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Chức vụ</div>
-                        <div style={{ color: '#666' }}>{formData.position}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Chức vụ
+                        </div>
+                        <div style={{ color: "#666" }}>{formData.position}</div>
                       </div>
                     </div>
 
@@ -869,8 +1079,14 @@ const Profile = () => {
                         <FaCalendarAlt />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Ngày bắt đầu</div>
-                        <div style={{ color: '#666' }}>{formData.startDate}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Ngày bắt đầu
+                        </div>
+                        <div style={{ color: "#666" }}>
+                          {formData.startDate}
+                        </div>
                       </div>
                     </div>
 
@@ -879,15 +1095,27 @@ const Profile = () => {
                         <FaChartLine />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Kinh nghiệm</div>
-                        <div style={{ color: '#666' }}>{formData.experience}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Kinh nghiệm
+                        </div>
+                        <div style={{ color: "#666" }}>
+                          {formData.experience}
+                        </div>
                       </div>
                     </div>
                   </Col>
 
                   <Col lg={6}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaCertificate className="me-2" style={{ color: '#667eea' }} />
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaCertificate
+                        className="me-2"
+                        style={{ color: "#667eea" }}
+                      />
                       Bằng cấp & Chứng chỉ
                     </h5>
 
@@ -896,8 +1124,14 @@ const Profile = () => {
                         <FaGraduationCap />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Trình độ học vấn</div>
-                        <div style={{ color: '#666' }}>{formData.education}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Trình độ học vấn
+                        </div>
+                        <div style={{ color: "#666" }}>
+                          {formData.education}
+                        </div>
                       </div>
                     </div>
 
@@ -906,8 +1140,12 @@ const Profile = () => {
                         <FaCertificate />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Chứng chỉ hành nghề</div>
-                        <div style={{ color: '#666' }}>{formData.license}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Chứng chỉ hành nghề
+                        </div>
+                        <div style={{ color: "#666" }}>{formData.license}</div>
                       </div>
                     </div>
 
@@ -916,8 +1154,14 @@ const Profile = () => {
                         <FaMedkit />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Chuyên môn</div>
-                        <div style={{ color: '#666' }}>{formData.specialization}</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Chuyên môn
+                        </div>
+                        <div style={{ color: "#666" }}>
+                          {formData.specialization}
+                        </div>
                       </div>
                     </div>
 
@@ -926,7 +1170,11 @@ const Profile = () => {
                         <FaAward />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Trạng thái</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Trạng thái
+                        </div>
                         <Badge className="status-badge active">
                           <FaCheck className="me-1" />
                           {formData.status}
@@ -940,8 +1188,14 @@ const Profile = () => {
               <Tab.Pane eventKey="security">
                 <Row>
                   <Col lg={8}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaShieldAlt className="me-2" style={{ color: '#667eea' }} />
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaShieldAlt
+                        className="me-2"
+                        style={{ color: "#667eea" }}
+                      />
                       Bảo mật tài khoản
                     </h5>
 
@@ -950,8 +1204,14 @@ const Profile = () => {
                         <FaLock />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Mật khẩu</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Đổi mật khẩu để bảo vệ tài khoản</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Mật khẩu
+                        </div>
+                        <div style={{ color: "#666", marginBottom: "0.5rem" }}>
+                          Đổi mật khẩu để bảo vệ tài khoản
+                        </div>
                         <Button
                           variant="outline-primary"
                           size="sm"
@@ -983,8 +1243,11 @@ const Profile = () => {
               <Tab.Pane eventKey="settings">
                 <Row>
                   <Col lg={8}>
-                    <h5 className="mb-4" style={{ fontWeight: '700', color: '#333' }}>
-                      <FaCog className="me-2" style={{ color: '#667eea' }} />
+                    <h5
+                      className="mb-4"
+                      style={{ fontWeight: "700", color: "#333" }}
+                    >
+                      <FaCog className="me-2" style={{ color: "#667eea" }} />
                       Cài đặt ứng dụng
                     </h5>
 
@@ -993,8 +1256,14 @@ const Profile = () => {
                         <FaBell />
                       </div>
                       <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Thông báo</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Quản lý thông báo và cảnh báo</div>
+                        <div
+                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
+                        >
+                          Thông báo
+                        </div>
+                        <div style={{ color: "#666", marginBottom: "0.5rem" }}>
+                          Quản lý thông báo và cảnh báo
+                        </div>
                         <Form.Check
                           type="switch"
                           id="notifications"
@@ -1071,7 +1340,12 @@ const Profile = () => {
               <Form.Control
                 type="password"
                 value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    currentPassword: e.target.value,
+                  })
+                }
                 placeholder="Nhập mật khẩu hiện tại"
               />
             </Form.Group>
@@ -1080,7 +1354,12 @@ const Profile = () => {
               <Form.Control
                 type="password"
                 value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    newPassword: e.target.value,
+                  })
+                }
                 placeholder="Nhập mật khẩu mới"
               />
             </Form.Group>
@@ -1088,8 +1367,13 @@ const Profile = () => {
               <Form.Label>Xác nhận mật khẩu mới</Form.Label>
               <Form.Control
                 type="password"
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                value={passwordData.confirmNewPassword}
+                onChange={(e) =>
+                  setPasswordData({
+                    ...passwordData,
+                    confirmNewPassword: e.target.value,
+                  })
+                }
                 placeholder="Nhập lại mật khẩu mới"
               />
             </Form.Group>
@@ -1107,7 +1391,11 @@ const Profile = () => {
             onClick={handleChangePassword}
             disabled={loading}
           >
-            {loading ? <FaSpinner className="fa-spin me-1" /> : <FaSave className="me-1" />}
+            {loading ? (
+              <FaSpinner className="fa-spin me-1" />
+            ) : (
+              <FaSave className="me-1" />
+            )}
             Đổi mật khẩu
           </Button>
         </Modal.Footer>

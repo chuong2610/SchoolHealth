@@ -15,6 +15,7 @@ import {
 } from "react-bootstrap";
 import { formatDateTime } from "../../utils/dateFormatter";
 import {
+  getHealthEventStatistics,
   getMedicalEventDetail,
   getMedicalEvents,
   getMedicalSupply,
@@ -62,6 +63,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
+import { use } from "react";
 // CSS được import tự động từ main.jsx
 
 // Force CSS reload with timestamp
@@ -101,7 +103,42 @@ const HealthEvents = () => {
   //phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 2;
+  const pageSize = 5;
+
+  // Statistics
+  const [healthEventStatistics, setHealthEventStatistics] = useState({
+    totalCount: 0,
+    last7DaysCount: 0,
+    todayCount: 0,
+  });
+
+  const fetchHealthEventStatistics = async () => {
+    try {
+      const res = await getHealthEventStatistics();
+      if (res) {
+        setHealthEventStatistics({
+          totalCount: res.totalCount,
+          last7DaysCount: res.last7DaysCount,
+          todayCount: res.todayCount,
+        });
+      } else {
+        console.log("Không có dữ liệu thống kê");
+        setHealthEventStatistics({
+          totalCount: 0,
+          last7DaysCount: 0,
+          todayCount: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching health event statistics:", error);
+      setHealthEventStatistics({
+        totalCount: 0,
+        last7DaysCount: 0,
+        todayCount: 0,
+      });
+    }
+  };
+
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page); // 👈 trigger useEffect để fetch lại dữ liệu
@@ -386,15 +423,15 @@ const HealthEvents = () => {
         medicalEventSupplys:
           validSupplies.length > 0
             ? validSupplies.map((supply) => ({
-              medicalSupplyId: parseInt(supply.medicalSupplyId),
-              quantity: parseInt(supply.quantity),
-            }))
+                medicalSupplyId: parseInt(supply.medicalSupplyId),
+                quantity: parseInt(supply.quantity),
+              }))
             : [
-              {
-                medicalSupplyId: 0,
-                quantity: 0,
-              },
-            ],
+                {
+                  medicalSupplyId: 0,
+                  quantity: 0,
+                },
+              ],
         nurseId: parseInt(user.id),
       };
 
@@ -502,30 +539,30 @@ const HealthEvents = () => {
         onClick={() => loadMedicalEventDetailModal(event.id)}
         title="Xem chi tiết"
         style={{
-          background: '#F06292',
-          border: '1px solid #F06292',
-          color: 'white',
-          width: '30px',
-          height: '30px',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 2px 6px rgba(240, 98, 146, 0.25)',
-          outline: 'none'
+          background: "#F06292",
+          border: "1px solid #F06292",
+          color: "white",
+          width: "30px",
+          height: "30px",
+          borderRadius: "8px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          boxShadow: "0 2px 6px rgba(240, 98, 146, 0.25)",
+          outline: "none",
         }}
         onMouseEnter={(e) => {
-          e.target.style.background = '#E91E63';
-          e.target.style.transform = 'scale(1.05)';
-          e.target.style.boxShadow = '0 3px 10px rgba(240, 98, 146, 0.35)';
+          e.target.style.background = "#E91E63";
+          e.target.style.transform = "scale(1.05)";
+          e.target.style.boxShadow = "0 3px 10px rgba(240, 98, 146, 0.35)";
         }}
         onMouseLeave={(e) => {
-          e.target.style.background = '#F06292';
-          e.target.style.transform = 'scale(1)';
-          e.target.style.boxShadow = '0 2px 6px rgba(240, 98, 146, 0.25)';
+          e.target.style.background = "#F06292";
+          e.target.style.transform = "scale(1)";
+          e.target.style.boxShadow = "0 2px 6px rgba(240, 98, 146, 0.25)";
         }}
       >
         <FaEye />
@@ -573,7 +610,7 @@ const HealthEvents = () => {
             >
               <FaFilter /> Lọc
             </Button>
-            <Button
+            {/* <Button
               style={{
                 backgroundColor: "#F06292",
                 border: "1px solid #F06292",
@@ -591,15 +628,15 @@ const HealthEvents = () => {
                   type === "all"
                     ? "tat-ca-su-kien"
                     : type === "recent"
-                      ? "su-kien-gan-day"
-                      : type === "today"
-                        ? "su-kien-hom-nay"
-                        : "su-kien-cap-cuu";
+                    ? "su-kien-gan-day"
+                    : type === "today"
+                    ? "su-kien-hom-nay"
+                    : "su-kien-cap-cuu";
                 exportToExcel(data, filename);
               }}
             >
               <FaDownload /> Xuất Excel
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
@@ -618,73 +655,151 @@ const HealthEvents = () => {
         >
           <thead>
             <tr>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Loại sự kiện</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Địa điểm</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Ngày</th>
-              <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Học sinh</th>
-              <th style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>Y tá</th>
-              <th style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>Thao tác</th>
+              <th
+                style={{ width: "150px", minWidth: "150px", maxWidth: "150px" }}
+              >
+                Loại sự kiện
+              </th>
+              <th
+                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
+              >
+                Địa điểm
+              </th>
+              <th
+                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
+              >
+                Ngày
+              </th>
+              <th
+                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
+              >
+                Học sinh
+              </th>
+              <th
+                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
+              >
+                Y tá
+              </th>
+              <th
+                style={{ width: "150px", minWidth: "150px", maxWidth: "150px" }}
+              >
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
             {(showAll ? data : data.slice(0, ROW_LIMIT)).map((event, index) => (
               <tr key={event.id || `event-${index}`} className="table-row">
-                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
-                  <div className="medicine-id" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <FaHeartbeat className="medicine-icon pill-bounce" style={{ marginRight: '0.5rem' }} />
+                <td
+                  style={{
+                    width: "150px",
+                    minWidth: "150px",
+                    maxWidth: "150px",
+                  }}
+                >
+                  <div
+                    className="medicine-id"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
+                    <FaHeartbeat
+                      className="medicine-icon pill-bounce"
+                      style={{ marginRight: "0.5rem" }}
+                    />
                     {event.eventType || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="location-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
+                <td
+                  style={{
+                    width: "120px",
+                    minWidth: "120px",
+                    maxWidth: "120px",
+                  }}
+                >
+                  <div
+                    className="location-info"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     <FaMapMarkerAlt className="me-1" />
                     {event.location || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="date-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
+                <td
+                  style={{
+                    width: "120px",
+                    minWidth: "120px",
+                    maxWidth: "120px",
+                  }}
+                >
+                  <div
+                    className="date-info"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     <FaCalendarAlt className="date-icon" />
                     {formatDateTime(event.date) || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>
-                  <div className="student-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
+                <td
+                  style={{
+                    width: "120px",
+                    minWidth: "120px",
+                    maxWidth: "120px",
+                  }}
+                >
+                  <div
+                    className="student-info"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     <FaUser className="me-1" />
                     <strong>{event.studentName || "N/A"}</strong>
                   </div>
                 </td>
-                <td style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-                  <div className="parent-info" style={{
-                    fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
+                <td
+                  style={{
+                    width: "100px",
+                    minWidth: "100px",
+                    maxWidth: "100px",
+                  }}
+                >
+                  <div
+                    className="parent-info"
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "#111827",
+                      lineHeight: "1.4",
+                    }}
+                  >
                     <FaUserNurse className="me-1" />
                     {event.nurseName || "N/A"}
                   </div>
                 </td>
-                <td style={{ width: '150px', minWidth: '150px', maxWidth: '150px' }}>
+                <td
+                  style={{
+                    width: "150px",
+                    minWidth: "150px",
+                    maxWidth: "150px",
+                  }}
+                >
                   {renderActionButtons(event)}
                 </td>
               </tr>
@@ -729,7 +844,7 @@ const HealthEvents = () => {
 
         setEvents(Array.isArray(res.items) ? res.items : []);
         setCurrentPage(res.currentPage);
-        setTotalPages(res.totalPages);
+        setTotalPages(res.totalPages || 1);
         setTotalItems(res.totalItems);
 
         setTimeout(() => setAnimateStats(true), 100);
@@ -740,7 +855,8 @@ const HealthEvents = () => {
       }
     };
     fetchMedicalEvents();
-  }, [currentPage, debouncedSearch]);
+    fetchHealthEventStatistics();
+  }, [activeTab, currentPage, debouncedSearch]);
 
   //
   return (
@@ -1323,7 +1439,7 @@ const HealthEvents = () => {
             className="nurse-events-stat-value"
             style={{ fontSize: 32, color: "#43a047", fontWeight: 700 }}
           >
-            {totalItems}
+            {healthEventStatistics.totalCount}
           </div>
         </div>
         <div
@@ -1354,7 +1470,7 @@ const HealthEvents = () => {
             className="nurse-events-stat-value"
             style={{ fontSize: 32, color: "#ffa000", fontWeight: 700 }}
           >
-            {totalRecent}
+            {healthEventStatistics.last7DaysCount}
           </div>
         </div>
         <div
@@ -1385,7 +1501,7 @@ const HealthEvents = () => {
             className="nurse-events-stat-value"
             style={{ fontSize: 32, color: "#039be5", fontWeight: 700 }}
           >
-            {totalToday}
+            {healthEventStatistics.todayCount}
           </div>
         </div>
       </div>
@@ -1420,7 +1536,10 @@ const HealthEvents = () => {
           <>
             <Tabs
               activeKey={activeTab}
-              onSelect={setActiveTab}
+              onSelect={() => {
+                setActiveTab();
+                setCurrentPage(1);
+              }}
               className="medicine-tabs"
             >
               <Tab
@@ -1447,7 +1566,7 @@ const HealthEvents = () => {
                 </div>
               </Tab>
 
-              <Tab
+              {/* <Tab
                 eventKey="recent"
                 title={
                   <div className="tab-title active">
@@ -1493,7 +1612,7 @@ const HealthEvents = () => {
                     setTodayShowAll
                   )}
                 </div>
-              </Tab>
+              </Tab> */}
             </Tabs>
             {totalPages > 1 && (
               <div className="d-flex justify-content-center mt-4">
@@ -1661,41 +1780,41 @@ const HealthEvents = () => {
                     modalEventDetail.medicalEventSupplys.length > 0) ||
                     (modalEventDetail.supplies &&
                       modalEventDetail.supplies.length > 0)) && (
-                      <fieldset className="form-section">
-                        <legend>
-                          <FaMedkit />
-                          Vật tư y tế đã sử dụng
-                        </legend>
-                        <div className="supplies-list">
-                          {(
-                            modalEventDetail.medicalEventSupplys ||
-                            modalEventDetail.supplies ||
-                            []
-                          ).map((supply, index) => (
-                            <div key={index} className="supply-item">
-                              <div className="supply-icon">
-                                <FaCapsules />
-                              </div>
-                              <div className="supply-details">
-                                <h4>
-                                  {supply.medicalSupplyName ||
-                                    supply.MedicalSupplyName ||
-                                    "N/A"}
-                                </h4>
-                                <div className="supply-quantity">
-                                  <span className="quantity-label">
-                                    Số lượng đã sử dụng:
-                                  </span>
-                                  <span className="quantity-value">
-                                    {supply.quantity || supply.Quantity || 0}
-                                  </span>
-                                </div>
+                    <fieldset className="form-section">
+                      <legend>
+                        <FaMedkit />
+                        Vật tư y tế đã sử dụng
+                      </legend>
+                      <div className="supplies-list">
+                        {(
+                          modalEventDetail.medicalEventSupplys ||
+                          modalEventDetail.supplies ||
+                          []
+                        ).map((supply, index) => (
+                          <div key={index} className="supply-item">
+                            <div className="supply-icon">
+                              <FaCapsules />
+                            </div>
+                            <div className="supply-details">
+                              <h4>
+                                {supply.medicalSupplyName ||
+                                  supply.MedicalSupplyName ||
+                                  "N/A"}
+                              </h4>
+                              <div className="supply-quantity">
+                                <span className="quantity-label">
+                                  Số lượng đã sử dụng:
+                                </span>
+                                <span className="quantity-value">
+                                  {supply.quantity || supply.Quantity || 0}
+                                </span>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </fieldset>
-                    )}
+                          </div>
+                        ))}
+                      </div>
+                    </fieldset>
+                  )}
                 </div>
               )}
           </div>

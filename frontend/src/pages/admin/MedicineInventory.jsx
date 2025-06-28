@@ -54,9 +54,19 @@ import "../../styles/admin/medicine-inventory.css";
 import axios from "axios";
 import axiosInstance from "../../api/axiosInstance";
 import PaginationBar from "../../components/common/PaginationBar";
+import { getMedicineInventoryStatistics } from "../../api/admin/MedicineInventoryApi";
 
 // Colors for charts
-const COLORS = ['#4ECDC4', '#45B7D1', '#FFA726', '#66BB6A', '#EF5350', '#AB47BC', '#FF7043', '#5C6BC0'];
+const COLORS = [
+  "#4ECDC4",
+  "#45B7D1",
+  "#FFA726",
+  "#66BB6A",
+  "#EF5350",
+  "#AB47BC",
+  "#FF7043",
+  "#5C6BC0",
+];
 
 const MedicineInventory = () => {
   const [inventory, setInventory] = useState([]);
@@ -97,6 +107,44 @@ const MedicineInventory = () => {
     barcode: "",
   });
 
+  // Statistics
+  const [inventoryStats, setInventoryStats] = useState({
+    totalMedications: 0,
+    inStock: 0,
+    lowStock: 0,
+    outOfStock: 0,
+  });
+
+  const fetchMedicineInventoryStatistics = async () => {
+    try {
+      const res = await getMedicineInventoryStatistics();
+      if (res) {
+        setInventoryStats({
+          totalMedications: res.totalMedications,
+          inStock: res.inStock,
+          lowStock: res.lowStock,
+          outOfStock: res.outOfStock,
+        });
+      } else {
+        console.log("Failed to fetch inventory statistics.");
+        setInventoryStats({
+          totalMedications: 0,
+          inStock: 0,
+          lowStock: 0,
+          outOfStock: 0,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      setInventoryStats({
+        totalMedications: 0,
+        inStock: 0,
+        lowStock: 0,
+        outOfStock: 0,
+      });
+    }
+  };
+
   // Functions to generate chart data
   const getInventoryStats = () => {
     if (!inventory || inventory.length === 0) {
@@ -104,14 +152,16 @@ const MedicineInventory = () => {
         total: 0,
         inStock: 0,
         lowStock: 0,
-        outOfStock: 0
+        outOfStock: 0,
       };
     }
 
     const total = inventory.length;
-    const inStock = inventory.filter(item => item.quantity > 10).length;
-    const lowStock = inventory.filter(item => item.quantity > 0 && item.quantity <= 10).length;
-    const outOfStock = inventory.filter(item => item.quantity === 0).length;
+    const inStock = inventory.filter((item) => item.quantity > 10).length;
+    const lowStock = inventory.filter(
+      (item) => item.quantity > 0 && item.quantity <= 10
+    ).length;
+    const outOfStock = inventory.filter((item) => item.quantity === 0).length;
 
     return { total, inStock, lowStock, outOfStock };
   };
@@ -119,36 +169,51 @@ const MedicineInventory = () => {
   const getCategoryData = () => {
     if (!inventory || inventory.length === 0) {
       return [
-        { name: 'Thuốc cảm', value: 0 },
-        { name: 'Thuốc đau đầu', value: 0 },
-        { name: 'Vitamin', value: 0 },
-        { name: 'Thuốc ngoài da', value: 0 },
-        { name: 'Khác', value: 0 }
+        { name: "Thuốc cảm", value: 0 },
+        { name: "Thuốc đau đầu", value: 0 },
+        { name: "Vitamin", value: 0 },
+        { name: "Thuốc ngoài da", value: 0 },
+        { name: "Khác", value: 0 },
       ];
     }
 
     // Tạo categories dựa trên tên thuốc
     const categoryMap = {};
-    inventory.forEach(item => {
-      const name = (item.name || '').toLowerCase();
-      let category = 'Khác';
+    inventory.forEach((item) => {
+      const name = (item.name || "").toLowerCase();
+      let category = "Khác";
 
-      if (name.includes('cảm') || name.includes('ho') || name.includes('sốt')) {
-        category = 'Thuốc cảm';
-      } else if (name.includes('đau') || name.includes('paracetamol') || name.includes('ibuprofen')) {
-        category = 'Thuốc giảm đau';
-      } else if (name.includes('vitamin') || name.includes('canxi') || name.includes('kẽm')) {
-        category = 'Vitamin & Bổ sung';
-      } else if (name.includes('da') || name.includes('mẩn') || name.includes('kem')) {
-        category = 'Thuốc ngoài da';
-      } else if (name.includes('dạ dày') || name.includes('tiêu hóa')) {
-        category = 'Thuốc tiêu hóa';
+      if (name.includes("cảm") || name.includes("ho") || name.includes("sốt")) {
+        category = "Thuốc cảm";
+      } else if (
+        name.includes("đau") ||
+        name.includes("paracetamol") ||
+        name.includes("ibuprofen")
+      ) {
+        category = "Thuốc giảm đau";
+      } else if (
+        name.includes("vitamin") ||
+        name.includes("canxi") ||
+        name.includes("kẽm")
+      ) {
+        category = "Vitamin & Bổ sung";
+      } else if (
+        name.includes("da") ||
+        name.includes("mẩn") ||
+        name.includes("kem")
+      ) {
+        category = "Thuốc ngoài da";
+      } else if (name.includes("dạ dày") || name.includes("tiêu hóa")) {
+        category = "Thuốc tiêu hóa";
       }
 
       categoryMap[category] = (categoryMap[category] || 0) + item.quantity;
     });
 
-    return Object.entries(categoryMap).map(([name, value]) => ({ name, value }));
+    return Object.entries(categoryMap).map(([name, value]) => ({
+      name,
+      value,
+    }));
   };
 
   const getStockLevelData = () => {
@@ -156,11 +221,13 @@ const MedicineInventory = () => {
       return [];
     }
 
-    return inventory.slice(0, 6).map(item => ({
-      name: item.name?.slice(0, 15) + (item.name?.length > 15 ? '...' : '') || 'N/A',
+    return inventory.slice(0, 6).map((item) => ({
+      name:
+        item.name?.slice(0, 15) + (item.name?.length > 15 ? "..." : "") ||
+        "N/A",
       quantity: item.quantity || 0,
       minStock: Math.max(5, Math.floor(item.quantity * 0.2)), // Giả định minStock là 20% của quantity hiện tại, tối thiểu 5
-      maxStock: Math.max(item.quantity, 50) // Giả định maxStock ít nhất bằng quantity hiện tại hoặc 50
+      maxStock: Math.max(item.quantity, 50), // Giả định maxStock ít nhất bằng quantity hiện tại hoặc 50
     }));
   };
 
@@ -178,7 +245,8 @@ const MedicineInventory = () => {
   const fetchInventory = async () => {
     try {
       const respond = await axiosInstance.get(
-        `/MedicalSupply?pageNumber=${currentPage}&pageSize=3${search ? `&search=${search}` : ""
+        `/MedicalSupply?pageNumber=${currentPage}&pageSize=3${
+          search ? `&search=${search}` : ""
         } `,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -198,6 +266,7 @@ const MedicineInventory = () => {
   // Fetch danh sách vật tư y tế
   useEffect(() => {
     fetchInventory();
+    fetchMedicineInventoryStatistics();
   }, [currentPage, search]);
 
   //Mở modal thêm mới
@@ -245,7 +314,9 @@ const MedicineInventory = () => {
       );
       setInventory([...inventory, response.data]);
       setShowAddModal(false);
+      setShowModal(false);
       fetchInventory(); //cập nhật lại danh sách
+      fetchMedicineInventoryStatistics();
     } catch (error) {
       setError("Faild to add item.");
       console.log("Add error:", error);
@@ -280,7 +351,9 @@ const MedicineInventory = () => {
       setForm(response.data);
       setError("");
       setShowEditModal(false);
+      setShowModal(false);
       fetchInventory(); //cập nhật lại danh sách
+      fetchMedicineInventoryStatistics();
     } catch (error) {
       const message =
         error.response?.data?.message || "Lỗi không xác định khi cập nhật.";
@@ -486,10 +559,10 @@ const MedicineInventory = () => {
                   <FaPlus className="me-2" />
                   Thêm thuốc
                 </button>
-                <button className="admin-secondary-btn">
+                {/* <button className="admin-secondary-btn">
                   <FaDownload className="me-2" />
                   Xuất báo cáo
-                </button>
+                </button> */}
               </div>
             </Col>
           </Row>
@@ -501,28 +574,28 @@ const MedicineInventory = () => {
             <div className="admin-medicine-stat-icon">
               <FaPills />
             </div>
-            <div className="admin-medicine-stat-value">{stats?.total}</div>
+            <div className="admin-medicine-stat-value">{inventoryStats.totalMedications}</div>
             <div className="admin-medicine-stat-label">Tổng thuốc</div>
           </div>
           <div className="admin-medicine-stat-card">
             <div className="admin-medicine-stat-icon">
               <FaCheckCircle />
             </div>
-            <div className="admin-medicine-stat-value">{stats?.inStock}</div>
+            <div className="admin-medicine-stat-value">{inventoryStats.inStock}</div>
             <div className="admin-medicine-stat-label">Còn hàng</div>
           </div>
           <div className="admin-medicine-stat-card">
             <div className="admin-medicine-stat-icon">
               <FaExclamationTriangle />
             </div>
-            <div className="admin-medicine-stat-value">{stats?.lowStock}</div>
+            <div className="admin-medicine-stat-value">{inventoryStats.lowStock}</div>
             <div className="admin-medicine-stat-label">Gần hết</div>
           </div>
           <div className="admin-medicine-stat-card">
             <div className="admin-medicine-stat-icon">
               <FaTimesCircle />
             </div>
-            <div className="admin-medicine-stat-value">{stats?.outOfStock}</div>
+            <div className="admin-medicine-stat-value">{inventoryStats.outOfStock}</div>
             <div className="admin-medicine-stat-label">Hết hàng</div>
           </div>
         </motion.div>
