@@ -39,6 +39,10 @@ import {
   FaClipboardList,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
+import { getHealthHistoryStatistics } from "../../api/parent/HealthHistoryApi";
+import { useDebounce } from "use-debounce";
+import { formatDateTime, formatDDMMYYYY } from "../../utils/dateFormatter";
+
 // Styles được import từ main.jsx
 
 const HealthHistory = () => {
@@ -66,12 +70,38 @@ const HealthHistory = () => {
 
   // State search
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch] = useDebounce(searchTerm, 500); // 500ms delay
 
   // State phân trang
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 1;
+  const pageSize = 5;
+  const [statistics, setStatistics] = useState({
+    totalHealthChecks: 0,
+    totalVaccinations: 0,
+    totalMedicationsSent: 0,
+  });
 
+  // Fetch healthHistory statistics
+  const fetchHealthHistoryStats = async () => {
+    try {
+      const res = await getHealthHistoryStatistics(parentId);
+      if (res) {
+        setStatistics({
+          totalHealthChecks: res.totalHealthChecks || 0,
+          totalVaccinations: res.totalVaccinations || 0,
+          totalMedicationsSent: res.totalMedicationsSent || 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching health history statistics:", error);
+      setStatistics({
+        totalHealthChecks: 0,
+        totalVaccinations: 0,
+        totalMedicationsSent: 0,
+      });
+    }
+  };
   // useEffect: Fetch dữ liệu khi đổi tab
   useEffect(() => {
     if (!parentId) return;
@@ -84,11 +114,13 @@ const HealthHistory = () => {
       baseUrl = `/Vaccination/parent/${parentId}`;
     } else if (activeTab === "medication") {
       baseUrl = `/Medication/parent/${parentId}`;
+    } else if (activeTab === "event") {
+      baseUrl = `/MedicalEvent/parent/${parentId}`;
     }
 
     if (!baseUrl) return;
 
-    const url = `${baseUrl}?pageNumber=${currentPage}&pageSize=${pageSize}`;
+    const url = `${baseUrl}?pageNumber=${currentPage}&pageSize=${pageSize}` + `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`;
 
     const fetchData = async () => {
       try {
@@ -123,7 +155,8 @@ const HealthHistory = () => {
       }
     };
     fetchData();
-  }, [parentId, activeTab, currentPage]);
+    fetchHealthHistoryStats();
+  }, [parentId, activeTab, currentPage, debouncedSearch]);
 
   // Hàm lấy chi tiết
   const handleShowDetail = async (id, type = "checkup") => {
@@ -257,618 +290,760 @@ const HealthHistory = () => {
           </p>
         </div>
       </div>
-    <div style={{backgroundColor: 'white', padding: '1rem',marginTop: '-2rem',border:'1px solid #2563eb',borderRadius:'10px'}}>
-      <Container>
-        {/* Statistics Cards */}
-        <Row className="mb-4 parent-animate-slide-in">
-          <Col md={4} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon">
-                <FaStethoscope />
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "1rem",
+          marginTop: "-2rem",
+          border: "1px solid #2563eb",
+          borderRadius: "10px",
+        }}
+      >
+        <Container>
+          {/* Statistics Cards */}
+          <Row className="mb-4 parent-animate-slide-in">
+            <Col md={4} className="mb-3">
+              <div className="parent-stat-card">
+                <div className="parent-stat-icon">
+                  <FaStethoscope />
+                </div>
+                <div className="parent-stat-value">
+                  {statistics.totalMedicationsSent}
+                </div>
+                <div className="parent-stat-label">Lượt khám</div>
               </div>
-              <div className="parent-stat-value">
-                {data.filter((item) => item.height || item.weight).length}
+            </Col>
+            <Col md={4} className="mb-3">
+              <div className="parent-stat-card">
+                <div
+                  className="parent-stat-icon"
+                  style={{ background: "#8b5cf6" }}
+                >
+                  <FaSyringe />
+                </div>
+                <div className="parent-stat-value">
+                  {statistics.totalVaccinations}
+                </div>
+                <div className="parent-stat-label">Lượt tiêm</div>
               </div>
-              <div className="parent-stat-label">Lượt khám</div>
-            </div>
-          </Col>
-          <Col md={4} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: '#8b5cf6' }}>
-                <FaSyringe />
+            </Col>
+            <Col md={4} className="mb-3">
+              <div className="parent-stat-card">
+                <div
+                  className="parent-stat-icon"
+                  style={{ background: "#2563eb" }}
+                >
+                  <FaPills />
+                </div>
+                <div className="parent-stat-value">
+                  {statistics.totalHealthChecks}
+                </div>
+                <div className="parent-stat-label">Lượt gửi thuốc</div>
               </div>
-              <div className="parent-stat-value">
-                {data.filter((item) => item.vaccineName).length}
-              </div>
-              <div className="parent-stat-label">Lượt tiêm</div>
-            </div>
-          </Col>
-          <Col md={4} className="mb-3">
-            <div className="parent-stat-card">
-              <div className="parent-stat-icon" style={{ background: '#2563eb' }}>
-                <FaPills />
-              </div>
-              <div className="parent-stat-value">
-                {
-                  data.filter(
-                    (item) => item.medications && item.medications.length > 0
-                  ).length
-                }
-              </div>
-              <div className="parent-stat-label">Lượt gửi thuốc</div>
-            </div>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
 
-        {/* Main Content */}
-        <div className="parent-card parent-animate-scale-in">
-          <Tab.Container
-            activeKey={activeTab}
-            onSelect={(k) => {
-              setActiveTab(k);
-              setCurrentPage(1); // Reset page to 1 on tab switch
-            }}
-          >
-            {/* Navigation Tabs */}
-            <div className="parent-card-header mb-4">
-              <div className="d-flex justify-content-between align-items-center flex-wrap">
-                <h3 className="parent-card-title">
-                  <FaClipboardList />
-                  Lịch sử y tế
-                </h3>
-                <Nav variant="pills" className="d-flex">
-                  <Nav.Item>
-                    <Nav.Link
-                      eventKey="checkup"
-                      style={{
-                        background: activeTab === 'checkup' ? '#2563eb' : 'transparent',
-                        color: activeTab === 'checkup' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'checkup' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
-                        fontWeight: '600',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        padding: '0.75rem 1.5rem',
-                        margin: '0 0.25rem',
-                        transition: 'all var(--parent-transition-normal)'
-                      }}
-                    >
-                      <FaStethoscope className="me-2" />
-                      Khám sức khỏe
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      eventKey="vaccination"
-                      style={{
-                        background: activeTab === 'vaccination' ? '#2563eb' : 'transparent',
-                        color: activeTab === 'vaccination' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'vaccination' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
-                        fontWeight: '600',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        padding: '0.75rem 1.5rem',
-                        margin: '0 0.25rem',
-                        transition: 'all var(--parent-transition-normal)'
-                      }}
-                    >
-                      <FaSyringe className="me-2" />
-                      Tiêm chủng
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      eventKey="chart"
-                      style={{
-                        background: activeTab === 'chart' ? '#2563eb' : 'transparent',
-                        color: activeTab === 'chart' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'chart' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
-                        fontWeight: '600',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        padding: '0.75rem 1.5rem',
-                        margin: '0 0.25rem',
-                        transition: 'all var(--parent-transition-normal)'
-                      }}
-                    >
-                      <FaChartBar className="me-2" />
-                      Theo dõi
-                    </Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link
-                      eventKey="medication"
-                      style={{
-                        background: activeTab === 'medication' ? '#2563eb' : 'transparent',
-                        color: activeTab === 'medication' ? 'white' : 'var(--parent-primary)',
-                        border: `2px solid ${activeTab === 'medication' ? 'transparent' : 'rgba(37, 99, 235, 0.2)'}`,
-                        fontWeight: '600',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        padding: '0.75rem 1.5rem',
-                        margin: '0 0.25rem',
-                        transition: 'all var(--parent-transition-normal)'
-                      }}
-                    >
-                      <FaPills className="me-2" />
-                      Gửi thuốc
-                    </Nav.Link>
-                  </Nav.Item>
-                </Nav>
+          {/* Main Content */}
+          <div className="parent-card parent-animate-scale-in">
+            <Tab.Container
+              activeKey={activeTab}
+              onSelect={(k) => {
+                setActiveTab(k);
+                setCurrentPage(1); // Reset page to 1 on tab switch
+              }}
+            >
+              {/* Navigation Tabs */}
+              <div className="parent-card-header mb-4">
+                <div className="d-flex justify-content-between align-items-center flex-wrap">
+                  <h3 className="parent-card-title">
+                    <FaClipboardList />
+                    Lịch sử y tế
+                  </h3>
+                  <Nav variant="pills" className="d-flex">
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="checkup"
+                        style={{
+                          background:
+                            activeTab === "checkup" ? "#2563eb" : "transparent",
+                          color:
+                            activeTab === "checkup"
+                              ? "white"
+                              : "var(--parent-primary)",
+                          border: `2px solid ${
+                            activeTab === "checkup"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
+                          }`,
+                          fontWeight: "600",
+                          borderRadius: "var(--parent-border-radius-lg)",
+                          padding: "0.75rem 1.5rem",
+                          margin: "0 0.25rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaStethoscope className="me-2" />
+                        Khám sức khỏe
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="vaccination"
+                        style={{
+                          background:
+                            activeTab === "vaccination"
+                              ? "#2563eb"
+                              : "transparent",
+                          color:
+                            activeTab === "vaccination"
+                              ? "white"
+                              : "var(--parent-primary)",
+                          border: `2px solid ${
+                            activeTab === "vaccination"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
+                          }`,
+                          fontWeight: "600",
+                          borderRadius: "var(--parent-border-radius-lg)",
+                          padding: "0.75rem 1.5rem",
+                          margin: "0 0.25rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaSyringe className="me-2" />
+                        Tiêm chủng
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="chart"
+                        style={{
+                          background:
+                            activeTab === "chart" ? "#2563eb" : "transparent",
+                          color:
+                            activeTab === "chart"
+                              ? "white"
+                              : "var(--parent-primary)",
+                          border: `2px solid ${
+                            activeTab === "chart"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
+                          }`,
+                          fontWeight: "600",
+                          borderRadius: "var(--parent-border-radius-lg)",
+                          padding: "0.75rem 1.5rem",
+                          margin: "0 0.25rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaChartBar className="me-2" />
+                        Theo dõi
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="medication"
+                        style={{
+                          background:
+                            activeTab === "medication"
+                              ? "#2563eb"
+                              : "transparent",
+                          color:
+                            activeTab === "medication"
+                              ? "white"
+                              : "var(--parent-primary)",
+                          border: `2px solid ${
+                            activeTab === "medication"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
+                          }`,
+                          fontWeight: "600",
+                          borderRadius: "var(--parent-border-radius-lg)",
+                          padding: "0.75rem 1.5rem",
+                          margin: "0 0.25rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaPills className="me-2" />
+                        Gửi thuốc
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="event"
+                        style={{
+                          background:
+                            activeTab === "event"
+                              ? "#2563eb"
+                              : "transparent",
+                          color:
+                            activeTab === "event"
+                              ? "white"
+                              : "var(--parent-primary)",
+                          border: `2px solid ${
+                            activeTab === "event"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
+                          }`,
+                          fontWeight: "600",
+                          borderRadius: "var(--parent-border-radius-lg)",
+                          padding: "0.75rem 1.5rem",
+                          margin: "0 0.25rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaPills className="me-2" />
+                        Sự kiện
+                      </Nav.Link>
+                    </Nav.Item>
+                  </Nav>
+                </div>
               </div>
-            </div>
 
-            <Tab.Content>
-              {/* Search Section */}
-              <div className="parent-card-body mb-4">
-                <Row>
-                  <Col md={8}>
-                    <Form.Group>
-                      <Form.Label className="parent-form-label">
-                        <FaSearch className="me-2" />
-                        Tìm kiếm lịch sử y tế
-                      </Form.Label>
-                      <div style={{ position: "relative" }}>
-                        <FaSearch
-                          style={{
-                            position: "absolute",
-                            left: "1rem",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            color: "var(--parent-primary)",
-                            zIndex: 2,
-                          }}
-                        />
-                        <Form.Control
-                          type="text"
+              <Tab.Content>
+                {/* Search Section */}
+                <div className="parent-card-body mb-4">
+                  <Row>
+                    <Col md={8}>
+                      <Form.Group>
+                        {/* <Form.Label className="parent-form-label">
+                          <FaSearch className="me-2" />
+                          Tìm kiếm lịch sử y tế
+                        </Form.Label> */}
+                        <div style={{ position: "relative" }}>
+                          <FaSearch
+                            style={{
+                              position: "absolute",
+                              left: "1rem",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              color: "var(--parent-primary)",
+                              zIndex: 2,
+                            }}
+                          />
+                          <Form.Control
+                            type="text"
+                            placeholder="Tìm theo tên học sinh, bác sĩ, kết luận, vắc-xin..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                              setSearchTerm(e.target.value);
+                              setCurrentPage(1);
+                            }}
+                            style={{ paddingLeft: "3rem" }}
+                          />
+                        </div>
+                      </Form.Group>
+                    </Col>
+                    <Col md={4} className="d-flex align-items-end">
+                      <Button
+                        className="parent-secondary-btn w-100"
+                        onClick={() => {
+                          setSearchTerm("");
+                          setCurrentPage(1);
+                        }}
+                      >
+                        <FaTimes className="me-2" />
+                        Xóa bộ lọc
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
 
-                          placeholder="Tìm theo tên học sinh, bác sĩ, kết luận, vắc-xin..."
-                          value={searchTerm}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setCurrentPage(1);
-                          }}
-                          style={{ paddingLeft: "3rem" }}
-                        />
+                {loading ? (
+                  <div className="text-center py-5">
+                    <div className="parent-spinner mb-3"></div>
+                    <h5
+                      style={{
+                        color: "var(--parent-primary)",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Đang tải dữ liệu...
+                    </h5>
+                    <p className="text-muted">Vui lòng chờ trong giây lát</p>
+                  </div>
+                ) : error ? (
+                  <div className="parent-alert parent-alert-danger">
+                    <FaExclamationCircle className="me-2" />
+                    {error}
+                  </div>
+                ) : (
+                  <>
+                    {/* Chart Section for Chart Tab */}
+                    {activeTab === "chart" && (
+                      <div
+                        className="parent-card mb-4"
+                        style={{
+                          background: "white",
+                          padding: "1.5rem",
+                          borderRadius: "var(--parent-border-radius-xl)",
+                          border: "1px solid rgba(37, 99, 235, 0.1)",
+                        }}
+                      >
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                          <h5
+                            className="mb-0"
+                            style={{
+                              color: "var(--parent-primary)",
+                              fontWeight: "700",
+                            }}
+                          >
+                            <FaChartBar className="me-2" />
+                            Biểu đồ phát triển chiều cao
+                          </h5>
+                          <Button
+                            className={
+                              showChart
+                                ? "parent-secondary-btn"
+                                : "parent-primary-btn"
+                            }
+                            onClick={() => setShowChart(!showChart)}
+                          >
+                            {showChart ? "Ẩn biểu đồ" : "Hiển thị biểu đồ"}
+                          </Button>
+                        </div>
+
+                        {showChart && (
+                          <div>
+                            {data.length > 0 ? (
+                              <Bar
+                                data={data.map((item) => ({
+                                  ...item,
+                                  date: new Date(item.date).toLocaleDateString(
+                                    "vi-VN"
+                                  ),
+                                  height: Number(item.height),
+                                }))}
+                                xField="date"
+                                yField="height"
+                                seriesField="studentName"
+                                colorField="studentName"
+                                xAxis={{
+                                  title: { text: "Ngày đo" },
+                                }}
+                                yAxis={{
+                                  title: { text: "Chiều cao (cm)" },
+                                }}
+                                height={320}
+                                legend={{ position: "top" }}
+                                barStyle={{
+                                  stroke: "#2563eb",
+                                  lineWidth: 1,
+                                  radius: [4, 4, 0, 0],
+                                }}
+                              />
+                            ) : (
+                              <div className="text-center py-5">
+                                <div
+                                  style={{
+                                    width: "80px",
+                                    height: "80px",
+                                    borderRadius: "50%",
+                                    background:
+                                      "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    margin: "0 auto 1.5rem",
+                                    fontSize: "2rem",
+                                    color: "#9ca3af",
+                                  }}
+                                >
+                                  <FaChartBar />
+                                </div>
+                                <h5
+                                  style={{
+                                    color: "var(--parent-primary)",
+                                    fontWeight: "700",
+                                  }}
+                                >
+                                  Không có dữ liệu để hiển thị biểu đồ
+                                </h5>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </Form.Group>
-                  </Col>
-                  <Col md={4} className="d-flex align-items-end">
-                    <Button
-                      className="parent-secondary-btn w-100"
-                      onClick={() => {
-                        setSearchTerm("");
-                        setCurrentPage(1);
-                      }}
-                    >
-                      <FaTimes className="me-2" />
-                      Xóa bộ lọc
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+                    )}
 
-              {loading ? (
-                <div className="text-center py-5">
-                  <div className="parent-spinner mb-3"></div>
-                  <h5
-                    style={{
-                      color: "var(--parent-primary)",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Đang tải dữ liệu...
-                  </h5>
-                  <p className="text-muted">Vui lòng chờ trong giây lát</p>
-                </div>
-              ) : error ? (
-                <div className="parent-alert parent-alert-danger">
-                  <FaExclamationCircle className="me-2" />
-                  {error}
-                </div>
-              ) : (
-                <>
-                  {/* Chart Section for Chart Tab */}
-                  {activeTab === "chart" && (
-                    <div className="parent-card mb-4" style={{ background: 'white', padding: '1.5rem', borderRadius: 'var(--parent-border-radius-xl)', border: '1px solid rgba(37, 99, 235, 0.1)' }}>
-                      <div className="d-flex justify-content-between align-items-center mb-3">
+                    {/* Data Table */}
+                    {data.length === 0 ? (
+                      <div className="text-center py-5">
+                        <div
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "50%",
+                            background:
+                              "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            margin: "0 auto 1.5rem",
+                            fontSize: "2rem",
+                            color: "#9ca3af",
+                          }}
+                        >
+                          <FaClipboardList />
+                        </div>
                         <h5
-                          className="mb-0"
                           style={{
                             color: "var(--parent-primary)",
                             fontWeight: "700",
+                            marginBottom: "0.5rem",
                           }}
                         >
-                          <FaChartBar className="me-2" />
-                          Biểu đồ phát triển chiều cao
+                          Không có dữ liệu
                         </h5>
-                        <Button
-                          className={
-                            showChart
-                              ? "parent-secondary-btn"
-                              : "parent-primary-btn"
-                          }
-                          onClick={() => setShowChart(!showChart)}
-                        >
-                          {showChart ? "Ẩn biểu đồ" : "Hiển thị biểu đồ"}
-                        </Button>
+                        <p className="text-muted">
+                          {searchTerm
+                            ? "Không tìm thấy dữ liệu phù hợp với từ khóa tìm kiếm"
+                            : "Chưa có dữ liệu cho tab này"}
+                        </p>
                       </div>
-
-                      {showChart && (
-                        <div>
-                          {data.length > 0 ? (
-                            <Bar
-                              data={data.map((item) => ({
-                                ...item,
-                                date: new Date(item.date).toLocaleDateString(
-                                  "vi-VN"
-                                ),
-                                height: Number(item.height),
-                              }))}
-                              xField="date"
-                              yField="height"
-                              seriesField="studentName"
-                              colorField="studentName"
-                              xAxis={{
-                                title: { text: "Ngày đo" },
-                              }}
-                              yAxis={{
-                                title: { text: "Chiều cao (cm)" },
-                              }}
-                              height={320}
-                              legend={{ position: "top" }}
-                              barStyle={{
-                                stroke: "#2563eb",
-                                lineWidth: 1,
-                                radius: [4, 4, 0, 0],
-                              }}
-                            />
-                          ) : (
-                            <div className="text-center py-5">
-                              <div
-                                style={{
-                                  width: "80px",
-                                  height: "80px",
-                                  borderRadius: "50%",
-                                  background:
-                                    "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  margin: "0 auto 1.5rem",
-                                  fontSize: "2rem",
-                                  color: "#9ca3af",
-                                }}
-                              >
-                                <FaChartBar />
-                              </div>
-                              <h5
-                                style={{
-                                  color: "var(--parent-primary)",
-                                  fontWeight: "700",
-                                }}
-                              >
-                                Không có dữ liệu để hiển thị biểu đồ
-                              </h5>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Data Table */}
-                  {filteredData.length === 0 ? (
-                    <div className="text-center py-5">
-                      <div
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          borderRadius: "50%",
-                          background:
-                            "linear-gradient(135deg, #e5e7eb, #f3f4f6)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          margin: "0 auto 1.5rem",
-                          fontSize: "2rem",
-                          color: "#9ca3af",
-                        }}
-                      >
-                        <FaClipboardList />
-                      </div>
-                      <h5
-                        style={{
-                          color: "var(--parent-primary)",
-                          fontWeight: "700",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        Không có dữ liệu
-                      </h5>
-                      <p className="text-muted">
-                        {searchTerm
-                          ? "Không tìm thấy dữ liệu phù hợp với từ khóa tìm kiếm"
-                          : "Chưa có dữ liệu cho tab này"}
-                      </p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="parent-table-container">
-                        <table className="parent-table">
-                          <thead>
-                            <tr>
-                              {activeTab === "checkup" && (
-                                <>
-                                  <th className="text-center">
-                                    <FaCalendarAlt className="me-2" />
-                                    Ngày khám
-                                  </th>
-                                  <th className="text-center">
-                                    <FaUser className="me-2" />
-                                    Học sinh
-                                  </th>
-                                  <th className="text-center">
-                                    <FaRulerVertical className="me-2" />
-                                    Chiều cao
-                                  </th>
-                                  <th className="text-center">
-                                    <FaWeight className="me-2" />
-                                    Cân nặng
-                                  </th>
-                                  <th className="text-center">BMI</th>
-                                  <th className="text-center">
-                                    <FaCheckCircle className="me-2" />
-                                    Kết luận
-                                  </th>
-                                  <th className="text-center">
-                                    <FaUserMd className="me-2" />
-                                    Bác sĩ
-                                  </th>
-                                  <th className="text-center">Thao tác</th>
-                                </>
-                              )}
-
-                              {activeTab === "vaccination" && (
-                                <>
-                                  <th className="text-center">
-                                    <FaCalendarAlt className="me-2" />
-                                    Ngày tiêm
-                                  </th>
-                                  <th className="text-center">
-                                    <FaUser className="me-2" />
-                                    Học sinh
-                                  </th>
-                                  <th className="text-center">
-                                    <FaSyringe className="me-2" />
-                                    Vắc-xin
-                                  </th>
-                                  <th className="text-center">
-                                    <FaBuilding className="me-2" />
-                                    Địa điểm
-                                  </th>
-                                  <th className="text-center">
-                                    <FaUserMd className="me-2" />
-                                    Bác sĩ
-                                  </th>
-                                  <th className="text-center">Thao tác</th>
-                                </>
-                              )}
-
-                              {activeTab === "chart" && (
-                                <>
-                                  <th className="text-center">
-                                    <FaUser className="me-2" />
-                                    Học sinh
-                                  </th>
-                                  <th className="text-center">
-                                    <FaCalendarAlt className="me-2" />
-                                    Ngày đo
-                                  </th>
-                                  <th className="text-center">
-                                    <FaRulerVertical className="me-2" />
-                                    Chiều cao (cm)
-                                  </th>
-                                </>
-                              )}
-
-                              {activeTab === "medication" && (
-                                <>
-                                  <th className="text-center">
-                                    <FaPills className="me-2" />
-                                    Mã đơn
-                                  </th>
-                                  <th className="text-center">
-                                    <FaUser className="me-2" />
-                                    Học sinh
-                                  </th>
-                                  <th className="text-center">
-                                    <FaPills className="me-2" />
-                                    Thuốc
-                                  </th>
-                                  <th className="text-center">
-                                    <FaCalendarAlt className="me-2" />
-                                    Ngày gửi
-                                  </th>
-                                  <th className="text-center">
-                                    <FaCheckCircle className="me-2" />
-                                    Trạng thái
-                                  </th>
-                                  <th className="text-center">Thao tác</th>
-                                </>
-                              )}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredData.map((item, index) => (
-                              <tr key={item.id || index}>
+                    ) : (
+                      <>
+                        <div className="parent-table-container">
+                          <table className="parent-table">
+                            <thead>
+                              <tr>
                                 {activeTab === "checkup" && (
                                   <>
-                                    <td className="text-center">
-                                      {new Date(item.date).toLocaleDateString(
-                                        "vi-VN"
-                                      )}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.studentName}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.height} cm
-                                    </td>
-                                    <td className="text-center">
-                                      {item.weight} kg
-                                    </td>
-                                    <td className="text-center">{item.bmi}</td>
-                                    <td className="text-center">
-                                      <Badge
-                                        className={getStatusConclusion(
-                                          item.conclusion
-                                        )}
-                                      >
-                                        {item.conclusion === "Healthy"
-                                          ? "Khỏe mạnh"
-                                          : item.conclusion === "Sick"
-                                          ? "Bệnh"
-                                          : "Cần chú ý"}
-                                      </Badge>
-                                    </td>
-                                    <td className="text-center">
-                                      {item.nurseName}
-                                    </td>
-                                    <td className="text-center">
-                                      <Button
-
-                                        size="sm"
-                                        className="action-btn"
-                                        onClick={() => handleShowDetail(item.id, "checkup")}
-                                        title="Xem chi tiết"
-                                      >
-                                        <FaEye className="me-1" />
-                                        Chi tiết
-                                      </Button>
-                                    </td>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Ngày khám
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaRulerVertical className="me-2" />
+                                      Chiều cao
+                                    </th>
+                                    <th className="text-center">
+                                      <FaWeight className="me-2" />
+                                      Cân nặng
+                                    </th>
+                                    <th className="text-center">BMI</th>
+                                    <th className="text-center">
+                                      <FaCheckCircle className="me-2" />
+                                      Kết luận
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUserMd className="me-2" />
+                                      Bác sĩ
+                                    </th>
+                                    <th className="text-center">Thao tác</th>
                                   </>
                                 )}
 
                                 {activeTab === "vaccination" && (
                                   <>
-                                    <td className="text-center">
-                                      {item.date
-                                        ? new Date(
-                                            item.date
-                                          ).toLocaleDateString("vi-VN")
-                                        : "-"}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.studentName}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.vaccineName}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.location}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.nurseName}
-                                    </td>
-                                    <td className="text-center">
-                                      <Button
-                                        size="sm"
-                                        className="action-btn"
-                                        onClick={() => handleShowDetail(item.id, "vaccination")}
-                                        title="Xem chi tiết"
-                                      >
-                                        <FaEye className="me-1" />
-                                        Chi tiết
-                                      </Button>
-                                    </td>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Ngày tiêm
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaSyringe className="me-2" />
+                                      Vắc-xin
+                                    </th>
+                                    <th className="text-center">
+                                      <FaBuilding className="me-2" />
+                                      Địa điểm
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUserMd className="me-2" />
+                                      Bác sĩ
+                                    </th>
+                                    <th className="text-center">Thao tác</th>
                                   </>
                                 )}
 
                                 {activeTab === "chart" && (
                                   <>
-                                    <td className="text-center">
-                                      {item.studentName}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.date
-                                        ? new Date(
-                                            item.date
-                                          ).toLocaleDateString("vi-VN")
-                                        : ""}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.height}
-                                    </td>
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Ngày đo
+                                    </th>
+                                    <th className="text-center">
+                                      <FaRulerVertical className="me-2" />
+                                      Chiều cao (cm)
+                                    </th>
                                   </>
                                 )}
 
                                 {activeTab === "medication" && (
                                   <>
-                                    <td className="text-center">{item.id}</td>
-                                    <td className="text-center">
-                                      {item.studentName}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.medications?.map((med, idx) => (
-                                        <div key={idx} className="small">
-                                          <strong>{med.medicationName}</strong>{" "}
-                                          - {med.dosage}
-                                        </div>
-                                      ))}
-                                    </td>
-                                    <td className="text-center">
-                                      {item.createdDate
-                                        ? new Date(
-                                            item.createdDate
-                                          ).toLocaleDateString("vi-VN")
-                                        : "-"}
-                                    </td>
-                                    <td className="text-center">
-                                      <Badge
-                                        className={getStatusClass(item.status)}
-                                      >
-                                        {item.status === "Active"
-                                          ? "Đang sử dụng"
-                                          : item.status === "Pending"
-                                          ? "Chờ xác nhận"
-                                          : item.status === "Completed"
-                                          ? "Đã hoàn thành"
-                                          : item.status}
-                                      </Badge>
-                                    </td>
-                                    <td className="text-center">
-                                      <Button
-                                        size="sm"
-                                        className="action-btn"
-                                        onClick={() => handleShowMedicationDetail(item.id)}
-                                        title="Xem chi tiết"
-                                      >
-                                        <FaEye className="me-1" />
-                                        Chi tiết
-                                      </Button>
-                                    </td>
+                                    <th className="text-center">
+                                      <FaPills className="me-2" />
+                                      Mã đơn
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaPills className="me-2" />
+                                      Thuốc
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Ngày gửi
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCheckCircle className="me-2" />
+                                      Trạng thái
+                                    </th>
+                                    <th className="text-center">Thao tác</th>
+                                  </>
+                                )}
+
+                                {activeTab === "event" && (
+                                  <>
+                                    {/* <th className="text-center">
+                                      <FaPills className="me-2" />
+                                      STT
+                                    </th> */}
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaPills className="me-2" />
+                                      Sự kiện
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Thời gian
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCheckCircle className="me-2" />
+                                      Địa điểm
+                                    </th>
+                                    <th className="text-center">Y tá</th>
                                   </>
                                 )}
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                            </thead>
+                            <tbody>
+                              {data.map((item, index) => (
+                                <tr key={item.id || index}>
+                                  {activeTab === "checkup" && (
+                                    <>
+                                      <td className="text-center">
+                                        {new Date(item.date).toLocaleDateString(
+                                          "vi-VN"
+                                        )}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.height} cm
+                                      </td>
+                                      <td className="text-center">
+                                        {item.weight} kg
+                                      </td>
+                                      <td className="text-center">
+                                        {item.bmi}
+                                      </td>
+                                      <td className="text-center">
+                                        <Badge
+                                          className={getStatusConclusion(
+                                            item.conclusion
+                                          )}
+                                        >
+                                          {item.conclusion === "Healthy"
+                                            ? "Khỏe mạnh"
+                                            : item.conclusion === "Sick"
+                                            ? "Bệnh"
+                                            : "Cần chú ý"}
+                                        </Badge>
+                                      </td>
+                                      <td className="text-center">
+                                        {item.nurseName}
+                                      </td>
+                                      <td className="text-center">
+                                        <Button
+                                          size="sm"
+                                          className="action-btn"
+                                          onClick={() =>
+                                            handleShowDetail(item.id, "checkup")
+                                          }
+                                          title="Xem chi tiết"
+                                        >
+                                          <FaEye className="me-1" />
+                                          Chi tiết
+                                        </Button>
+                                      </td>
+                                    </>
+                                  )}
 
-                      {/* Pagination */}
-                      {totalPages > 1 && (
-                        <div className="d-flex justify-content-center mt-4">
-                          <PaginationBar
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                          />
+                                  {activeTab === "vaccination" && (
+                                    <>
+                                      <td className="text-center">
+                                        {item.date
+                                          ? new Date(
+                                              item.date
+                                            ).toLocaleDateString("vi-VN")
+                                          : "-"}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.vaccineName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.location}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.nurseName}
+                                      </td>
+                                      <td className="text-center">
+                                        <Button
+                                          size="sm"
+                                          className="action-btn"
+                                          onClick={() =>
+                                            handleShowDetail(
+                                              item.id,
+                                              "vaccination"
+                                            )
+                                          }
+                                          title="Xem chi tiết"
+                                        >
+                                          <FaEye className="me-1" />
+                                          Chi tiết
+                                        </Button>
+                                      </td>
+                                    </>
+                                  )}
+
+                                  {activeTab === "chart" && (
+                                    <>
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.date
+                                          ? new Date(
+                                              item.date
+                                            ).toLocaleDateString("vi-VN")
+                                          : ""}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.height}
+                                      </td>
+                                    </>
+                                  )}
+
+                                  {activeTab === "medication" && (
+                                    <>
+                                      <td className="text-center">{item.id}</td>
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.medications?.map((med, idx) => (
+                                          <div key={idx} className="small">
+                                            <strong>
+                                              {med.medicationName}
+                                            </strong>{" "}
+                                            - {med.dosage}
+                                          </div>
+                                        ))}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.createdDate
+                                          ? new Date(
+                                              item.createdDate
+                                            ).toLocaleDateString("vi-VN")
+                                          : "-"}
+                                      </td>
+                                      <td className="text-center">
+                                        <Badge
+                                          className={getStatusClass(
+                                            item.status
+                                          )}
+                                        >
+                                          {item.status === "Active"
+                                            ? "Đang sử dụng"
+                                            : item.status === "Pending"
+                                            ? "Chờ xác nhận"
+                                            : item.status === "Completed"
+                                            ? "Đã hoàn thành"
+                                            : item.status}
+                                        </Badge>
+                                      </td>
+                                      <td className="text-center">
+                                        <Button
+                                          size="sm"
+                                          className="action-btn"
+                                          onClick={() =>
+                                            handleShowMedicationDetail(item.id)
+                                          }
+                                          title="Xem chi tiết"
+                                        >
+                                          <FaEye className="me-1" />
+                                          Chi tiết
+                                        </Button>
+                                      </td>
+                                    </>
+                                  )}
+                                  {/* Thêm sự kiện y tế của học sinh tại trường học */}
+                                  {activeTab === "event" && (
+                                    <>
+                                      {/* <td className="text-center">{index + 1}</td> */}
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.eventType}
+                                      </td>
+                                      <td className="text-center">
+                                        {formatDateTime(item.date)}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.location}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.nurseName}
+                                      </td>
+                                    </>
+                                  )}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-            </Tab.Content>
-          </Tab.Container>
-        </div>
-      </Container>
+
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                          <div className="d-flex justify-content-center mt-4">
+                            <PaginationBar
+                              currentPage={currentPage}
+                              totalPages={totalPages}
+                              onPageChange={handlePageChange}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
+              </Tab.Content>
+            </Tab.Container>
+          </div>
+        </Container>
       </div>
       {/* Detail Modal */}
       <Modal
@@ -902,23 +1077,27 @@ const HealthHistory = () => {
           ) : detail ? (
             <div>
               {activeTab === "checkup" ? (
-                <div style={{
-                  background: 'white',
-                  padding: '1.5rem',
-                  borderRadius: 'var(--parent-border-radius-lg)',
-                  border: '1px solid rgba(37, 99, 235, 0.1)',
-                  boxShadow: 'var(--parent-shadow-sm)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: '#2563eb'
-                  }}></div>
+                <div
+                  style={{
+                    background: "white",
+                    padding: "1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    border: "1px solid rgba(37, 99, 235, 0.1)",
+                    boxShadow: "var(--parent-shadow-sm)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#2563eb",
+                    }}
+                  ></div>
 
                   <Row>
                     <Col md={6}>
@@ -927,14 +1106,18 @@ const HealthHistory = () => {
                           <FaCalendarAlt className="me-2" />
                           Ngày khám:
                         </strong>
-                        <div style={{
-                          marginTop: '0.5rem',
-                          padding: '0.75rem',
-                          background: '#f8fafc',
-                          borderRadius: 'var(--parent-border-radius-md)',
-                          border: '1px solid rgba(37, 99, 235, 0.1)'
-                        }}>
-                          {detail.date ? new Date(detail.date).toLocaleDateString("vi-VN") : ""}
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background: "#f8fafc",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(37, 99, 235, 0.1)",
+                          }}
+                        >
+                          {detail.date
+                            ? new Date(detail.date).toLocaleDateString("vi-VN")
+                            : ""}
                         </div>
                       </div>
                       <div className="mb-3">
@@ -1041,20 +1224,33 @@ const HealthHistory = () => {
                         </strong>
                         <div className="mt-2">
                           <Badge
-                            className={`badge-status ${detail.conclusion === "Healthy" ? "healthy" :
-                              detail.conclusion === "Sick" ? "sick" : "pending"}`}
+                            className={`badge-status ${
+                              detail.conclusion === "Healthy"
+                                ? "healthy"
+                                : detail.conclusion === "Sick"
+                                ? "sick"
+                                : "pending"
+                            }`}
                             style={{
-                              background: detail.conclusion === "Healthy" ? '#059669' :
-                                detail.conclusion === "Sick" ? '#dc2626' : '#F59E0B',
-                              color: 'white',
-                              padding: '0.75rem 1.5rem',
-                              borderRadius: 'var(--parent-border-radius-lg)',
-                              fontWeight: '600',
-                              fontSize: '1rem',
-                              border: 'none'
-                            }}>
-                            {detail.conclusion === "Healthy" ? "Khỏe mạnh" :
-                              detail.conclusion === "Sick" ? "Bệnh" : "Cần chú ý"}
+                              background:
+                                detail.conclusion === "Healthy"
+                                  ? "#059669"
+                                  : detail.conclusion === "Sick"
+                                  ? "#dc2626"
+                                  : "#F59E0B",
+                              color: "white",
+                              padding: "0.75rem 1.5rem",
+                              borderRadius: "var(--parent-border-radius-lg)",
+                              fontWeight: "600",
+                              fontSize: "1rem",
+                              border: "none",
+                            }}
+                          >
+                            {detail.conclusion === "Healthy"
+                              ? "Khỏe mạnh"
+                              : detail.conclusion === "Sick"
+                              ? "Bệnh"
+                              : "Cần chú ý"}
                           </Badge>
                         </div>
                       </div>
@@ -1190,20 +1386,34 @@ const HealthHistory = () => {
                         </strong>
                         <div className="mt-2">
                           <Badge
-                            className={`badge-status ${detail.result === "Successful" ? "successful" :
-                              detail.result === "Rejected" ? "rejected" : "pending"}`}
+                            className={`badge-status ${
+                              detail.result === "Successful"
+                                ? "successful"
+                                : detail.result === "Rejected"
+                                ? "rejected"
+                                : "pending"
+                            }`}
                             style={{
-                              background: detail.result === "Successful" ? '#059669' :
-                                detail.result === "Rejected" ? '#dc2626' : '#F59E0B',
-                              color: 'white',
-                              padding: '0.5rem 1rem',
-                              borderRadius: 'var(--parent-border-radius-lg)',
-                              fontWeight: '600',
-                              border: 'none'
-                            }}>
-                            {detail.result === "Successful" ? "Đã tiêm" :
-                              detail.result === "Pending" ? "Chờ tiêm" :
-                                detail.result === "Rejected" ? "Đã từ chối" : detail.result}
+                              background:
+                                detail.result === "Successful"
+                                  ? "#059669"
+                                  : detail.result === "Rejected"
+                                  ? "#dc2626"
+                                  : "#F59E0B",
+                              color: "white",
+                              padding: "0.5rem 1rem",
+                              borderRadius: "var(--parent-border-radius-lg)",
+                              fontWeight: "600",
+                              border: "none",
+                            }}
+                          >
+                            {detail.result === "Successful"
+                              ? "Đã tiêm"
+                              : detail.result === "Pending"
+                              ? "Chờ tiêm"
+                              : detail.result === "Rejected"
+                              ? "Đã từ chối"
+                              : detail.result}
                           </Badge>
                         </div>
                       </div>
@@ -1440,22 +1650,37 @@ const HealthHistory = () => {
                 <Col xs={12}>
                   <div className="mb-3 text-center">
                     <Badge
-                      className={`badge-status ${medicationDetail.status === "Completed" ? "completed" :
-                        medicationDetail.status === "Rejected" ? "rejected" :
-                          medicationDetail.status === "Active" ? "active" : "pending"}`}
+                      className={`badge-status ${
+                        medicationDetail.status === "Completed"
+                          ? "completed"
+                          : medicationDetail.status === "Rejected"
+                          ? "rejected"
+                          : medicationDetail.status === "Active"
+                          ? "active"
+                          : "pending"
+                      }`}
                       style={{
-                        background: medicationDetail.status === "Completed" ? '#059669' :
-                          medicationDetail.status === "Rejected" ? '#dc2626' : '#F59E0B',
-                        color: 'white',
-                        padding: '0.75rem 1.5rem',
-                        borderRadius: 'var(--parent-border-radius-lg)',
-                        fontWeight: '600',
-                        fontSize: '1rem',
-                        border: 'none'
-                      }}>
-                      {medicationDetail.status === "Completed" ? "Đã hoàn thành" :
-                        medicationDetail.status === "Active" ? "Đang sử dụng" :
-                          medicationDetail.status === "Pending" ? "Chờ xác nhận" : medicationDetail.status}
+                        background:
+                          medicationDetail.status === "Completed"
+                            ? "#059669"
+                            : medicationDetail.status === "Rejected"
+                            ? "#dc2626"
+                            : "#F59E0B",
+                        color: "white",
+                        padding: "0.75rem 1.5rem",
+                        borderRadius: "var(--parent-border-radius-lg)",
+                        fontWeight: "600",
+                        fontSize: "1rem",
+                        border: "none",
+                      }}
+                    >
+                      {medicationDetail.status === "Completed"
+                        ? "Đã hoàn thành"
+                        : medicationDetail.status === "Active"
+                        ? "Đang sử dụng"
+                        : medicationDetail.status === "Pending"
+                        ? "Chờ xác nhận"
+                        : medicationDetail.status}
                     </Badge>
                   </div>
                   <div className="mb-3">
@@ -1519,7 +1744,6 @@ const HealthHistory = () => {
         </Modal.Footer>
       </Modal>
     </div>
-   
   );
 };
 

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Runtime.InteropServices;
 using backend.Interfaces;
 using backend.Models;
@@ -11,11 +12,13 @@ namespace backend.Services
         private readonly IUserRepository _userRepository;
         private readonly IWebHostEnvironment _environment;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor)
+        private readonly IStudentService _studentService;
+        public UserService(IUserRepository userRepository, IWebHostEnvironment environment, IHttpContextAccessor httpContextAccessor, IStudentService studentService)
         {
             _userRepository = userRepository;
             _environment = environment;
             _httpContextAccessor = httpContextAccessor;
+            _studentService = studentService;
         }
 
         public async Task<bool> CreateUserAsync(CreateUserRequest userRequest)
@@ -67,12 +70,28 @@ namespace backend.Services
         }
         public async Task<bool> DeleteUserAsync(int id)
         {
+            var students = await _studentService.GetStudentIdsByParentIdAsync(id);
+            foreach (var student in students)
+            {
+               await _studentService.DeleteStudentAsync(student.Id);
+            }
             return await _userRepository.DeleteUserAsync(id);
         }
         public async Task<PageResult<UserDTO>> GetAllUsersAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _userRepository.CountUsersAsync(search);
-            var users = await _userRepository.GetAllUsersAsync(pageNumber, pageSize, search);
+            DateOnly? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _userRepository.CountUsersAsync(search, searchDate);
+            var users = await _userRepository.GetAllUsersAsync(pageNumber, pageSize, search, searchDate);
 
             var userDtos = users.Select(MapToUserDTO).ToList();
 
@@ -86,9 +105,20 @@ namespace backend.Services
         }
         public async Task<PageResult<UserDTO>> GetUsersByRoleAsync(string role, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _userRepository.CountUsersByRoleAsync(role, search);
+            DateOnly? searchDate = null;
+            bool isDate = false;
 
-            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _userRepository.CountUsersByRoleAsync(role, search, searchDate);
+
+            var users = await _userRepository.GetUsersByRoleAsync(role, pageNumber, pageSize, search, searchDate);
 
             var userDtos = users.Select(MapToUserDTO).ToList();
 

@@ -147,8 +147,12 @@ header.app-header {
 
 .account-avatar {
     font-size: 1.8rem !important;
-    color: #2563eb !important;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    /* color: #cbced4 !important; */
     transition: all 0.3s ease !important;
+    object-fit: "cover" !important;
 }
 
 .app-header-account .account-avatar {

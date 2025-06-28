@@ -28,7 +28,6 @@ import AdminAccounts from "./pages/admin/Accounts";
 
 import AdminMedicineInventory from "./pages/admin/MedicineInventory";
 
-
 import AdminReports from "./pages/admin/Reports";
 import AdminProfile from "./pages/admin/Profile";
 import AdminSettings from "./pages/admin/Settings";
@@ -67,6 +66,7 @@ import BlogPostList from "./pages/admin/BlogPostList";
 import CreateBlogPost from "./pages/admin/CreateBlogPost";
 import EditBlogPost from "./pages/admin/EditBlogPost";
 import EditProfile from "./pages/admin/EditProfile";
+import { AvatarProvider } from "./context/AvatarContext";
 
 // Google OAuth Configuration
 const GOOGLE_CLIENT_ID =
@@ -76,9 +76,9 @@ const GOOGLE_CLIENT_ID =
 const App = () => {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Router>
-        <AuthProvider>
-          <NotificationProvider>
+      <AvatarProvider>
+        <Router>
+          <AuthProvider>
             <ToastContainer
               position="top-right"
               autoClose={3000}
@@ -114,7 +114,6 @@ const App = () => {
                   <Route path="admin">
                     <Route index element={<AdminDashboard />} />
                     <Route path="accounts" element={<AdminAccounts />} />
-
 
                     <Route
                       path="medicines/inventory"
@@ -170,7 +169,10 @@ const App = () => {
                     <Route path="settings" element={<ParentSettings />} />
                     <Route path="blog/:id" element={<BlogDetail />} />
                     <Route path="more-know" element={<MoreKnow />} />
-                    <Route path="health-check" element={<StudentHealthCheck />} />
+                    <Route
+                      path="health-check"
+                      element={<StudentHealthCheck />}
+                    />
                   </Route>
 
                   {/* Public Pages (accessible when logged in) */}
@@ -184,9 +186,9 @@ const App = () => {
               {/* Catch-all route */}
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-          </NotificationProvider>
-        </AuthProvider>
-      </Router>
+          </AuthProvider>
+        </Router>
+      </AvatarProvider>
     </GoogleOAuthProvider>
   );
 };

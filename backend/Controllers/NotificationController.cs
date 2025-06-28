@@ -87,22 +87,16 @@ namespace backend.Controllers
             }
         }
         [HttpGet("admin/{id}")]
-        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id, int pageNumber, int pageSize, string? search)
+        public async Task<IActionResult> GetNotificationDetailAdminDTO(int id)
         {
             try
             {
-                var notification = await _notificationService
-                    .GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize, search);
-
+                var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
                 if (notification == null)
                 {
                     return NotFound(new BaseResponse<string>(null, "Thông báo không tồn tại", false));
                 }
-
-                return Ok(new BaseResponse<NotificationDetailAdminDTO>(
-                    notification,
-                    "Lấy thông tin chi tiết thông báo thành công",
-                    true));
+                return Ok(new BaseResponse<NotificationDetailAdminDTO>(notification, "Lấy thông tin chi tiết thông báo thành công", true));
             }
             catch (Exception ex)
             {

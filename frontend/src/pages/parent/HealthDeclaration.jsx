@@ -10,9 +10,9 @@ import {
   Alert,
   Modal,
   Tab,
-  Nav
+  Nav,
 } from "react-bootstrap";
-import healthBgImage from '../../assets/nenkhaibaoyte.jpg';
+import healthBgImage from "../../assets/nenkhaibaoyte.jpg";
 import {
   FaUser,
   FaCheckCircle,
@@ -27,12 +27,15 @@ import {
   FaHistory,
   FaClipboardList,
   FaUserMd,
-  FaTimesCircle
+  FaTimesCircle,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
 import "../../styles/parent/parent-healthdeclaration-redesign.css";
+import { StudentProfileDeclarationHistory } from "../../api/parent/HealthDeclarationApi";
+import { formatDDMMYYYY } from "../../utils/dateFormatter";
+import PaginationBar from "../../components/common/PaginationBar";
 
 const HealthDeclaration = () => {
   const { user } = useAuth();
@@ -52,19 +55,31 @@ const HealthDeclaration = () => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(null);
   const [declarationHistory, setDeclarationHistory] = useState([]);
-  const [activeTab, setActiveTab] = useState('declare');
+  const [activeTab, setActiveTab] = useState("declare");
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDeclaration, setSelectedDeclaration] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 5;
 
   // Hàm fetch lịch sử khai báo y tế
   const fetchDeclarationHistory = async (parentId) => {
     try {
       // TODO: Backend endpoint not implemented yet
-      // const response = await axiosInstance.get(`/api/StudentProfile/by-parent/${parentId}`);
-      // setDeclarationHistory(response.data.data || []);
+      const res = await StudentProfileDeclarationHistory(
+        parentId,
+        currentPage,
+        pageSize
+      );
+      if (res && Array.isArray(res.items)) {
+        setDeclarationHistory(res.items || []);
+        // Cập nhật tổng số trang nếu có thông tin
+        setTotalPages(res.totalPages || 1);
+      } else {
+        // Temporarily set empty array until backend endpoint is implemented
+        setDeclarationHistory([]);
+      }
 
-      // Temporarily set empty array until backend endpoint is implemented
-      setDeclarationHistory([]);
       // Declaration history feature is temporarily disabled - backend endpoint not implemented
     } catch (err) {
       console.error("Error fetching declaration history:", err);
@@ -73,23 +88,31 @@ const HealthDeclaration = () => {
   };
 
   useEffect(() => {
+    fetchDeclarationHistory(user?.id);
+  }, [currentPage])
+
+  useEffect(() => {
     const fetchStudentsAndHistory = async () => {
       if (!user?.id) return;
 
       try {
         const parentId = user.id;
         // Fetch students
-        const response = await axiosInstance.get(`/Students/by-parent/${parentId}`);
-        setStudents(Array.isArray(response.data.data) ? response.data.data : []);
+        const response = await axiosInstance.get(
+          `/Students/by-parent/${parentId}`
+        );
+        setStudents(
+          Array.isArray(response.data.data) ? response.data.data : []
+        );
         setLoading(false);
         // Fetch declaration history (temporarily disabled - backend endpoint not implemented)
-        await fetchDeclarationHistory(parentId);
+        // await fetchDeclarationHistory(parentId);
       } catch (err) {
         console.error("Error fetching students and history:", err);
         setError(
           err.response?.data?.message ||
-          err.response?.statusText ||
-          "Không thể tải danh sách học sinh. Vui lòng thử lại sau."
+            err.response?.statusText ||
+            "Không thể tải danh sách học sinh. Vui lòng thử lại sau."
         );
         setStudents([]);
         setLoading(false);
@@ -138,12 +161,17 @@ const HealthDeclaration = () => {
       toast.error("Vui lòng chọn học sinh.");
       hasError = true;
     }
-    if (!formData.allergys && !formData.chronicIllnesss && !formData.longTermMedications && !formData.otherMedicalConditions) {
+    if (
+      !formData.allergys &&
+      !formData.chronicIllnesss &&
+      !formData.longTermMedications &&
+      !formData.otherMedicalConditions
+    ) {
       toast.error("Vui lòng nhập ít nhất một thông tin y tế.");
       hasError = true;
     }
     if (hasError) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -157,8 +185,13 @@ const HealthDeclaration = () => {
       otherMedicalConditions: formData.otherMedicalConditions || "none",
     };
 
+    console.log("Data to submit:", dataToSubmit);
+
     try {
-      const response = await axiosInstance.post("/StudentProfile/declare", dataToSubmit);
+      const response = await axiosInstance.post(
+        "/StudentProfile/declare",
+        dataToSubmit
+      );
 
       if (response.data.success) {
         toast.success("Khai báo y tế thành công!");
@@ -176,10 +209,11 @@ const HealthDeclaration = () => {
         setSelectedStudent(null);
 
         // Cập nhật lại lịch sử
+        setCurrentPage(1);
         await fetchDeclarationHistory(user.id);
 
         // Chuyển sang tab lịch sử
-        setActiveTab('history');
+        setActiveTab("history");
       } else {
         toast.error(response.data.message || "Không thể gửi khai báo.");
       }
@@ -187,8 +221,8 @@ const HealthDeclaration = () => {
       console.error("Error submitting health declaration:", err);
       toast.error(
         err.response?.data?.message ||
-        err.response?.statusText ||
-        "Không thể kết nối đến server."
+          err.response?.statusText ||
+          "Không thể kết nối đến server."
       );
     } finally {
       setSubmitLoading(false);
@@ -211,14 +245,17 @@ const HealthDeclaration = () => {
   };
 
   return (
-    <div className="health-declaration-page animate-fade-in" style={{
-      // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.925), rgba(255, 255, 255, 0.2)), url(${healthBgImage})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      backgroundAttachment: 'fixed',
-      minHeight: '100vh'
-    }}>
+    <div
+      className="health-declaration-page animate-fade-in"
+      style={{
+        // backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.925), rgba(255, 255, 255, 0.2)), url(${healthBgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+      }}
+    >
       {/* Hero Header */}
       <div className="health-hero-header animate-slide-in-down">
         <Container>
@@ -230,7 +267,8 @@ const HealthDeclaration = () => {
               Khai báo sức khỏe học sinh
             </h1>
             <p className="health-hero-subtitle animate-fade-in-up delay-300">
-              Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm sóc và hỗ trợ tốt nhất cho con bạn
+              Khai báo thông tin sức khỏe của học sinh để nhà trường có thể chăm
+              sóc và hỗ trợ tốt nhất cho con bạn
             </p>
           </div>
         </Container>
@@ -240,14 +278,25 @@ const HealthDeclaration = () => {
       <Container className="health-main-container">
         <Row className="justify-content-center">
           <Col lg={10}>
-            <div className="health-form-wrapper animate-scale-in-center delay-500 animate-card" style={{ backgroundColor: 'white', padding: '1rem', marginTop: '-2rem', border: '1px solid #2563eb', borderRadius: '10px' }}>
+            <div
+              className="health-form-wrapper animate-scale-in-center delay-500 animate-card"
+              style={{
+                backgroundColor: "white",
+                padding: "1rem",
+                marginTop: "-2rem",
+                border: "1px solid #2563eb",
+                borderRadius: "10px",
+              }}
+            >
               {/* Tab Navigation */}
               <div className="health-tab-navigation">
                 <div className="health-nav-pills">
                   <div className="health-nav-item animate-fade-in-up delay-700">
                     <button
-                      className={`health-nav-link animate-button-hover ${activeTab === 'declare' ? 'active' : ''}`}
-                      onClick={() => setActiveTab('declare')}
+                      className={`health-nav-link animate-button-hover ${
+                        activeTab === "declare" ? "active" : ""
+                      }`}
+                      onClick={() => setActiveTab("declare")}
                     >
                       <div className="nav-icon animate-scale-hover">
                         <FaHeartbeat />
@@ -257,8 +306,13 @@ const HealthDeclaration = () => {
                   </div>
                   <div className="health-nav-item animate-fade-in-up delay-1000">
                     <button
-                      className={`health-nav-link animate-button-hover ${activeTab === 'history' ? 'active' : ''}`}
-                      onClick={() => setActiveTab('history')}
+                      className={`health-nav-link animate-button-hover ${
+                        activeTab === "history" ? "active" : ""
+                      }`}
+                      onClick={() => {
+                        setActiveTab("history");
+                        fetchDeclarationHistory(user.id);
+                      }}
                     >
                       <div className="nav-icon animate-scale-hover">
                         <FaHistory />
@@ -271,7 +325,7 @@ const HealthDeclaration = () => {
 
               {/* Tab Content */}
               <div className="health-tab-content">
-                {activeTab === 'declare' && (
+                {activeTab === "declare" && (
                   <Form onSubmit={handleSubmit}>
                     {/* Student Selection Section */}
                     <div className="health-form-section animate-fade-in-up delay-700">
@@ -411,7 +465,11 @@ const HealthDeclaration = () => {
                       >
                         {submitLoading ? (
                           <>
-                            <Spinner animation="border" size="sm" className="animate-spin" />
+                            <Spinner
+                              animation="border"
+                              size="sm"
+                              className="animate-spin"
+                            />
                             Đang gửi...
                           </>
                         ) : (
@@ -425,14 +483,21 @@ const HealthDeclaration = () => {
                   </Form>
                 )}
 
-                {activeTab === 'history' && (
+                {activeTab === "history" && (
                   <>
                     {declarationHistory.length === 0 ? (
                       <div className="health-empty-state animate-fade-in-up">
-                        <FaClipboardList size={64} className="health-empty-icon animate-bounce" />
-                        <h4 className="health-empty-title animate-fade-in-up delay-200">Tính năng đang phát triển</h4>
+                        <FaClipboardList
+                          size={64}
+                          className="health-empty-icon animate-bounce"
+                        />
+                        <h4 className="health-empty-title animate-fade-in-up delay-200">
+                          Tính năng đang phát triển
+                        </h4>
                         <p className="health-empty-description animate-fade-in-up delay-300">
-                          Tính năng xem lịch sử khai báo y tế hiện đang được phát triển. Vui lòng quay lại sau hoặc liên hệ với nhà trường để được hỗ trợ.
+                          Tính năng xem lịch sử khai báo y tế hiện đang được
+                          phát triển. Vui lòng quay lại sau hoặc liên hệ với nhà
+                          trường để được hỗ trợ.
                         </p>
                       </div>
                     ) : (
@@ -443,37 +508,47 @@ const HealthDeclaration = () => {
                               <th>STT</th>
                               <th>Học sinh</th>
                               <th>Lớp</th>
-                              <th>Ngày khai báo</th>
-                              <th>Trạng thái</th>
-                              <th>Thao tác</th>
+                              <th>Cập nhật lần cuối</th>
+                              <th>Dị ứng</th>
+                              <th>Bệnh mãng tính</th>
+                              <th>Thuốc dài hạn</th>
+                              <th>Tình trạng khác</th>
                             </tr>
                           </thead>
                           <tbody>
                             {declarationHistory.map((item, index) => (
-                              <tr key={item.id} className="animate-stagger-fade-in">
+                              <tr
+                                key={item.id}
+                                className="animate-stagger-fade-in"
+                              >
                                 <td>{index + 1}</td>
                                 <td>{item.studentName}</td>
                                 <td>{item.className}</td>
-                                <td>{formatDate(item.createdAt)}</td>
+                                <td>{formatDDMMYYYY(item.declarationDate)}</td>
                                 <td>
-                                  <div className="health-status-badge animate-pulse">
-                                    <FaCheckCircle />
-                                    Đã nộp
-                                  </div>
+                                  {item.allergys || "Không có"}
                                 </td>
                                 <td>
-                                  <button
-                                    className="health-view-button animate-button-hover animate-scale-hover"
-                                    onClick={() => handleViewDetail(item)}
-                                  >
-                                    <FaEye />
-                                    Xem chi tiết
-                                  </button>
+                                  {item.chronicIllnesss || "Không có"}
+                                </td>
+                                <td>
+                                  {item.longTermMedications || "Không có"}
+                                </td>
+                                <td>
+                                  {item.otherMedicalConditions || "Không có"}
                                 </td>
                               </tr>
                             ))}
                           </tbody>
                         </Table>
+                        <PaginationBar
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPageChange={ (page) => {
+                            if (page < 1 || page > totalPages) return;
+                            setCurrentPage(page);
+                          }}
+                        />
                       </div>
                     )}
                   </>
@@ -491,7 +566,11 @@ const HealthDeclaration = () => {
         size="lg"
         className="health-modal"
       >
-        <div className={showDetailModal ? 'animate-modal-enter' : 'animate-modal-exit'}>
+        <div
+          className={
+            showDetailModal ? "animate-modal-enter" : "animate-modal-exit"
+          }
+        >
           <Modal.Header closeButton>
             <Modal.Title>
               <FaStethoscope className="animate-pulse" />
@@ -511,15 +590,21 @@ const HealthDeclaration = () => {
                   <div className="health-info-grid">
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Họ tên:</div>
-                      <div className="health-info-value">{selectedDeclaration.studentName}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.studentName}
+                      </div>
                     </div>
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Lớp:</div>
-                      <div className="health-info-value">{selectedDeclaration.className}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.className}
+                      </div>
                     </div>
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Ngày khai báo:</div>
-                      <div className="health-info-value">{formatDate(selectedDeclaration.createdAt)}</div>
+                      <div className="health-info-value">
+                        {formatDate(selectedDeclaration.createdAt)}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -534,19 +619,28 @@ const HealthDeclaration = () => {
                   <div className="health-info-grid">
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Dị ứng:</div>
-                      <div className="health-info-value">{selectedDeclaration.allergys || 'Không có'}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.allergys || "Không có"}
+                      </div>
                     </div>
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Bệnh mãn tính:</div>
-                      <div className="health-info-value">{selectedDeclaration.chronicIllnesss || 'Không có'}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.chronicIllnesss || "Không có"}
+                      </div>
                     </div>
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Thuốc dài hạn:</div>
-                      <div className="health-info-value">{selectedDeclaration.longTermMedications || 'Không có'}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.longTermMedications || "Không có"}
+                      </div>
                     </div>
                     <div className="health-info-item animate-stagger-fade-in">
                       <div className="health-info-label">Tình trạng khác:</div>
-                      <div className="health-info-value">{selectedDeclaration.otherMedicalConditions || 'Không có'}</div>
+                      <div className="health-info-value">
+                        {selectedDeclaration.otherMedicalConditions ||
+                          "Không có"}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -569,8 +663,13 @@ const HealthDeclaration = () => {
       {loading && (
         <div className="health-loading-overlay animate-backdrop-enter">
           <div className="health-loading-card animate-scale-in-center">
-            <Spinner animation="border" className="health-loading-spinner animate-spin" />
-            <h5 className="health-loading-text animate-fade-in-up delay-300">Đang tải danh sách học sinh...</h5>
+            <Spinner
+              animation="border"
+              className="health-loading-spinner animate-spin"
+            />
+            <h5 className="health-loading-text animate-fade-in-up delay-300">
+              Đang tải danh sách học sinh...
+            </h5>
           </div>
         </div>
       )}

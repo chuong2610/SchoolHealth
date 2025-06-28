@@ -1,4 +1,5 @@
 using backend.Interfaces;
+using backend.Models;
 using backend.Models.DTO;
 using backend.Repositories;
 
@@ -24,5 +25,9 @@ namespace backend.Services
             return result;
         }
 
+        public Task<Class?> GetClassByNameAsync(string className)
+        {
+            return _classRepository.GetClassByNameAsync(className);
+        }
     }
 }

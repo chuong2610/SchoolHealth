@@ -15,7 +15,7 @@ namespace backend.Repositories
             _context = context;
         }
 
-        public async Task<List<NotificationStudent>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -24,13 +24,21 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query
@@ -40,7 +48,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountNotificationsByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -48,13 +56,21 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query.CountAsync();
@@ -72,7 +88,8 @@ namespace backend.Repositories
         //         .Take(pageSize)
         //         .ToListAsync();
         // }
-        public async Task<List<NotificationStudent>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetHealthChecksNotificationsByParentIdAsync(
+            int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -82,13 +99,21 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query
@@ -97,7 +122,7 @@ namespace backend.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
-        public async Task<int> CountHealthChecksNotificationsByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountHealthChecksNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -106,18 +131,27 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query.CountAsync();
         }
-        public async Task<List<NotificationStudent>> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        public async Task<List<NotificationStudent>> GetVaccinationsNotificationsByParentIdAsync(
+            int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -127,13 +161,21 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query
@@ -142,7 +184,7 @@ namespace backend.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
-        public async Task<int> CountVaccinationsNotificationsByParentIdAsync(int parentId, string? search)
+        public async Task<int> CountVaccinationsNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate)
         {
             var query = _context.NotificationStudents
                 .Include(ns => ns.Notification)
@@ -151,13 +193,21 @@ namespace backend.Repositories
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(ns => ns.Notification.Title.Contains(search) ||
-                                          ns.Student.Name.Contains(search) ||
-                                          ns.Status.Contains(search) ||
-                                          ns.Notification.Name.Contains(search) ||
-                                          ns.Notification.Message.Contains(search) ||
-                                          ns.Notification.CreatedAt.Date.ToString().Contains(search) ||
-                                          ns.Notification.Type.Contains(search));
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query.CountAsync();
@@ -172,7 +222,7 @@ namespace backend.Repositories
         }
 
 
-        public async Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search)
+        public async Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.Notifications
                 .Include(n => n.NotificationStudents)
@@ -187,9 +237,15 @@ namespace backend.Repositories
                                          n.Type.Contains(search) ||
                                          n.Message.Contains(search) ||
                                          n.ClassName.Contains(search) ||
-                                         n.CreatedAt.ToString().Contains(search) ||
                                          n.Id.ToString().Contains(search));
             }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.CreatedAt.Date == searchDate.Value.Date
+                );
+            }
+
 
             return await query
                 .OrderByDescending(n => n.Id)
@@ -198,7 +254,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountNotificationsAsync(string? search)
+        public async Task<int> CountNotificationsAsync(string? search, DateTime? searchDate)
         {
             var query = _context.Notifications
                .Include(n => n.NotificationStudents)
@@ -213,8 +269,13 @@ namespace backend.Repositories
                                          n.Type.Contains(search) ||
                                          n.Message.Contains(search) ||
                                          n.ClassName.Contains(search) ||
-                                         n.CreatedAt.ToString().Contains(search) ||
                                          n.Id.ToString().Contains(search));
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.CreatedAt.Date == searchDate.Value.Date
+                );
             }
 
             return await query.CountAsync();

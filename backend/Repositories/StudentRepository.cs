@@ -29,14 +29,16 @@ namespace backend.Repositories
         {
             return await _context.Students
             .Include(s => s.Class)
-            .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
+             .Include(s => s.Parent)
+            .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber && s.Parent.IsActive);
         }
 
         public async Task<Student?> GetByIdAsync(int id)
         {
             return await _context.Students
                 .Include(s => s.Class)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .Include(s => s.Parent)
+                .FirstOrDefaultAsync(s => s.Id == id && s.Parent.IsActive);
         }
 
         public async Task<bool> CreateAsync(Student student)
@@ -55,26 +57,20 @@ namespace backend.Repositories
         public async Task<int> GetNumberOfStudents()
         {
             return await _context.Students
+                .Where(s => s.IsActive && s.Parent.IsActive)
                 .CountAsync(s => s.IsActive);
         }
         public async Task<List<Student>> GetStudentsByClassIdAsync(int classId)
         {
             return await _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .ToListAsync();
         }
 
-        public async Task<User> GetParentByStudentIdAsync(int studentId)
-        {
-            var student = await _context.Students.FindAsync(studentId);
-            if (student?.ParentId == null) return null;
-            return await _context.Users.FindAsync(student.ParentId);
-        }
-
-        public async Task<List<Student>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
+        public async Task<List<Student>> GetStudentByClassIdAsync(int classId, int pageNumber, int pageSize, string? search, DateOnly? searchDate)
         {
             var query = _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .Include(s => s.Parent)
                 .Include(s => s.Class)
                 .AsNoTracking();
@@ -85,9 +81,12 @@ namespace backend.Repositories
 
                 query = query.Where(s => s.Name.Contains(search) ||
                                          s.Class.ClassName.Contains(search) ||
-                                         s.DateOfBirth.ToString().Contains(search) ||
                                          s.StudentNumber.Contains(search) ||
                                          s.Gender.ToLower() == searchLower);
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
             }
 
             return await query
@@ -97,10 +96,10 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountStudentsAsync(int classId, string? search)
+        public async Task<int> CountStudentsAsync(int classId, string? search, DateOnly? searchDate)
         {
             var query = _context.Students
-                .Where(s => s.ClassId == classId)
+                .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)
                 .Include(s => s.Parent)
                 .Include(s => s.Class)
                 .AsNoTracking();
@@ -111,10 +110,13 @@ namespace backend.Repositories
 
                 query = query.Where(s => s.Name.Contains(search) ||
                                          s.Class.ClassName.Contains(search) ||
-                                         s.DateOfBirth.ToString().Contains(search) ||
                                          s.StudentNumber.Contains(search) ||
                                          s.Gender.ToLower() == searchLower ||
                                          s.Parent.Name.Contains(search));
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(s => s.DateOfBirth == searchDate.Value);
             }
 
             return await query.CountAsync();

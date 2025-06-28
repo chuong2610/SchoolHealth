@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Interfaces;
 using backend.Models;
 using backend.Models.DTO;
@@ -12,14 +13,16 @@ namespace backend.Services
         private readonly INotificationService _notificationService;
         private readonly IHealthCheckService _healthCheckService;
         private readonly IVaccinationService _vaccinationService;
+        private readonly IClassService _classService;
 
-        public ExcelService(IStudentService studentService, IUserService userService, INotificationService notificationService, IHealthCheckService healthCheckService, IVaccinationService vaccinationService)
+        public ExcelService(IStudentService studentService, IUserService userService, INotificationService notificationService, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IClassService classService)
         {
             _studentService = studentService;
             _userService = userService;
             _notificationService = notificationService;
             _healthCheckService = healthCheckService;
             _vaccinationService = vaccinationService;
+            _classService = classService;
         }
 
         public async Task<byte[]> ExportStudentsAndParentFromExcelAsync()
@@ -41,9 +44,10 @@ namespace backend.Services
                 worksheet.Column(i + 1).Width = 20;
             }
 
-            // Gợi ý định dạng (nếu cần)
-            worksheet.Cell(2, 5).Value = "dd/MM/yyyy"; // Gợi ý định dạng ngày sinh học sinh
-            worksheet.Cell(2, 8).Value = "dd/MM/yyyy"; // Gợi ý định dạng ngày sinh phụ huynh
+            worksheet.Cell(2, 5).Style.DateFormat.Format = "dd/MM/yyyy";
+            worksheet.Cell(2, 8).Style.DateFormat.Format = "dd/MM/yyyy";
+            worksheet.Cell(2, 5).SetValue("dd/MM/yyyy");
+            worksheet.Cell(2, 8).SetValue("dd/MM/yyyy");
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
@@ -75,16 +79,20 @@ namespace backend.Services
                     student.StudentNumber = row.Cell("B").GetString().Trim();
                     student.Gender = row.Cell("D").GetString().Trim();
                     var studentDobStr = row.Cell("E").GetString().Trim();
-                    if (DateTime.TryParse(studentDobStr, out DateTime studentDob))
+                    Console.WriteLine($"Processing student: {student.Name}, DOB: {studentDobStr}");
+                    if (DateTime.TryParseExact(studentDobStr, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime studentDob))
                     {
                         student.DateOfBirth = DateOnly.FromDateTime(studentDob);
+                        Console.WriteLine($"Parsed successfully: {student.Name}, DOB: {student.DateOfBirth}");
                     }
+
                     else
                     {
                         result.Errors.Add($"Dòng {row.RowNumber()}: Ngày sinh học sinh không hợp lệ ({studentDobStr}).");
                         continue;
                     }
-                    student.Class.ClassName = row.Cell("F").GetString().Trim();
+                    Class? studentClass = await _classService.GetClassByNameAsync(row.Cell("F").GetString().Trim());
+                    student.ClassId = studentClass?.Id ?? 0;
                     if (string.IsNullOrWhiteSpace(student.StudentNumber))
                     {
                         result.Errors.Add($"Dòng {row.RowNumber()}: Thiếu mã học sinh.");
@@ -97,9 +105,10 @@ namespace backend.Services
                     var parentName = row.Cell("G").GetString().Trim();
                     var parentDobStr = row.Cell("H").GetString().Trim();
                     DateOnly? parentDob = null;
-                    if (DateTime.TryParse(parentDobStr, out DateTime parsedParentDob))
+                    if (DateTime.TryParseExact(parentDobStr, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedParentDob))
                     {
                         parentDob = DateOnly.FromDateTime(parsedParentDob);
+                        Console.WriteLine($"Processing parent: {parentName}, DOB: {parentDob}");
                     }
                     else
                     {
@@ -149,9 +158,9 @@ namespace backend.Services
 
             return result;
         }
-        public async Task<byte[]> ExportFormResultAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<byte[]> ExportFormResultAsync(int id)
         {
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id, pageNumber, pageSize, search);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(id);
             if (notification == null)
             {
                 throw new Exception("Không tìm thấy thông báo");
@@ -186,31 +195,38 @@ namespace backend.Services
                     };
                     break;
             }
-            // Thêm dữ liệu
-
-
+            
             for (int i = 0; i < headers.Count; i++)
             {
+                Console.WriteLine($"Adding header: {headers[i]}");
                 worksheet.Cell(5, i + 1).Value = headers[i];
                 worksheet.Cell(5, i + 1).Style.Font.Bold = true;
                 worksheet.Column(i + 1).Width = 15;
             }
             int currentRow = 6;
-            foreach (var student in await _studentService.GetStudentsByNotificationIdAndConfirmedAsync(id))
+            var students = await _studentService.GetStudentsByNotificationIdAndConfirmedAsync(id);
+            if (students != null && students.Count > 0)
             {
-                worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
-                worksheet.Cell(currentRow, 2).Value = student.StudentName;
-                Console.WriteLine($"Exporting student: {student.StudentName}");
+                foreach (var student in students)
+                {
+                    worksheet.Cell(currentRow, 1).Value = student.StudentNumber;
+                    worksheet.Cell(currentRow, 2).Value = student.StudentName;
+                    currentRow++;
+                }
             }
+            else
+            {
+                worksheet.Cell(currentRow, 1).Value = "Không có học sinh nào được xác nhận.";
+            }    
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
         }
 
-        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId, int pageNumber, int pageSize, string? search)
+        public async Task<ImportResult> ImportFormResultAsync(IFormFile file, int notificationId)
         {
             var importResult = new ImportResult();
-            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId, pageNumber, pageSize, search);
+            var notification = await _notificationService.GetNotificationDetailAdminDTOAsync(notificationId);
             if (notification == null)
                 throw new Exception("Không tìm thấy thông báo");
 

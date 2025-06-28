@@ -65,24 +65,30 @@ namespace backend.Repositories
             await dbRedis.KeyDeleteAsync($"chat:unread:{userA}");
         }
 
-        public async Task<List<(int User, ChatMessage LastMessage)>> GetRawConversationsAsync(int userId)
+        public async Task<List<(User User, ChatMessage LastMessage)>> GetRawConversationsAsync(int userId)
         {
-            var all = await _context.ChatMessages
+            var messages = await _context.ChatMessages
                 .Where(x => x.FromUserId == userId || x.ToUserId == userId)
-                .OrderByDescending(x => x.Timestamp)
-                .GroupBy(x => x.FromUserId == userId ? x.ToUserId : x.FromUserId)
-
-                .Select(g => new
-                {
-                    User = g.Key,
-                    LastMessage = g.OrderByDescending(x => x.Timestamp).FirstOrDefault()
-                })
+                .Include(x => x.FromUser)
+                .Include(x => x.ToUser)
                 .ToListAsync();
 
-            return all
-                .Where(x => x.User != null && x.LastMessage != null)
-                .Select(x => (x.User!.Value, x.LastMessage!))
+            var grouped = messages
+                .GroupBy(x => x.FromUserId == userId ? x.ToUserId : x.FromUserId)
+                .Where(g => g.Key != null) 
+                .Select(g =>
+                {
+                    var lastMessage = g.OrderByDescending(x => x.Timestamp).First();
+
+                    var user = lastMessage.FromUserId == userId
+                        ? lastMessage.ToUser
+                        : lastMessage.FromUser;
+
+                    return (user, lastMessage); 
+                })
                 .ToList();
+
+            return grouped;
         }
         public async Task<List<ChatMessage>> GetUnassignedMessagesAsync()
         {
@@ -137,6 +143,6 @@ namespace backend.Repositories
             var dbRedis = _redis.GetDatabase();
             var key = $"chat:unread:{userId}";
             return await dbRedis.ListLengthAsync(key) > 0;
-        }      
+        }
     }
 }

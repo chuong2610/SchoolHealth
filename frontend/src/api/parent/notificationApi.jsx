@@ -90,3 +90,21 @@ export const getVaccinationNotifications = async (
     throw error;
   }
 };
+
+export const getNotificationsStatistics = async (parentId) => {
+  try {
+    const res = await axiosInstance.get(
+      `/Notification/notification-count?parentId=${parentId}`
+    );
+    if (res.data.success === true) {
+      return res.data.data;
+    } else {
+      console.error("Error in getNotificationsStatistics:", res.data.message);
+      return {};
+    }
+  } catch (error) {
+    console.error("Error fetching notifications statistics:", error);
+    throw error;
+  }
+};
+

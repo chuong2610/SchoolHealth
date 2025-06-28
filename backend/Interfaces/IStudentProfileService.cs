@@ -4,6 +4,7 @@ namespace backend.Interfaces
 {
     public interface IStudentProfileService
     {
-        Task<bool> CreateStudentProfileAsync(StudentProfileRequest request, int parentId);
+        Task<bool> CreateStudentProfileAsync(StudentProfileRequest request);
+        Task<StudentProfileDTO?> GetStudentProfileByIdAsync(int studentId);
     }
 }
