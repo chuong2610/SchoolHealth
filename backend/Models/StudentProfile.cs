@@ -12,7 +12,7 @@ namespace backend.Models
         public string ChronicIllnesss { get; set; } = string.Empty; // bệnh
         public string LongTermMedications { get; set; } = string.Empty; // thuốc dài hạn
         public string OtherMedicalConditions { get; set; } = string.Empty; // điều kiện y tế khác
-        public DateOnly LastChangeDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+        public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
         [JsonIgnore]
         public Student Student { get; set; } = null!;
     }
