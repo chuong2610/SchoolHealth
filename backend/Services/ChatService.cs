@@ -80,10 +80,14 @@ namespace backend.Services
 
             return rawConversations.Select(c => new ChatPreviewDto
             {
-                User = c.User,
+                UserId = c.User.Id,
+                UserName = c.User.Name,
+                UserImage = string.IsNullOrEmpty(c.User.ImageUrl)
+                    ? "http://localhost:5182/uploads/default.png"
+                    : "http://localhost:5182/uploads/" + c.User.ImageUrl,
                 LastMessage = c.LastMessage?.Message,
                 Timestamp = c.LastMessage?.Timestamp ?? DateTime.MinValue,
-                HasUnread = unreadFromUsers.Contains(c.User)
+                HasUnread = unreadFromUsers.Contains(c.User.Id)
             }).ToList();
         }
 
@@ -92,7 +96,7 @@ namespace backend.Services
             var rawConversations = await _repo.GetUnassignedMessagesAsync();
             return rawConversations.Select(c => new ChatPreviewDto
             {
-                User = c.FromUserId,
+                UserId = c.FromUserId,
                 LastMessage = c.Message,
                 Timestamp = c?.Timestamp ?? DateTime.MinValue,
                 HasUnread = false

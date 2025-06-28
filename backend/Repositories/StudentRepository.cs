@@ -67,7 +67,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Student>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search, DateOnly? searchDate)
+        public async Task<List<Student>> GetStudentByClassIdAsync(int classId, int pageNumber, int pageSize, string? search, DateOnly? searchDate)
         {
             var query = _context.Students
                 .Where(s => s.ClassId == classId && s.IsActive && s.Parent.IsActive)

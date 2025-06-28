@@ -88,7 +88,7 @@ namespace backend.Services
             };
         }
 
-        public async Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<StudentsDTO>> GetStudentByClassIdAsync(int classId, int pageNumber, int pageSize, string? search)
         {
             DateOnly? searchDate = null;
             bool isDate = false;
@@ -102,7 +102,7 @@ namespace backend.Services
 
             search = isDate ? null : search;
             var students = await _studentRepository
-                .GetAllStudentAsync(classId, pageNumber, pageSize, search, searchDate);
+                .GetStudentByClassIdAsync(classId, pageNumber, pageSize, search, searchDate);
 
             var totalItems = await _studentRepository
                 .CountStudentsAsync(classId, search, searchDate);

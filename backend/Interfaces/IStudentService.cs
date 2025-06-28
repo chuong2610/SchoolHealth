@@ -14,7 +14,7 @@ namespace backend.Interfaces
                 Task<int> GetNumberOfStudents();
                 Task<StudentDTO?> GetStudentByIdAsync(int id);
                 Task<StudentDTO?> GetStudentByStudentNumberAsync(string studentNumber);
-                Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search);
+                Task<PageResult<StudentsDTO>> GetStudentByClassIdAsync(int classId, int pageNumber, int pageSize, string? search);
                 Task<bool> CreateStudentAsync(StudentCreateRequest request);
                 Task<bool> UpdateStudentAsync(int id, StudentRequest request);
                 Task<bool> DeleteStudentAsync(int id);
