@@ -4,6 +4,7 @@ using backend.Models.DTO;
 
 using backend.Models;
 using backend.Models.Request;
+using System.Globalization;
 
 
 namespace backend.Services
@@ -12,11 +13,13 @@ namespace backend.Services
     {
 
         private readonly IStudentRepository _studentRepository;
+        private readonly IUserRepository _userRepository;
 
 
-        public StudentService(IStudentRepository repository)
+        public StudentService(IStudentRepository repository, IUserRepository userRepository)
         {
             _studentRepository = repository;
+            _userRepository = userRepository;
         }
 
         public async Task<List<StudentDTO>> GetStudentIdsByParentIdAsync(int parentId)
@@ -58,7 +61,6 @@ namespace backend.Services
         public async Task<List<StudentDTO>> GetStudentsByNotificationIdAndConfirmedAsync(int notificationId)
         {
             var students = await _studentRepository.GetStudentsByNotificationIdAndConfirmedAsync(notificationId);
-            Console.WriteLine($"Number of students found: {students[0].Class.ClassName}");
             return students.Select(s => new StudentDTO
             {
                 Id = s.Id,
@@ -86,13 +88,24 @@ namespace backend.Services
             };
         }
 
-        public async Task<PageResult<StudentsDTO>> GetAllStudentAsync(int classId, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<StudentsDTO>> GetStudentByClassIdAsync(int classId, int pageNumber, int pageSize, string? search)
         {
+            DateOnly? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateOnly.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
             var students = await _studentRepository
-                .GetAllStudentAsync(classId, pageNumber, pageSize, search);
+                .GetStudentByClassIdAsync(classId, pageNumber, pageSize, search, searchDate);
 
             var totalItems = await _studentRepository
-                .CountStudentsAsync(classId, search);
+                .CountStudentsAsync(classId, search, searchDate);
 
             var studentDtos = students.Select(s => new StudentsDTO
             {
@@ -114,27 +127,47 @@ namespace backend.Services
             };
         }
 
-        public async Task<bool> CreateStudentAsync(StudentRequest request)
+        public async Task<bool> CreateStudentAsync(StudentCreateRequest request)
         {
-            // Kiểm tra student number đã tồn tại chưa
             var existing = await _studentRepository.GetStudentByStudentNumberAsync(request.StudentNumber);
             if (existing != null)
             {
-                // Nếu đã tồn tại thì trả false hoặc throw exception
                 return false;
             }
-            var defaultDate = DateOnly.FromDateTime(DateTime.Today);
-
             var newStudent = new Student
             {
                 Name = request.Name,
                 StudentNumber = request.StudentNumber,
                 Gender = request.Gender,
-                DateOfBirth = request.DateOfBirth ?? defaultDate,
-                ClassId = request.ClassId ?? 0,
-                ParentId = request.ParentId ?? 0,
+                DateOfBirth = request.DateOfBirth,
+                ClassId = request.ClassId,
                 IsActive = true
             };
+            var parent = await _userRepository.GetUserByPhoneAsync(request.ParentPhone);
+            if (parent == null)
+            {
+                newStudent.Parent = new User
+                {
+                    Name = request.ParentName,
+                    Phone = request.ParentPhone,
+                    Email = request.ParentEmail,
+                    Address = request.ParentAddress,
+                    IsActive = true,
+
+                    RoleId = 3,
+                    Password = "defaultPassword",
+                    Gender = request.ParentGender,
+                    DateOfBirth = request.DateOfBirth,
+                    IsVerified = false,
+                    ImageUrl = "default.jpg"
+                };
+            }
+            else
+            {
+                newStudent.ParentId = parent.Id;
+            }
+
+
             return await _studentRepository.CreateStudentAsync(newStudent);
         }
 
@@ -193,7 +226,11 @@ namespace backend.Services
             {
                 return false;
             }
-
+            if (_studentRepository.GetStudentIdsByParentIdAsync(user.ParentId).Result.Count == 1)
+            {
+                user.IsActive = false;
+                await _userRepository.DeleteUserAsync(user.ParentId);
+            }
             return await _studentRepository.DeleteStudentAsync(user);
         }
     }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using backend.Hubs;
 using backend.Interfaces;
 using backend.Models;
@@ -27,8 +28,18 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification,
@@ -46,8 +57,19 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountVaccinationsNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountVaccinationsNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetVaccinationsNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification, item.Student.Id, item.Student.Name
@@ -63,8 +85,19 @@ namespace backend.Services
         }
         public async Task<PageResult<NotificationParentDTO>> GetHealthChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountHealthChecksNotificationsByParentIdAsync(parentId, search);
-            var items = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountHealthChecksNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetHealthChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var result = items.Select(item => MapToNotificationParentDTO(
                 item.Notification,
@@ -120,10 +153,13 @@ namespace backend.Services
                 ClassName = n.ClassName ?? string.Empty
             }).ToList();
         }
-        public async Task<NotificationDetailAdminDTO?> GetNotificationDetailAdminDTOAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<NotificationDetailAdminDTO> GetNotificationDetailAdminDTOAsync(int id)
         {
             var notification = await _notificationRepository.GetNotificationByIdAsync(id);
-            if (notification == null) return null;
+            if (notification == null)
+            {
+                return null;
+            }
 
             var dto = new NotificationDetailAdminDTO
             {
@@ -144,47 +180,23 @@ namespace backend.Services
             switch (notification.Type)
             {
                 case "HealthCheck":
-                    {
-                        var healthCheckPage = await _healthCheckService
-                            .GetHealthChecksByNotificationIdAsync(notification.Id, pageNumber, pageSize, search);
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = healthCheckPage.Items.Cast<object>().ToList(),
-                            TotalPages = healthCheckPage.TotalPages,
-                            CurrentPage = healthCheckPage.CurrentPage,
-                            TotalItems = healthCheckPage.TotalItems
-                        };
-                        break;
-                    }
-                case "Vaccination":
-                    {
-                        var vaccinationPage = await _vaccinationService
-                            .GetVaccinationByNotificationIdAsync(notification.Id, pageNumber, pageSize, search);
+                    var healthChecks = await _healthCheckService.GetHealthChecksByNotificationIdAsync(notification.Id);
+                    dto.Results = healthChecks.Cast<object>().ToList();
+                    break;
 
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = vaccinationPage.Items.Cast<object>().ToList(),
-                            TotalPages = vaccinationPage.TotalPages,
-                            CurrentPage = vaccinationPage.CurrentPage,
-                            TotalItems = vaccinationPage.TotalItems
-                        };
-                        break;
-                    }
+
+                case "Vaccination":
+                    var vaccinations = await _vaccinationService.GetVaccinationByNotificationIdAsync(notification.Id);
+                    dto.Results = vaccinations.Cast<object>().ToList();
+                    break;
+
 
                 default:
-                    {
-                        dto.PagedResults = new PageResult<object>
-                        {
-                            Items = new(),
-                            TotalPages = 0,
-                            CurrentPage = pageNumber,
-                            TotalItems = 0
-                        };
-                        break;
-                    }
+                    dto.Results = new List<object>();
+                    break;
             }
-
             return dto;
+
         }
         public async Task<List<NotificationSummaryDTO>> Get5Notifications()
         {
@@ -203,34 +215,31 @@ namespace backend.Services
 
         public async Task<PageResult<NotificationClassDTO>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _notificationRepository.CountNotificationsAsync(search);
-            var notifications = await _notificationRepository.GetAllNotificationsAsync(pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var notificationDtos = new List<NotificationClassDTO>();
-
-            foreach (var notification in notifications)
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
             {
-                var uniqueClasses = notification.NotificationStudents
-                    .Select(ns => ns.Student?.Class)
-                    .Where(c => c != null)
-                    .GroupBy(c => c.Id)
-                    .Select(g => g.First());
-
-                foreach (var cls in uniqueClasses)
-                {
-                    notificationDtos.Add(new NotificationClassDTO
-                    {
-                        Id = notification.Id,
-                        VaccineName = notification.Name ?? string.Empty,
-                        Title = notification.Title,
-                        Type = notification.Type,
-                        Message = notification.Message,
-                        CreatedAt = notification.CreatedAt,
-                        ClassId = cls.Id,
-                        ClassName = cls.ClassName
-                    });
-                }
+                searchDate = parsedDate;
+                isDate = true;
             }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountNotificationsAsync(search, searchDate);
+            var notifications = await _notificationRepository.GetAllNotificationsAsync(pageNumber, pageSize, search, searchDate);
+
+            var notificationDtos = notifications
+                    .Select(n => new NotificationClassDTO
+                    {
+                        Id = n.Id,
+                        VaccineName = n.Name ?? string.Empty,
+                        Title = n.Title,
+                        Type = n.Type,
+                        Message = n.Message,
+                        CreatedAt = n.CreatedAt,
+                        ClassName = n.ClassName
+                    }).ToList();
 
             return new PageResult<NotificationClassDTO>
             {
@@ -266,7 +275,7 @@ namespace backend.Services
                 CreatedAt = DateTime.UtcNow,
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
-                ClassName = classEntity.ClassName, // Gán className lấy từ DB
+                ClassName = classEntity.ClassName,
                 NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
                     StudentId = s.Id,

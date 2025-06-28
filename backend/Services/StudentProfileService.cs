@@ -4,7 +4,6 @@ using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 
 namespace backend.Services
@@ -12,12 +11,10 @@ namespace backend.Services
     public class StudentProfileService : IStudentProfileService
     {
         private readonly IStudentProfileRepository _profileRepo;
-        private readonly ILogger<StudentProfileService> _logger;
 
-        public StudentProfileService(IStudentProfileRepository profileRepo, ILogger<StudentProfileService> logger)
+        public StudentProfileService(IStudentProfileRepository profileRepo)
         {
             _profileRepo = profileRepo;
-            _logger = logger;
         }
 
         public async Task<bool> CreateStudentProfileAsync(StudentProfileRequest request)
@@ -37,7 +34,7 @@ namespace backend.Services
                 existingProfile.ChronicIllnesss = request.ChronicIllnesss ?? string.Empty;
                 existingProfile.LongTermMedications = request.LongTermMedications ?? string.Empty;
                 existingProfile.OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty;
-
+                existingProfile.LastChangeDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
                 createdOrUpdated = await _profileRepo.CreateOrUpdateAsync(existingProfile);
             }
             else
@@ -49,11 +46,13 @@ namespace backend.Services
                     Allergys = request.Allergys ?? string.Empty,
                     ChronicIllnesss = request.ChronicIllnesss ?? string.Empty,
                     LongTermMedications = request.LongTermMedications ?? string.Empty,
-                    OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty
-                };
+                    OtherMedicalConditions = request.OtherMedicalConditions ?? string.Empty,
+                    LastChangeDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"))
 
+                };
                 createdOrUpdated = await _profileRepo.CreateOrUpdateAsync(newProfile);
             }
+
 
             return createdOrUpdated;
         }
@@ -62,12 +61,21 @@ namespace backend.Services
         {
             return new StudentProfileDTO
             {
-                StudentId = profile.Id,
+                StudentName = profile.Student.Name,
+                StudentNumber = profile.Student.StudentNumber,
+                ClassName = profile.Student.Class.ClassName,
                 Allergys = profile.Allergys,
                 ChronicIllnesss = profile.ChronicIllnesss,
                 LongTermMedications = profile.LongTermMedications,
-                OtherMedicalConditions = profile.OtherMedicalConditions
+                OtherMedicalConditions = profile.OtherMedicalConditions,
+                LastChangeDate = profile.LastChangeDate
             };
+        }
+
+        public async Task<StudentProfileDTO?> GetStudentProfileByIdAsync(int studentId)
+        {
+            var profile = await _profileRepo.GetByStudentIdAsync(studentId);
+            return profile != null ? ConvertToDTO(profile) : null;
         }
     }
 

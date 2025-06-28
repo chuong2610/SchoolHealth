@@ -33,7 +33,7 @@ namespace backend.Repositories
                 .FirstOrDefaultAsync(me => me.Id == id);
         }
 
-        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search)
+        public async Task<List<MedicalEvent>> GetAllMedicalEventsAsync(int pageNumber, int pageSize, string? search, DateTime? searchDate)
         {
             var query = _context.MedicalEvents
                 .Include(me => me.Student)
@@ -47,7 +47,13 @@ namespace backend.Repositories
                 query = query.Where(me =>
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
-                    me.Status.Contains(search));
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search));
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(me => me.Date.Date == searchDate.Value.Date);
             }
 
             return await query
@@ -57,7 +63,7 @@ namespace backend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> CountMedicalEventsAsync(string? search)
+        public async Task<int> CountMedicalEventsAsync(string? search, DateTime? searchDate)
         {
             var query = _context.MedicalEvents.AsQueryable();
 
@@ -66,7 +72,13 @@ namespace backend.Repositories
                 query = query.Where(me =>
                     me.EventType.Contains(search) ||
                     me.Location.Contains(search) ||
-                    me.Status.Contains(search));
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search));
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(me => me.Date.Date == searchDate.Value.Date);
             }
 
             return await query.CountAsync();
@@ -134,6 +146,56 @@ namespace backend.Repositories
                 TotalCount = total,
                 Last7DaysCount = last7Days,
                 TodayCount = todayCount
+            };
+        }
+        public async Task<PageResult<MedicalEvent>> GetMedicalEventsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            var studentIds = await _context.Students
+                .Where(s => s.ParentId == parentId)
+                .Select(s => s.Id)
+                .ToListAsync();
+
+            if (!studentIds.Any())
+            {
+                return new PageResult<MedicalEvent>
+                {
+                    Items = new List<MedicalEvent>(),
+                    TotalItems = 0,
+                    CurrentPage = pageNumber,
+                    TotalPages = 0
+                };
+            }
+
+            var query = _context.MedicalEvents
+                .Include(me => me.Student)
+                .Include(me => me.Nurse)
+                .Where(me => studentIds.Contains(me.StudentId))
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(me =>
+                    me.EventType.Contains(search) ||
+                    me.Location.Contains(search) ||
+                    me.Student.Name.Contains(search) ||
+                    me.Nurse.Name.Contains(search) ||
+                    me.Date.ToString().Contains(search));
+            }
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(me => me.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PageResult<MedicalEvent>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                CurrentPage = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
             };
         }
     }

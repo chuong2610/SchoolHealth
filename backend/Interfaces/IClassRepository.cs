@@ -8,5 +8,6 @@ namespace backend.Interfaces
     {
         Task<IEnumerable<Class>> GetAllAsync();
         Task<Class> GetClassByIdAsync(int classId);
+        Task<Class?> GetClassByNameAsync(string className);
     }
 }

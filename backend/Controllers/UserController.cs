@@ -117,7 +117,7 @@ namespace backend.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.NewPassword) || request.NewPassword != request.ConfirmNewPassword)
             {
-                return BadRequest(new BaseResponse<bool>(false, "Mật khẩu mới và xác nhận mật khẩu không khớp", false));
+                return Ok(new BaseResponse<bool>(false, "Mật khẩu mới và xác nhận mật khẩu không khớp", false));
             }
 
             try
@@ -126,7 +126,7 @@ namespace backend.Controllers
 
                 if (!result)
                 {
-                    return NotFound(new BaseResponse<bool>(false, "Mật khẩu hiện tại không đúng", false));
+                    return Ok(new BaseResponse<bool>(false, "Mật khẩu hiện tại không đúng", false));
                 }
 
                 return Ok(new BaseResponse<bool>(true, "Đổi mật khẩu thành công", true));

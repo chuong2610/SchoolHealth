@@ -41,9 +41,9 @@ namespace backend.Controllers
             return Ok(successResponse);
         }
         [HttpGet("{classId}")]
-        public async Task<IActionResult> GetAllStudent(int classId, int pageNumber, int pageSize, string? search)
+        public async Task<IActionResult> GetStudentByClassId(int classId, int pageNumber, int pageSize, string? search)
         {
-            var students = await _studentService.GetAllStudentAsync(classId, pageNumber, pageSize, search);
+            var students = await _studentService.GetStudentByClassIdAsync(classId, pageNumber, pageSize, search);
 
             if (students == null || students.Items.Count == 0)
             {
@@ -52,7 +52,7 @@ namespace backend.Controllers
                     message: $"Không tìm thấy học sinh.",
                     success: false
                 );
-                return NotFound(response);
+                return NotFound(response); 
             }
 
             var successResponse = new BaseResponse<PageResult<StudentsDTO>>(
@@ -64,7 +64,7 @@ namespace backend.Controllers
             return Ok(successResponse);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateStudent([FromBody] StudentRequest request)
+        public async Task<IActionResult> CreateStudent([FromBody] StudentCreateRequest request)
         {
             var isCreated = await _studentService.CreateStudentAsync(request);
 

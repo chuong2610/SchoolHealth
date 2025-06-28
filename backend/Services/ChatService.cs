@@ -23,17 +23,20 @@ namespace backend.Services
 
         public async Task SendMessageAsync(int from, int? to, string message)
         {
+            var utcTime = DateTime.UtcNow;
+            var vnTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime,
+                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
             var msg = new ChatMessage
             {
                 FromUserId = from,
                 ToUserId = to,
                 Message = message,
-                Timestamp = DateTime.UtcNow
+                Timestamp = vnTime
             };
 
             await _repo.SaveMessageAsync(msg);
 
-            await _hub.Clients.Users(from.ToString(), to.ToString()).SendAsync("ReceiveMessage", new
+            await _hub.Clients.User(msg.ToUserId.ToString()).SendAsync("ReceiveMessage", new
             {
                 from = msg.FromUserId,
                 to = msg.ToUserId,
@@ -77,10 +80,14 @@ namespace backend.Services
 
             return rawConversations.Select(c => new ChatPreviewDto
             {
-                User = c.User,
+                UserId = c.User.Id,
+                UserName = c.User.Name,
+                UserImage = string.IsNullOrEmpty(c.User.ImageUrl)
+                    ? "http://localhost:5182/uploads/default.png"
+                    : "http://localhost:5182/uploads/" + c.User.ImageUrl,
                 LastMessage = c.LastMessage?.Message,
                 Timestamp = c.LastMessage?.Timestamp ?? DateTime.MinValue,
-                HasUnread = unreadFromUsers.Contains(c.User)
+                HasUnread = unreadFromUsers.Contains(c.User.Id)
             }).ToList();
         }
 
@@ -89,7 +96,7 @@ namespace backend.Services
             var rawConversations = await _repo.GetUnassignedMessagesAsync();
             return rawConversations.Select(c => new ChatPreviewDto
             {
-                User = c.FromUserId,
+                UserId = c.FromUserId,
                 LastMessage = c.Message,
                 Timestamp = c?.Timestamp ?? DateTime.MinValue,
                 HasUnread = false

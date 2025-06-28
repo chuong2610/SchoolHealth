@@ -5,6 +5,7 @@ using backend.Models.Request;
 using backend.Repositories;
 
 using backend.Interfaces;
+using System.Globalization;
 
 
 namespace backend.Services
@@ -64,61 +65,129 @@ namespace backend.Services
 
 
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsPendingAsync(int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search);
-            var medications = await _medicationRepository.GetMedicationsPendingAsync(pageNumber, pageSize, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var medications = await _medicationRepository
+                .GetMedicationsPendingAsync(pageNumber, pageSize, search, searchDate);
+            var totalItems = await _medicationRepository.CountPendingMedicationsAsync(search, searchDate);
 
             var dtos = medications
                 .Select(m => MapToDTO(m))
                 .ToList();
 
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
+
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize.Value);
 
             return new PageResult<MedicationDTO>
             {
                 Items = dtos,
                 TotalItems = totalItems,
                 TotalPages = totalPages,
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber.Value
             };
         }
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsActiveByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medications = await _medicationRepository.GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search, searchDate);
+
+            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search, searchDate);
 
             var dtos = medications.Select(m => MapToDTO(m)).ToList();
+
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
 
             return new PageResult<MedicationDTO>
             {
                 Items = dtos,
                 TotalItems = totalItems,
                 TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
-                CurrentPage = pageNumber
+                CurrentPage = pageNumber.Value
             };
         }
 
-        public async Task<PageResult<MedicationDTO>> GetMedicationsCompletedByNurseIdAsync(int id, int pageNumber, int pageSize, string? search)
+        public async Task<PageResult<MedicationDTO>> GetMedicationsActivesByNurseIdAsync(int id, int? pageNumber, int? pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsCompletedByNurseIdAsync(id, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medications = await _medicationRepository.GetMedicationsCompletedByNurseIdAsync(id, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
 
-            var medicationDTOs = medications.Select(m => MapToDTO(m)).ToList();
+            search = isDate ? null : search;
+            var medications = await _medicationRepository
+                .GetMedicationsActiveByNurseIdAsync(id, pageNumber, pageSize, search, searchDate);
+            var totalItems = await _medicationRepository.CountMedicationsActiveByNurseIdAsync(id, search, searchDate);
 
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var dtos = medications.Select(m => MapToDTO(m)).ToList();
+
+            if (pageNumber == null || pageSize == null)
+            {
+                return new PageResult<MedicationDTO>
+                {
+                    Items = dtos,
+                    TotalItems = totalItems,
+                    TotalPages = 1,
+                    CurrentPage = 1
+                };
+            }
+
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize.Value);
 
             return new PageResult<MedicationDTO>
             {
-                Items = medicationDTOs,
+                Items = dtos,
                 TotalItems = totalItems,
-                CurrentPage = pageNumber,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                CurrentPage = pageNumber.Value
             };
         }
+
 
         public async Task<MedicationDetailDTO> GetMedicationDetailDTOAsync(int id)
         {
@@ -168,7 +237,6 @@ namespace backend.Services
                 StudentClass = medication.Student?.Class?.ClassName ?? "",
                 NurseName = medication.Nurse?.Name ?? "",
                 StudentName = medication.Student?.Name ?? "",
-                StudentClassName = medication.Student?.Class?.ClassName ?? "",
                 ParentName = medication.Student?.Parent?.Name ?? ""
             };
 
@@ -176,9 +244,20 @@ namespace backend.Services
 
         public async Task<PageResult<MedicationDTO>> GetMedicationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
         {
-            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId, search);
+            DateTime? searchDate = null;
+            bool isDate = false;
 
-            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _medicationRepository.CountMedicationsByParentIdAsync(parentId, search, searchDate);
+
+            var medications = await _medicationRepository.GetMedicationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
             var dtos = medications
                 .Select(m => MapToDTO(m))
@@ -212,5 +291,7 @@ namespace backend.Services
         {
             return await _medicationRepository.GetMedicationCountsAsync();
         }
+
+
     }
 }
