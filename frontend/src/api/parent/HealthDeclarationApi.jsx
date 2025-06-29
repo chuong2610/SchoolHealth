@@ -2,13 +2,11 @@ import React from "react";
 import axiosInstance from "../axiosInstance";
 
 export const StudentProfileDeclarationHistory = async (
-  parentId,
-  pageNumber = 1,
-  pageSize = 1000
+  studentId
 ) => {
   try {
     const res = await axiosInstance.get(
-      `/api/StudentProfile/${parentId}`
+      `/StudentProfile/${studentId}`
     );
     if (res.data && res.data.success) {
       console.log(
