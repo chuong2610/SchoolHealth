@@ -53,7 +53,7 @@ import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
 import "../../styles/parent/parent-healthdeclaration-redesign.css";
 import { StudentProfileDeclarationHistory } from "../../api/parent/HealthDeclarationApi";
-import { formatDDMMYYYY } from "../../utils/dateFormatter";
+import { formatDateTime, formatDDMMYYYY } from "../../utils/dateFormatter";
 import PaginationBar from "../../components/common/PaginationBar";
 
 const HealthDeclaration = () => {
@@ -73,7 +73,7 @@ const HealthDeclaration = () => {
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [declarationHistory, setDeclarationHistory] = useState([]);
+  const [declarationHistory, setDeclarationHistory] = useState({});
   const [activeTab, setActiveTab] = useState("declare");
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedDeclaration, setSelectedDeclaration] = useState(null);
@@ -84,32 +84,8 @@ const HealthDeclaration = () => {
   const [showQuickStats, setShowQuickStats] = useState(true);
   const pageSize = 20;
 
-  // Hàm fetch lịch sử khai báo y tế
-  const fetchDeclarationHistory = async (parentId) => {
-    try {
-      const res = await StudentProfileDeclarationHistory(
-        parentId,
-        currentPage,
-        pageSize
-      );
-      if (res && Array.isArray(res.items)) {
-        setDeclarationHistory(res.items || []);
-        setTotalPages(res.totalPages || 1);
-      } else {
-        setDeclarationHistory([]);
-      }
-    } catch (err) {
-      console.error("Error fetching declaration history:", err);
-      setDeclarationHistory([]);
-    }
-  };
-
   useEffect(() => {
-    fetchDeclarationHistory(user?.id);
-  }, [currentPage])
-
-  useEffect(() => {
-    const fetchStudentsAndHistory = async () => {
+    const fetchStudents = async () => {
       if (!user?.id) return;
 
       try {
@@ -132,12 +108,13 @@ const HealthDeclaration = () => {
         setLoading(false);
       }
     };
-    fetchStudentsAndHistory();
+    fetchStudents();
   }, [user?.id]);
 
   // Xử lý khi chọn học sinh từ dropdown
   const handleStudentChange = (e) => {
     const studentId = e.target.value;
+    console.log("Selected student ID:", studentId);
     const student = students.find((s) => s.id === parseInt(studentId));
     setSelectedStudent(student);
     if (student) {
@@ -156,6 +133,29 @@ const HealthDeclaration = () => {
       }));
     }
   };
+
+  // Hàm fetch lịch sử khai báo y tế
+  const fetchDeclarationHistory = async (studentId) => {
+    try {
+      // TODO: Backend endpoint not implemented yet
+      const res = await StudentProfileDeclarationHistory(studentId);
+      if (res) {
+        setDeclarationHistory(res || {});
+      } else {
+        // Temporarily set empty array until backend endpoint is implemented
+        setDeclarationHistory({});
+      }
+
+      // Declaration history feature is temporarily disabled - backend endpoint not implemented
+    } catch (err) {
+      console.error("Error fetching declaration history:", err);
+      setDeclarationHistory({});
+    }
+  };
+
+  useEffect(() => {
+    fetchDeclarationHistory(selectedStudent?.id);
+  }, [currentPage]);
 
   // Xử lý thay đổi các trường input
   const handleChange = (e) => {
@@ -220,14 +220,15 @@ const HealthDeclaration = () => {
           longTermMedications: "",
           otherMedicalConditions: "",
         });
-        setSelectedStudent(null);
+        // setSelectedStudent(null);
 
         // Cập nhật lại lịch sử
         setCurrentPage(1);
-        await fetchDeclarationHistory(user.id);
-
+        await fetchDeclarationHistory(selectedStudent?.id);
+        
         // Chuyển sang tab lịch sử
         setActiveTab("history");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         toast.error(response.data.message || "Không thể gửi khai báo.");
       }
@@ -357,7 +358,7 @@ const HealthDeclaration = () => {
                       className={`health-nav-link ${activeTab === "history" ? "active" : ""}`}
                       onClick={() => {
                         setActiveTab("history");
-                        fetchDeclarationHistory(user.id);
+                        fetchDeclarationHistory(selectedStudent?.id);
                       }}
                     >
                       <FaHistory /> Lịch sử khai báo
@@ -545,124 +546,176 @@ const HealthDeclaration = () => {
                 )}
 
                 {activeTab === "history" && (
-                  <div>
-                    {/* Search and Filter */}
-                    <Row className="mb-2">
-                      <Col md={6}>
-                        <div className="health-search-box">
-                          <FaSearch className="health-search-icon" />
-                          <input
-                            type="text"
-                            placeholder="Tìm kiếm theo tên học sinh hoặc lớp..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="health-search-input"
-                          />
+                  <>
+                    {/* Student Selection Section */}
+                    <div className="health-form-section animate-fade-in-up delay-700">
+                      <div className="health-section-header">
+                        <div className="health-section-icon animate-scale-hover">
+                          <FaUser />
                         </div>
-                      </Col>
-                      <Col md={3}>
-                        <Form.Select
-                          value={filterStatus}
-                          onChange={(e) => setFilterStatus(e.target.value)}
-                          className="health-filter-select"
-                        >
-                          <option value="all">Tất cả</option>
-                          <option value="allergies">Có dị ứng</option>
-                          <option value="chronic">Có bệnh mãn tính</option>
-                        </Form.Select>
-                      </Col>
-                      <Col md={3}>
-                        <div className="health-actions">
-                          <Button variant="outline-secondary" size="sm">
-                            <FaPrint /> In
-                          </Button>
-                          <Button variant="outline-success" size="sm">
-                            <FaDownload /> Xuất
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
+                        <h3 className="health-section-title">Chọn học sinh</h3>
+                      </div>
 
-                    {/* History Table */}
-                    {filteredHistory.length === 0 ? (
-                      <div className="health-empty-state">
-                        <FaClipboardList size={48} className="health-empty-icon" />
-                        <h5>Chưa có khai báo nào</h5>
-                        <p>Bắt đầu khai báo sức khỏe cho con bạn ngay hôm nay</p>
+                      <div className="health-form-group">
+                        <Form.Label className="health-form-label">
+                          <FaGraduationCap className="label-medical-icon" />
+                          Học sinh
+                        </Form.Label>
+                        <Form.Select
+                          className="health-form-control animate-input"
+                          value={selectedStudent?.id}
+                          onChange={(e) => {
+                            handleStudentChange(e);
+                            fetchDeclarationHistory(e.target.value);
+                          }}
+                          required
+                        >
+                          <option value="">-- Chọn học sinh --</option>
+                          {students.map((student, idx) => (
+                            <option key={idx} value={student.id}>
+                              {student.studentName}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+
+                      {selectedStudent && (
+                        <div className="health-student-card animate-scale-in-center delay-200">
+                          <div className="health-student-info">
+                            <div className="health-student-name">
+                              <FaUser />
+                              {selectedStudent.studentName}
+                            </div>
+                            <div className="health-student-class">
+                              <FaGraduationCap />
+                              Lớp: {selectedStudent.className}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {declarationHistory.length === 0 ? (
+                      <div className="health-empty-state animate-fade-in-up">
+                        <FaClipboardList
+                          size={64}
+                          className="health-empty-icon animate-bounce"
+                        />
+                        <h4 className="health-empty-title animate-fade-in-up delay-200">
+                          Tính năng đang phát triển
+                        </h4>
+                        <p className="health-empty-description animate-fade-in-up delay-300">
+                          Tính năng xem lịch sử khai báo y tế hiện đang được
+                          phát triển. Vui lòng quay lại sau hoặc liên hệ với nhà
+                          trường để được hỗ trợ.
+                        </p>
                       </div>
                     ) : (
-                      <div className="health-table-responsive">
-                        <Table responsive className="health-table">
-                          <thead>
-                            <tr>
-                              <th>STT</th>
-                              <th>Học sinh</th>
-                              <th>Lớp</th>
-                              <th>Ngày khai báo</th>
-                              <th>Tình trạng</th>
-                              <th>Thao tác</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {filteredHistory.map((item, index) => (
-                              <tr key={item.id}>
-                                <td>{index + 1}</td>
-                                <td>
-                                  <div className="health-student-info">
-                                    <FaUser className="health-student-icon" />
-                                    <span>{item.studentName}</span>
-                                  </div>
-                                </td>
-                                <td>
-                                  <Badge bg="secondary">{item.className}</Badge>
-                                </td>
-                                <td>{formatDDMMYYYY(item.declarationDate)}</td>
-                                <td>
-                                  <div className="health-status-indicators">
-                                    {item.allergys && item.allergys !== "none" && (
-                                      <Badge bg="warning" className="me-1">
-                                        <FaAllergies /> Dị ứng
-                                      </Badge>
-                                    )}
-                                    {item.chronicIllnesss && item.chronicIllnesss !== "none" && (
-                                      <Badge bg="danger" className="me-1">
-                                        <FaThermometerHalf /> Mãn tính
-                                      </Badge>
-                                    )}
-                                    {item.longTermMedications && item.longTermMedications !== "none" && (
-                                      <Badge bg="info" className="me-1">
-                                        <FaPrescriptionBottle /> Thuốc
-                                      </Badge>
-                                    )}
-                                  </div>
-                                </td>
-                                <td>
-                                  <Button
-                                    variant="outline-primary"
-                                    size="sm"
-                                    onClick={() => handleViewDetail(item)}
-                                  >
-                                    <FaEye /> Chi tiết
-                                  </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </Table>
+                      <>
+                        {/* Medical Information Section */}
+                        <div className="health-form-section animate-fade-in-up delay-1000">
+                          <div className="health-section-header">
+                            <div className="health-section-icon animate-scale-hover">
+                              <FaStethoscope />
+                            </div>
+                            <h3 className="health-section-title">
+                              Thông tin y tế
+                            </h3>
+                            {selectedStudent && (
+                              <p className="health-section-title ms-auto fw-normal fs-6">
+                                Cập nhật lần cuối:{" "}
+                                {formatDateTime(
+                                  declarationHistory?.lastChangeDate
+                                )}
+                              </p>
+                            )}
+                          </div>
 
-                        <div className="health-pagination-wrapper">
-                          <PaginationBar
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onPageChange={(page) => {
-                              if (page < 1 || page > totalPages) return;
-                              setCurrentPage(page);
-                            }}
-                          />
+                          <div className="health-medical-grid">
+                            <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                              <div className="health-form-group">
+                                <Form.Label className="health-form-label">
+                                  <FaExclamationCircle className="label-medical-icon" />
+                                  Dị ứng
+                                </Form.Label>
+                                <Form.Control
+                                  disabled
+                                  as="textarea"
+                                  rows={4}
+                                  className="health-form-control animate-input"
+                                  name="allergys"
+                                  value={declarationHistory?.allergys}
+                                  onChange={handleChange}
+                                  placeholder="Không có"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                              <div className="health-form-group">
+                                <Form.Label className="health-form-label">
+                                  <FaUserMd className="label-medical-icon" />
+                                  Bệnh mãn tính
+                                </Form.Label>
+                                <Form.Control
+                                  disabled
+                                  as="textarea"
+                                  rows={4}
+                                  className="health-form-control animate-input"
+                                  name="chronicIllnesss"
+                                  value={declarationHistory?.chronicIllnesss}
+                                  onChange={handleChange}
+                                  placeholder="Không có"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                              <div className="health-form-group">
+                                <Form.Label className="health-form-label">
+                                  <FaPills className="label-medical-icon" />
+                                  Thuốc dài hạn
+                                </Form.Label>
+                                <Form.Control
+                                  disabled
+                                  as="textarea"
+                                  rows={4}
+                                  className="health-form-control animate-input"
+                                  name="longTermMedications"
+                                  value={
+                                    declarationHistory?.longTermMedications
+                                  }
+                                  onChange={handleChange}
+                                  placeholder="Không có"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="health-medical-field animate-stagger-fade-in animate-lift">
+                              <div className="health-form-group">
+                                <Form.Label className="health-form-label">
+                                  <FaStickyNote className="label-medical-icon" />
+                                  Tình trạng khác
+                                </Form.Label>
+                                <Form.Control
+                                  disabled
+                                  as="textarea"
+                                  rows={4}
+                                  className="health-form-control animate-input"
+                                  name="otherMedicalConditions"
+                                  value={
+                                    declarationHistory?.otherMedicalConditions
+                                  }
+                                  onChange={handleChange}
+                                  placeholder="Không có"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      </>
                     )}
-                  </div>
+                  </>
                 )}
               </Card.Body>
             </Card>
