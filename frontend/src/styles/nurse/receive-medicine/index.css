@@ -1,0 +1,1470 @@
+/* =================================================================
+   NURSE RECEIVE MEDICINE - CORAL MEDICAL THEME
+   Professional medication management interface with coral styling
+   ================================================================= */
+
+/* Main Container */
+.medicine-management {
+    background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 100%);
+    min-height: 100vh;
+    padding: 1.5rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Header Section with Coral Theme */
+.page-header {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(255, 107, 141, 0.3);
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="15" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/><path d="M40 50h20M50 40v20" stroke="rgba(255,255,255,0.2)" stroke-width="3" stroke-linecap="round"/></svg>') no-repeat center;
+    background-size: contain;
+    opacity: 0.6;
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-title h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-icon {
+    font-size: 2.5rem;
+    opacity: 0.9;
+}
+
+/* Statistics Cards with Coral Theme */
+.nurse-medicine-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.nurse-medicine-stat-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 8px 32px rgba(255, 107, 141, 0.1);
+    border: 1px solid rgba(255, 107, 141, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.nurse-medicine-stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(255, 107, 141, 0.2);
+}
+
+.nurse-medicine-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #FF6B8D, #FF4757);
+}
+
+.nurse-medicine-stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0;
+}
+
+.nurse-medicine-stat-icon img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    filter: none !important;
+    display: block;
+    margin: 0 auto;
+}
+
+.nurse-medicine-stat-label {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+.nurse-medicine-stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF6B8D, #FF4757);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+/* Tab Navigation */
+.nurse-medicine-tabs.nurse-theme .nav-tabs {
+    border: none;
+    background: white;
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 20px rgba(255, 107, 141, 0.1);
+    margin-bottom: 2rem;
+}
+
+.nurse-medicine-tabs.nurse-theme .nav-link {
+    border: none;
+    border-radius: 12px;
+    color: #64748b;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    margin: 0 0.25rem;
+    background: transparent;
+    transition: all 0.3s;
+}
+
+.nurse-medicine-tabs.nurse-theme .nav-link.active {
+    background: linear-gradient(135deg, #FF6B8D, #FF4757);
+    color: #fff !important;
+    box-shadow: 0 4px 16px rgba(255, 107, 141, 0.3);
+}
+
+.nurse-medicine-tabs.nurse-theme .nav-link:hover:not(.active) {
+    background: rgba(255, 107, 141, 0.1);
+    color: #FF6B8D;
+}
+
+.tab-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-title .tab-icon {
+    font-size: 1.1rem;
+}
+
+/* Tab Content */
+.tab-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(255, 107, 141, 0.1);
+    overflow: hidden;
+}
+
+.tab-content-header {
+    background: linear-gradient(135deg, #fef7f7, #fef2f2);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(255, 107, 141, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.content-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    background: linear-gradient(135deg, #FF6B8D, #FF4757);
+    box-shadow: 0 6px 20px rgba(255, 107, 141, 0.3);
+}
+
+.content-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.content-info p {
+    color: #64748b;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+    padding: 1.5rem 2rem;
+    background: #fafafa;
+    border-bottom: 1px solid rgba(255, 107, 141, 0.1);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-container {
+    flex: 1;
+    min-width: 300px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: white;
+}
+
+.search-input:focus {
+    border-color: #FF6B8D;
+    box-shadow: 0 0 0 3px rgba(255, 107, 141, 0.1);
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 1.1rem;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.filter-btn,
+.export-btn {
+    padding: 0.875rem 1.5rem;
+    border: 2px solid #FF6B8D;
+    border-radius: 12px;
+    background: white;
+    color: #FF6B8D;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.filter-btn:hover,
+.export-btn:hover {
+    background: #FF6B8D;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 141, 0.3);
+}
+
+/* Table Styles - Properly Sized for Readability */
+.table-container {
+    padding: 0;
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    min-height: 400px;
+}
+
+/* Base Table */
+.table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 1rem;
+    background: white;
+    min-width: 800px;
+}
+
+/* Table Headers */
+.table thead th {
+    background: linear-gradient(135deg, #fff5f5, #fef2f2);
+    color: #FF4757;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 0.75rem;
+    border-bottom: 2px solid #FF6B8D;
+    border-right: 1px solid #fee2e2;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.table thead th:last-child {
+    border-right: none;
+}
+
+/* Specific Header Widths - Adjusted for icon buttons */
+.student-info-header {
+    width: 20%;
+}
+
+.medicine-info-header {
+    width: 30%;
+}
+
+.dosage-header {
+    width: 20%;
+}
+
+.date-info-header {
+    width: 20%;
+}
+
+.action-header {
+    width: 10%;
+}
+
+/* Table Body Cells */
+.table tbody td {
+    padding: 0.8rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+    border-right: 1px solid #f8fafc;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    font-size: 0.95rem;
+}
+
+.table tbody td:last-child {
+    border-right: none;
+}
+
+/* Table Rows */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+    min-height: 50px;
+}
+
+.table tbody tr:hover {
+    background-color: #fff8f9;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cell Content Styles */
+.student-info {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 0.95rem;
+}
+
+.medicine-info {
+    font-weight: 600;
+    color: #FF6B8D;
+    font-size: 0.95rem;
+}
+
+.medicine-info strong {
+    font-weight: 700;
+}
+
+.dosage-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 3px rgba(251, 191, 36, 0.3);
+    border: none;
+    white-space: nowrap;
+}
+
+.date-info {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 2rem 8rem !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.date-icon {
+    font-size: 0.8rem;
+    color: #FF6B8D;
+    flex-shrink: 0;
+}
+
+/* Action Buttons - Icon Only */
+.table tbody td:last-child {
+    padding: 0.8rem 0.3rem;
+    overflow: visible;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: visible;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    overflow: visible;
+}
+
+.action-btn.view {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
+}
+
+.action-btn.approve {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.action-btn.reject {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.action-btn.complete {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+}
+
+.action-btn:hover {
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Override any conflicting styles for action buttons */
+.medicine-management .action-btn,
+.medicine-management button.action-btn,
+.table .action-btn,
+.table button.action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    background-image: none !important;
+    overflow: visible !important;
+    transition: transform 0.2s ease !important;
+    min-width: auto !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+}
+
+/* Empty State */
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: #9ca3af;
+}
+
+.empty-content {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 2.5rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.empty-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.empty-description {
+    color: #9ca3af;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+/* Pagination */
+.pagination-container {
+    padding: 1.5rem 2rem;
+    background: #fafafa;
+    border-top: 1px solid rgba(255, 107, 141, 0.1);
+    display: flex;
+    justify-content: center;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #9ca3af;
+}
+
+.loading-icon {
+    font-size: 2rem;
+    color: #FF6B8D;
+    margin-bottom: 1rem;
+}
+
+/* Show More Button */
+.table-footer {
+    padding: 1rem 2rem;
+    text-align: center;
+    background: #fafafa;
+    border-top: 1px solid rgba(255, 107, 141, 0.1);
+}
+
+.medicine-show-more-btn {
+    color: #FF6B8D;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    background: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.medicine-show-more-btn:hover {
+    background: rgba(255, 107, 141, 0.1);
+    color: #FF4757;
+}
+
+/* Notification Alert */
+.notification-alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+/* Medicine Status Badges */
+.medicine-status-badge {
+    padding: 0.375rem 0.875rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 2px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.medicine-status-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s;
+}
+
+.medicine-status-badge:hover::before {
+    left: 100%;
+}
+
+.medicine-status-badge:hover {
+    transform: translateY(-2px);
+}
+
+.medicine-status-badge.pending {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border-color: rgba(251, 191, 36, 0.3);
+    animation: pulse-pending 3s infinite;
+}
+
+.medicine-status-badge.pending:hover {
+    box-shadow: 0 8px 24px rgba(251, 191, 36, 0.4);
+}
+
+.medicine-status-badge.approved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.medicine-status-badge.approved:hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+}
+
+.medicine-status-badge.rejected {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.medicine-status-badge.rejected:hover {
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+}
+
+.medicine-status-badge.completed {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.medicine-status-badge.completed:hover {
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+}
+
+.medicine-status-badge.waiting {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    color: white;
+    border-color: rgba(255, 107, 141, 0.3);
+    animation: pulse-waiting 2s infinite;
+}
+
+.medicine-status-badge.waiting:hover {
+    box-shadow: 0 8px 24px rgba(255, 107, 141, 0.4);
+}
+
+/* Priority Badges */
+.priority-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.priority-badge.high {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-color: rgba(239, 68, 68, 0.3);
+    animation: pulse-high-priority 1.5s infinite;
+}
+
+.priority-badge.medium {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.priority-badge.low {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+@keyframes pulse-pending {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    }
+}
+
+@keyframes pulse-waiting {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 12px rgba(255, 107, 141, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 4px 12px rgba(255, 107, 141, 0.4);
+    }
+}
+
+@keyframes pulse-high-priority {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+.student-info,
+.medicine-info,
+.date-info {
+    font-weight: 600;
+    color: #374151;
+}
+
+.date-icon {
+    margin-right: 0.2rem;
+    color: #FF6B8D;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .medicine-management {
+        padding: 1rem;
+    }
+
+    .page-title h1 {
+        font-size: 2rem;
+    }
+
+    .nurse-medicine-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .search-filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-container {
+        min-width: auto;
+    }
+
+    .filter-actions {
+        justify-content: center;
+    }
+
+    .table-container {
+        margin: 0 -0.5rem;
+        border-radius: 8px;
+        min-height: 300px;
+    }
+
+    .table {
+        font-size: 0.85rem;
+        min-width: 600px;
+    }
+
+    .table thead th {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .table tbody td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .action-btn {
+        padding: 0.3em 0.5em;
+        font-size: 0.7rem;
+        gap: 0.2rem;
+    }
+
+    .dosage-badge {
+        font-size: 0.7rem;
+        padding: 0.3em 0.6em;
+    }
+
+    .date-info {
+        font-size: 0.8rem;
+        gap: 0.3rem;
+    }
+
+    .student-info,
+    .medicine-info {
+        font-size: 0.8rem;
+    }
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-medicine-stat-card,
+.tab-content {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* ==== Simple Prescription Modal UI ==== */
+.simple-prescription-modal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.10);
+    border: 1.5px solid #93c5fd;
+    background: #fff;
+}
+
+.simple-modal-header {
+    padding: 20px 24px 8px 24px;
+    border-bottom: 1px solid #93c5fd;
+    background: #eff6ff;
+    border-radius: 16px 16px 0 0;
+    text-align: center;
+    position: relative;
+}
+
+.simple-modal-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-badge-simple {
+    position: absolute;
+    top: 16px;
+    right: 5px;
+    background: #eed993ab;
+    color: #2563eb;
+    padding: 6px 6px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #93c5fd;
+}
+
+.simple-modal-body {
+    padding: 24px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.simple-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #93c5fd;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.04);
+    padding: 18px 16px 12px 16px;
+    margin-bottom: 0;
+}
+
+.simple-card-title {
+    font-weight: 600;
+    color: #2563eb;
+    font-size: 1.08rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.info-value {
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.medication-simple {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.medication-simple:last-child {
+    margin-bottom: 0;
+}
+
+.med-name {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.med-dosage {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.med-note {
+    color: #7c3aed;
+    font-size: 0.85rem;
+    font-style: italic;
+    background: #f3f4f6;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border-left: 3px solid #7c3aed;
+}
+
+.no-medication-simple {
+    color: #64748b;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-simple {
+    text-align: center;
+    color: #64748b;
+    padding: 40px 20px;
+    font-size: 1.1rem;
+}
+
+.error-simple {
+    text-align: center;
+    color: #ef4444;
+    padding: 40px 20px;
+    font-size: 1.1rem;
+}
+
+.simple-modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 18px 24px;
+    border-top: 1px solid #93c5fd;
+    background: #eff6ff;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-close-simple {
+    background: #94a3b8;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 20px;
+    transition: background 0.2s;
+}
+
+.btn-close-simple:hover {
+    background: #64748b;
+}
+
+.btn-reject-simple {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 8px 20px;
+    transition: background 0.2s;
+}
+
+.btn-reject-simple:hover {
+    background: #dc2626;
+}
+
+.btn-confirm-simple {
+    background: #10b981;
+    color: #fff;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 8px 20px;
+    transition: background 0.2s;
+}
+
+.btn-confirm-simple:hover {
+    background: #059669;
+}
+
+.btn-complete-simple {
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    font-weight: 700;
+    border-radius: 8px;
+    padding: 8px 20px;
+    transition: background 0.2s;
+}
+
+.btn-complete-simple:hover {
+    background: #2563eb;
+}
+
+@media (max-width: 768px) {
+    .simple-modal-body {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .simple-card {
+        padding: 10px 6px 8px 6px;
+    }
+
+    .simple-modal-footer {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .btn-close-simple,
+    .btn-reject-simple,
+    .btn-confirm-simple,
+    .btn-complete-simple {
+        width: 100%;
+        font-size: 1.08rem;
+    }
+
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .status-badge-simple {
+        position: static;
+        margin-top: 8px;
+        display: inline-block;
+    }
+}
+
+/* ==== DISABLE ALL TRANSITIONS & ANIMATIONS ==== */
+/* Disable transitions for all interactive elements */
+.receive-medicine-management *,
+.receive-medicine-management *::before,
+.receive-medicine-management *::after {
+    transition: none !important;
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+}
+
+/* Specific button overrides */
+.receive-medicine-management .btn,
+.receive-medicine-management button,
+.receive-medicine-management .action-btn,
+.receive-medicine-management .filter-btn,
+.receive-medicine-management .export-btn,
+.receive-medicine-management .nav-link,
+.receive-medicine-management .form-control,
+.receive-medicine-management .form-select,
+.receive-medicine-management .table tbody tr,
+.receive-medicine-management .nurse-medicine-stat-card,
+.receive-medicine-management .status-badge,
+.receive-medicine-management .priority-badge {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Disable hover effects that cause delays */
+.receive-medicine-management .btn:hover,
+.receive-medicine-management button:hover,
+.receive-medicine-management .action-btn:hover,
+.receive-medicine-management .filter-btn:hover,
+.receive-medicine-management .export-btn:hover,
+.receive-medicine-management .nav-link:hover,
+.receive-medicine-management .table tbody tr:hover,
+.receive-medicine-management .nurse-medicine-stat-card:hover,
+.receive-medicine-management .status-badge:hover,
+.receive-medicine-management .priority-badge:hover {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Disable modal animations */
+.receive-medicine-management .modal,
+.receive-medicine-management .modal-dialog,
+.receive-medicine-management .modal-content,
+.receive-medicine-management .modal-header,
+.receive-medicine-management .modal-body,
+.receive-medicine-management .modal-footer {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Disable form animations */
+.receive-medicine-management .form-control:focus,
+.receive-medicine-management .form-select:focus {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Disable card animations */
+.receive-medicine-management .simple-card,
+.receive-medicine-management .simple-prescription-modal,
+.receive-medicine-management .medication-item,
+.receive-medicine-management .info-card {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Disable icon animations */
+.receive-medicine-management .med-icon,
+.receive-medicine-management .modal-icon,
+.receive-medicine-management .tab-icon {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Disable loading animations */
+.receive-medicine-management .loading-spinner,
+.receive-medicine-management .fa-spin {
+    animation: none !important;
+}
+
+/* Disable pulse animations */
+.receive-medicine-management .pulse-emergency,
+.receive-medicine-management .pulse-urgent,
+.receive-medicine-management .pulse-time {
+    animation: none !important;
+}
+
+/* Disable fade animations */
+.receive-medicine-management .fadeInUp,
+.receive-medicine-management .fadeIn,
+.receive-medicine-management .slideIn {
+    animation: none !important;
+}
+
+/* Disable all keyframe animations */
+@keyframes none {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Override any remaining animations */
+.receive-medicine-management * {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+}
+
+/* ==== TABLE HEADERS - Compact ==== */
+.student-info-header,
+.medicine-info-header,
+.dosage-header,
+.date-info-header,
+.action-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #FF4757;
+    background: #fff5f5;
+    border-bottom: 2px solid #FF6B8D;
+    letter-spacing: 0.01em;
+    padding: 0.4rem 0.3rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Cân bằng width cho các cột - Tối ưu */
+.student-info-header {
+    width: 20%;
+}
+
+.medicine-info-header {
+    width: 28%;
+}
+
+.dosage-header {
+    width: 20%;
+}
+
+.date-info-header {
+    width: 17%;
+}
+
+.action-header {
+    width: 15%;
+}
+
+/* ==== TABLE CELLS - Compact ==== */
+.student-info {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2563eb;
+    padding: 0.4rem 0.3rem;
+    text-align: center;
+    vertical-align: middle;
+    width: 20%;
+}
+
+.medicine-info {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #FF6B8D;
+    padding: 0.4rem 0.3rem;
+    text-align: center;
+    vertical-align: middle;
+    width: 28%;
+}
+
+.medicine-info strong {
+    display: block;
+    font-size: 0.9rem;
+}
+
+.dosage-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    color: #fff !important;
+    border-radius: 6px;
+    padding: 0.2em 0.6em;
+    margin: 0;
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.08);
+    display: inline-block;
+    text-align: center;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* .table-row td:nth-child(4) {
+    text-align: center;
+    vertical-align: middle;
+    width: 20%;
+    padding: 1.5rem 5em;
+} */
+
+.date-info {
+    white-space: nowrap;
+    /* Ngăn chữ xuống dòng */
+    overflow: hidden;
+    /* Ẩn phần bị tràn */
+    text-overflow: ellipsis;
+    /* Hiển thị "..." nếu quá dài */
+    max-width: 140px;
+    /* Hoặc width cụ thể vừa đủ */
+    padding: 1.5rem 0.3rem;
+    vertical-align: middle;
+    display: flex;
+    /* Canh icon và text trên 1 dòng */
+    align-items: center;
+    gap: 6px;
+}
+
+.date-icon {
+    margin-right: 0.2rem;
+    color: #FF6B8D;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+/* Cột action buttons - Compact */
+.table-row td:last-child {
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+    padding: 0.4rem 0.3rem;
+}
+
+.table-row .btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 0.1rem;
+}
+
+.table-row .action-btn {
+    padding: 0.15em 0.4em;
+    font-size: 0.7rem;
+    min-width: unset;
+    width: auto;
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.08);
+    border-radius: 4px;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.table-row {
+    transition: background 0.2s;
+}
+
+.table-row:hover {
+    background: #fff0f3;
+}
+
+/* Đảm bảo table layout cố định */
+.table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Responsive for table */
+@media (max-width: 768px) {
+
+    .student-info-header,
+    .medicine-info-header,
+    .dosage-header,
+    .date-info-header,
+    .action-header {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.3rem;
+    }
+
+    .student-info,
+    .medicine-info,
+    .date-info {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.3rem;
+    }
+
+    .dosage-badge {
+        font-size: 0.85rem;
+        padding: 0.25em 0.6em;
+    }
+
+    .table-row .action-btn {
+        padding: 0.25em 0.6em;
+        font-size: 0.8rem;
+    }
+}
+
+/* Override any conflicting styles for action buttons */
+.medicine-management .action-btn,
+.medicine-management button.action-btn,
+.table .action-btn,
+.table button.action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.2rem !important;
+    padding: 0.25em 0.5em !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    cursor: pointer !important;
+    transition: none !important;
+    line-height: 1.2 !important;
+    min-width: auto !important;
+    background-image: none !important;
+}
+
+.medicine-management .action-btn.view,
+.table .action-btn.view {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(251, 191, 36, 0.3) !important;
+}
+
+.medicine-management .action-btn.approve,
+.table .action-btn.approve {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3) !important;
+}
+
+.medicine-management .action-btn.reject,
+.table .action-btn.reject {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(239, 68, 68, 0.3) !important;
+}
+
+.medicine-management .action-btn.complete,
+.table .action-btn.complete {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+    color: white !important;
+    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.3) !important;
+}

@@ -33,10 +33,10 @@ export const initScrollAnimations = () => {
 /**
  * Add stagger delays to multiple elements
  */
-export const addStaggerDelays = (selector, baseDelay = 100) => {
+export const addStaggerDelays = (selector, baseDelay = 10) => {
     const elements = document.querySelectorAll(selector);
     elements.forEach((el, index) => {
-        el.style.animationDelay = `${baseDelay * (index + 1)}ms`;
+        el.style.animationDelay = `${baseDelay * (index )}ms`;
     });
 };
 
@@ -147,7 +147,7 @@ export const autoInitAnimations = () => {
     initScrollAnimations();
 
     // Add stagger delays to common elements
-    addStaggerDelays('.animate-stagger-fade-in', 150);
+    addStaggerDelays('.animate-stagger-fade-in', 15);
 
     // Add ripple effect to buttons
     document.querySelectorAll('.animate-button-hover').forEach(button => {

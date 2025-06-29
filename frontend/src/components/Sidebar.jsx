@@ -30,7 +30,7 @@ const Sidebar = (props) => {
   // Không render sidebar cho parent
   if (!user?.role || user.role === "parent") return null;
 
-  // Responsive state management
+  // Responsive state management - Sidebar expanded by default for nurse
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const collapsed =
@@ -128,7 +128,6 @@ const Sidebar = (props) => {
   } else if (user.role === "nurse") {
     menuItems = [
       { path: "/nurse", icon: <FaHome />, label: "Dashboard" },
-
       {
         path: "/nurse/receive-medicine",
         icon: <FaPills />,

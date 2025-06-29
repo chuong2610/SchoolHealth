@@ -1,0 +1,197 @@
+/* ==========================================
+   Parent Notifications Badges Styles
+   ========================================== */
+
+/* Notification Badge */
+.notification-badge {
+    position: relative;
+    display: inline-block;
+}
+
+.badge-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--parent-danger);
+    color: white;
+    border-radius: var(--parent-radius-full);
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: var(--parent-font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--parent-space-xs);
+    border: 2px solid white;
+    box-shadow: var(--parent-shadow-sm);
+    animation: pulse 2s infinite;
+}
+
+.badge-count.zero {
+    display: none;
+}
+
+/* Badge Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Status Badges */
+.status-badge {
+    padding: var(--parent-space-xs) var(--parent-space-sm);
+    border-radius: var(--parent-radius-full);
+    font-size: var(--parent-font-size-xs);
+    font-weight: var(--parent-font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--parent-space-xs);
+}
+
+.status-badge.unread {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--parent-primary);
+}
+
+.status-badge.read {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--parent-muted);
+}
+
+.status-badge.urgent {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--parent-danger);
+    animation: urgent-pulse 1.5s infinite;
+}
+
+.status-badge.important {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--parent-warning);
+}
+
+.status-badge.info {
+    background: rgba(8, 145, 178, 0.1);
+    color: var(--parent-info);
+}
+
+/* Urgent Animation */
+@keyframes urgent-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 38, 38, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+    }
+}
+
+/* Badge Icons */
+.badge-icon {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--parent-radius-full);
+    flex-shrink: 0;
+}
+
+.badge-icon.unread {
+    background: var(--parent-primary);
+}
+
+.badge-icon.read {
+    background: var(--parent-muted);
+}
+
+.badge-icon.urgent {
+    background: var(--parent-danger);
+}
+
+.badge-icon.important {
+    background: var(--parent-warning);
+}
+
+.badge-icon.info {
+    background: var(--parent-info);
+}
+
+/* Floating Badge */
+.floating-badge {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--parent-danger);
+    color: white;
+    border-radius: var(--parent-radius-full);
+    padding: var(--parent-space-sm) var(--parent-space-md);
+    font-size: var(--parent-font-size-sm);
+    font-weight: var(--parent-font-weight-semibold);
+    box-shadow: var(--parent-shadow-lg);
+    z-index: var(--parent-z-popover);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Badge Groups */
+.badge-group {
+    display: flex;
+    gap: var(--parent-space-xs);
+    flex-wrap: wrap;
+}
+
+.badge-group .status-badge {
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .badge-count {
+        min-width: 16px;
+        height: 16px;
+        font-size: 9px;
+        top: -6px;
+        right: -6px;
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 2px var(--parent-space-xs);
+    }
+
+    .badge-icon {
+        width: 10px;
+        height: 10px;
+    }
+
+    .floating-badge {
+        top: 10px;
+        right: 10px;
+        font-size: var(--parent-font-size-xs);
+        padding: var(--parent-space-xs) var(--parent-space-sm);
+    }
+}

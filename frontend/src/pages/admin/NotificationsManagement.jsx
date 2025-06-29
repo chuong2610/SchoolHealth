@@ -720,9 +720,8 @@ const NotificationsManagement = () => {
                   </td>
                   <td>
                     <span
-                      className={`admin-notification-type ${
-                        notification.type === "Vaccination" ? "health" : "event"
-                      }`}
+                      className={`admin-notification-type ${notification.type === "Vaccination" ? "health" : "event"
+                        }`}
                     >
                       <i
                         className={
@@ -750,9 +749,8 @@ const NotificationsManagement = () => {
                   </td>
                   <td>
                     <span
-                      className={`admin-notification-status ${
-                        notification.status || "sent"
-                      }`}
+                      className={`admin-notification-status ${notification.status || "sent"
+                        }`}
                     >
                       <i className="fas fa-check-circle"></i>
                       Đã gửi
@@ -1561,11 +1559,10 @@ const NotificationsManagement = () => {
                   <div className="admin-detail-item">
                     <label>Loại:</label>
                     <span
-                      className={`admin-notification-type ${
-                        modalDetail.notificationDetail.type === "Vaccination"
+                      className={`admin-notification-type ${modalDetail.notificationDetail.type === "Vaccination"
                           ? "health"
                           : "event"
-                      }`}
+                        }`}
                     >
                       {modalDetail.notificationDetail.type === "Vaccination"
                         ? "Tiêm chủng"
@@ -1652,7 +1649,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                          0 ? (
+                            0 ? (
                             <tr>
                               <td colSpan="6">Không có kết quả</td>
                             </tr>
@@ -1712,7 +1709,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                          0 ? (
+                            0 ? (
                             <tr>
                               <td colSpan="7">Không có kết quả</td>
                             </tr>

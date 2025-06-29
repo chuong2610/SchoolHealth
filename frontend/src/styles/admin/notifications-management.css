@@ -490,18 +490,17 @@
     background: white;
 }
 
-.admin-notifications-table thead th {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    color: white;
-    font-weight: 600;
-    font-size: 0.875rem;
-    border: none;
-    padding: 1rem 0.75rem;
-    text-align: left;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    animation: slideInStagger 0.6s ease-out both;
-    animation-delay: calc(var(--col-index, 0) * 0.1s + 1.4s);
+.admin-notifications-table-container .admin-notifications-table thead th {
+    background: #08a87d !important;
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    border: none !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
 }
 
 .admin-notifications-table thead th:nth-child(1) {
@@ -1382,16 +1381,17 @@
 } */
 
 .admin-table thead th {
+    background: #08a87d;
+    color: white;
     position: sticky;
     top: 0;
     z-index: 5;
-    background: #f8fafc;
-    color: #374151;
     font-weight: 600;
     font-size: 0.875rem;
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 0.75rem;
-    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.05); /* đổ bóng nhẹ */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.05);
+    /* đổ bóng nhẹ */
 }
 
 .admin-table tbody td {

@@ -8,7 +8,8 @@
 }
 
 .admin-blog-list-header {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    ;
     padding: 2rem 2.5rem;
     border-radius: 20px;
     margin-bottom: 2rem;
@@ -107,14 +108,14 @@
 }
 
 .admin-blog-list-table thead {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    background: #08a87d;
 }
 
 .admin-blog-list-table thead th {
     padding: 1.25rem 1rem;
     font-weight: 700;
     font-size: 1.1rem;
-    color: #2d3748;
+    color: white;
     text-align: left;
     border: none;
     position: relative;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Statistic, Badge, Avatar } from "antd";
+import { Card, Row, Col, Statistic } from "antd";
+import { Table } from "react-bootstrap";
 import { FaPills, FaClock, FaCalendarAlt, FaUserCheck, FaCheckCircle, FaUserNurse, FaEnvelope, FaChartPie, FaListAlt, FaHeartbeat } from "react-icons/fa";
 import { PieChart, Pie as RePie, Cell, Legend, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Area, AreaChart } from 'recharts';
 import { motion } from "framer-motion";
@@ -7,7 +8,10 @@ import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
 // Import CSS cho Nurse Dashboard
 import "../../styles/nurse/dashboard/index.css";
-import CustomTable from "../../components/CustomTable";
+// import MedicineSvg from "../../assets/pill-svgrepo-com .svg";
+// import ClockSvg from "../../assets/clock-svgrepo-com .svg";
+// import CalendarSvg from "../../assets/graphic-design-illustration-svgrepo-com.svg";
+
 import MedicalExaminationFemaleSvg from "../../assets/medical-examination-female-svgrepo-com.svg";
 
 // Animation variants cho framer motion
@@ -193,14 +197,11 @@ const Dashboard = () => {
 
   if (loading || !dashboardData) {
     return (
-      <div className="nurse-loading">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-        >
-          <FaHeartbeat />
-        </motion.div>
-        <p>Đang tải dashboard...</p>
+      <div className="nurse-dashboard">
+        <div className="nurse-loading">
+          <div className="nurse-loading-spinner"></div>
+          <div className="nurse-loading-text">Đang tải dashboard...</div>
+        </div>
       </div>
     );
   }
@@ -217,7 +218,7 @@ const Dashboard = () => {
       key: med.id || Math.random(),
       time: med.time || "",
       student: med.studentName,
-      class: med.studentClassName,
+      class: med.studentClass,
       medicine: med.medications?.[0]?.medicationName || "",
       status: med.status === "Completed" ? "completed" : "pending"
     }))
@@ -326,328 +327,256 @@ const Dashboard = () => {
   ];
 
   return (
-    <motion.div
-      className="nurse-dashboard"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="nurse-dashboard-container">
       {/* Header Banner */}
       <div className="nurse-header-banner">
         <div className="nurse-header-content">
-          <Row align="middle">
-            <Col>
-              <motion.div
-                className="nurse-avatar"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img src={nurseProfile.avatar} alt="avatar" />
-              </motion.div>
-            </Col>
-            <Col flex="auto" className="nurse-header-left">
-              <motion.h1
-                className="nurse-welcome-title"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
+          <div className="nurse-header-left">
+            <div className="nurse-avatar">
+              <span>NU</span>
+            </div>
+            <div className="nurse-header-text">
+              <h1 className="nurse-welcome-title">
                 Chào mừng, {nurseProfile.name}!
-              </motion.h1>
-              <motion.div
-                className="nurse-welcome-subtitle"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
+              </h1>
+              <div className="nurse-welcome-subtitle">
                 <FaUserNurse />
                 {nurseProfile.role}
                 <span>•</span>
                 <FaEnvelope />
                 {nurseProfile.email}
-              </motion.div>
-            </Col>
-            {/* SVG bên phải welcome card */}
-            <Col flex="none" md={4} className="nurse-header-svg">
-              <img
-                src={MedicalExaminationFemaleSvg}
-                alt="Medical Examination"
-              />
-            </Col>
-          </Row>
+              </div>
+            </div>
+          </div>
+          <div className="nurse-header-right">
+            <img
+              src={MedicalExaminationFemaleSvg}
+              alt="Medical Examination"
+              className="nurse-header-illustration"
+            />
+          </div>
         </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="dashboard-section stats-row">
+      <div className="nurse-stats-section">
         <Row gutter={[24, 24]}>
-          {[
-            {
-              title: 'Thuốc cần uống',
-              value: medicineToTake,
-              icon: FaPills,
-              color: 'success',
-              svgComponent: MedicineSvg
-            },
-            {
-              title: 'Thuốc chờ xác nhận',
-              value: pendingMedicine,
-              icon: FaClock,
-              color: 'warning',
-              svgComponent: ClockSvg
-            },
-            {
-              title: 'Lịch khám hôm nay',
-              value: todayAppointments,
-              icon: FaCalendarAlt,
-              color: 'info',
-              svgComponent: CalendarSvg
-            },
-            {
-              title: 'Khai báo y tế mới',
-              value: newHealthDeclarations,
-              icon: FaUserCheck,
-              color: 'danger',
-              svgComponent: HealthSvg
-            }
-          ].map((item, index) => (
-            <Col xs={24} sm={12} lg={6} key={item.title}>
-              <motion.div variants={itemVariants}>
-                <motion.div
-                  variants={cardHoverVariants}
-                  initial="rest"
-                  whileHover="hover"
-                >
-                  <Card className={`nurse-stat-card nurse-stat-card-${item.color}`}>
-                    <div className="nurse-stat-card-content">
-                      <motion.div
-                        className="nurse-stat-icon"
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        <item.svgComponent />
-                      </motion.div>
-                      <Statistic
-                        title={
-                          <span className="nurse-stat-title">
-                            {item.title}
-                          </span>
-                        }
-                        value={item.value}
-                        className="nurse-stat-value"
-                      />
-                    </div>
-                  </Card>
-                </motion.div>
-              </motion.div>
-            </Col>
-          ))}
+          <Col xs={24} sm={12} lg={6}>
+            <motion.div variants={itemVariants}>
+              <Card className="nurse-stat-card medicine-active">
+                <div className="nurse-stat-content">
+                  <div className="nurse-stat-icon">
+                    <MedicineSvg />
+                  </div>
+                  <div className="nurse-stat-info">
+                    <div className="nurse-stat-label">Thuốc cần uống</div>
+                    <div className="nurse-stat-number">{medicineToTake}</div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <motion.div variants={itemVariants}>
+              <Card className="nurse-stat-card medicine-pending">
+                <div className="nurse-stat-content">
+                  <div className="nurse-stat-icon">
+                    <ClockSvg />
+                  </div>
+                  <div className="nurse-stat-info">
+                    <div className="nurse-stat-label">Thuốc chờ xác nhận</div>
+                    <div className="nurse-stat-number">{pendingMedicine}</div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <motion.div variants={itemVariants}>
+              <Card className="nurse-stat-card appointments-today">
+                <div className="nurse-stat-content">
+                  <div className="nurse-stat-icon">
+                    <CalendarSvg />
+                  </div>
+                  <div className="nurse-stat-info">
+                    <div className="nurse-stat-label">Lịch khám hôm nay</div>
+                    <div className="nurse-stat-number">{todayAppointments}</div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </Col>
+
+          <Col xs={24} sm={12} lg={6}>
+            <motion.div variants={itemVariants}>
+              <Card className="nurse-stat-card health-declarations">
+                <div className="nurse-stat-content">
+                  <div className="nurse-stat-icon">
+                    <HealthSvg />
+                  </div>
+                  <div className="nurse-stat-info">
+                    <div className="nurse-stat-label">Khai báo y tế mới</div>
+                    <div className="nurse-stat-number">{newHealthDeclarations}</div>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </Col>
         </Row>
       </div>
 
-      {/* Charts Row - 2 Charts Side by Side */}
-      <div className="dashboard-section charts-section">
-        <Row gutter={[24, 24]} className="charts-row">
-          {/* Medicine Confirmation Chart */}
+      {/* Charts Section */}
+      <div className="nurse-charts-section">
+        <Row gutter={[24, 24]}>
           <Col xs={24} lg={12}>
             <motion.div variants={itemVariants}>
-              <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-                <Card
-                  className="nurse-chart-card"
-                  title={
-                    <span>
-                      <motion.div
-                        className="chart-title-icon rotating"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              <Card className="nurse-chart-card">
+                <div className="nurse-chart-header">
+                  <FaChartPie />
+                  <span>Tỉ lệ xác nhận thuốc</span>
+                </div>
+                <div className="nurse-chart-content">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <RePie
+                        data={pieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={120}
+                        paddingAngle={5}
                       >
-                        <FaChartPie />
-                      </motion.div>
-                      Tỉ lệ xác nhận thuốc
-                    </span>
-                  }
-                >
-                  <div className="nurse-chart">
-                    <ResponsiveContainer width="100%" height={280}>
-                      <PieChart>
-                        <defs>
-                          <linearGradient id="pieGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#00c6fb" stopOpacity="1" />
-                            <stop offset="100%" stopColor="#7f53ac" stopOpacity="1" />
-                          </linearGradient>
-                          <linearGradient id="pieGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#ffb347" stopOpacity="1" />
-                            <stop offset="100%" stopColor="#ffcc33" stopOpacity="1" />
-                          </linearGradient>
-                        </defs>
-                        <RePie
-                          data={pieData}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={50}
-                          outerRadius={90}
-                          paddingAngle={5}
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                          labelLine={false}
-                        >
-                          {pieData.map((entry, idx) => (
-                            <Cell key={`cell-${idx}`} fill={idx === 0 ? 'url(#pieGradient1)' : 'url(#pieGradient2)'} />
-                          ))}
-                        </RePie>
-                        <Legend
-                          verticalAlign="bottom"
-                          height={36}
-                        />
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Card>
-              </motion.div>
+                        {pieData.map((entry, idx) => (
+                          <Cell key={`cell-${idx}`} fill={idx === 0 ? '#4A90E2' : '#F5A623'} />
+                        ))}
+                      </RePie>
+                      <Legend />
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
             </motion.div>
           </Col>
 
           {/* Weekly Health Events Chart */}
           <Col xs={24} lg={12}>
             <motion.div variants={itemVariants}>
-              <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-                <Card
-                  className="nurse-chart-card"
-                  title={
-                    <span>
-                      <motion.div
-                        className="chart-title-icon scaling"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <FaHeartbeat />
-                      </motion.div>
-                      Sự kiện y tế trong tuần
-                    </span>
-                  }
-                >
-                  <div className="nurse-chart">
-                    <ResponsiveContainer width="100%" height={280}>
-                      <AreaChart data={healthEventData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                        <defs>
-                          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#F8BBD9" stopOpacity="0.8" />
-                            <stop offset="50%" stopColor="#E57373" stopOpacity="0.4" />
-                            <stop offset="100%" stopColor="#F48FB1" stopOpacity="0.1" />
-                          </linearGradient>
-                          <linearGradient id="lineGradientPink" x1="0" y1="0" x2="1" y2="0">
-                            <stop offset="0%" stopColor="#F06292" />
-                            <stop offset="100%" stopColor="#F8BBD9" />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--nurse-border)" />
-                        <XAxis
-                          dataKey="day"
-                          tick={{ fontSize: 12, fontWeight: 600, fill: 'var(--nurse-text-secondary)' }}
-                          axisLine={{ stroke: 'var(--nurse-text-secondary)' }}
-                        />
-                        <YAxis
-                          allowDecimals={false}
-                          tick={{ fontSize: 12, fontWeight: 600, fill: 'var(--nurse-text-secondary)' }}
-                          axisLine={{ stroke: 'var(--nurse-text-secondary)' }}
-                        />
-                        <Tooltip />
-                        <Area
-                          type="monotone"
-                          dataKey="events"
-                          fill="url(#areaGradient)"
-                          stroke="url(#lineGradientPink)"
-                          strokeWidth={3}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="events"
-                          stroke="url(#lineGradientPink)"
-                          strokeWidth={3}
-                          dot={{ r: 6, fill: '#F06292', strokeWidth: 2, stroke: 'var(--nurse-card-bg)' }}
-                          activeDot={{ r: 8, fill: '#F06292', strokeWidth: 3, stroke: 'var(--nurse-card-bg)' }}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </Card>
-              </motion.div>
+              <Card className="nurse-chart-card">
+                <div className="nurse-chart-header">
+                  <FaHeartbeat />
+                  <span>Sự kiện y tế trong tuần</span>
+                </div>
+                <div className="nurse-chart-content">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={healthEventData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Area
+                        type="monotone"
+                        dataKey="events"
+                        fill="#F8BBD9"
+                        stroke="#FF6B8D"
+                        strokeWidth={2}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
             </motion.div>
           </Col>
         </Row>
       </div>
 
-      {/* Tables Row - 2 Tables Side by Side */}
-      <div className="dashboard-section tables-row">
+      {/* Tables Section */}
+      <div className="nurse-tables-section">
         <Row gutter={[24, 24]}>
-          {/* Medicine Schedule */}
+          {/* Medicine Schedule Table */}
           <Col xs={24} lg={12}>
             <motion.div variants={itemVariants}>
-              <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-                <Card
-                  className="nurse-data-card"
-                  title={
-                    <span>
-                      <motion.div
-                        className="table-title-icon scaling"
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <FaPills />
-                      </motion.div>
-                      Lịch cho uống thuốc
-                    </span>
-                  }
-                >
-                  <div className="nurse-table">
-                    <CustomTable
-                      columns={medicineColumns}
-                      data={medicineSchedule}
-                      pagination={{ pageSize: 5 }}
-                      size="middle"
-                    />
-                  </div>
-                </Card>
-              </motion.div>
+              <Card className="nurse-table-card">
+                <div className="nurse-table-header">
+                  <FaPills />
+                  <span>Lịch cho uống thuốc</span>
+                </div>
+                <div className="nurse-table-content">
+                  <Table striped hover className="nurse-schedule-table">
+                    <thead>
+                      <tr>
+                        <th>Học sinh</th>
+                        <th>Lớp</th>
+                        <th>Thuốc</th>
+                        <th>Trạng thái</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {medicineSchedule.map((row) => (
+                        <tr key={row.key}>
+                          <td>{row.student}</td>
+                          <td>{row.class}</td>
+                          <td>{row.medicine}</td>
+                          <td>
+                            {row.status === 'completed' ? (
+                              <span className="nurse-tag-success">
+                                <FaCheckCircle /> Hoàn thành
+                              </span>
+                            ) : (
+                              <span className="nurse-tag-warning">
+                                <FaClock /> Chờ uống
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+              </Card>
             </motion.div>
           </Col>
 
-          {/* Today's Appointments */}
+          {/* Today's Health Appointments Table */}
           <Col xs={24} lg={12}>
             <motion.div variants={itemVariants}>
-              <motion.div variants={cardHoverVariants} initial="rest" whileHover="hover">
-                <Card
-                  className="nurse-data-card"
-                  title={
-                    <span>
-                      <motion.div
-                        className="table-title-icon swinging"
-                        animate={{ rotate: [0, 15, -15, 0] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <FaCalendarAlt />
-                      </motion.div>
-                      Lịch khám hôm nay
-                    </span>
-                  }
-                >
-                  <div className="nurse-table">
-                    <CustomTable
-                      columns={todayColumns}
-                      data={todayHealthAppointments}
-                      pagination={false}
-                      size="middle"
-                    />
-                  </div>
-                </Card>
-              </motion.div>
+              <Card className="nurse-table-card">
+                <div className="nurse-table-header">
+                  <FaCalendarAlt />
+                  <span>Lịch khám hôm nay</span>
+                </div>
+                <div className="nurse-table-content">
+                  <Table striped hover className="nurse-appointments-table">
+                    <thead>
+                      <tr>
+                        <th>Tên sự kiện</th>
+                        <th>Địa điểm</th>
+                        <th>Tên học sinh</th>
+                        <th>Thời gian</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {todayHealthAppointments.map((row) => (
+                        <tr key={row.key}>
+                          <td>{row.eventType}</td>
+                          <td>{row.location}</td>
+                          <td>{row.studentName}</td>
+                          <td>{row.date ? new Date(row.date).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) : ''}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </div>
+              </Card>
             </motion.div>
           </Col>
         </Row>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

@@ -9,7 +9,11 @@ const MainLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Sidebar mở rộng mặc định cho nurse, collapse cho admin
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Default to expanded for nurse, collapsed for admin
+    return user?.role === 'admin';
+  });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
@@ -65,7 +69,7 @@ const MainLayout = ({ children }) => {
 
   // Admin/Nurse với sidebar layout - Header trong .main
   return (
-    <div className="wrapper">
+    <div className={`wrapper ${sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
       {/* Sidebar cho admin/nurse */}
       <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
 

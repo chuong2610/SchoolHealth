@@ -1,17 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaHeartbeat, FaUserCircle, FaChevronDown } from "react-icons/fa";
+import { FaHeartbeat, FaUserCircle, FaChevronDown, FaHome, FaFileAlt, FaPills, FaBell, FaHistory, FaBars, FaTimes, FaComments } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import ParentMenu from "./ParentMenu";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { getParentInfo } from "../api/parent/ProfileApi";
 import { useAvatar } from "../context/AvatarContext";
+import NotificationIcon from "./NotificationIcon";
+import ChatNotificationBadge from "./ChatNotificationBadge";
 // Styles được import từ main.jsx
 
 const Header = ({ onLogout }) => {
   const { user } = useAuth();
   const { avatarVersion } = useAvatar(); // lấy avatarVersion
   const navigate = useNavigate();
+  const location = useLocation();
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [parentInfo, setParentInfo] = useState({
     name: "",
@@ -29,6 +32,22 @@ const Header = ({ onLogout }) => {
     // { key: "settings", label: "Cài đặt" },
     { type: "divider" },
     { key: "logout", label: "Đăng xuất" },
+  ];
+
+  // Parent navigation items
+  const parentMenuItems = [
+    { path: '/parent', icon: <FaHome />, label: 'Trang chủ' },
+    { path: '/parent/health-declaration', icon: <FaFileAlt />, label: 'Khai báo sức khỏe' },
+    { path: '/parent/send-medicine', icon: <FaPills />, label: 'Gửi thuốc' },
+    {
+      path: '/parent/chat',
+      icon: <div className="chat-icon-container">
+        <ChatNotificationBadge showIcon={true} iconSize="lg" />
+      </div>,
+      label: 'Tin nhắn tư vấn'
+    },
+    { path: '/parent/notifications', icon: <NotificationIcon />, label: 'Thông báo' },
+    { path: '/parent/health-history', icon: <FaHistory />, label: 'Lịch sử sức khỏe' },
   ];
 
   const fetchParentInfo = async () => {
@@ -73,6 +92,57 @@ const Header = ({ onLogout }) => {
     setShowAccountDropdown(false);
   };
 
+  // Render parent navigation
+  const renderParentNavigation = () => {
+    if (user?.role !== "parent") return null;
+
+    return (
+      <div className="parent-menu">
+        {/* Desktop menu - menu ngang */}
+        <nav className="parent-menu-desktop d-none d-md-flex">
+          {parentMenuItems.map((item, idx) => (
+            <Link
+              key={idx}
+              to={item.path}
+              className={`parent-menu-link menu-item${location.pathname === item.path ? ' active' : ''}`}
+            >
+              <i className="parent-menu-icon">{item.icon}</i>
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        {/* Mobile hamburger button */}
+        <div className="parent-menu-mobile d-md-none">
+          <button
+            className="hamburger-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+
+          {/* Mobile dropdown menu */}
+          {mobileMenuOpen && (
+            <div className="mobile-dropdown">
+              {parentMenuItems.map((item, idx) => (
+                <Link
+                  key={idx}
+                  to={item.path}
+                  className={`mobile-dropdown-item menu-item${location.pathname === item.path ? ' active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <i className="mobile-menu-icon">{item.icon}</i>
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <header className="app-header">
       {/* Left: Logo (hiển thị cho tất cả role) */}
@@ -84,9 +154,9 @@ const Header = ({ onLogout }) => {
           </div>
         </div>
       )}
-      {/* Center: Parent menu (chỉ cho parent) */}
+      {/* Center: Navigation (chỉ cho parent) */}
       <div className="app-header-center">
-        {user?.role === "parent" && <ParentMenu />}
+        {renderParentNavigation()}
       </div>
 
       {/* Right: Account user dropdown */}
@@ -109,9 +179,8 @@ const Header = ({ onLogout }) => {
               }}
             />
             <FaChevronDown
-              className={`account-arrow ${
-                showAccountDropdown ? "rotated" : ""
-              }`}
+              className={`account-arrow ${showAccountDropdown ? "rotated" : ""
+                }`}
             />
           </div>
           {showAccountDropdown && (

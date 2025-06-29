@@ -309,7 +309,7 @@
     position: relative;
     overflow: hidden;
     animation: fadeInUp 0.6s ease-out both;
-    animation-delay: calc(var(--tab-index, 0) * 0.1s + 0.8s);
+    animation-delay: calc(var(--tab-index, 0) * 0.1s);
 }
 
 .admin-accounts-nav .nav-link:nth-child(1) {
@@ -759,7 +759,7 @@
     display: flex;
     gap: 0.5rem;
     animation: fadeInRight 0.4s ease-out both;
-    animation-delay: calc(var(--row-index, 0) * 0.1s + 2.3s);
+    animation-delay: calc(var(--row-index, 0) * 0.1s);
 }
 
 .admin-table-btn {
@@ -776,8 +776,8 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
-    animation: bounceIn 0.6s ease-out both;
-    animation-delay: calc(var(--btn-index, 0) * 0.1s + var(--row-index, 0) * 0.1s + 2.4s);
+    animation: bounceIn 0.1s ease-out both;
+    
 }
 
 .admin-table-btn:nth-child(1) {

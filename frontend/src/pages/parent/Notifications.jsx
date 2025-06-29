@@ -391,11 +391,10 @@ export default function Notifications() {
                               activeTab === tab.key
                                 ? "white"
                                 : "var(--parent-primary)",
-                            border: `2px solid ${
-                              activeTab === tab.key
+                            border: `2px solid ${activeTab === tab.key
                                 ? "transparent"
                                 : "rgba(37, 99, 235, 0.2)"
-                            }`,
+                              }`,
                             fontWeight: "600",
                             borderRadius: "var(--parent-border-radius-lg)",
                             padding: "0.75rem 1.5rem",
@@ -564,8 +563,8 @@ export default function Notifications() {
                                       notification.type === "Vaccination"
                                         ? "linear-gradient(135deg,rgba(255, 255, 255, 0.63), #8b5cf6)"
                                         : notification.type === "HealthCheck"
-                                        ? "linear-gradient(135deg,rgb(252, 253, 255), #60a5fa)"
-                                        : "linear-gradient(135deg,rgb(222, 217, 235), #a78bfa)",
+                                          ? "linear-gradient(135deg,rgb(252, 253, 255), #60a5fa)"
+                                          : "linear-gradient(135deg,rgb(222, 217, 235), #a78bfa)",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -599,9 +598,9 @@ export default function Notifications() {
                                   >
                                     {notification.message?.length > 80
                                       ? notification.message.substring(0, 80) +
-                                        "..."
+                                      "..."
                                       : notification.message ||
-                                        "Không có nội dung"}
+                                      "Không có nội dung"}
                                   </div>
                                 </div>
                               </td>
@@ -632,13 +631,12 @@ export default function Notifications() {
                               </td>
                               <td className="text-center">
                                 <Badge
-                                  className={`status-badge ${
-                                    notification.status === "Confirmed"
+                                  className={`status-badge ${notification.status === "Confirmed"
                                       ? "status-confirmed"
                                       : notification.status === "Rejected"
-                                      ? "status-rejected"
-                                      : "status-pending"
-                                  }`}
+                                        ? "status-rejected"
+                                        : "status-pending"
+                                    }`}
                                   style={{
                                     padding: "0.5rem 1rem",
                                     borderRadius:
@@ -652,8 +650,8 @@ export default function Notifications() {
                                       notification.status === "Confirmed"
                                         ? "#059669"
                                         : notification.status === "Rejected"
-                                        ? "#dc2626"
-                                        : "#F59E0B",
+                                          ? "#dc2626"
+                                          : "#F59E0B",
                                     color: "white",
                                     border: "none",
                                     textTransform: "uppercase",
@@ -673,8 +671,8 @@ export default function Notifications() {
                                   {notification.status === "Confirmed"
                                     ? "Đã xác nhận"
                                     : notification.status === "Rejected"
-                                    ? "Đã từ chối"
-                                    : "Chờ xác nhận"}
+                                      ? "Đã từ chối"
+                                      : "Chờ xác nhận"}
                                 </Badge>
                               </td>
                               <td className="text-center">
@@ -785,8 +783,8 @@ export default function Notifications() {
                       >
                         {modal.notification?.createdAt
                           ? new Date(
-                              modal.notification.createdAt
-                            ).toLocaleDateString("vi-VN")
+                            modal.notification.createdAt
+                          ).toLocaleDateString("vi-VN")
                           : "---"}
                       </div>
                     </div>
@@ -889,13 +887,12 @@ export default function Notifications() {
 
                 <div className="text-center mb-3">
                   <Badge
-                    className={`status-badge ${
-                      modal.notification?.status === "Confirmed"
+                    className={`status-badge ${modal.notification?.status === "Confirmed"
                         ? "status-confirmed"
                         : modal.notification?.status === "Rejected"
-                        ? "status-rejected"
-                        : "status-pending"
-                    }`}
+                          ? "status-rejected"
+                          : "status-pending"
+                      }`}
                     style={{
                       fontSize: "1rem",
                       padding: "0.75rem 1.5rem",
@@ -908,8 +905,8 @@ export default function Notifications() {
                         modal.notification?.status === "Confirmed"
                           ? "#059669"
                           : modal.notification?.status === "Rejected"
-                          ? "#dc2626"
-                          : "#F59E0B",
+                            ? "#dc2626"
+                            : "#F59E0B",
                       color: "white",
                       border: "none",
                       textTransform: "uppercase",
@@ -938,56 +935,56 @@ export default function Notifications() {
               {/* Response Section */}
               {(modal.notification?.status === "Pending" ||
                 modal.notification?.status === "Chờ xác nhận") && (
-                <div
-                  style={{
-                    background: "white",
-                    padding: "1.5rem",
-                    borderRadius: "var(--parent-border-radius-lg)",
-                    border: "1px solid rgba(37, 99, 235, 0.1)",
-                    boxShadow: "var(--parent-shadow-sm)",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                >
                   <div
                     style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      height: "3px",
-                      background: "#60A5FA",
-                    }}
-                  ></div>
-
-                  <h6
-                    style={{
-                      color: "var(--parent-primary)",
-                      marginBottom: "1rem",
-                      fontWeight: "600",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
+                      background: "white",
+                      padding: "1.5rem",
+                      borderRadius: "var(--parent-border-radius-lg)",
+                      border: "1px solid rgba(37, 99, 235, 0.1)",
+                      boxShadow: "var(--parent-shadow-sm)",
+                      position: "relative",
+                      overflow: "hidden",
                     }}
                   >
-                    <FaCheck />
-                    Phản hồi của bạn:
-                  </h6>
-                  <Form.Group>
-                    <Form.Label className="parent-form-label">
-                      Ý kiến của bạn (tùy chọn):
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      className="parent-form-control"
-                      placeholder="Nhập ý kiến của bạn về thông báo này..."
-                      value={reason}
-                      onChange={(e) => setReason(e.target.value)}
-                    />
-                  </Form.Group>
-                </div>
-              )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: "3px",
+                        background: "#60A5FA",
+                      }}
+                    ></div>
+
+                    <h6
+                      style={{
+                        color: "var(--parent-primary)",
+                        marginBottom: "1rem",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <FaCheck />
+                      Phản hồi của bạn:
+                    </h6>
+                    <Form.Group>
+                      <Form.Label className="parent-form-label">
+                        Ý kiến của bạn (tùy chọn):
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        className="parent-form-control"
+                        placeholder="Nhập ý kiến của bạn về thông báo này..."
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                      />
+                    </Form.Group>
+                  </div>
+                )}
             </div>
           )}
         </Modal.Body>
@@ -1007,61 +1004,61 @@ export default function Notifications() {
             </Button>
             {(modal.notification?.status === "Pending" ||
               modal.notification?.status === "Chờ xác nhận") && (
-              <>
-                <Button
-                  className="btn-danger"
-                  style={{
-                    background: "#dc2626",
-                    border: "none",
-                    color: "white",
-                    fontWeight: "600",
-                    padding: "0.75rem 1.5rem",
-                    borderRadius: "var(--parent-border-radius-lg)",
-                    transition: "all var(--parent-transition-normal)",
-                  }}
-                  onClick={() => handleSubmitConsent(false, "Rejected", reason)}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = "var(--parent-shadow-md)";
-                    e.target.style.background = "#b91c1c";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                    e.target.style.background = "#dc2626";
-                  }}
-                >
-                  <FaTimesCircle className="me-1" />
-                  Từ chối
-                </Button>
-                <Button
-                  className="btn-success"
-                  style={{
-                    background: "#059669",
-                    border: "none",
-                    color: "white",
-                    fontWeight: "600",
-                    padding: "0.75rem 1.5rem",
-                    borderRadius: "var(--parent-border-radius-lg)",
-                    transition: "all var(--parent-transition-normal)",
-                  }}
-                  onClick={() => handleSubmitConsent(true, "Confirmed", reason)}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = "var(--parent-shadow-md)";
-                    e.target.style.background = "#047857";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                    e.target.style.background = "#059669";
-                  }}
-                >
-                  <FaCheckCircle className="me-1" />
-                  Xác nhận
-                </Button>
-              </>
-            )}
+                <>
+                  <Button
+                    className="btn-danger"
+                    style={{
+                      background: "#dc2626",
+                      border: "none",
+                      color: "white",
+                      fontWeight: "600",
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "var(--parent-border-radius-lg)",
+                      transition: "all var(--parent-transition-normal)",
+                    }}
+                    onClick={() => handleSubmitConsent(false, "Rejected", reason)}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow = "var(--parent-shadow-md)";
+                      e.target.style.background = "#b91c1c";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "none";
+                      e.target.style.background = "#dc2626";
+                    }}
+                  >
+                    <FaTimesCircle className="me-1" />
+                    Từ chối
+                  </Button>
+                  <Button
+                    className="btn-success"
+                    style={{
+                      background: "#059669",
+                      border: "none",
+                      color: "white",
+                      fontWeight: "600",
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "var(--parent-border-radius-lg)",
+                      transition: "all var(--parent-transition-normal)",
+                    }}
+                    onClick={() => handleSubmitConsent(true, "Confirmed", reason)}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow = "var(--parent-shadow-md)";
+                      e.target.style.background = "#047857";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "none";
+                      e.target.style.background = "#059669";
+                    }}
+                  >
+                    <FaCheckCircle className="me-1" />
+                    Xác nhận
+                  </Button>
+                </>
+              )}
           </div>
         </Modal.Footer>
       </Modal>

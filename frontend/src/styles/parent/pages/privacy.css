@@ -1,0 +1,221 @@
+/* ==========================================
+   Parent Privacy Page Styles
+   ========================================== */
+
+.parent-privacy {
+    background: var(--parent-gradient-card);
+    min-height: 100vh;
+    padding: var(--parent-space-xl) 0;
+}
+
+/* Privacy Header */
+.privacy-header {
+    background: var(--parent-gradient-header);
+    color: white;
+    padding: var(--parent-space-3xl) 0;
+    text-align: center;
+    margin-bottom: var(--parent-space-3xl);
+}
+
+.privacy-title {
+    font-size: var(--parent-font-size-4xl);
+    font-weight: var(--parent-font-weight-bold);
+    margin-bottom: var(--parent-space-lg);
+}
+
+.privacy-subtitle {
+    font-size: var(--parent-font-size-lg);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Privacy Content */
+.privacy-content {
+    background: white;
+    border-radius: var(--parent-radius-xl);
+    padding: var(--parent-space-3xl);
+    box-shadow: var(--parent-shadow-sm);
+}
+
+/* Privacy Sections */
+.privacy-section {
+    margin-bottom: var(--parent-space-3xl);
+}
+
+.privacy-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--parent-space-xl);
+    padding-bottom: var(--parent-space-md);
+    border-bottom: 2px solid var(--parent-light);
+}
+
+.section-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--parent-gradient-primary);
+    border-radius: var(--parent-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: var(--parent-space-md);
+}
+
+.section-title {
+    font-size: var(--parent-font-size-2xl);
+    font-weight: var(--parent-font-weight-semibold);
+    color: var(--parent-dark);
+    margin: 0;
+}
+
+.section-content {
+    font-size: var(--parent-font-size-base);
+    line-height: 1.8;
+    color: var(--parent-muted);
+}
+
+.section-content h3 {
+    color: var(--parent-primary);
+    font-size: var(--parent-font-size-xl);
+    font-weight: var(--parent-font-weight-semibold);
+    margin-top: var(--parent-space-xl);
+    margin-bottom: var(--parent-space-md);
+}
+
+.section-content h4 {
+    color: var(--parent-dark);
+    font-size: var(--parent-font-size-lg);
+    font-weight: var(--parent-font-weight-semibold);
+    margin-top: var(--parent-space-lg);
+    margin-bottom: var(--parent-space-sm);
+}
+
+.section-content p {
+    margin-bottom: var(--parent-space-lg);
+}
+
+.section-content ul,
+.section-content ol {
+    margin-bottom: var(--parent-space-lg);
+    padding-left: var(--parent-space-xl);
+}
+
+.section-content li {
+    margin-bottom: var(--parent-space-sm);
+}
+
+.section-content blockquote {
+    border-left: 4px solid var(--parent-primary);
+    padding-left: var(--parent-space-lg);
+    margin: var(--parent-space-xl) 0;
+    font-style: italic;
+    color: var(--parent-muted);
+    background: var(--parent-light);
+    padding: var(--parent-space-lg);
+    border-radius: var(--parent-radius-md);
+}
+
+/* Privacy Table */
+.privacy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--parent-space-xl) 0;
+    background: white;
+    border-radius: var(--parent-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-sm);
+}
+
+.privacy-table th {
+    background: var(--parent-primary);
+    color: white;
+    padding: var(--parent-space-md);
+    text-align: left;
+    font-weight: var(--parent-font-weight-semibold);
+}
+
+.privacy-table td {
+    padding: var(--parent-space-md);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.privacy-table tr:hover {
+    background: var(--parent-light);
+}
+
+/* Contact Info */
+.contact-info {
+    background: var(--parent-light);
+    border-radius: var(--parent-radius-lg);
+    padding: var(--parent-space-xl);
+    margin-top: var(--parent-space-2xl);
+    text-align: center;
+}
+
+.contact-info h3 {
+    color: var(--parent-primary);
+    margin-bottom: var(--parent-space-md);
+}
+
+.contact-info p {
+    color: var(--parent-muted);
+    margin-bottom: var(--parent-space-sm);
+}
+
+.contact-email {
+    color: var(--parent-primary);
+    font-weight: var(--parent-font-weight-semibold);
+    text-decoration: none;
+}
+
+.contact-email:hover {
+    text-decoration: underline;
+}
+
+/* Last Updated */
+.last-updated {
+    text-align: center;
+    color: var(--parent-muted);
+    font-size: var(--parent-font-size-sm);
+    margin-top: var(--parent-space-2xl);
+    padding-top: var(--parent-space-lg);
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .privacy-header {
+        padding: var(--parent-space-2xl) 0;
+    }
+
+    .privacy-title {
+        font-size: var(--parent-font-size-3xl);
+    }
+
+    .privacy-subtitle {
+        font-size: var(--parent-font-size-base);
+    }
+
+    .privacy-content {
+        padding: var(--parent-space-xl);
+    }
+
+    .section-title {
+        font-size: var(--parent-font-size-xl);
+    }
+
+    .privacy-table {
+        font-size: var(--parent-font-size-sm);
+    }
+
+    .privacy-table th,
+    .privacy-table td {
+        padding: var(--parent-space-sm);
+    }
+}

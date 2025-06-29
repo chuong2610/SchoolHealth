@@ -1,0 +1,233 @@
+/* ==========================================
+   Parent Student Health Check Page Styles
+   ========================================== */
+
+.parent-student-health-check {
+    background: var(--parent-gradient-card);
+    min-height: 100vh;
+    padding: var(--parent-space-xl) 0;
+}
+
+/* Health Check Header */
+.health-check-header {
+    background: var(--parent-gradient-header);
+    color: white;
+    padding: var(--parent-space-3xl) 0;
+    text-align: center;
+    margin-bottom: var(--parent-space-3xl);
+}
+
+.health-check-title {
+    font-size: var(--parent-font-size-4xl);
+    font-weight: var(--parent-font-weight-bold);
+    margin-bottom: var(--parent-space-lg);
+}
+
+.health-check-subtitle {
+    font-size: var(--parent-font-size-lg);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Health Check Content */
+.health-check-content {
+    background: white;
+    border-radius: var(--parent-radius-xl);
+    padding: var(--parent-space-3xl);
+    box-shadow: var(--parent-shadow-sm);
+}
+
+/* Student Selection */
+.student-selection {
+    margin-bottom: var(--parent-space-3xl);
+    padding-bottom: var(--parent-space-2xl);
+    border-bottom: 2px solid var(--parent-light);
+}
+
+.selection-title {
+    font-size: var(--parent-font-size-xl);
+    font-weight: var(--parent-font-weight-semibold);
+    color: var(--parent-dark);
+    margin-bottom: var(--parent-space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--parent-space-md);
+}
+
+.student-dropdown {
+    max-width: 400px;
+}
+
+/* Health Check Form */
+.health-check-form {
+    max-width: 800px;
+}
+
+.form-section {
+    margin-bottom: var(--parent-space-2xl);
+    padding: var(--parent-space-xl);
+    background: var(--parent-light);
+    border-radius: var(--parent-radius-lg);
+    border: 1px solid #e5e7eb;
+}
+
+.section-title {
+    font-size: var(--parent-font-size-lg);
+    font-weight: var(--parent-font-weight-semibold);
+    color: var(--parent-primary);
+    margin-bottom: var(--parent-space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--parent-space-sm);
+}
+
+.form-group {
+    margin-bottom: var(--parent-space-lg);
+}
+
+.form-label {
+    font-weight: var(--parent-font-weight-medium);
+    color: var(--parent-dark);
+    margin-bottom: var(--parent-space-sm);
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #e5e7eb;
+    border-radius: var(--parent-radius-md);
+    padding: var(--parent-space-md);
+    font-size: var(--parent-font-size-base);
+    transition: var(--parent-transition-fast);
+    background: white;
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--parent-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Checkbox and Radio Styles */
+.form-check {
+    margin-bottom: var(--parent-space-sm);
+}
+
+.form-check-input {
+    margin-right: var(--parent-space-sm);
+}
+
+.form-check-label {
+    font-weight: var(--parent-font-weight-medium);
+    color: var(--parent-dark);
+    cursor: pointer;
+}
+
+/* Submit Button */
+.submit-btn {
+    background: var(--parent-gradient-primary);
+    border: none;
+    color: white;
+    padding: var(--parent-space-md) var(--parent-space-xl);
+    border-radius: var(--parent-radius-md);
+    font-weight: var(--parent-font-weight-semibold);
+    transition: var(--parent-transition-normal);
+    box-shadow: var(--parent-shadow-sm);
+    width: 100%;
+    max-width: 300px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--parent-shadow-md);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Alert Styles */
+.health-check-alert {
+    border-radius: var(--parent-radius-md);
+    border: none;
+    padding: var(--parent-space-lg);
+    margin-bottom: var(--parent-space-lg);
+}
+
+.alert-success {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--parent-success);
+    border-left: 4px solid var(--parent-success);
+}
+
+.alert-danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--parent-danger);
+    border-left: 4px solid var(--parent-danger);
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--parent-warning);
+    border-left: 4px solid var(--parent-warning);
+}
+
+/* Info Card */
+.info-card {
+    background: var(--parent-light);
+    border-radius: var(--parent-radius-lg);
+    padding: var(--parent-space-lg);
+    margin-bottom: var(--parent-space-xl);
+    border-left: 4px solid var(--parent-info);
+}
+
+.info-title {
+    font-size: var(--parent-font-size-lg);
+    font-weight: var(--parent-font-weight-semibold);
+    color: var(--parent-info);
+    margin-bottom: var(--parent-space-sm);
+}
+
+.info-text {
+    color: var(--parent-muted);
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .health-check-header {
+        padding: var(--parent-space-2xl) 0;
+    }
+
+    .health-check-title {
+        font-size: var(--parent-font-size-3xl);
+    }
+
+    .health-check-subtitle {
+        font-size: var(--parent-font-size-base);
+    }
+
+    .health-check-content {
+        padding: var(--parent-space-xl);
+    }
+
+    .form-section {
+        padding: var(--parent-space-lg);
+    }
+
+    .selection-title {
+        font-size: var(--parent-font-size-lg);
+    }
+
+    .section-title {
+        font-size: var(--parent-font-size-base);
+    }
+}

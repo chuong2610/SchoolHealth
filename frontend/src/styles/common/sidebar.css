@@ -1,887 +1,785 @@
-/* Reset */
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Common styles - sidebar.css */
+/* Add your sidebar styles here */
+
+/* ====================================================================
+   NURSE SIDEBAR - CORAL/PINK MEDICAL THEME
+   ==================================================================== */
+
+/* Sidebar Container */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 60px;
+    background: linear-gradient(180deg, #FF6B8D 0%, #FF4757 100%);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 2px 0 12px rgba(255, 107, 141, 0.2);
 }
 
-a {
-  text-decoration: none;
+.sidebar.expand {
+    width: 250px;
 }
 
-i {
-  text-decoration: none;
-}
-
-li {
-  list-style: none;
-}
-
-h1 {
-  font-weight: 600;
-  font-size: 1.5rem;
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-}
-
-/* KIỂM TRA: Reset toàn bộ style - nên bỏ sau khi hoàn tất layout */
-/*
-#sidebar,
-#sidebar * {
-  background: none !important;
-  color: inherit !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-*/
-
-/* Layout wrapper */
-.wrapper {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Main content */
-.main {
-  flex: 1;
-  min-height: 100vh;
-  transition: margin-left 0.3s ease;
-  margin-left: 0;
-  /* Default sẽ được override bởi sidebar rules */
-  background: #f8f9fa;
-}
-
-.main-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1.5rem;
-  /* background-color: #f8f9fa; Light background for the header */
-  background: linear-gradient(to bottom right, #eecff6, #ffe2e4);
-  border-bottom: 1px solid #ddd;
-  left: 90px;
-  /* Default collapsed state */
-  width: calc(100% - 90px);
-  /* Default collapsed state width */
-  transition: left 0.3s ease, width 0.3s ease;
-  /* Add transition for smooth resizing */
-}
-
-.toggle-btn-main {
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #333;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-}
-
-.notification-icon {
-  position: relative;
-  margin-right: 1.5rem;
-  font-size: 1.5rem;
-  color: #555;
-  cursor: pointer;
-}
-
-.notification-dot {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 10px;
-  height: 10px;
-  background-color: #ff0000;
-  /* Red dot for new notifications */
-  border-radius: 50%;
-}
-
-.user-avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #853452;
-  color: #f2f2f2;
-  background-color: #caa2b0;
-}
-
-.user-avatar i {
-  font-size: 1.8rem;
-  /* Increased font size for the icon */
-  color: #a40640;
-  /* Default color for the icon, can be adjusted */
-}
-
-/* (Tuỳ chọn) Hover cho từng role */
-/* #sidebar.nurse a.sidebar-link:hover {
-  color: #4a4a4a;
-  border-left: 7px solid #8b8b6e; màu đậm hơn màu nền
-}
-
-#sidebar.admin a.sidebar-link:hover {
-  color: #ffffff;
-  border-left: 7px solid #3f7dff;
-} */
-
-/* Khi sidebar mở rộng (240px), main dịch sang phải */
-#sidebar.expand~.main {
-  margin-left: 240px !important;
-}
-
-/* Khi sidebar thu gọn (90px), main dịch sang phải */
-#sidebar~.main {
-  margin-left: 90px !important;
-}
-
-/* Parent role không có sidebar */
-body.parent-role .main {
-  margin-left: 0 !important;
-}
-
-/* CSS Backup: Alternative selectors (giữ lại để đảm bảo compatibility) */
-.wrapper #sidebar.expand+.main,
-.wrapper #sidebar.nurse.expand+.main,
-.wrapper #sidebar.admin.expand+.main {
-  margin-left: 240px !important;
-}
-
-.wrapper #sidebar:not(.expand)+.main,
-.wrapper #sidebar.nurse:not(.expand)+.main,
-.wrapper #sidebar.admin:not(.expand)+.main {
-  margin-left: 90px !important;
-}
-
-/* Nurse: màu be */
-#sidebar.nurse {
-  color: white;
-  background: linear-gradient(to bottom, #ff6b6b, #ff007f);
-  /* Pink gradient */
-}
-
-#sidebar.nurse .d-flex {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  /* padding-bottom: 1rem; */
-  margin-bottom: 2rem;
-}
-
-/* Admin: xanh dương đậm */
-#sidebar.admin {
-  background-color: #1e3a5f;
-  /* xanh dương đậm */
-}
-
-/* Sidebar kiểm tra logic - bỏ màu, hiệu ứng, chỉ giữ layout */
-#sidebar,
-#sidebar * {
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
-/* Sidebar styles với độ rộng tối thiểu ổn định */
-#sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 90px;
-  min-width: 90px;
-  height: 100vh;
-  z-index: 1000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  color: #fff;
-}
-
-#sidebar.expand {
-  width: 240px;
-  max-width: 240px;
-}
-
-/* Role-specific sidebar colors */
-#sidebar.nurse {
-  background: linear-gradient(to bottom, #ff6b6b, #ff007f);
-}
-
-#sidebar.admin {
-  background: #10B981;
-
+.sidebar.nurse {
+    background: linear-gradient(180deg, #FF6B8D 0%, #FF4757 100%);
 }
 
 /* Sidebar Header */
 .app-sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0 1rem;
-  transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 80px;
+    position: relative;
 }
 
-/* Sidebar Logo */
 .app-sidebar-logo {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 1;
-  transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    flex: 1;
 }
 
 .sidebar-logo-text {
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 900;
-  margin-left: 0.5rem;
-  transition: opacity 0.3s, transform 0.3s;
-  white-space: nowrap;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
 }
 
-#sidebar:not(.expand) .sidebar-logo-text {
-  opacity: 0;
-  transform: translateX(-20px);
-  pointer-events: none;
+.sidebar.expand .sidebar-logo-text {
+    opacity: 1;
 }
 
-/* Toggle Button */
+.sidebar.expand .app-sidebar-toggle-btn {
+    display: flex;
+    flex-shrink: 0;
+}
+
 .app-sidebar-toggle-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  flex-shrink: 0;
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
 }
 
-.app-sidebar-toggle-btn:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
-  outline-offset: 2px;
+.app-sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }
 
-/* Hamburger Icon */
 .hamburger-icon {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 18px;
-  height: 14px;
+    width: 18px;
+    height: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0.9;
 }
 
 .hamburger-icon span {
-  display: block;
-  height: 2px;
-  width: 100%;
-  background: white;
-  border-radius: 1px;
-  transition: all 0.3s;
+    width: 100%;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transition: all 0.3s ease;
 }
 
-/* Collapsed sidebar: adjust layout but keep toggle button */
-#sidebar:not(.expand) .app-sidebar-header {
-  justify-content: space-between;
-  padding: 0 0.5rem;
+.app-sidebar-toggle-btn:hover .hamburger-icon {
+    opacity: 1;
 }
 
-#sidebar:not(.expand) .app-sidebar-logo {
-  justify-content: center;
-  flex: none;
-}
-
-#sidebar:not(.expand) .app-sidebar-toggle-btn {
-  width: 28px;
-  height: 28px;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* Mobile responsive for toggle button */
-@media (max-width: 767px) {
-  .app-sidebar-toggle-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .hamburger-icon {
-    width: 20px;
-    height: 16px;
-  }
-}
-
-/* Expanded sidebar: show toggle button with X animation */
-#sidebar.expand .hamburger-icon span:nth-child(1) {
-  transform: rotate(45deg) translate(5px, 5px);
-}
-
-#sidebar.expand .hamburger-icon span:nth-child(2) {
-  opacity: 0;
-}
-
-#sidebar.expand .hamburger-icon span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -6px);
-}
-
-/* Sidebar Navigation */
+/* Navigation */
 .app-sidebar-nav {
-  padding: 1rem 0;
-  flex: 1 1 auto;
+    flex: 1;
+    padding: 20px 0;
 }
 
 .app-sidebar-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .app-sidebar-nav li {
-  margin: 4px 0;
+    margin-bottom: 8px;
 }
 
-/* Sidebar Links */
+/* Menu Links */
 .app-sidebar-link {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0 25px 25px 0;
-  margin-right: 0.75rem;
-}
-
-.sidebar-link-icon {
-  font-size: 1.3rem;
-  min-width: 28px;
-  width: 28px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 0.75rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.sidebar-link-text {
-  transition: opacity 0.3s, transform 0.3s;
-  white-space: nowrap;
-}
-
-#sidebar:not(.expand) .sidebar-link-text {
-  opacity: 0;
-  transform: translateX(-20px);
-  pointer-events: none;
-}
-
-/* FIXED: Collapsed sidebar navigation styling - tối ưu cho 90px */
-#sidebar:not(.expand) .app-sidebar-link {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0.75rem 0 !important;
-  margin: 4px 12px !important;
-  border-radius: 10px !important;
-  width: calc(100% - 24px) !important;
-  position: relative !important;
-  min-height: 48px !important;
-  cursor: pointer !important;
-}
-
-/* FIXED: Icon styling for collapsed state - tối ưu cho 90px */
-#sidebar:not(.expand) .sidebar-link-icon {
-  opacity: 1 !important;
-  pointer-events: all !important;
-  margin: 0 !important;
-  font-size: 1.5rem !important;
-  color: inherit !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* FIXED: Hide text when collapsed */
-#sidebar:not(.expand) .sidebar-link-text {
-  display: none !important;
-}
-
-/* Enhanced icon hover effects - no tooltips */
-#sidebar:not(.expand) .app-sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-}
-
-#sidebar:not(.expand) .app-sidebar-link:hover .sidebar-link-icon {
-  transform: scale(1.1) !important;
-  color: #ffffff !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5) !important;
-}
-
-#sidebar:not(.expand) .app-sidebar-link.active {
-  background: rgba(255, 255, 255, 0.95) !important;
-  color: #333 !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-#sidebar:not(.expand) .app-sidebar-link.active .sidebar-link-icon {
-  color: #333 !important;
-  transform: scale(1.05) !important;
-}
-
-/* FIXED: Prevent icon overflow */
-#sidebar:not(.expand) {
-  overflow: visible !important;
-}
-
-#sidebar:not(.expand) .app-sidebar-nav {
-  overflow: visible !important;
-}
-
-/* Tooltip animation */
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-50%) translateX(-5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    position: relative;
+    font-weight: 500;
+    font-size: 0.95rem;
 }
 
 .app-sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .app-sidebar-link.active {
-  background: #fff;
-  color: #333;
-  transform: translateX(8px);
+    background: white;
+    color: #333;
+    font-weight: 600;
 }
 
-.app-sidebar-link.active .sidebar-link-icon,
-.app-sidebar-link.active .sidebar-link-text {
-  color: #333;
+.app-sidebar-link.active:hover {
+    background: white;
+    color: #333;
 }
 
-/* Sidebar Footer */
-.app-sidebar-footer {
-  padding: 1rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+/* Icons */
+.sidebar-link-icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-.logout-btn {
-  background: none !important;
-  border: none !important;
-  width: 100%;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.sidebar-link-icon svg,
+.sidebar-link-icon i,
+.sidebar-link-icon * {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-.logout-btn:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-}
-
-#sidebar:not(.expand) .logout-btn:hover .sidebar-link-icon {
-  transform: scale(1.1) !important;
-  color: #ffffff !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5) !important;
-}
-
-/* FIXED: Collapsed logout button styling - tối ưu cho 90px */
-#sidebar:not(.expand) .logout-btn {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0.75rem 0 !important;
-  margin: 4px 12px !important;
-  border-radius: 10px !important;
-  width: calc(100% - 24px) !important;
-  position: relative !important;
-  min-height: 48px !important;
-  cursor: pointer !important;
-}
-
-#sidebar:not(.expand) .logout-btn .sidebar-link-icon {
-  margin: 0 !important;
-  font-size: 1.5rem !important;
-  color: inherit !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-#sidebar:not(.expand) .logout-btn .sidebar-link-text {
-  display: none !important;
-}
-
-/* Simplified logout hover - no tooltips */
-
-
-
-.app-sidebar-link:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
-  outline-offset: -2px;
-}
-
-.app-sidebar-link:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Enhanced mobile overlay */
-.sidebar-mobile-overlay {
-  animation: fadeIn 0.3s ease-out;
-}
-
-
-
-/* Simplified mobile styles */
-
-/* FIXED: Better mobile collapsed link styling */
-#sidebar:not(.expand) .app-sidebar-link,
-#sidebar:not(.expand) .logout-btn {
-  margin: 6px 10px !important;
-  padding: 1rem 0 !important;
-  min-height: 48px !important;
-  width: calc(100% - 20px) !important;
-}
-
-#sidebar:not(.expand) .sidebar-link-icon,
-#sidebar:not(.expand) .logout-btn .sidebar-link-icon {
-  font-size: 1.6rem !important;
-}
-
-
-/* Responsive collapsed sidebar adjustments */
-@media (min-width: 1200px) {
-  #sidebar:not(.expand) .sidebar-link-icon {
-    font-size: 1.4rem !important;
-  }
-}
-
-@media (max-width: 1199px) and (min-width: 992px) {
-  #sidebar:not(.expand) .sidebar-link-icon {
-    font-size: 1.3rem !important;
-  }
-}
-
-@media (max-width: 991px) and (min-width: 768px) {
-  #sidebar:not(.expand) .sidebar-link-icon {
-    font-size: 1.2rem !important;
-  }
-
-  #sidebar:not(.expand) .app-sidebar-link {
-    padding: 0.6rem 0.4rem !important;
-  }
-
-  #sidebar:not(.expand) .logout-btn {
-    padding: 0.6rem 0.4rem !important;
-  }
-}
-
-
-
-/* Smooth transitions for all interactive elements */
-.app-sidebar-link,
-.logout-btn {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Enhanced hover states */
-.app-sidebar-link:hover,
-.logout-btn:hover {
-  transform: translateX(4px);
-}
-
-.app-sidebar-link.active {
-  transform: translateX(8px);
-}
-
-/* Ensure proper stacking context */
-#sidebar {
-  isolation: isolate;
-}
-
-/* Critical: Default sidebar width for base case */
-#sidebar {
-  width: 90px !important;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-#sidebar.expand {
-  width: 240px !important;
-}
-
-/* Ensure main content adjusts properly */
-#sidebar~.main {
-  margin-left: 90px !important;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-#sidebar.expand~.main {
-  margin-left: 240px !important;
-}
-
-/* ==========================================
-   Sidebar Responsive Design
-   ========================================== */
-
-/* Large Desktops (1200px and up) */
-@media (min-width: 1200px) {
-  #sidebar {
-    width: 100px;
-    /* Collapsed width */
-  }
-
-  #sidebar.expand {
-    width: 280px;
-    /* Expanded width */
-    max-width: 280px;
-  }
-
-  /* Adjust main content for larger sidebar */
-  #sidebar~.main {
-    margin-left: 100px !important;
-  }
-
-  #sidebar.expand~.main {
-    margin-left: 280px !important;
-  }
-}
-
-/* Desktops (992px to 1199px) */
-@media (max-width: 1199px) and (min-width: 992px) {
-  #sidebar {
-    width: 95px;
-    /* Collapsed width */
-  }
-
-  #sidebar.expand {
-    width: 260px;
-    /* Expanded width */
-    max-width: 260px;
-  }
-
-  #sidebar~.main {
-    margin-left: 95px !important;
-  }
-
-  #sidebar.expand~.main {
-    margin-left: 260px !important;
-  }
-}
-
-/* Tablets (768px to 991px) */
-@media (max-width: 991px) and (min-width: 768px) {
-  #sidebar {
-    width: 90px;
-    /* Collapsed width */
-  }
-
-  #sidebar.expand {
-    width: 240px;
-    /* Expanded width */
-    max-width: 240px;
-  }
-
-  #sidebar~.main {
-    margin-left: 90px !important;
-  }
-
-  #sidebar.expand~.main {
-    margin-left: 240px !important;
-  }
-}
-
-/* Mobile Landscape & Small Tablets (576px to 767px) */
-@media (max-width: 767px) {
-  #sidebar {
-    left: -250px;
-    width: 250px;
-    min-width: 250px;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
-  }
-
-  #sidebar.expand {
-    left: 0;
-    width: 250px;
-    min-width: 250px;
-    max-width: 250px;
-  }
-
-
-
-  /* Mobile: main không đẩy lề */
-  #sidebar~.main,
-  #sidebar.expand~.main {
-    margin-left: 0 !important;
-  }
-
-  /* Enhanced overlay when sidebar open on mobile */
-  #sidebar.expand::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: -1;
-    animation: fadeIn 0.3s ease-out;
-  }
-
-  /* Prevent body scroll when sidebar is open */
-  body:has(#sidebar.expand) {
-    overflow: hidden;
-  }
-
-  /* Mobile sidebar enhanced styling */
-  #sidebar.expand {
-    border-radius: 0 20px 20px 0;
-  }
-}
-
-/* Mobile Portrait (481px to 575px) */
-@media (max-width: 575px) {
-  #sidebar.expand {
-    width: 240px;
-    min-width: 240px;
-    max-width: 240px;
-  }
-}
-
-/* Small Mobile (360px to 480px) */
-@media (max-width: 480px) {
-  #sidebar.expand {
-    width: 220px;
-    min-width: 220px;
-    max-width: 220px;
-  }
-
-  /* Smaller logo on mobile */
-  .app-sidebar-logo {
-    height: 50px;
-    padding: 0 0.5rem;
-  }
-
-  .app-sidebar-logo svg {
-    font-size: 1.8rem !important;
-  }
-
-  .sidebar-logo-text {
-    font-size: 1rem !important;
-  }
-}
-
-/* Extra Small Mobile (less than 360px) */
-@media (max-width: 359px) {
-  #sidebar.expand {
-    width: 200px;
-    min-width: 200px;
-    max-width: 200px;
-  }
-
-  .app-sidebar-logo {
-    height: 48px;
-  }
-
-  .app-sidebar-logo svg {
-    font-size: 1.6rem !important;
-  }
-
-  .sidebar-logo-text {
-    font-size: 0.9rem !important;
-  }
-}
-
-/* Fade in animation for mobile overlay */
-@keyframes fadeIn {
-  from {
+.sidebar-link-text {
+    margin-left: 15px;
     opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
 }
 
-/* Mobile responsive adjustments - Integrated above */
+.sidebar.expand .sidebar-link-text {
+    opacity: 1;
+}
 
-/* Layout Styles */
+/* Chat Icon Special Styling */
+.chat-icon-container {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    position: relative;
+}
+
+.chat-icon-container svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    display: block;
+}
+
+.sidebar-link-icon .chat-icon-container {
+    margin: 0;
+    padding: 0;
+}
+
+.chat-icon-container .chat-notification-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 5;
+}
+
+/* Ensure chat icon inherits colors properly */
+.app-sidebar-link .chat-icon-container svg {
+    color: inherit;
+}
+
+.app-sidebar-link:hover .chat-icon-container svg {
+    color: inherit;
+}
+
+.app-sidebar-link.active .chat-icon-container svg {
+    color: inherit;
+}
+
+/* Footer/Logout */
+.app-sidebar-footer {
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.logout-btn.active {
+    background: white;
+    color: #333;
+}
+
+/* Collapsed State */
+.sidebar:not(.expand) .app-sidebar-header {
+    justify-content: center;
+    padding: 20px 10px;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar:not(.expand) .app-sidebar-logo svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-toggle-btn {
+    display: flex !important;
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar:not(.expand) .hamburger-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .hamburger-icon span {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-link {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .chat-icon-container {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar:not(.expand) .chat-icon-container svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+}
+
+.sidebar:not(.expand) .logout-btn {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar:not(.expand) .logout-btn svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force all icons to show in collapsed state with highest priority */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon svg,
+html body .sidebar:not(.expand) .sidebar-link-icon i,
+html body .sidebar:not(.expand) .sidebar-link-icon *,
+html body .sidebar:not(.expand) .app-sidebar-link .sidebar-link-icon,
+html body .sidebar:not(.expand) .app-sidebar-link .sidebar-link-icon svg,
+html body .sidebar:not(.expand) nav .sidebar-link-icon,
+html body .sidebar:not(.expand) nav .sidebar-link-icon svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit !important;
+}
+
+/* Additional specificity for React icons */
+html body .sidebar:not(.expand) .sidebar-link-icon [role="img"],
+html body .sidebar:not(.expand) .sidebar-link-icon svg[role="img"] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force sidebar in collapsed state to show all content */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon svg,
+html body .sidebar:not(.expand) .app-sidebar-logo svg {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+/* Special handling for main navigation icons */
+html body .sidebar:not(.expand) .app-sidebar-nav li {
+    display: flex !important;
+}
+
+html body .sidebar:not(.expand) .app-sidebar-nav a {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Ensure no transform or scale issues */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon * {
+    transform: none !important;
+    scale: 1 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Force visibility for collapsed sidebar icons */
+html body .sidebar:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Super high specificity force display */
+html body div.sidebar:not(.expand) nav.app-sidebar-nav ul li a.app-sidebar-link i.sidebar-link-icon,
+html body div.sidebar:not(.expand) nav.app-sidebar-nav ul li a.app-sidebar-link i.sidebar-link-icon svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: white !important;
+}
+
+/* Maximum specificity override using ID */
+#sidebar:not(.expand) .sidebar-link-icon,
+#sidebar:not(.expand) .sidebar-link-icon svg,
+#sidebar:not(.expand) .sidebar-link-icon *,
+#sidebar:not(.expand) .app-sidebar-logo svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit !important;
+}
+
+/* For nurse role specifically */
+#sidebar.nurse:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#sidebar.nurse:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-link {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tooltip for collapsed state */
+.sidebar:not(.expand) .app-sidebar-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    z-index: 1001;
+}
+
+.sidebar:not(.expand) .app-sidebar-link:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Tooltip arrow */
+.sidebar:not(.expand) .app-sidebar-link::before {
+    content: '';
+    position: absolute;
+    left: calc(100% + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.sidebar:not(.expand) .app-sidebar-link:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.expand {
+        transform: translateX(0);
+        width: 280px;
+    }
+
+    .app-sidebar-toggle-btn {
+        display: flex !important;
+        padding: 6px;
+    }
+
+    .sidebar:not(.expand) .app-sidebar-header {
+        justify-content: space-between;
+        flex-direction: row;
+        padding: 20px 15px;
+        gap: 0;
+    }
+
+    .sidebar:not(.expand) .app-sidebar-toggle-btn {
+        display: flex !important;
+        padding: 6px;
+    }
+
+    .sidebar-mobile-overlay {
+        display: block;
+    }
+}
+
+/* ADMIN SIDEBAR GREEN THEME */
+.sidebar.admin {
+    background: linear-gradient(180deg, #34c77b 0%, #22c55e 100%) !important;
+    box-shadow: 2px 0 12px rgba(52, 199, 123, 0.15);
+}
+
+/* Active link for admin sidebar */
+.sidebar.admin .app-sidebar-link.active {
+    background: white;
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.sidebar.admin .app-sidebar-link.active:hover {
+    background: white;
+    color: #22c55e;
+}
+
+/* Icon color in admin sidebar */
+.sidebar.admin .sidebar-link-icon,
+.sidebar.admin .sidebar-link-icon svg,
+.sidebar.admin .sidebar-link-icon i {
+    color: white !important;
+}
+
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon,
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon svg,
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon i {
+    color: #22c55e !important;
+}
+
+/* Responsive: icon always centered and visible when collapsed */
+.sidebar.admin:not(.expand) .sidebar-link-icon {
+    margin: 0 auto;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 40px;
+    font-size: 1.4rem;
+}
+
+.sidebar.admin:not(.expand) .sidebar-link-text {
+    display: none !important;
+}
+
+/* Logout button always visible and at the bottom */
+.sidebar.admin .app-sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 18px 0 18px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.sidebar.admin .logout-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.sidebar.admin .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #22c55e;
+}
+
+.sidebar.admin:not(.expand) .logout-btn {
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1.3rem;
+}
+
+.sidebar.admin:not(.expand) .logout-btn span {
+    display: none !important;
+}
+
+.sidebar.admin:not(.expand) .logout-btn svg,
+.sidebar.admin:not(.expand) .logout-btn i {
+    display: block !important;
+    margin: 0 auto;
+    color: white !important;
+    font-size: 1.5rem;
+}
+
+/* Smooth animations */
+.sidebar,
+.sidebar * {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states for accessibility */
+.app-sidebar-link:focus,
+.app-sidebar-toggle-btn:focus,
+.logout-btn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Layout adjustments for main content */
 .wrapper {
-  display: flex;
-  min-height: 100vh;
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    margin-left: 250px;
+    /* Default expanded sidebar width */
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+/* When sidebar is collapsed */
+.wrapper.sidebar-collapsed .main {
+    margin-left: 60px;
 }
 
 .main-content {
-  padding: 20px 20px 20px 16px;
-  /* Thêm chút padding-left nhỏ cho content không sát sidebar */
-  /* Không cần margin-top vì Header đã nằm trong .main */
+    padding: 0;
+    min-height: calc(100vh - 60px);
+    /* Subtract header height */
 }
 
-/* Parent role không có sidebar */
-body.parent-role .main {
-  margin-left: 0 !important;
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+    .main {
+        margin-left: 0;
+    }
+
+    .wrapper.sidebar-collapsed .main,
+    .wrapper.sidebar-expanded .main {
+        margin-left: 0;
+    }
 }
 
-/* Parent responsive styles - Đơn giản vì không còn wrapper */
-.parent-main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
-  padding-top: 70px;
-  /* Tạo khoảng cách với header sticky 50px + 20px */
-  min-height: calc(100vh - 50px);
+/* ULTIMATE OVERRIDE - Load last with maximum specificity */
+html body div#sidebar:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-/* Sidebar duplicate đã xóa */
-
-/* Legacy responsive rules - Now integrated in comprehensive responsive section above */
-
-/* Parent specific responsive styles */
-@media (max-width: 1200px) {
-  .parent-main-content {
-    padding: 16px;
-    padding-top: 70px;
-    max-width: 100%;
-  }
+html body div#sidebar:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-@media (max-width: 992px) {
-  .parent-main-content {
-    padding: 14px;
-    padding-top: 66px;
-  }
+html body div#sidebar:not(.expand) .app-sidebar-logo svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
-/* Large screens optimization for parent */
-@media (min-width: 1400px) {
-  .parent-main-content {
-    max-width: 1600px;
-  }
+html body div#sidebar:not(.expand) .hamburger-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html body div#sidebar:not(.expand) .hamburger-icon span {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force all children to be visible */
+html body div#sidebar:not(.expand) .sidebar-link-icon * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inherit !important;
+}
+
+/* ==== ICON CENTERING & LOGOUT FIX FOR NURSE SIDEBAR ==== */
+/* Icon always centered and larger when collapsed (all roles) */
+.sidebar:not(.expand) .sidebar-link-icon {
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 40px !important;
+    font-size: 1.5rem !important;
+    height: 48px !important;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon svg,
+.sidebar:not(.expand) .sidebar-link-icon i {
+    font-size: 1.5rem !important;
+    width: 1.5em !important;
+    height: 1.5em !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.sidebar:not(.expand) .sidebar-link-text {
+    display: none !important;
+}
+
+/* Nurse logout button always visible and at the bottom, icon only when collapsed */
+.sidebar.nurse .app-sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 18px 0 18px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.sidebar.nurse .logout-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.sidebar.nurse .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FF4757;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn {
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1.5rem;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn span {
+    display: none !important;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn svg,
+.sidebar.nurse:not(.expand) .logout-btn i {
+    display: block !important;
+    margin: 0 auto;
+    color: white !important;
+    font-size: 1.7rem !important;
 }

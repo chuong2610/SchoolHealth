@@ -1,185 +1,571 @@
-/* ==================== NURSE CHAT STYLES ==================== */
-/* Import all modular CSS files for nurse chat */
-
-/* Base Layout */
-@import './layout.css';
-
-/* Header Styles */
-@import './header.css';
-
-/* Sidebar Styles */
-@import './sidebar.css';
-
-/* Chat Area Styles */
-@import './chat-area.css';
-
-/* Tab Styles */
-@import './tabs.css';
-
-/* ==================== GLOBAL CHAT OVERRIDES ==================== */
-/* Any global styles specific to nurse chat that override base styles */
-
+/* Nurse Chat - Coral Theme */
 .nurse-chat-container {
-    /* Nurse-specific theme variables */
-    --primary-color: #667eea;
-    --primary-gradient: linear-gradient(135deg, #667eea, #764ba2);
-    --secondary-color: #718096;
-    --success-color: #48bb78;
-    --warning-color: #ffc107;
-    --danger-color: #dc3545;
-    --background-color: #f5f8ff;
-    --surface-color: #ffffff;
-    --border-color: rgba(0, 0, 0, 0.1);
-    --text-primary: #2d3748;
-    --text-secondary: #718096;
-    --text-muted: #a0aec0;
-
-    /* Spacing variables */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-xxl: 3rem;
-
-    /* Border radius variables */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-
-    /* Shadow variables */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 15px rgba(102, 126, 234, 0.3);
-    --shadow-lg: 0 8px 25px rgba(102, 126, 234, 0.4);
-    --shadow-xl: 0 12px 30px rgba(102, 126, 234, 0.4);
-
-    /* Transition variables */
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: calc(100vh - 120px);
+    padding: 20px;
 }
 
-/* ==================== NURSE CHAT SPECIFIC ANIMATIONS ==================== */
-@keyframes nurseMessagePop {
-    0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(10px);
-    }
-
-    50% {
-        opacity: 1;
-        transform: scale(1.05) translateY(-2px);
-    }
-
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+/* Header Banner */
+.nurse-chat-header {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    border-radius: 16px 16px 0 0;
+    padding: 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes nurseNotificationSlide {
+.nurse-chat-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 100px;
+    height: 100px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255,255,255,0.1)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') no-repeat center;
+    background-size: contain;
+    transform: rotate(15deg);
+}
+
+.nurse-chat-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nurse-chat-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin: 5px 0 0 0;
+}
+
+/* Main Chat Container */
+.nurse-chat-main {
+    background: white;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 8px 32px rgba(255, 107, 141, 0.1);
+    overflow: hidden;
+    height: calc(100vh - 200px);
+    display: flex;
+}
+
+/* Tabs Styling */
+.nurse-chat-container .nav-tabs {
+    border-bottom: 2px solid #FF6B8D;
+    background: linear-gradient(90deg, #FF6B8D 0%, #FF4757 100%);
+    margin: 0;
+}
+
+.nurse-chat-container .nav-tabs .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    border: none;
+    padding: 16px 24px;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.nurse-chat-container .nav-tabs .nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+}
+
+.nurse-chat-container .nav-tabs .nav-link.active {
+    color: #FF6B8D;
+    background: white;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    font-weight: 700;
+}
+
+/* Badge in tabs */
+.nurse-chat-badge {
+    margin-left: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #FF6B8D;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.nav-link.active .nurse-chat-badge {
+    background: #FF6B8D;
+    color: white;
+}
+
+/* Conversation List */
+.nurse-conversation-list {
+    padding: 0;
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+}
+
+.nurse-conversation-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    position: relative;
+}
+
+.nurse-conversation-item:hover {
+    background: linear-gradient(90deg, rgba(255, 107, 141, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%);
+    border-left: 4px solid #FF6B8D;
+}
+
+.nurse-conversation-item.active {
+    background: linear-gradient(90deg, rgba(255, 107, 141, 0.1) 0%, rgba(255, 71, 87, 0.1) 100%);
+    border-left: 4px solid #FF6B8D;
+    color: #FF4757;
+}
+
+.nurse-conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.nurse-conversation-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+.nurse-conversation-time {
+    font-size: 0.75rem;
+    color: #718096;
+}
+
+.nurse-conversation-preview {
+    color: #4a5568;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nurse-conversation-unread {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 8px;
+    height: 8px;
+    background: #FF6B8D;
+    border-radius: 50%;
+}
+
+/* Unassigned Messages */
+.nurse-unassigned-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f3f4;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.nurse-unassigned-item:hover {
+    background: linear-gradient(90deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 193, 7, 0.1) 100%);
+}
+
+.nurse-unassigned-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.nurse-unassigned-parent {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+.nurse-unassigned-time {
+    font-size: 0.75rem;
+    color: #718096;
+}
+
+.nurse-unassigned-message {
+    color: #4a5568;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.nurse-assign-btn {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.3);
+}
+
+.nurse-assign-btn:hover {
+    background: linear-gradient(135deg, #FF4757 0%, #FF6B8D 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 141, 0.4);
+    color: white;
+}
+
+.nurse-assign-btn:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Chat Area */
+.nurse-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.nurse-chat-header-bar {
+    padding: 20px 24px;
+    border-bottom: 2px solid #f1f3f4;
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nurse-chat-back-btn {
+    background: none;
+    border: none;
+    color: #FF6B8D;
+    font-size: 1.2rem;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nurse-chat-back-btn:hover {
+    background: rgba(255, 107, 141, 0.1);
+    color: #FF4757;
+}
+
+.nurse-chat-partner-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Messages Area */
+.nurse-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.nurse-load-more-container {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 12px;
+}
+
+.nurse-load-more-btn {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+    border: 2px solid #FF6B8D;
+    color: #FF6B8D;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.nurse-load-more-btn:hover {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 141, 0.3);
+}
+
+.nurse-load-more-btn:disabled {
+    background: #f7fafc;
+    border-color: #e2e8f0;
+    color: #a0aec0;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Message Bubbles */
+.nurse-message-wrapper {
+    display: flex;
+    margin-bottom: 16px;
+    animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
     from {
         opacity: 0;
-        transform: translateX(100%);
+        transform: translateY(10px);
     }
 
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
-@keyframes nurseConnectionPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
-    }
-
-    50% {
-        opacity: 0.8;
-        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
-    }
+.nurse-message-wrapper.own {
+    justify-content: flex-end;
 }
 
-/* ==================== UTILITY CLASSES ==================== */
-.nurse-text-gradient {
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.nurse-message-wrapper.other {
+    justify-content: flex-start;
 }
 
-.nurse-btn-primary {
-    background: var(--primary-gradient) !important;
-    border: none !important;
-    border-radius: var(--radius-md) !important;
-    transition: var(--transition-normal) !important;
+.nurse-message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 20px;
+    position: relative;
+    word-wrap: break-word;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.nurse-btn-primary:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: var(--shadow-lg) !important;
+.nurse-message-bubble.own {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    color: white;
+    border-bottom-right-radius: 6px;
 }
 
-.nurse-card {
-    background: var(--surface-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition-normal);
+.nurse-message-bubble.other {
+    background: white;
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 6px;
 }
 
-.nurse-card:hover {
+.nurse-message-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.nurse-message-time {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.nurse-message-bubble.own .nurse-message-time {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nurse-message-bubble.other .nurse-message-time {
+    color: #718096;
+}
+
+/* Empty States */
+.nurse-chat-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #a0aec0;
+    flex-direction: column;
+    padding: 40px;
+}
+
+.nurse-chat-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+    color: #FF6B8D;
+}
+
+.nurse-chat-empty-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #718096;
+}
+
+.nurse-messages-empty {
+    text-align: center;
+    color: #a0aec0;
+    font-style: italic;
+    padding: 40px 0;
+}
+
+/* Message Input */
+.nurse-message-input-container {
+    padding: 20px 24px;
+    border-top: 2px solid #f1f3f4;
+    background: white;
+}
+
+.nurse-message-input-form {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.nurse-message-input {
+    flex: 1;
+    border: 2px solid #e2e8f0;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.nurse-message-input:focus {
+    border-color: #FF6B8D;
+    box-shadow: 0 0 0 3px rgba(255, 107, 141, 0.1);
+    background: white;
+    outline: none;
+}
+
+.nurse-message-input::placeholder {
+    color: #a0aec0;
+}
+
+.nurse-send-btn {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 50%;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.3);
+    min-width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nurse-send-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #FF4757 0%, #FF6B8D 100%);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px rgba(255, 107, 141, 0.4);
+    color: white;
 }
 
-/* ==================== ACCESSIBILITY ==================== */
-.nurse-chat-container {
-
-    /* High contrast mode support */
-    @media (prefers-contrast: high) {
-        --border-color: rgba(0, 0, 0, 0.3);
-        --text-secondary: #4a5568;
-    }
-
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce) {
-        * {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
-    }
-
-    /* Dark mode support (future enhancement) */
-    @media (prefers-color-scheme: dark) {
-        --background-color: #1a202c;
-        --surface-color: #2d3748;
-        --text-primary: #f7fafc;
-        --text-secondary: #e2e8f0;
-        --border-color: rgba(255, 255, 255, 0.1);
-    }
+.nurse-send-btn:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
 }
 
-/* ==================== PRINT STYLES ==================== */
-@media print {
+/* Loading States */
+.nurse-chat-loading {
+    padding: 40px;
+    text-align: center;
+    color: #718096;
+}
+
+.nurse-chat-loading .spinner-border {
+    color: #FF6B8D;
+    margin-bottom: 16px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
     .nurse-chat-container {
-        background: white !important;
-        color: black !important;
+        padding: 10px;
     }
 
-    .chat-area-header,
-    .message-input-container,
-    .new-message-notification,
-    .debug-scroll-button {
-        display: none !important;
+    .nurse-chat-main {
+        height: calc(100vh - 160px);
     }
 
-    .message-bubble {
-        box-shadow: none !important;
-        border: 1px solid #000 !important;
+    .nurse-conversation-item,
+    .nurse-unassigned-item {
+        padding: 12px 16px;
     }
+
+    .nurse-chat-header-bar {
+        padding: 16px 20px;
+    }
+
+    .nurse-messages-container {
+        padding: 16px 20px;
+    }
+
+    .nurse-message-input-container {
+        padding: 16px 20px;
+    }
+
+    .nurse-message-bubble {
+        max-width: 85%;
+        padding: 10px 14px;
+    }
+
+    .nurse-nav-tabs .nav-link {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Scrollbar Styling */
+.nurse-conversation-list::-webkit-scrollbar,
+.nurse-messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nurse-conversation-list::-webkit-scrollbar-track,
+.nurse-messages-container::-webkit-scrollbar-track {
+    background: #f1f3f4;
+    border-radius: 3px;
+}
+
+.nurse-conversation-list::-webkit-scrollbar-thumb,
+.nurse-messages-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #FF6B8D 0%, #FF4757 100%);
+    border-radius: 3px;
+}
+
+.nurse-conversation-list::-webkit-scrollbar-thumb:hover,
+.nurse-messages-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FF4757 0%, #FF6B8D 100%);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-chat-container {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Focus visible for accessibility */
+.nurse-conversation-item:focus-visible,
+.nurse-unassigned-item:focus-visible,
+.nurse-assign-btn:focus-visible,
+.nurse-send-btn:focus-visible,
+.nurse-message-input:focus-visible {
+    outline: 2px solid #FF6B8D;
+    outline-offset: 2px;
 }

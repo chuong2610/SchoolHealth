@@ -10,6 +10,21 @@ const ChatNotificationBadge = ({
 }) => {
     const { user, hasUnreadMessages, hasUnassignedMessages } = useAuth();
 
+    // Convert iconSize to valid value for FaComments
+    const getIconSize = (size) => {
+        if (typeof size === 'number') return size;
+
+        switch (size) {
+            case 'xs': return 12;
+            case 'sm': return 14;
+            case 'lg': return 20;
+            case 'xl': return 24;
+            case '2x': return 32;
+            case '3x': return 48;
+            default: return 16; // default medium size
+        }
+    };
+
     // Determine if badge should be shown
     const shouldShowBadge = () => {
         // Get current role to avoid stale closure
@@ -89,7 +104,7 @@ const ChatNotificationBadge = ({
         >
             {showIcon && (
                 <FaComments
-                    size={iconSize}
+                    size={getIconSize(iconSize)}
                     className={showBadge ? 'has-unread' : ''}
                     style={{
                         color: showBadge ? roleColors.primary : 'inherit',

@@ -1,495 +1,256 @@
-/* Header Styles - Simplified approach */
+/* Common styles - header.css */
 
-/* Header Styles - Basic styling without layout conflicts */
+/* ==== DISABLE ALL TRANSITIONS & ANIMATIONS ==== */
+/* Disable transitions for all interactive elements */
+.header *,
+.header *::before,
+.header *::after {
+    transition: none !important;
+    animation: none !important;
+    animation-delay: 0s !important;
+    animation-duration: 0s !important;
+}
+
+/* Specific button overrides */
+.header .btn,
+.header button,
+.header .nav-link,
+.header .dropdown-toggle,
+.header .dropdown-item,
+.header .navbar-brand,
+.header .navbar-nav .nav-link {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Disable hover effects that cause delays */
+.header .btn:hover,
+.header button:hover,
+.header .nav-link:hover,
+.header .dropdown-toggle:hover,
+.header .dropdown-item:hover,
+.header .navbar-brand:hover,
+.header .navbar-nav .nav-link:hover {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Disable dropdown animations */
+.header .dropdown-menu,
+.header .dropdown-menu.show {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Disable navbar animations */
+.header .navbar,
+.header .navbar-collapse,
+.header .navbar-nav {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Disable all keyframe animations */
+@keyframes none {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Override any remaining animations */
+.header * {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+}
+
+/* Header Layout */
 .app-header {
-    height: 50px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 0 16px !important;
-    background: #ffffff !important;
-    border-bottom: 1px solid #eee !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1001 !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-    box-sizing: border-box !important;
-    /* KHÔNG set width, left, right để không phá layout sidebar */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Distribute space between left, center, right */
+    padding: 15px 30px;
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    height: 60px;
+    position: relative;
+    z-index: 100;
+    width: 100%;
 }
 
-/* Override CSS variables that might affect header */
-:root {
-    --header-height: 50px !important;
-}
-
-/* Header khi nằm trong .main (admin/nurse) */
-.main .app-header {
-    position: relative !important;
-    /* Để .main tự động điều chỉnh theo sidebar, không set width/left */
-    height: 56px !important;
-    padding: 0 16px !important;
-    background: #ffffff !important;
-}
-
-/* Logic sidebar cho header - Trạng thái THU GỌN (70px) */
-#sidebar~.main .app-header {
-    /* .main đã có margin-left: 70px, header kế thừa */
-}
-
-/* Logic sidebar cho header - Trạng thái MỞ RỘNG (260px) */
-#sidebar.expand~.main .app-header {
-    /* .main đã có margin-left: 260px, header kế thừa */
-}
-
-/* Override conflicts but không touch width/left */
-.header.app-header,
-header.app-header {
-    height: 50px !important;
-    padding: 0 16px !important;
-    background: #ffffff !important;
-    border-radius: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-/* Ensure no container restrictions */
-.container .app-header,
-.container-fluid .app-header,
-.row .app-header,
-.col .app-header {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
-}
-
-/* When header is in .main, reset the full-width */
-.main .container .app-header,
-.main .container-fluid .app-header,
-.main .row .app-header,
-.main .col .app-header {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-/* Header Left - Logo */
 .app-header-left {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    align-items: center !important;
-    min-width: 160px !important;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    /* Don't grow or shrink */
+    min-width: 200px;
 }
 
+.app-header-center {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    margin: 0 20px;
+    min-width: 0;
+    /* Allow shrinking */
+    height: 100%;
+    /* Full height để navigation tích hợp hoàn toàn */
+}
+
+.app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 0 0 auto;
+    /* Don't grow or shrink */
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+/* Logo Styles */
 .app-header-logo {
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 1.2rem;
 }
 
 .header-logo-icon {
-    color: #2563eb !important;
-    font-size: 28px !important;
-    transition: all 0.3s ease !important;
-}
-
-.app-header-logo .header-logo-icon {
-    color: #2563eb !important;
+    font-size: 1.8rem;
+    color: #2563eb;
 }
 
 .header-logo-text {
-    color: #2563eb !important;
-    font-size: 1.25rem !important;
-    font-weight: 700 !important;
-    white-space: nowrap !important;
-    transition: all 0.3s ease !important;
+    color: #333;
+    font-weight: 700;
 }
 
-.app-header-logo .header-logo-text {
-    color: #2563eb !important;
-}
-
-/* Header Center - Parent Menu */
-.app-header-center {
-    flex: 1 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    max-width: 700px !important;
-}
-
-/* Header Right - Account */
-.app-header-right {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    min-width: 50px !important;
-}
-
+/* Account Dropdown */
 .app-header-account {
-    position: relative !important;
+    position: relative;
 }
 
 .account-trigger {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    cursor: pointer !important;
-    padding: 4px 6px !important;
-    border-radius: 8px !important;
-    transition: all 0.3s ease !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(37, 99, 235, 0.05);
+    border: 2px solid white;
+    /* Viền trắng */
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 
 .account-trigger:hover {
-    background: #f0f0f0 !important;
+    background: rgba(243, 230, 233, 0.1);
+    box-shadow: 0 4px 12px rgba(235, 227, 228, 0.2);
 }
 
 .account-avatar {
-    font-size: 1.8rem !important;
-    height: 100%;
-    width: 100%;
+    width: 32px !important;
+    height: 32px !important;
     border-radius: 50%;
-    /* color: #cbced4 !important; */
-    transition: all 0.3s ease !important;
-    object-fit: "cover" !important;
-}
-
-.app-header-account .account-avatar {
-    color: #2563eb !important;
+    object-fit: cover;
+    border: 2px solid white;
+    /* Viền trắng cho avatar */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .account-arrow {
-    font-size: 0.75rem !important;
-    color: #666 !important;
-    transition: all 0.3s ease !important;
-    transform: rotate(0deg) !important;
+    font-size: 0.8rem;
+    color: #666;
+    transition: transform 0.3s ease;
 }
 
 .account-arrow.rotated {
-    transform: rotate(180deg) !important;
+    transform: rotate(180deg);
 }
 
+/* Dropdown Menu */
 .account-dropdown {
-    position: absolute !important;
-    right: 0 !important;
-    top: 110% !important;
-    background: #fff !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
-    min-width: 160px !important;
-    z-index: 1000 !important;
-    overflow: hidden !important;
-    border: 1px solid #eee !important;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    overflow: hidden;
 }
 
 .account-dropdown-item {
-    padding: 10px 14px !important;
-    cursor: pointer !important;
-    font-weight: 500 !important;
-    color: #333 !important;
-    transition: background 0.2s !important;
-    font-size: 13px !important;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+    color: #333;
 }
 
 .account-dropdown-item:hover {
-    background: #f5f5f5 !important;
-    color: #2563eb !important;
+    background: rgba(198, 202, 209, 0.1);
+    color: #020207;
 }
 
 .dropdown-divider {
-    margin: 6px 0 !important;
-    border: none !important;
-    height: 1px !important;
-    background: #eee !important;
+    margin: 0;
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* Parent Menu Desktop */
-.parent-menu-desktop {
-    display: flex !important;
-    gap: 24px !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.parent-menu-link {
-    color: #333 !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    font-size: 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    padding: 8px 12px !important;
-    border-radius: 6px !important;
-    transition: all 0.2s !important;
-    white-space: nowrap !important;
-}
-
-.parent-menu-link:hover {
-    background: #f0f8ff !important;
-    color: #2563eb !important;
-    text-decoration: none !important;
-    transform: translateY(-1px) !important;
-}
-
-.parent-menu-link.active {
-    color: #2563eb !important;
-    background: #e3f2fd !important;
-    font-weight: 700 !important;
-}
-
-.parent-menu-icon {
-    font-size: 16px !important;
-}
-
-/* Parent Menu Mobile */
-.parent-menu-mobile {
-    position: relative !important;
-}
-
-.hamburger-btn {
-    background: none !important;
-    border: none !important;
-    font-size: 18px !important;
-    color: #333 !important;
-    cursor: pointer !important;
-    padding: 8px !important;
-    border-radius: 4px !important;
-    transition: background 0.2s !important;
-}
-
-.hamburger-btn:hover {
-    background: #f0f0f0 !important;
-}
-
-.mobile-dropdown {
-    position: absolute !important;
-    right: 0 !important;
-    top: 100% !important;
-    background: #fff !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-    min-width: 200px !important;
-    z-index: 1000 !important;
-    overflow: hidden !important;
-    margin-top: 8px !important;
-    border: 1px solid #eee !important;
-}
-
-.mobile-dropdown-item {
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    padding: 12px 16px !important;
-    color: #333 !important;
-    text-decoration: none !important;
-    font-weight: 500 !important;
-    transition: background 0.2s !important;
-    font-size: 14px !important;
-}
-
-.mobile-dropdown-item:hover {
-    background: #f5f5f5 !important;
-    color: #2563eb !important;
-    text-decoration: none !important;
-}
-
-.mobile-dropdown-item.active {
-    background: #e3f2fd !important;
-    color: #2563eb !important;
-    font-weight: 600 !important;
-}
-
-.mobile-menu-icon {
-    font-size: 16px !important;
-}
-
-/* Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
     .app-header {
-        padding: 0 12px !important;
-        height: 46px !important;
-    }
-
-    .app-header-left {
-        min-width: 120px !important;
-    }
-
-    .header-logo-text {
-        font-size: 1.1rem !important;
-    }
-
-    .header-logo-icon {
-        font-size: 24px !important;
-    }
-
-    .parent-menu-desktop {
-        display: none !important;
-    }
-
-    .parent-menu-mobile {
-        display: block !important;
+        padding: 10px 15px;
+        justify-content: space-between;
     }
 
     .app-header-center {
-        justify-content: flex-end !important;
-        margin-right: 12px !important;
-    }
-
-    .account-avatar {
-        font-size: 1.6rem !important;
-    }
-
-    .account-arrow {
-        font-size: 0.7rem !important;
-    }
-}
-
-@media (max-width: 576px) {
-    .app-header {
-        padding: 0 10px !important;
-        height: 42px !important;
+        display: none;
+        /* Hide center menu on mobile */
     }
 
     .app-header-left {
-        min-width: 100px !important;
+        min-width: auto;
+    }
+
+    .app-header-right {
+        min-width: auto;
     }
 
     .header-logo-text {
-        display: none !important;
-    }
-
-    .header-logo-icon {
-        font-size: 22px !important;
-    }
-
-    .app-header-center {
-        margin-right: 10px !important;
-    }
-
-    .account-avatar {
-        font-size: 1.5rem !important;
-    }
-
-    .account-trigger {
-        padding: 3px 4px !important;
-    }
-
-    .account-arrow {
-        font-size: 0.65rem !important;
-    }
-
-    .hamburger-btn {
-        font-size: 16px !important;
-        padding: 6px !important;
+        display: none;
+        /* Hide logo text on small screens */
     }
 }
 
-@media (min-width: 769px) {
-    .parent-menu-mobile {
-        display: none !important;
-    }
+/* For admin/nurse layouts with sidebar */
+.wrapper .app-header {
+    margin-left: 0;
+    /* Header spans full width */
 }
 
-/* Final reset for any remaining conflicts */
-* .app-header,
-*[class*="app-header"],
-.app-header * {
-    box-sizing: border-box !important;
+/* Parent role specific adjustments */
+.app-header-left .app-header-logo {
+    color: #FF6B8D;
 }
 
+/* Ensure header is above sidebar and menu dropdowns */
 .app-header {
-    font-family: inherit !important;
-    font-size: inherit !important;
-    font-weight: normal !important;
-    line-height: normal !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
-}
-
-/* Browser-specific resets */
-.app-header,
-.app-header * {
-    -webkit-box-sizing: border-box !important;
-    -moz-box-sizing: border-box !important;
-    box-sizing: border-box !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    appearance: none !important;
-}
-
-/* Header Emergency Override - Đảm bảo màu xanh nước biển cho header */
-.app-header .header-logo-icon,
-.app-header .app-header-logo .header-logo-icon,
-.app-header-left .header-logo-icon,
-.header-logo-icon {
-    color: #2563eb !important;
-}
-
-.app-header .header-logo-text,
-.app-header .app-header-logo .header-logo-text,
-.app-header-left .header-logo-text,
-.header-logo-text {
-    color: #2563eb !important;
-}
-
-.app-header .account-avatar,
-.app-header .app-header-account .account-avatar,
-.app-header-right .account-avatar,
-.account-avatar {
-    color: #2563eb !important;
-}
-
-/* Override parent theme variables cho header */
-.app-header .parent-menu-link:hover,
-.app-header .parent-menu-link.active {
-    color: #2563eb !important;
-}
-
-.app-header .mobile-dropdown-item:hover,
-.app-header .mobile-dropdown-item.active {
-    color: #2563eb !important;
-}
-
-.app-header .account-dropdown-item:hover {
-    color: #2563eb !important;
-}
-
-/* Ultra high specificity override - Đảm bảo header luôn màu xanh nước biển */
-body .app-header .header-logo-icon,
-html body .app-header .header-logo-icon,
-body .app-header .app-header-logo .header-logo-icon {
-    color: #2563eb !important;
-}
-
-body .app-header .header-logo-text,
-html body .app-header .header-logo-text,
-body .app-header .app-header-logo .header-logo-text {
-    color: #2563eb !important;
-}
-
-body .app-header .account-avatar,
-html body .app-header .account-avatar,
-body .app-header .app-header-account .account-avatar {
-    color: #2563eb !important;
-}
-
-/* Brand identity protection - School Health luôn màu xanh nước biển */
-[class*="header"] .header-logo-icon,
-[class*="app-header"] .header-logo-icon,
-.header-logo-icon[class*="fa"] {
-    color: #2563eb !important;
-}
-
-[class*="header"] .header-logo-text,
-[class*="app-header"] .header-logo-text {
-    color: #2563eb !important;
-}
-
-/* Force override cho mọi theme */
-.parent-theme .app-header .header-logo-icon,
-.parent-theme .app-header .header-logo-text,
-.parent-theme .app-header .account-avatar {
-    color: #2563eb !important;
+    position: relative;
+    z-index: 1001;
 }

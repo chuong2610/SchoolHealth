@@ -139,7 +139,7 @@ const ReceiveMedicine = () => {
     try {
       const res = await axiosInstance.get(
         `/Medication/pending?pageNumber=${currentPage}&pageSize=${pageSize}` +
-          `${search ? `&search=${search}` : ""}`
+        `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setPendingRequests(
@@ -171,7 +171,7 @@ const ReceiveMedicine = () => {
     try {
       const res = await axiosInstance.get(
         `/Medication/nurse/${nurseId}/Active?pageNumber=${currentPage}&pageSize=${pageSize}` +
-          `${search ? `&search=${search}` : ""}`
+        `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setActiveRequests(
@@ -201,7 +201,7 @@ const ReceiveMedicine = () => {
     try {
       const res = await axiosInstance.get(
         `/Medication/nurse/${nurseId}/Completed?pageNumber=${currentPage}&pageSize=${pageSize}` +
-          `${search ? `&search=${search}` : ""}`
+        `${search ? `&search=${search}` : ""}`
       );
       const data = res.data;
       setCompletedRequests(
@@ -276,7 +276,7 @@ const ReceiveMedicine = () => {
     try {
       // Create CSV content
       const headers = [
-        "Mã đơn",
+
         "Lớp",
         "Học sinh",
         "Loại thuốc",
@@ -288,7 +288,7 @@ const ReceiveMedicine = () => {
         headers.join(","),
         ...data.map((row) =>
           [
-            row.id,
+            // row.id,
             row.studentClassName,
             row.student,
             row.parent || "N/A",
@@ -298,8 +298,8 @@ const ReceiveMedicine = () => {
             activeTab === "pending"
               ? "Chờ xác nhận"
               : activeTab === "active"
-              ? "Đang sử dụng"
-              : "Đã hoàn thành",
+                ? "Đang sử dụng"
+                : "Đã hoàn thành",
           ].join(",")
         ),
       ].join("\n");
@@ -500,107 +500,29 @@ const ReceiveMedicine = () => {
 
   // Render Action Buttons
   const renderActionButtons = (req, type) => (
-    <div className="medicine-action-buttons">
+    <div className="btn-group">
       <button
-        className="medicine-btn-action view"
+        className="action-btn view"
         onClick={() => setModalDetail({ type, data: req })}
         title="Xem chi tiết"
-        style={{
-          background: "#F06292",
-          border: "1px solid #F06292",
-          color: "white",
-          width: "30px",
-          height: "30px",
-          borderRadius: "8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "12px",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          boxShadow: "0 2px 6px rgba(240, 98, 146, 0.25)",
-          outline: "none",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = "#E91E63";
-          e.target.style.transform = "scale(1.05)";
-          e.target.style.boxShadow = "0 3px 10px rgba(240, 98, 146, 0.35)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = "#F06292";
-          e.target.style.transform = "scale(1)";
-          e.target.style.boxShadow = "0 2px 6px rgba(240, 98, 146, 0.25)";
-        }}
       >
         <FaEye />
       </button>
       {type === "pending" && (
         <>
           <button
-            className="btn-action confirm"
+            className="action-btn approve"
             onClick={() => {
               handleConfirm(req, "pending", "");
             }}
             title="Xác nhận nhận thuốc"
-            style={{
-              background: "#81C784",
-              border: "1px solid #81C784",
-              color: "white",
-              width: "30px",
-              height: "30px",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: "0 2px 6px rgba(129, 199, 132, 0.25)",
-              outline: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#66BB6A";
-              e.target.style.transform = "scale(1.05)";
-              e.target.style.boxShadow = "0 3px 10px rgba(129, 199, 132, 0.35)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#81C784";
-              e.target.style.transform = "scale(1)";
-              e.target.style.boxShadow = "0 2px 6px rgba(129, 199, 132, 0.25)";
-            }}
           >
             <FaCheckCircle />
           </button>
           <button
-            className="medicine-btn-action reject"
+            className="action-btn reject"
             onClick={() => handleReject(req)}
             title="Từ chối"
-            style={{
-              background: "#E57373",
-              border: "1px solid #E57373",
-              color: "white",
-              width: "30px",
-              height: "30px",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: "0 2px 6px rgba(229, 115, 115, 0.25)",
-              outline: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.background = "#EF5350";
-              e.target.style.transform = "scale(1.05)";
-              e.target.style.boxShadow = "0 3px 10px rgba(229, 115, 115, 0.35)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.background = "#E57373";
-              e.target.style.transform = "scale(1)";
-              e.target.style.boxShadow = "0 2px 6px rgba(229, 115, 115, 0.25)";
-            }}
           >
             <FaTimesCircle />
           </button>
@@ -608,35 +530,9 @@ const ReceiveMedicine = () => {
       )}
       {type === "active" && (
         <button
-          className="medicine-btn-action complete"
+          className="action-btn complete"
           onClick={() => handleConfirm(req, "active", "")}
           title="Hoàn thành sử dụng thuốc"
-          style={{
-            background: "#81C784",
-            border: "1px solid #81C784",
-            color: "white",
-            width: "30px",
-            height: "30px",
-            borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "12px",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            boxShadow: "0 2px 6px rgba(129, 199, 132, 0.25)",
-            outline: "none",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = "#66BB6A";
-            e.target.style.transform = "scale(1.05)";
-            e.target.style.boxShadow = "0 3px 10px rgba(129, 199, 132, 0.35)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = "#81C784";
-            e.target.style.transform = "scale(1)";
-            e.target.style.boxShadow = "0 2px 6px rgba(129, 199, 132, 0.25)";
-          }}
         >
           <FaCheckDouble />
         </button>
@@ -653,205 +549,64 @@ const ReceiveMedicine = () => {
     showAll,
     setShowAll
   ) => (
-    <div className="medicine-table-container">
-      <div className="table-header">
+    <div className="table-container">
+      {/* Search and Filter Section */}
+      <div className="search-filter-section">
         <div className="search-container">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Tìm kiếm theo mã đơn, học sinh, thuốc..."
-              value={searchValue}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="action-buttons">
-            <Button
-              style={{
-                width: "100px",
-                height: "40px",
-                borderRadius: "8px",
-                fontSize: "1.2rem",
-                fontWeight: "600",
-              }}
-              variant="outline-secondary"
-              className="filter-btn"
-              onClick={() => setShowFilterModal(true)}
-            >
-              <FaFilter /> Lọc
-            </Button>
-            {/* <Button
-              style={{
-                width: "100px",
-                height: "40px",
-                borderRadius: "8px",
-                fontSize: "1.2rem",
-                fontWeight: "600",
-              }}
-              variant="outline-success"
-              className="export-btn"
-              onClick={() => {
-                const filename =
-                  type === "pending"
-                    ? "don-thuoc-cho-xac-nhan"
-                    : type === "active"
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Tìm kiếm theo mã đơn, học sinh, thuốc..."
+            value={searchValue}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="filter-actions">
+          <button
+            className="filter-btn"
+            onClick={() => setShowFilterModal(true)}
+          >
+            <FaFilter /> Lọc
+          </button>
+          <button
+            className="export-btn"
+            onClick={() => {
+              const filename =
+                type === "pending"
+                  ? "don-thuoc-cho-xac-nhan"
+                  : type === "active"
                     ? "don-thuoc-dang-su-dung"
                     : "don-thuoc-hoan-thanh";
-                exportToExcel(data, filename);
-              }}
-            >
-              <FaDownload /> Xuất Excel
-            </Button> */}
-          </div>
+              exportToExcel(data, filename);
+            }}
+          >
+            <FaDownload /> Xuất Excel
+          </button>
         </div>
       </div>
 
-      <div className="medicine-table-responsive">
-        <Table className="medicine-table">
+      <div className="table-responsive">
+        <Table className="table">
           <thead>
             <tr>
-              <th
-                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
-              >
-                Mã đơn
-              </th>
-              {/* <th style={{ width: "80px", minWidth: "80px", maxWidth: "80px" }}>
-                Lớp
-              </th> */}
-              <th
-                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
-              >
-                Học sinh
-              </th>
-              {/* {type === "pending" && <th style={{ width: '120px', minWidth: '120px', maxWidth: '120px' }}>Phụ huynh</th>} */}
-              <th
-                style={{
-                  width: type === "pending" ? "150px" : "180px",
-                  minWidth: type === "pending" ? "150px" : "180px",
-                  maxWidth: type === "pending" ? "150px" : "180px",
-                }}
-              >
-                Loại thuốc
-              </th>
-              <th
-                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
-              >
-                Liều lượng
-              </th>
-              <th
-                style={{ width: "100px", minWidth: "100px", maxWidth: "100px" }}
-              >
-                Ngày
-              </th>
-              <th
-                style={{ width: "150px", minWidth: "150px", maxWidth: "150px" }}
-              >
-                Thao tác
-              </th>
+              {/* <th className="medicine-id-header">Mã đơn</th> */}
+              <th className="student-info-header">Học sinh</th>
+              <th className="medicine-info-header">Loại thuốc</th>
+              <th className="dosage-header">Liều lượng</th>
+              <th className="date-info-header">Ngày</th>
+              <th className="action-header">Thao tác</th>
             </tr>
           </thead>
           <tbody>
             {data.map((req, index) => (
-              <tr
-                key={req.id || `req-${index}`}
-                className="table-row"
-                style={{}}
-              >
-                <td
-                  style={{
-                    width: "100px",
-                    minWidth: "100px",
-                    maxWidth: "100px",
-                  }}
-                >
-                  <div
-                    className="medicine-id"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    #{req.id || "N/A"}
-                  </div>
-                </td>
-                {/* <td
-                  style={{
-                    width: "80px",
-                    minWidth: "80px",
-                    maxWidth: "80px",
-                    fontSize: "1.9rem",
-                    fontWeight: "700",
-                    color: "#111827",
-                    lineHeight: "4.4",
-                  }}
-                >
-                  <Badge bg="" className="class-badge">
-                  {req.studentName || "N/A"}
-                  </Badge> 
-                </td> */}
-                <td
-                  style={{
-                    width: "120px",
-                    minWidth: "120px",
-                    maxWidth: "120px",
-                    fontSize: "1.2rem",
-                    fontWeight: "600",
-                    color: "#111827",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  <div className="student-info">{req.student || "N/A"}</div>
-                </td>
-                {/* {type === "pending" && (
-                  <td style={{
-                    width: '120px', minWidth: '120px', maxWidth: '120px', fontSize: '1.2rem',
-                    fontWeight: '600',
-                    color: '#111827',
-                    lineHeight: '1.4',
-                  }}>
-                    <div className="parent-info">
-                      {req.parent || 'N/A'}
-                    </div>
-                  </td>
-                )} */}
-                <td
-                  style={{
-                    width: type === "pending" ? "150px" : "180px",
-                    minWidth: type === "pending" ? "150px" : "180px",
-                    maxWidth: type === "pending" ? "150px" : "180px",
-                  }}
-                >
-                  <div className="medicine-info">
-                    <strong>{req.medicine || "N/A"}</strong>
-                  </div>
-                </td>
-                <td>
-                  <Badge bg="info" className="dosage-badge">
-                    {req.dosage || "N/A"}
-                  </Badge>
-                </td>
-                <td
-                  style={{
-                    width: "100px",
-                    minWidth: "100px",
-                    maxWidth: "100px",
-                    fontSize: "1.2rem",
-                    fontWeight: "600",
-                    color: "#111827",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  <div className="date-info">
-                    <FaCalendarAlt className="date-icon" />
-                    {req.date || "N/A"}
-                  </div>
-                </td>
-                <td>
-                  {renderActionButtons(req, type)}
-                </td>
+              <tr key={req.id || `req-${index}`} className="table-row">
+                {/* <td className="medicine-id">#{req.id || "Không có"}</td> */}
+                <td className="student-info">{req.student || "Không có"}</td>
+                <td className="medicine-info"><strong>{req.medicine || "Không có"}</strong></td>
+                <td><span className="dosage-badge">{req.dosage || "Không có"}</span></td>
+                <td className="date-info">{req.date || "Không có"}</td>
+                <td>{renderActionButtons(req, type)}</td>
               </tr>
             ))}
             {data.length === 0 && (
@@ -905,43 +660,23 @@ const ReceiveMedicine = () => {
         </Alert>
       )}
 
-      {/* Page Header */}
-      <div
-        className="page-header"
-        style={{
-          backgroundColor: "#F06292",
-          padding: "20px 0",
-          borderRadius: "10px",
-          marginBottom: "20px",
-        }}
-      >
+      {/* Page Header with Coral Theme */}
+      <div className="page-header">
         <div className="header-content">
-          <div className="header-left">
-            <div
-              className="page-title"
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "700",
-                color: "rgb(255, 255, 255)",
-                lineHeight: "1.4",
-                textAlign: "center",
-              }}
-            >
-              <FaStethoscope className="page-icon" />
-              <h1>Quản lý Thuốc Y tế</h1>
-            </div>
-            <p
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "600",
-                color: "rgb(255, 255, 255)",
-                lineHeight: "1.4",
-                textAlign: "center",
-              }}
-            >
-              Theo dõi và xử lý các đơn thuốc từ phụ huynh
-            </p>
+          <div className="page-title">
+            <FaStethoscope className="page-icon" />
+            <h1>Quản lý Thuốc Y tế</h1>
           </div>
+          <p style={{
+            fontSize: "1.2rem",
+            fontWeight: "600",
+            color: "rgb(255, 255, 255)",
+            lineHeight: "1.4",
+            textAlign: "center",
+            opacity: 0.95
+          }}>
+            Theo dõi và xử lý các đơn thuốc từ phụ huynh
+          </p>
         </div>
       </div>
 
@@ -1149,14 +884,13 @@ const ReceiveMedicine = () => {
           setModalDetail(null);
           setNurseNote("");
         }}
-        size="xl"
-        className="enhanced-prescription-modal"
+        size="md"
+        className="simple-prescription-modal"
         centered
       >
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            // Handle form submission based on action type
             if (modalDetail?.type === "pending") {
               handleConfirm(modalDetail.data, "pending", nurseNote);
             } else if (modalDetail?.type === "active") {
@@ -1166,325 +900,132 @@ const ReceiveMedicine = () => {
             setNurseNote("");
           }}
         >
-          <div className="enhanced-modal-header">
-            <div className="header-content">
-              <div className="modal-icon">
-                <FaPills />
-              </div>
-              <div className="header-text">
-                <h2>Chi tiết Đơn Thuốc</h2>
-                <p>Xem và xử lý thông tin đơn thuốc từ phụ huynh</p>
-              </div>
-            </div>
+          <div className="simple-modal-header">
+            <h2><FaPills style={{ marginRight: 8 }} />Chi tiết Đơn Thuốc</h2>
             {detailData && (
-              <div className="status-indicator">
-                <div
-                  className={`status-badge-enhanced ${
-                    detailData.status === "Pending"
-                      ? "pending"
-                      : detailData.status === "Active"
-                      ? "active"
-                      : "completed"
-                  }`}
-                >
-                  {detailData.status === "Pending"
-                    ? "⏳ Chờ xác nhận"
-                    : detailData.status === "Active"
-                    ? "🔄 Đang sử dụng"
-                    : "✅ Đã hoàn thành"}
-                </div>
+              <div className="status-badge-simple">
+                {detailData.status === "Pending" ? "⏳ Chờ xác nhận" :
+                  detailData.status === "Active" ? "🔄 Đang sử dụng" : "✅ Đã hoàn thành"}
               </div>
             )}
           </div>
-
-          <div className="enhanced-modal-body">
+          <div className="simple-modal-body">
             {detailLoading && (
-              <div className="loading-state">
-                <FaSpinner className="fa-spin loading-spinner" />
-                <h4>Đang tải chi tiết đơn thuốc...</h4>
-                <p>Vui lòng chờ trong giây lát</p>
+              <div className="loading-simple">
+                <FaSpinner className="fa-spin" /> Đang tải...
               </div>
             )}
-
             {!detailLoading && !detailData && (
-              <div className="error-state">
-                <FaExclamationTriangle className="error-icon" />
-                <h4>Không tìm thấy chi tiết đơn thuốc</h4>
-                <p>Dữ liệu có thể đã bị xóa hoặc không tồn tại</p>
+              <div className="error-simple">
+                <FaExclamationTriangle /> Không tìm thấy chi tiết đơn thuốc
               </div>
             )}
-
             {!detailLoading && detailData && (
-              <div className="form-content">
-                {/* Section 1: Prescription Info */}
-                <fieldset className="form-section">
-                  <legend>
-                    <FaClipboardList />
-                    Thông tin đơn thuốc
-                  </legend>
-                  <div className="info-card">
-                    <div className="info-item">
-                      <label>
-                        <FaHashtag />
-                        Mã đơn thuốc
-                      </label>
-                      <div className="info-value prescription-id">
-                        #{detailData.id}
-                      </div>
-                    </div>
-                    <div className="info-item">
-                      <label>
-                        <FaCalendarAlt />
-                        Ngày tạo đơn
-                      </label>
-                      <div className="info-value">
-                        {new Date(detailData.createdDate).toLocaleDateString(
-                          "vi-VN",
-                          {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
+              <>
+                {/* Card 1: Thông tin đơn thuốc */}
+                <div className="simple-card">
+                  <div className="simple-card-title"><FaClipboardList style={{ marginRight: 6 }} />Thông tin đơn thuốc</div>
+                  <div className="info-row">
+                    {/* <span className="info-label">Mã đơn:</span> */}
+                    {/* <span className="info-value">#{detailData.id}</span> */}
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Ngày tạo:</span>
+                    <span className="info-value">{new Date(detailData.createdDate).toLocaleDateString("vi-VN")}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Số ngày sử dụng:</span>
+                    <span className="info-value">{detailData.days || "Không xác định"} ngày</span>
+                  </div>
+                </div>
+                {/* Card 2: Thông tin học sinh */}
+                <div className="simple-card">
+                  <div className="simple-card-title"><FaUserGraduate style={{ marginRight: 6 }} />Thông tin học sinh</div>
+                  <div className="info-row">
+                    <span className="info-label">Họ và tên:</span>
+                    <span className="info-value">{detailData.studentName}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Lớp học:</span>
+                    <span className="info-value">{detailData.studentClass}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">Phụ huynh:</span>
+                    <span className="info-value">{detailData.parentName}</span>
+                  </div>
+                </div>
+                {/* Card 3: Thông tin thuốc */}
+                <div className="simple-card">
+                  <div className="simple-card-title"><FaCapsules style={{ marginRight: 6 }} />Thông tin thuốc</div>
+                  {detailData.medications && detailData.medications.length > 0 ? (
+                    detailData.medications.map((medication, index) => (
+                      <div key={index} className="medication-simple">
+                        <div className="med-name">{medication.medicationName}</div>
+                        <div className="med-dosage">Liều lượng: {medication.dosage}</div>
+                        {medication.note && (
+                          <div className="med-note">Ghi chú: "{medication.note}"</div>
                         )}
                       </div>
-                    </div>
-                    <div className="info-item">
-                      <label>
-                        <FaClock />
-                        Số ngày sử dụng
-                      </label>
-                      <div className="info-value">
-                        {detailData.days || "Không xác định"} ngày
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-
-                {/* Section 2: Student Info */}
-                <fieldset className="form-section">
-                  <legend>
-                    <FaUserGraduate />
-                    Thông tin học sinh
-                  </legend>
-                  <div className="info-card">
-                    <div className="info-item">
-                      <label>
-                        <FaUser />
-                        Họ và tên
-                      </label>
-                      <div className="info-value">{detailData.studentName}</div>
-                    </div>
-                    <div className="info-item">
-                      <label>
-                        <FaGraduationCap />
-                        Lớp học
-                      </label>
-                      <div className="info-value">
-                        {detailData.studentClass}
-                      </div>
-                    </div>
-                    <div className="info-item">
-                      <label>
-                        <FaUserFriends />
-                        Phụ huynh
-                      </label>
-                      <div className="info-value">{detailData.parentName}</div>
-                    </div>
-                  </div>
-                </fieldset>
-
-                {/* Section 3: Medication Info */}
-                <fieldset className="form-section">
-                  <legend>
-                    <FaCapsules />
-                    Thông tin thuốc
-                  </legend>
-                  <div className="medications-list">
-                    {detailData.medications &&
-                    detailData.medications.length > 0 ? (
-                      detailData.medications.map((medication, index) => (
-                        <div key={index} className="medication-item">
-                          <div className="medication-header">
-                            <div className="med-icon">
-                              <FaPills />
-                            </div>
-                            <div className="med-details">
-                              <h4>{medication.medicationName}</h4>
-                              <div className="dosage-info">
-                                <span className="dosage-label">
-                                  Liều lượng:
-                                </span>
-                                <span className="dosage-value">
-                                  {medication.dosage}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          {medication.note && (
-                            <div className="medication-note">
-                              <FaStickyNote />
-                              <div>
-                                <strong>Ghi chú từ phụ huynh:</strong>
-                                <p>"{medication.note}"</p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="no-medication">
-                        <FaExclamationTriangle />
-                        <p>Không có thông tin thuốc</p>
-                      </div>
-                    )}
-                  </div>
-                </fieldset>
-
-                {/* Section 4: Nurse Actions/Notes */}
+                    ))
+                  ) : (
+                    <div className="no-medication-simple">Không có thông tin thuốc</div>
+                  )}
+                </div>
+                {/* Card 4: Ghi chú y tá (chỉ hiện khi pending) */}
                 {modalDetail?.type === "pending" && (
-                  <fieldset className="form-section">
-                    <legend>
-                      <FaUserNurse />
-                      Ghi chú của y tá
-                    </legend>
-                    <div className="nurse-section">
-                      <Form.Group controlId="nurseNote">
-                        <Form.Label>
-                          <FaStickyNote />
-                          Ghi chú thêm (không bắt buộc)
-                        </Form.Label>
-                        <Form.Control
-                          as="textarea"
-                          rows={3}
-                          placeholder="Nhập ghi chú về việc xác nhận đơn thuốc..."
-                          value={nurseNote}
-                          onChange={(e) => setNurseNote(e.target.value)}
-                          className="form-control-enhanced"
-                        />
-                        <div className="form-help">
-                          <FaStethoscope />
-                          Ghi chú sẽ được lưu vào hồ sơ theo dõi thuốc của học
-                          sinh
-                        </div>
-                      </Form.Group>
-                    </div>
-                  </fieldset>
+                  <div className="simple-card">
+                    <div className="simple-card-title"><FaUserNurse style={{ marginRight: 6 }} />Ghi chú của y tá</div>
+                    <Form.Group controlId="nurseNote">
+                      <Form.Label>Ghi chú thêm (không bắt buộc)</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        placeholder="Nhập ghi chú về việc xác nhận đơn thuốc..."
+                        value={nurseNote}
+                        onChange={(e) => setNurseNote(e.target.value)}
+                      />
+                    </Form.Group>
+                  </div>
                 )}
-
-                {/* Section 5: Action History */}
-                {(detailData.receivedDate || detailData.completedDate) && (
-                  <fieldset className="form-section">
-                    <legend>
-                      <FaHistory />
-                      Lịch sử xử lý
-                    </legend>
-                    <div className="history-timeline">
-                      <div className="timeline-item">
-                        <div className="timeline-icon created">
-                          <FaCalendarAlt />
-                        </div>
-                        <div className="timeline-content">
-                          <h6>Tạo đơn thuốc</h6>
-                          <p>
-                            {new Date(detailData.createdDate).toLocaleString(
-                              "vi-VN"
-                            )}
-                          </p>
-                        </div>
-                      </div>
-
-                      {detailData.receivedDate && (
-                        <div className="timeline-item">
-                          <div className="timeline-icon received">
-                            <FaCheckCircle />
-                          </div>
-                          <div className="timeline-content">
-                            <h6>Đã xác nhận nhận thuốc</h6>
-                            <p>
-                              {new Date(detailData.receivedDate).toLocaleString(
-                                "vi-VN"
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      {detailData.completedDate && (
-                        <div className="timeline-item">
-                          <div className="timeline-icon completed">
-                            <FaCheckDouble />
-                          </div>
-                          <div className="timeline-content">
-                            <h6>Đã hoàn thành sử dụng</h6>
-                            <p>
-                              {new Date(
-                                detailData.completedDate
-                              ).toLocaleString("vi-VN")}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </fieldset>
-                )}
-              </div>
+              </>
             )}
           </div>
-
-          <div className="enhanced-modal-footer">
-            <div className="footer-actions">
-              <Button
-                type="button"
-                variant="secondary"
-                className="btn-close"
-                onClick={() => {
-                  setModalDetail(null);
-                  setNurseNote("");
-                }}
-              >
-                <FaTimes />
-                Đóng
+          <div className="simple-modal-footer">
+            <Button
+              type="button"
+              variant="secondary"
+              className="btn-close-simple"
+              onClick={() => {
+                setModalDetail(null);
+                setNurseNote("");
+              }}
+            >
+              <FaTimes /> Đóng
+            </Button>
+            {modalDetail?.type === "pending" && (
+              <>
+                <Button
+                  type="button"
+                  variant="danger"
+                  className="btn-reject-simple"
+                  onClick={() => {
+                    handleReject(modalDetail.data);
+                    setModalDetail(null);
+                    setNurseNote("");
+                  }}
+                >
+                  <FaTimesCircle /> Từ chối
+                </Button>
+                <Button type="submit" variant="success" className="btn-confirm-simple">
+                  <FaCheckCircle /> Xác nhận nhận thuốc
+                </Button>
+              </>
+            )}
+            {modalDetail?.type === "active" && (
+              <Button type="submit" variant="primary" className="btn-complete-simple">
+                <FaCheckDouble /> Hoàn thành sử dụng
               </Button>
-
-              <div className="action-buttons">
-                {modalDetail?.type === "pending" && (
-                  <>
-                    <Button
-                      type="button"
-                      variant="danger"
-                      className="btn-reject"
-                      onClick={() => {
-                        handleReject(modalDetail.data);
-                        setModalDetail(null);
-                        setNurseNote("");
-                      }}
-                    >
-                      <FaTimesCircle />
-                      Từ chối
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="success"
-                      className="btn-confirm"
-                    >
-                      <FaCheckCircle />
-                      Xác nhận nhận thuốc
-                    </Button>
-                  </>
-                )}
-                {modalDetail?.type === "active" && (
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="btn-complete"
-                  >
-                    <FaCheckDouble />
-                    Hoàn thành sử dụng
-                  </Button>
-                )}
-              </div>
-            </div>
+            )}
           </div>
         </Form>
       </Modal>

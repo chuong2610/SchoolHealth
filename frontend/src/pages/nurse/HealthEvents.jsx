@@ -61,6 +61,7 @@ import {
   FaTimes,
   FaUserMd,
   FaInfoCircle,
+  FaUserFriends,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 import axiosInstance from "../../api/axiosInstance";
@@ -433,15 +434,15 @@ const HealthEvents = () => {
         medicalEventSupplys:
           validSupplies.length > 0
             ? validSupplies.map((supply) => ({
-                medicalSupplyId: parseInt(supply.medicalSupplyId),
-                quantity: parseInt(supply.quantity),
-              }))
+              medicalSupplyId: parseInt(supply.medicalSupplyId),
+              quantity: parseInt(supply.quantity),
+            }))
             : [
-                {
-                  medicalSupplyId: 0,
-                  quantity: 0,
-                },
-              ],
+              {
+                medicalSupplyId: 0,
+                quantity: 0,
+              },
+            ],
         nurseId: parseInt(user.id),
       };
 
@@ -461,8 +462,6 @@ const HealthEvents = () => {
           quantity: parseInt(supply.quantity),
         }));
       }
-
-
 
       const res = await postMedicalEvent(data);
       showNotification(
@@ -618,37 +617,11 @@ const HealthEvents = () => {
 
   // Enhanced action buttons
   const renderActionButtons = (event) => (
-    <div className="health-events-action-buttons">
+    <div className="btn-group">
       <button
-        className="health-events-btn-action view"
+        className="action-btn view"
         onClick={() => loadMedicalEventDetailModal(event.id)}
         title="Xem chi tiết"
-        style={{
-          background: "#F06292",
-          border: "1px solid #F06292",
-          color: "white",
-          width: "30px",
-          height: "30px",
-          borderRadius: "8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "12px",
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-          boxShadow: "0 2px 6px rgba(240, 98, 146, 0.25)",
-          outline: "none",
-        }}
-        onMouseEnter={(e) => {
-          e.target.style.background = "#E91E63";
-          e.target.style.transform = "scale(1.05)";
-          e.target.style.boxShadow = "0 3px 10px rgba(240, 98, 146, 0.35)";
-        }}
-        onMouseLeave={(e) => {
-          e.target.style.background = "#F06292";
-          e.target.style.transform = "scale(1)";
-          e.target.style.boxShadow = "0 2px 6px rgba(240, 98, 146, 0.25)";
-        }}
       >
         <FaEye />
       </button>
@@ -664,60 +637,47 @@ const HealthEvents = () => {
     showAll,
     setShowAll
   ) => (
-    <div className="medicine-table-container">
-      <div className="table-header">
+    <div className="table-container">
+      {/* Search and Filter Section */}
+      <div className="search-filter-section">
         <div className="search-container">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Tìm kiếm theo loại sự kiện, địa điểm, học sinh..."
-              value={searchValue}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="action-buttons">
-            <Button
-              variant="outline-secondary"
-              className="filter-btn"
-              onClick={() => setShowFilterModal(true)}
-            >
-              <FaFilter /> Lọc
-            </Button>
-            {/* <Button
-              style={{
-                backgroundColor: "#F06292",
-                border: "1px solid #F06292",
-                color: "white",
-                width: "100px",
-                height: "40px",
-                borderRadius: "8px",
-                fontSize: "1.2rem",
-                fontWeight: "600",
-              }}
-              variant="outline-success"
-              className="export-btn"
-              onClick={() => {
-                const filename =
-                  type === "all"
-                    ? "tat-ca-su-kien"
-                    : type === "recent"
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Tìm kiếm theo loại sự kiện, địa điểm, học sinh..."
+            value={searchValue}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="filter-actions">
+          <button
+            className="filter-btn"
+            onClick={() => setShowFilterModal(true)}
+          >
+            <FaFilter /> Lọc
+          </button>
+          <button
+            className="export-btn"
+            onClick={() => {
+              const filename =
+                type === "all"
+                  ? "tat-ca-su-kien"
+                  : type === "recent"
                     ? "su-kien-gan-day"
                     : type === "today"
-                    ? "su-kien-hom-nay"
-                    : "su-kien-cap-cuu";
-                exportToExcel(data, filename);
-              }}
-            >
-              <FaDownload /> Xuất Excel
-            </Button> */}
-          </div>
+                      ? "su-kien-hom-nay"
+                      : "su-kien-cap-cuu";
+              exportToExcel(data, filename);
+            }}
+          >
+            <FaDownload /> Xuất Excel
+          </button>
         </div>
       </div>
 
-      <div className="health-events-table-responsive">
-        <Table className="health-events-table">
+      <div className="table-responsive">
+        <Table className="table">
           <thead>
             <tr>
               <th
@@ -736,7 +696,7 @@ const HealthEvents = () => {
                 Ngày
               </th>
               <th
-                style={{ width: "120px", minWidth: "120px", maxWidth: "120px" }}
+                style={{ width: "150px", minWidth: "150px", maxWidth: "150px" }}
               >
                 Học sinh
               </th>
@@ -762,19 +722,8 @@ const HealthEvents = () => {
                     maxWidth: "150px",
                   }}
                 >
-                  <div
-                    className="medicine-id"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    <FaHeartbeat
-                      className="medicine-icon pill-bounce"
-                      style={{ marginRight: "0.5rem" }}
-                    />
+                  <div className={`event-type-badge ${event.eventType || 'other'}`}>
+                    <FaHeartbeat />
                     {event.eventType || "N/A"}
                   </div>
                 </td>
@@ -785,16 +734,8 @@ const HealthEvents = () => {
                     maxWidth: "120px",
                   }}
                 >
-                  <div
-                    className="location-info"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    <FaMapMarkerAlt className="me-1" />
+                  <div className="location-info">
+
                     {event.location || "N/A"}
                   </div>
                 </td>
@@ -805,16 +746,8 @@ const HealthEvents = () => {
                     maxWidth: "120px",
                   }}
                 >
-                  <div
-                    className="date-info"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    <FaCalendarAlt className="date-icon" />
+                  <div className="date-info">
+
                     {formatDateTime(event.date) || "N/A"}
                   </div>
                 </td>
@@ -825,16 +758,8 @@ const HealthEvents = () => {
                     maxWidth: "120px",
                   }}
                 >
-                  <div
-                    className="student-info"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    <FaUser className="me-1" />
+                  <div className="student-info">
+
                     <strong>{event.studentName || "N/A"}</strong>
                   </div>
                 </td>
@@ -845,16 +770,8 @@ const HealthEvents = () => {
                     maxWidth: "100px",
                   }}
                 >
-                  <div
-                    className="parent-info"
-                    style={{
-                      fontSize: "1.2rem",
-                      fontWeight: "600",
-                      color: "#111827",
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    <FaUserNurse className="me-1" />
+                  <div className="nurse-info">
+
                     {event.nurseName || "N/A"}
                   </div>
                 </td>
@@ -936,7 +853,7 @@ const HealthEvents = () => {
 
   //
   return (
-    <div className="container-fluid nurse-theme medicine-management">
+    <div className="container-fluid nurse-theme health-events-management">
 
       {/* Notification */}
       {notification && (
@@ -950,18 +867,15 @@ const HealthEvents = () => {
         </Alert>
       )}
 
-      {/* Page Header */}
-      <div className="health-events-header">
+      {/* Page Header with Coral Theme */}
+      <div className="page-header">
         <div className="header-content">
-          <div className="header-left">
-            <div className="page-title">
-              <FaHeartbeat className="page-icon" />
-              <h1>Quản lý Sự kiện Y tế</h1>
-            </div>
-            <p className="page-subtitle">
-              Theo dõi và quản lý các sự kiện y tế trong trường
-            </p>
+          <div className="page-title">
+            <h1>Quản lý Sự kiện Y tế</h1>
           </div>
+          <p className="page-subtitle">
+            Theo dõi và quản lý các sự kiện y tế trong trường
+          </p>
         </div>
       </div>
 
@@ -974,10 +888,7 @@ const HealthEvents = () => {
           <div className="nurse-events-stat-label">
             Tổng sự kiện
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#43a047", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value" style={{ color: "#43a047" }}>
             {healthEventStatistics.totalCount}
           </div>
         </div>
@@ -988,10 +899,7 @@ const HealthEvents = () => {
           <div className="nurse-events-stat-label">
             Gần đây (7 ngày)
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#ffa000", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value" style={{ color: "#ffa000" }}>
             {healthEventStatistics.last7DaysCount}
           </div>
         </div>
@@ -1002,10 +910,7 @@ const HealthEvents = () => {
           <div className="nurse-events-stat-label">
             Hôm nay
           </div>
-          <div
-            className="nurse-events-stat-value"
-            style={{ fontSize: 32, color: "#039be5", fontWeight: 700 }}
-          >
+          <div className="nurse-events-stat-value" style={{ color: "#039be5" }}>
             {healthEventStatistics.todayCount}
           </div>
         </div>
@@ -1126,228 +1031,80 @@ const HealthEvents = () => {
       </div>
 
       {/* Enhanced Health Event Detail Modal - Single Form Design */}
-      <Modal
-        show={modalEvent}
-        onHide={() => {
+      {modalEvent && (
+        <Modal show={modalEvent} onHide={() => {
           setModalEvent(false);
           setNurseNote("");
-        }}
-        size="xl"
-        className="enhanced-health-event-modal"
-        centered
-      >
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // Handle form submission if needed (e.g., update notes)
-            // For now, just close modal
-            setModalEvent(false);
-            setNurseNote("");
-          }}
-        >
-          <div className="enhanced-modal-header">
-            <div className="header-content">
-              <div className="modal-icon">
-                <FaHeartbeat />
-              </div>
-              <div className="header-text">
-                <h2>Chi tiết Sự kiện Y tế</h2>
-                <p>Thông tin đầy đủ về sự kiện và biện pháp đã thực hiện</p>
-              </div>
-            </div>
-            {modalEventDetail && modalEventDetail.eventType && (
-              <div className="status-indicator">
-                <div className="status-badge-enhanced completed">
-                  ✅ Đã hoàn thành
+        }} centered size="md" className="simple-event-detail-modal">
+          <Modal.Body>
+            <div className="simple-event-detail">
+              {/* Card 1: Thông tin sự kiện */}
+              <div className="simple-card">
+                <div className="simple-card-title"><FaHeartbeat style={{ marginRight: 6 }} />Thông tin sự kiện</div>
+                <div className="info-row">
+                  <span className="info-label">Loại sự kiện:</span>
+                  <span className="info-value">{modalEventDetail?.eventType}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Thời gian:</span>
+                  <span className="info-value">{formatDateTime(modalEventDetail?.date)}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Địa điểm:</span>
+                  <span className="info-value">{modalEventDetail?.location}</span>
                 </div>
               </div>
-            )}
-          </div>
-
-          <div className="enhanced-modal-body">
-            {detailLoading && (
-              <div className="loading-state">
-                <FaSpinner className="fa-spin loading-spinner" />
-                <h4>Đang tải chi tiết sự kiện...</h4>
-                <p>Vui lòng chờ trong giây lát</p>
+              {/* Card 2: Người liên quan */}
+              <div className="simple-card">
+                <div className="simple-card-title"><FaUserFriends style={{ marginRight: 6 }} />Người liên quan</div>
+                <div className="person-row-simple">
+                  <img src={modalEventDetail?.studentAvatar || '/default-avatar.png'} className="avatar-simple" alt="student" />
+                  <div className="person-info">
+                    <span className="person-label">Học sinh:</span>
+                    <span className="person-name">{modalEventDetail?.studentName}</span>
+                  </div>
+                </div>
+                <div className="person-row-simple">
+                  <img src={modalEventDetail?.nurseAvatar || '/default-avatar.png'} className="avatar-simple" alt="nurse" />
+                  <div className="person-info">
+                    <span className="person-label">Y tá:</span>
+                    <span className="person-name">{modalEventDetail?.nurseName}</span>
+                  </div>
+                </div>
               </div>
-            )}
-
-            {!detailLoading &&
-              (!modalEventDetail || !modalEventDetail.eventType) && (
-                <div className="error-state">
-                  <FaExclamationTriangle className="error-icon" />
-                  <h4>Không tìm thấy chi tiết sự kiện</h4>
-                  <p>Dữ liệu có thể đã bị xóa hoặc không tồn tại</p>
+              {/* Card 3: Mô tả chi tiết */}
+              <div className="simple-card">
+                <div className="simple-card-title"><FaClipboardList style={{ marginRight: 6 }} />Mô tả chi tiết</div>
+                <div className="description-simple">
+                  {modalEventDetail?.description}
                 </div>
-              )}
-
-            {!detailLoading &&
-              modalEventDetail &&
-              modalEventDetail.eventType && (
-                <div className="form-content">
-                  {/* Section 1: Event Info */}
-                  <fieldset className="form-section">
-                    <legend>
-                      <FaHeartbeat />
-                      Thông tin sự kiện
-                    </legend>
-                    <div className="info-card">
-                      <div className="info-item">
-                        <label>
-                          <FaList />
-                          Loại sự kiện
-                        </label>
-                        <div className="info-value event-type">
-                          {modalEventDetail.eventType}
-                        </div>
-                      </div>
-                      <div className="info-item">
-                        <label>
-                          <FaMapMarkerAlt />
-                          Địa điểm
-                        </label>
-                        <div className="info-value">
-                          {modalEventDetail.location}
-                        </div>
-                      </div>
-                      <div className="info-item">
-                        <label>
-                          <FaCalendarAlt />
-                          Thời gian thực hiện
-                        </label>
-                        <div className="info-value">
-                          {formatDateTime(modalEventDetail.date)}
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-
-                  {/* Section 2: People Involved */}
-                  <fieldset className="form-section">
-                    <legend>
-                      <FaUserGraduate />
-                      Thông tin liên quan
-                    </legend>
-                    <div className="info-card">
-                      <div className="info-item">
-                        <label>
-                          <FaUser />
-                          Học sinh
-                        </label>
-                        <div className="info-value">
-                          {modalEventDetail.studentName || (
-                            <span className="no-data">
-                              Sự kiện chung - Không có học sinh cụ thể
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="info-item">
-                        <label>
-                          <FaUserNurse />Y tá phụ trách
-                        </label>
-                        <div className="info-value">
-                          {modalEventDetail.nurseName}
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-
-                  {/* Section 3: Event Description */}
-                  <fieldset className="form-section">
-                    <legend>
-                      <FaClipboardList />
-                      Mô tả chi tiết
-                    </legend>
-                    <div className="description-card">
-                      <div className="description-content">
-                        <label>
-                          <FaNotesMedical />
-                          Mô tả sự kiện
-                        </label>
-                        <div className="description-text">
-                          {modalEventDetail.description}
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-
-                  {/* Section 4: Medical Supplies */}
-                  {((modalEventDetail.medicalEventSupplys &&
-                    modalEventDetail.medicalEventSupplys.length > 0) ||
-                    (modalEventDetail.supplies &&
-                      modalEventDetail.supplies.length > 0)) && (
-                    <fieldset className="form-section">
-                      <legend>
-                        <FaMedkit />
-                        Vật tư y tế đã sử dụng
-                      </legend>
-                      <div className="supplies-list">
-                        {(
-                          modalEventDetail.medicalEventSupplys ||
-                          modalEventDetail.supplies ||
-                          []
-                        ).map((supply, index) => (
-                          <div key={index} className="supply-item">
-                            <div className="supply-icon">
-                              <FaCapsules />
-                            </div>
-                            <div className="supply-details">
-                              <h4>
-                                {supply.medicalSupplyName ||
-                                  supply.MedicalSupplyName ||
-                                  "N/A"}
-                              </h4>
-                              <div className="supply-quantity">
-                                <span className="quantity-label">
-                                  Số lượng đã sử dụng:
-                                </span>
-                                <span className="quantity-value">
-                                  {supply.quantity || supply.Quantity || 0}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </fieldset>
-                  )}
-                </div>
-              )}
-          </div>
-
-          <div className="enhanced-modal-footer">
-            <div className="footer-actions">
-              <Button
-                type="button"
-                variant="secondary"
-                className="btn-close"
-                onClick={() => {
+              </div>
+              {/* Card 4: Vật tư y tế */}
+              <div className="simple-card">
+                <div className="simple-card-title"><FaMedkit style={{ marginRight: 6 }} />Vật tư y tế sử dụng</div>
+                {(modalEventDetail?.supplies || []).map((s, idx) => (
+                  <div className="supply-row-simple" key={idx}>
+                    <span className="supply-name">{s.name}</span>
+                    <span className="supply-qty-simple">({s.quantity} lần)</span>
+                  </div>
+                ))}
+                {(modalEventDetail?.supplies || []).length === 0 && (
+                  <div className="no-supplies-simple">Không có vật tư y tế</div>
+                )}
+              </div>
+              {/* Button */}
+              <div className="simple-event-actions">
+                <button className="btn-back-simple" onClick={() => {
                   setModalEvent(false);
                   setNurseNote("");
-                }}
-              >
-                {/* <FaTimes /> */}
-                Đóng
-              </Button>
-
-              {/* <div className="action-buttons">
-                {nurseNote.trim() && (
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="btn-save-note"
-                  >
-                    <FaCheckCircle />
-                    Lưu ghi chú
-                  </Button>
-                )}
-              </div> */}
+                }}>
+                  <FaTimes /> Đóng
+                </button>
+              </div>
             </div>
-          </div>
-        </Form>
-      </Modal>
+          </Modal.Body>
+        </Modal>
+      )}
 
       {/* Enhanced Add Health Event Modal - Single Form Design */}
       <Modal
@@ -1356,8 +1113,8 @@ const HealthEvents = () => {
           setModalAdd(false);
           resetFormAdd();
         }}
-        size="xl"
-        className="enhanced-add-event-modal"
+        size="md"
+        className="simple-add-event-modal"
         centered
       >
         <Form
@@ -1366,337 +1123,152 @@ const HealthEvents = () => {
           validated={validated}
           onSubmit={handleSubmitForm}
         >
-          <div className="enhanced-modal-header">
-            <div className="header-content">
-              <div className="modal-icon">
-                <FaHeartbeat />
-              </div>
-              <div className="header-text">
-                <h2>Tạo Sự Kiện Y Tế Mới</h2>
-                <p>Ghi lại sự kiện y tế và các biện pháp đã thực hiện</p>
-              </div>
-            </div>
-            <div className="status-indicator">
-              <div className="status-badge-enhanced new">✨ Sự kiện mới</div>
-            </div>
+          <div className="simple-modal-header">
+            <h2><FaHeartbeat style={{ marginRight: 8 }} />Tạo Sự Kiện Y Tế</h2>
           </div>
-
-          <div className="enhanced-modal-body">
-            <div className="form-content">
-              {/* Section 1: Basic Event Information */}
-              <fieldset className="form-section">
-                <legend>
-                  <FaHeartbeat />
-                  Thông tin cơ bản
-                </legend>
-                <div className="input-grid">
-                  <div className="input-group">
-                    <Form.Group controlId="eventType">
-                      <Form.Label>
-                        <FaList />
-                        Loại sự kiện <span className="required">*</span>
-                      </Form.Label>
-                      <Form.Select
-                        value={formAdd.eventType}
-                        onChange={(e) =>
-                          setFormAdd({ ...formAdd, eventType: e.target.value })
-                        }
-                        className="form-control-enhanced"
-                        required
-                      >
-                        <option key="empty-event-type" value="">Chọn loại sự kiện...</option>
-                        <option key="health_check" value="health_check">Khám sức khỏe</option>
-                        <option key="vaccination" value="vaccination">Tiêm phòng</option>
-                        <option key="emergency" value="emergency">Cấp cứu</option>
-                        <option key="medication" value="medication">Cho thuốc</option>
-                        <option key="injury" value="injury">Chấn thương</option>
-                        <option key="other" value="other">Khác</option>
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        Vui lòng chọn loại sự kiện
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </div>
-
-                  <div className="input-group">
-                    <Form.Group controlId="eventLocation">
-                      <Form.Label>
-                        <FaMapMarkerAlt />
-                        Địa điểm <span className="required">*</span>
-                      </Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="VD: Phòng y tế, Lớp 10A1, Sân chơi, Hành lang tầng 2..."
-                        value={formAdd.location}
-                        onChange={(e) =>
-                          setFormAdd({ ...formAdd, location: e.target.value })
-                        }
-                        className="form-control-enhanced"
-                        required
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        Vui lòng nhập địa điểm
-                      </Form.Control.Feedback>
-                      <div className="form-help">
-                        <FaInfoCircle />
-                        Nhập địa điểm cụ thể nơi xảy ra sự kiện y tế
-                      </div>
-                    </Form.Group>
-                  </div>
-
-                  <div className="input-group">
-                    <Form.Group controlId="classSelect">
-                      <Form.Label>
-                        <FaUserGraduate />
-                        Chọn lớp <span className="required">*</span>
-                      </Form.Label>
-                      <Form.Select
-                        value={selectedClassId}
-                        onChange={(e) => handleClassChange(e.target.value)}
-                        className="form-control-enhanced"
-                        required
-                      >
-                        <option key="empty-class" value="">Chọn lớp...</option>
-                        {classList.map((cls, index) => (
-                          <option
-                            key={cls.id ? `class-${cls.id}` : `class-fallback-${index}`}
-                            value={cls.id || ""}
-                          >
-                            {cls.className || "Lớp không xác định"}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        Vui lòng chọn lớp
-                      </Form.Control.Feedback>
-                    </Form.Group>
-                  </div>
-
-                  <div className="input-group">
-                    <Form.Group controlId="studentSelect">
-                      <Form.Label>
-                        <FaUser />
-                        Chọn học sinh <span className="required">*</span>
-                      </Form.Label>
-                      <Form.Select
-                        value={formAdd.studentNumber}
-                        onChange={(e) =>
-                          setFormAdd({
-                            ...formAdd,
-                            studentNumber: e.target.value,
-                          })
-                        }
-                        className="form-control-enhanced"
-                        disabled={!selectedClassId}
-                        required
-                      >
-                        <option key="empty-student" value="">
-                          {selectedClassId
-                            ? (studentsList.length > 0
-                              ? "Chọn học sinh..."
-                              : "Không có học sinh trong lớp")
-                            : "Vui lòng chọn lớp trước"
-                          }
-                        </option>
-                        {studentsList.map((student, index) => (
-                          <option
-                            key={student.id ? `student-${student.id}` : `student-fallback-${index}`}
-                            value={student.studentNumber || ""}
-                          >
-                            {(student.studentNumber || "N/A")} - {(student.studentName || "Tên không xác định")}
-                          </option>
-                        ))}
-                      </Form.Select>
-                      <Form.Control.Feedback type="invalid">
-                        Vui lòng chọn học sinh
-                      </Form.Control.Feedback>
-                      <div className="form-help">
-                        <FaInfoCircle />
-                        Chọn lớp trước, sau đó chọn học sinh cụ thể.
-                        <br />
-                        <strong>Lưu ý:</strong> Sự kiện sẽ được lưu nhưng chưa tự động gửi thông báo cho phụ huynh.
-                      </div>
-                    </Form.Group>
-                  </div>
-                </div>
-              </fieldset>
-
-              {/* Section 2: Event Description */}
-              <fieldset className="form-section">
-                <legend>
-                  <FaNotesMedical />
-                  Mô tả chi tiết sự kiện
-                </legend>
-                <div className="description-input">
-                  <Form.Group controlId="eventDescription">
-                    <Form.Label>
-                      <FaClipboardList />
-                      Mô tả sự kiện <span className="required">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={5}
-                      placeholder="Mô tả chi tiết về sự kiện: triệu chứng, tình trạng, hành động đã thực hiện, kết quả..."
-                      value={formAdd.description}
-                      onChange={(e) =>
-                        setFormAdd({ ...formAdd, description: e.target.value })
-                      }
-                      className="form-control-enhanced description-textarea"
-                      required
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng mô tả chi tiết sự kiện
-                    </Form.Control.Feedback>
-                    <div className="form-help">
-                      <FaInfoCircle />
-                      Ghi rõ tình trạng của học sinh và các biện pháp đã thực
-                      hiện
-                    </div>
-                  </Form.Group>
-                </div>
-              </fieldset>
-
-              {/* Section 3: Medical Supplies */}
-              <fieldset className="form-section">
-                <legend>
-                  <FaMedkit />
-                  Vật tư y tế sử dụng
-                </legend>
-                <div className="supplies-container">
-                  {formAdd.medicalEventSupplys.map((item, idx) => (
-                    <div key={idx} className="supply-card">
-                      <div className="supply-header">
-                        <div className="supply-number">
-                          <FaCapsules />
-                          Vật tư #{idx + 1}
-                        </div>
-                        {formAdd.medicalEventSupplys.length > 1 && (
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() => handleRemoveSupply(idx)}
-                            className="remove-btn"
-                            title="Xóa vật tư này"
-                          >
-                            <FaTrash />
-                          </Button>
-                        )}
-                      </div>
-
-                      <div className="supply-inputs">
-                        <div className="supply-select">
-                          <Form.Label>
-                            <FaMedkit />
-                            Chọn vật tư
-                          </Form.Label>
-                          <Form.Select
-                            value={item.medicalSupplyId}
-                            onChange={(e) =>
-                              handleChangeSelect(idx, e.target.value)
-                            }
-                            className="form-control-enhanced"
-                          >
-                            <option key="empty-supply" value="">-- Chọn vật tư y tế --</option>
-                            {medicalSupplies.map((supply, index) => (
-                              <option
-                                key={supply.id ? `supply-${supply.id}` : `supply-fallback-${index}`}
-                                value={supply.id || ""}
-                              >
-                                {(supply.name || "Vật tư không xác định")} (Tồn kho: {supply.quantity || 0})
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </div>
-
-                        <div className="quantity-input">
-                          <Form.Label>
-                            <FaList />
-                            Số lượng
-                          </Form.Label>
-                          <div className="quantity-wrapper">
-                            <Form.Control
-                              type="number"
-                              placeholder="1"
-                              value={item.quantity}
-                              onChange={(e) =>
-                                handleChangeQuantity(idx, e.target.value)
-                              }
-                              min="1"
-                              max={
-                                medicalSupplies.find(
-                                  (s) =>
-                                    String(s.id) ===
-                                    String(item.medicalSupplyId)
-                                )?.quantity || 999
-                              }
-                              className="form-control-enhanced"
-                            />
-                            {item.medicalSupplyId && (
-                              <span className="max-quantity">
-                                /{" "}
-                                {medicalSupplies.find(
-                                  (s) =>
-                                    String(s.id) ===
-                                    String(item.medicalSupplyId)
-                                )?.quantity || 0}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  <div className="add-supply-card">
-                    <Button
-                      variant="outline-primary"
-                      onClick={handleAddSupply}
-                      className="add-supply-btn"
-                    >
-                      <FaPlus />
-                      Thêm vật tư khác
-                    </Button>
-                    <p className="add-supply-text">
-                      Thêm tất cả vật tư y tế đã sử dụng trong sự kiện này
-                    </p>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-          </div>
-
-          <div className="enhanced-modal-footer">
-            <div className="footer-actions">
-              <Button
-                type="button"
-                variant="secondary"
-                className="btn-cancel"
-                onClick={() => {
-                  setModalAdd(false);
-                  resetFormAdd();
-                }}
-              >
-                <FaTimes />
-                Hủy bỏ
-              </Button>
-
-              <div className="action-buttons">
-                <Button
-                  type="button"
-                  variant="outline-secondary"
-                  className="btn-reset"
-                  onClick={resetFormAdd}
+          <div className="simple-modal-body">
+            {/* Thông tin cơ bản */}
+            <div className="simple-card">
+              <div className="simple-card-title"><FaHeartbeat style={{ marginRight: 6 }} />Thông tin sự kiện</div>
+              <Form.Group className="mb-3" controlId="eventType">
+                <Form.Label>Loại sự kiện <span className="required">*</span></Form.Label>
+                <Form.Select
+                  value={formAdd.eventType}
+                  onChange={e => setFormAdd({ ...formAdd, eventType: e.target.value })}
+                  required
                 >
-                  <FaTrash />
-                  Làm mới
-                </Button>
-
-                <Button type="submit" variant="primary" className="btn-save">
-                  <FaCheckCircle />
-                  Lưu sự kiện
+                  <option value="">Chọn loại sự kiện...</option>
+                  <option value="health_check">Khám sức khỏe</option>
+                  <option value="vaccination">Tiêm phòng</option>
+                  <option value="emergency">Cấp cứu</option>
+                  <option value="medication">Cho thuốc</option>
+                  <option value="injury">Chấn thương</option>
+                  <option value="other">Khác</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">Vui lòng chọn loại sự kiện</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="eventLocation">
+                <Form.Label>Địa điểm <span className="required">*</span></Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="VD: Phòng y tế, Lớp 10A1, ..."
+                  value={formAdd.location}
+                  onChange={e => setFormAdd({ ...formAdd, location: e.target.value })}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">Vui lòng nhập địa điểm</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="classSelect">
+                <Form.Label>Chọn lớp <span className="required">*</span></Form.Label>
+                <Form.Select
+                  value={selectedClassId}
+                  onChange={e => handleClassChange(e.target.value)}
+                  required
+                >
+                  <option value="">Chọn lớp...</option>
+                  {classList.map((cls, idx) => (
+                    <option key={cls.id || idx} value={cls.id || ""}>{cls.className || "Lớp không xác định"}</option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">Vui lòng chọn lớp</Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="studentSelect">
+                <Form.Label>Chọn học sinh <span className="required">*</span></Form.Label>
+                <Form.Select
+                  value={formAdd.studentNumber}
+                  onChange={e => setFormAdd({ ...formAdd, studentNumber: e.target.value })}
+                  disabled={!selectedClassId}
+                  required
+                >
+                  <option value="">{selectedClassId ? (studentsList.length > 0 ? "Chọn học sinh..." : "Không có học sinh trong lớp") : "Vui lòng chọn lớp trước"}</option>
+                  {studentsList.map((student, idx) => (
+                    <option key={student.id || idx} value={student.studentNumber || ""}>{(student.studentNumber || "N/A") + " - " + (student.studentName || "Tên không xác định")}</option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">Vui lòng chọn học sinh</Form.Control.Feedback>
+              </Form.Group>
+            </div>
+            {/* Mô tả chi tiết */}
+            <div className="simple-card">
+              <div className="simple-card-title"><FaNotesMedical style={{ marginRight: 6 }} />Mô tả chi tiết</div>
+              <Form.Group controlId="eventDescription">
+                <Form.Label>Mô tả sự kiện <span className="required">*</span></Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  placeholder="Mô tả chi tiết về sự kiện, triệu chứng, tình trạng, hành động đã thực hiện..."
+                  value={formAdd.description}
+                  onChange={e => setFormAdd({ ...formAdd, description: e.target.value })}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">Vui lòng mô tả chi tiết sự kiện</Form.Control.Feedback>
+              </Form.Group>
+            </div>
+            {/* Vật tư y tế */}
+            <div className="simple-card">
+              <div className="simple-card-title"><FaMedkit style={{ marginRight: 6 }} />Vật tư y tế sử dụng</div>
+              {formAdd.medicalEventSupplys.map((item, idx) => (
+                <div key={idx} className="supply-row-simple">
+                  <Form.Group className="mb-2" style={{ flex: 1 }}>
+                    <Form.Label>Tên vật tư</Form.Label>
+                    <Form.Select
+                      value={item.medicalSupplyId}
+                      onChange={e => handleChangeSelect(idx, e.target.value)}
+                    >
+                      <option value="">Chọn vật tư...</option>
+                      {medicalSupplies.map((supply, i) => (
+                        <option key={supply.id || i} value={supply.id || ""}>{supply.name}</option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group className="mb-2" style={{ width: 120 }}>
+                    <Form.Label>Số lượng</Form.Label>
+                    <Form.Control
+                      type="number"
+                      min={1}
+                      value={item.quantity}
+                      onChange={e => handleChangeQuantity(idx, e.target.value)}
+                    />
+                  </Form.Group>
+                  {formAdd.medicalEventSupplys.length > 1 && (
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleRemoveSupply(idx)}
+                      className="remove-btn-simple"
+                      title="Xóa vật tư này"
+                      style={{ height: 38, marginTop: 24 }}
+                    >
+                      <FaTrash />
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <div style={{ marginTop: 8 }}>
+                <Button variant="outline-primary" onClick={handleAddSupply} className="add-supply-btn-simple">
+                  <FaPlus /> Thêm vật tư
                 </Button>
               </div>
             </div>
+          </div>
+          <div className="simple-modal-footer">
+            <Button
+              type="button"
+              variant="secondary"
+              className="btn-cancel-simple"
+              onClick={() => {
+                setModalAdd(false);
+                resetFormAdd();
+              }}
+            >
+              <FaTimes /> Hủy bỏ
+            </Button>
+            <Button type="button" variant="outline-secondary" className="btn-reset-simple" onClick={resetFormAdd}>
+              <FaTrash /> Làm mới
+            </Button>
+            <Button type="submit" variant="primary" className="btn-save-simple">
+              <FaCheckCircle /> Lưu sự kiện
+            </Button>
           </div>
         </Form>
       </Modal>

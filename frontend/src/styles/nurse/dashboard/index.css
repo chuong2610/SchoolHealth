@@ -1,0 +1,746 @@
+/* ====================================================================
+   NURSE DASHBOARD - PINK CORAL THEME MATCHING IMAGE DESIGN
+   ==================================================================== */
+
+/* CSS Variables for Nurse Theme */
+:root {
+    /* Primary Colors - Pink/Coral Theme */
+    --nurse-primary: #FF6B8D;
+    --nurse-primary-light: #FF8FA3;
+    --nurse-primary-dark: #FF4757;
+
+    /* Secondary Colors */
+    --nurse-secondary: #50C878;
+    --nurse-accent: #4A90E2;
+    --nurse-warning: #F5A623;
+    --nurse-success: #52C41A;
+    --nurse-error: #FF4D4F;
+
+    /* Background Colors */
+    --nurse-bg-main: #F8FAFC;
+    --nurse-bg-card: #FFFFFF;
+    --nurse-bg-header: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+
+    /* Text Colors */
+    --nurse-text-primary: #1C1C1E;
+    --nurse-text-secondary: #8E8E93;
+    --nurse-text-light: #FFFFFF;
+
+    /* Border & Shadow */
+    --nurse-border: #E5E5EA;
+    --nurse-shadow: 0 4px 12px rgba(255, 107, 141, 0.1);
+    --nurse-shadow-hover: 0 8px 25px rgba(255, 107, 141, 0.15);
+}
+
+/* Main Dashboard Container */
+.nurse-dashboard-container {
+    padding: 24px;
+    background: var(--nurse-bg-main);
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Header Banner */
+.nurse-header-banner {
+    background: var(--nurse-bg-header);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--nurse-shadow);
+}
+
+.nurse-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px;
+    position: relative;
+}
+
+.nurse-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+}
+
+.nurse-avatar {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.nurse-header-text {
+    flex: 1;
+}
+
+.nurse-welcome-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nurse-welcome-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.nurse-welcome-subtitle span {
+    margin: 0 4px;
+}
+
+.nurse-header-right {
+    flex-shrink: 0;
+}
+
+.nurse-header-illustration {
+    width: 120px;
+    height: auto;
+    opacity: 0.8;
+}
+
+/* Statistics Section */
+.nurse-stats-section {
+    margin-bottom: 32px;
+}
+
+.nurse-stat-card {
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--nurse-shadow);
+    border: 1px solid var(--nurse-border);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.nurse-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--nurse-shadow-hover);
+}
+
+.nurse-stat-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nurse-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.nurse-stat-info {
+    flex: 1;
+}
+
+.nurse-stat-label {
+    font-size: 0.875rem;
+    color: var(--nurse-text-secondary);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.nurse-stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--nurse-text-primary);
+    line-height: 1;
+}
+
+/* Stat Card Colors */
+.nurse-stat-card.medicine-active .nurse-stat-icon {
+    background: linear-gradient(135deg, #81C784, #66BB6A);
+}
+
+.nurse-stat-card.medicine-active .nurse-stat-number {
+    color: #2E7D32;
+}
+
+.nurse-stat-card.medicine-pending .nurse-stat-icon {
+    background: linear-gradient(135deg, #FFB300, #FFA000);
+}
+
+.nurse-stat-card.medicine-pending .nurse-stat-number {
+    color: #E65100;
+}
+
+.nurse-stat-card.appointments-today .nurse-stat-icon {
+    background: linear-gradient(135deg, #42A5F5, #1E88E5);
+}
+
+.nurse-stat-card.appointments-today .nurse-stat-number {
+    color: #0D47A1;
+}
+
+.nurse-stat-card.health-declarations .nurse-stat-icon {
+    background: linear-gradient(135deg, #FF8A65, #FF7043);
+}
+
+.nurse-stat-card.health-declarations .nurse-stat-number {
+    color: #D84315;
+}
+
+/* Charts Section */
+.nurse-charts-section {
+    margin-bottom: 32px;
+}
+
+.nurse-chart-card {
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--nurse-shadow);
+    border: 1px solid var(--nurse-border);
+    height: 100%;
+}
+
+.nurse-chart-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--nurse-border);
+}
+
+.nurse-chart-header svg {
+    font-size: 1.25rem;
+    color: var(--nurse-primary);
+}
+
+.nurse-chart-header span {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--nurse-text-primary);
+}
+
+.nurse-chart-content {
+    height: 300px;
+}
+
+/* Loading State */
+.nurse-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: var(--nurse-text-secondary);
+}
+
+.nurse-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--nurse-border);
+    border-top: 3px solid var(--nurse-primary);
+    border-radius: 50%;
+    animation: nurse-spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+.nurse-loading-text {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+@keyframes nurse-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nurse-dashboard-container {
+        padding: 16px;
+    }
+
+    .nurse-header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 24px;
+    }
+
+    .nurse-header-left {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .nurse-welcome-title {
+        font-size: 1.5rem;
+    }
+
+    .nurse-welcome-subtitle {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .nurse-header-illustration {
+        width: 80px;
+    }
+
+    .nurse-stat-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .nurse-stat-number {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-header-content {
+        padding: 20px;
+    }
+
+    .nurse-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+
+    .nurse-welcome-title {
+        font-size: 1.25rem;
+    }
+
+    .nurse-welcome-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .nurse-stat-card {
+        padding: 20px;
+    }
+
+    .nurse-stat-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .nurse-chart-card {
+        padding: 20px;
+    }
+
+    .nurse-chart-content {
+        height: 250px;
+    }
+}
+
+/* Animation for Cards */
+@keyframes nurse-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nurse-stat-card,
+.nurse-chart-card {
+    animation: nurse-fadeInUp 0.6s ease-out;
+}
+
+/* Custom Scrollbar */
+.nurse-dashboard-container ::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nurse-dashboard-container ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.nurse-dashboard-container ::-webkit-scrollbar-thumb {
+    background: var(--nurse-primary);
+    border-radius: 3px;
+}
+
+.nurse-dashboard-container ::-webkit-scrollbar-thumb:hover {
+    background: var(--nurse-primary-dark);
+}
+
+/* Tables Section */
+.nurse-tables-section {
+    margin-bottom: 32px;
+}
+
+.nurse-table-card {
+    background: var(--nurse-bg-card);
+    border-radius: 16px;
+    box-shadow: var(--nurse-shadow);
+    border: 1px solid var(--nurse-border);
+    transition: all 0.3s ease;
+    height: 100%;
+    overflow: hidden;
+}
+
+.nurse-table-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--nurse-shadow-hover);
+}
+
+.nurse-table-header {
+    background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.nurse-table-header svg {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.nurse-table-content {
+    padding: 0;
+}
+
+/* Table Styling */
+.nurse-schedule-table,
+.nurse-appointments-table {
+    margin: 0;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.nurse-schedule-table thead th,
+.nurse-appointments-table thead th {
+    background: #f8fafc;
+    border: none;
+    border-bottom: 2px solid #e5e7eb;
+    color: var(--nurse-text-primary);
+    font-weight: 600;
+    padding: 16px 20px;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.nurse-schedule-table tbody td,
+.nurse-appointments-table tbody td {
+    border: none;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 16px 20px;
+    color: var(--nurse-text-primary);
+    vertical-align: middle;
+}
+
+.nurse-schedule-table tbody tr:hover,
+.nurse-appointments-table tbody tr:hover {
+    background: rgba(255, 107, 141, 0.05);
+}
+
+.nurse-schedule-table tbody tr:last-child td,
+.nurse-appointments-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.nurse-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.nurse-status-badge.pending {
+    background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+    color: #E65100;
+    border: 1px solid #FFB74D;
+}
+
+.nurse-status-badge.completed {
+    background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
+    color: #2E7D32;
+    border: 1px solid #81C784;
+}
+
+/* Responsive Tables */
+@media (max-width: 768px) {
+    .nurse-table-header {
+        padding: 16px 20px;
+        font-size: 1rem;
+    }
+
+    .nurse-schedule-table thead th,
+    .nurse-appointments-table thead th {
+        padding: 12px 16px;
+        font-size: 0.8rem;
+    }
+
+    .nurse-schedule-table tbody td,
+    .nurse-appointments-table tbody td {
+        padding: 12px 16px;
+        font-size: 0.875rem;
+    }
+
+    .nurse-status-badge {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .nurse-tables-section {
+        margin-bottom: 24px;
+    }
+
+    .nurse-table-header {
+        padding: 14px 16px;
+        font-size: 0.95rem;
+    }
+
+    .nurse-schedule-table thead th,
+    .nurse-appointments-table thead th {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+    }
+
+    .nurse-schedule-table tbody td,
+    .nurse-appointments-table tbody td {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ====================================================================
+   DASHBOARD TABLES - ISOLATED STYLING
+   Specific styling for dashboard tables to avoid conflicts
+   ==================================================================== */
+
+/* Dashboard Table Container - Isolated */
+.nurse-dashboard-container .nurse-schedule-table,
+.nurse-dashboard-container .nurse-appointments-table {
+    width: 100% !important;
+    margin: 0 !important;
+    border: none !important;
+    font-size: 0.9rem !important;
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    background: white !important;
+    border-collapse: collapse !important;
+    table-layout: auto !important;
+}
+
+/* Dashboard Table Headers - Isolated */
+.nurse-dashboard-container .nurse-schedule-table thead th,
+.nurse-dashboard-container .nurse-appointments-table thead th {
+    background: #f8fafc !important;
+    border: none !important;
+    border-bottom: 2px solid #e5e7eb !important;
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+    padding: 16px 20px !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    text-align: left !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    min-width: auto !important;
+    max-width: none !important;
+    width: auto !important;
+}
+
+/* Dashboard Table Body Cells - Isolated */
+.nurse-dashboard-container .nurse-schedule-table tbody td,
+.nurse-dashboard-container .nurse-appointments-table tbody td {
+    border: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 16px 20px !important;
+    color: #374151 !important;
+    vertical-align: middle !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: auto !important;
+    max-width: none !important;
+    width: auto !important;
+}
+
+/* Dashboard Table Rows - Isolated */
+.nurse-dashboard-container .nurse-schedule-table tbody tr,
+.nurse-dashboard-container .nurse-appointments-table tbody tr {
+    transition: background-color 0.2s ease !important;
+    background: white !important;
+    border: none !important;
+    min-height: auto !important;
+}
+
+.nurse-dashboard-container .nurse-schedule-table tbody tr:hover,
+.nurse-dashboard-container .nurse-appointments-table tbody tr:hover {
+    background: rgba(255, 107, 141, 0.05) !important;
+    transform: none !important;
+}
+
+.nurse-dashboard-container .nurse-schedule-table tbody tr:last-child td,
+.nurse-dashboard-container .nurse-appointments-table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+/* Dashboard Status Tags - Isolated */
+.nurse-dashboard-container .nurse-tag-success,
+.nurse-dashboard-container .nurse-tag-warning {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.025em !important;
+    border: none !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+}
+
+.nurse-dashboard-container .nurse-tag-success {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0) !important;
+    color: #15803d !important;
+}
+
+.nurse-dashboard-container .nurse-tag-warning {
+    background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+    color: #d97706 !important;
+}
+
+.nurse-dashboard-container .nurse-tag-success svg,
+.nurse-dashboard-container .nurse-tag-warning svg {
+    font-size: 0.7rem !important;
+    flex-shrink: 0 !important;
+}
+
+/* Dashboard Table Content Container - Isolated */
+.nurse-dashboard-container .nurse-table-content {
+    padding: 0 !important;
+    overflow-x: auto !important;
+    background: white !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+/* Responsive Dashboard Tables - Isolated */
+@media (max-width: 768px) {
+
+    .nurse-dashboard-container .nurse-schedule-table thead th,
+    .nurse-dashboard-container .nurse-appointments-table thead th {
+        padding: 12px 16px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-dashboard-container .nurse-schedule-table tbody td,
+    .nurse-dashboard-container .nurse-appointments-table tbody td {
+        padding: 12px 16px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .nurse-dashboard-container .nurse-tag-success,
+    .nurse-dashboard-container .nurse-tag-warning {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+        gap: 4px !important;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .nurse-dashboard-container .nurse-schedule-table thead th,
+    .nurse-dashboard-container .nurse-appointments-table thead th {
+        padding: 10px 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .nurse-dashboard-container .nurse-schedule-table tbody td,
+    .nurse-dashboard-container .nurse-appointments-table tbody td {
+        padding: 10px 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .nurse-dashboard-container .nurse-tag-success,
+    .nurse-dashboard-container .nurse-tag-warning {
+        padding: 3px 6px !important;
+        font-size: 0.65rem !important;
+    }
+}
+
+/* Override any external table styles that might interfere */
+.nurse-dashboard-container .nurse-table-card .table {
+    all: unset !important;
+    display: table !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-family: inherit !important;
+}
+
+.nurse-dashboard-container .nurse-table-card .table thead {
+    display: table-header-group !important;
+}
+
+.nurse-dashboard-container .nurse-table-card .table tbody {
+    display: table-row-group !important;
+}
+
+.nurse-dashboard-container .nurse-table-card .table tr {
+    display: table-row !important;
+}
+
+.nurse-dashboard-container .nurse-table-card .table th,
+.nurse-dashboard-container .nurse-table-card .table td {
+    display: table-cell !important;
+}
+
+/* Ensure no interference from global styles */
+.nurse-dashboard-container .nurse-table-card * {
+    box-sizing: border-box !important;
+}
+
+/* Specific overrides for any conflicting Bootstrap or global styles */
+.nurse-dashboard-container .table-responsive {
+    overflow-x: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+.nurse-dashboard-container .table-responsive .table {
+    margin-bottom: 0 !important;
+}

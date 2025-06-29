@@ -4,6 +4,7 @@ import { FaComments, FaPaperPlane, FaArrowLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import simpleChatAPI from '../../api/simpleChatApi';
 import simpleSignalR from '../../services/simpleSignalR';
+import '../../styles/parent/chat/index.css';
 
 const ParentChat = () => {
     const { user, clearUnreadMessages } = useAuth();
@@ -448,40 +449,18 @@ const ParentChat = () => {
                     return isActive ? 'active' : '';
                 })()}`}
                 onClick={() => loadChatHistory(conversation)}
-                style={{
-                    padding: '12px',
-                    margin: '4px 0',
-                    borderRadius: '8px',
-                    cursor: 'pointer',
-                    backgroundColor: hasUnread ? 'rgba(37, 99, 235, 0.08)' : '#f8f9fa',
-                    borderLeft: hasUnread ? '4px solid #2563eb' : '4px solid transparent',
-                    fontWeight: hasUnread ? '600' : '400'
-                }}
             >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
-                        <div style={{
-                            fontWeight: hasUnread ? '700' : '500',
-                            color: hasUnread ? '#2d3748' : '#4a5568',
-                            marginBottom: '4px'
-                        }}>
+                        <div className="nurse-name">
                             {conversation.nurseName || `Y tá #${conversation.user || conversation.User || 'Unknown'}`}
                         </div>
-                        <div style={{
-                            fontSize: '0.9rem',
-                            color: hasUnread ? '#4a5568' : '#718096',
-                            fontWeight: hasUnread ? '600' : '400'
-                        }}>
+                        <div className="last-message">
                             {conversation.lastMessage || conversation.LastMessage || 'Chưa có tin nhắn'}
                         </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                        <div style={{
-                            fontSize: '0.8rem',
-                            color: hasUnread ? '#2563eb' : '#a0aec0',
-                            fontWeight: hasUnread ? '600' : '400',
-                            marginBottom: '4px'
-                        }}>
+                        <div className="message-time">
                             {(conversation.timestamp || conversation.Timestamp || conversation.lastMessageTime) ?
                                 formatTime(conversation.timestamp || conversation.Timestamp || conversation.lastMessageTime) : ''}
                         </div>
@@ -513,8 +492,8 @@ const ParentChat = () => {
 
     // Render conversation list
     const renderConversationsList = () => (
-        <div style={{ height: '100%', overflow: 'auto' }}>
-            <div style={{ padding: '16px', borderBottom: '1px solid #dee2e6' }}>
+        <div className="conversation-list" style={{ height: '100%', overflow: 'auto' }}>
+            <div className="conversations-header">
                 <h5 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <FaComments />
                     Tin nhắn tư vấn
@@ -523,9 +502,9 @@ const ParentChat = () => {
 
             <div style={{ padding: '16px' }}>
                 <Button
+                    className="btn-new-chat"
                     variant="primary"
                     onClick={startNewChat}
-                    style={{ width: '100%', marginBottom: '16px' }}
                 >
                     + Tạo cuộc trò chuyện mới
                 </Button>
@@ -553,13 +532,7 @@ const ParentChat = () => {
             return (
                 <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     {/* Header */}
-                    <div style={{
-                        padding: '16px',
-                        borderBottom: '1px solid #dee2e6',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px'
-                    }}>
+                    <div className="chat-header">
                         {isMobile && (
                             <Button
                                 variant="link"
@@ -569,7 +542,10 @@ const ParentChat = () => {
                                 <FaArrowLeft />
                             </Button>
                         )}
-                        <h6 style={{ margin: 0 }}>Cuộc trò chuyện mới</h6>
+                        <h6>
+                            <span className="nurse-status"></span>
+                            Cuộc trò chuyện mới
+                        </h6>
                     </div>
 
                     {/* New chat instructions */}
@@ -592,7 +568,7 @@ const ParentChat = () => {
                     </div>
 
                     {/* Message input */}
-                    <div style={{ padding: '16px', borderTop: '1px solid #dee2e6' }}>
+                    <div className="message-input-area">
                         <Form onSubmit={sendMessage}>
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <Form.Control
@@ -618,16 +594,14 @@ const ParentChat = () => {
 
         if (!selectedConversation) {
             return (
-                <div style={{
+                <div className="empty-state" style={{
                     height: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#6c757d',
-                    textAlign: 'center'
+                    justifyContent: 'center'
                 }}>
                     <div>
-                        <FaComments size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                        <FaComments size={48} />
                         <div>Chọn một cuộc trò chuyện để bắt đầu</div>
                     </div>
                 </div>
@@ -637,13 +611,7 @@ const ParentChat = () => {
         return (
             <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 {/* Header */}
-                <div style={{
-                    padding: '16px',
-                    borderBottom: '1px solid #dee2e6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                }}>
+                <div className="chat-header">
                     {isMobile && (
                         <Button
                             variant="link"
@@ -653,7 +621,8 @@ const ParentChat = () => {
                             <FaArrowLeft />
                         </Button>
                     )}
-                    <h6 style={{ margin: 0 }}>
+                    <h6>
+                        <span className="nurse-status"></span>
                         {selectedConversation.nurseName || 'Y tá'}
                     </h6>
                 </div>
@@ -661,11 +630,10 @@ const ParentChat = () => {
                 {/* Messages */}
                 <div
                     ref={messagesContainerRef}
+                    className="messages-area"
                     style={{
                         flex: 1,
-                        overflow: 'auto',
-                        padding: '16px',
-                        backgroundColor: '#f8f9fa'
+                        overflow: 'auto'
                     }}
                 >
                     {/* Load More Button */}
@@ -676,15 +644,11 @@ const ParentChat = () => {
                             padding: '8px'
                         }}>
                             <Button
+                                className="btn-load-more"
                                 variant="outline-secondary"
                                 size="sm"
                                 onClick={loadMoreMessages}
                                 disabled={loadingMore}
-                                style={{
-                                    fontSize: '0.85rem',
-                                    padding: '6px 16px',
-                                    borderRadius: '20px'
-                                }}
                             >
                                 {loadingMore ? (
                                     <>
@@ -715,22 +679,10 @@ const ParentChat = () => {
                                 }}
                             >
                                 <div
-                                    style={{
-                                        maxWidth: '70%',
-                                        padding: '8px 12px',
-                                        borderRadius: '12px',
-                                        backgroundColor: message.fromUserId === userId ? '#2563eb' : 'white',
-                                        color: message.fromUserId === userId ? 'white' : '#333',
-                                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
-                                    }}
+                                    className={`message-bubble ${message.fromUserId === userId ? 'sent' : 'received'}`}
                                 >
                                     <div>{message.message || message.Message || message.content}</div>
-                                    <div style={{
-                                        fontSize: '0.75rem',
-                                        opacity: 0.7,
-                                        marginTop: '4px',
-                                        textAlign: 'right'
-                                    }}>
+                                    <div className="message-time">
                                         {formatTime(message.timestamp || message.Timestamp)}
                                     </div>
                                 </div>
@@ -741,7 +693,7 @@ const ParentChat = () => {
                 </div>
 
                 {/* Message input */}
-                <div style={{ padding: '16px', borderTop: '1px solid #dee2e6' }}>
+                <div className="message-input-area">
                     <Form onSubmit={sendMessage}>
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <Form.Control

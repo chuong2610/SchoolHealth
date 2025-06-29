@@ -686,7 +686,7 @@ const HealthHistory = () => {
                         >
                           <FaClipboardList />
                         </div>
-                        <h5
+                        {/* <h5
                           style={{
                             color: "var(--parent-primary)",
                             fontWeight: "700",
@@ -694,7 +694,7 @@ const HealthHistory = () => {
                           }}
                         >
                           Không có dữ liệu
-                        </h5>
+                        </h5> */}
                         <p className="text-muted">
                           {searchTerm
                             ? "Không tìm thấy dữ liệu phù hợp với từ khóa tìm kiếm"

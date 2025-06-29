@@ -1,0 +1,211 @@
+/* ==========================================
+   Parent Health History Charts Styles
+   ========================================== */
+
+/* Chart Container */
+.chart-container {
+    background: white;
+    border-radius: var(--parent-radius-lg);
+    padding: var(--parent-space-xl);
+    box-shadow: var(--parent-shadow-sm);
+    margin-bottom: var(--parent-space-xl);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--parent-space-lg);
+    padding-bottom: var(--parent-space-md);
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.chart-title {
+    font-size: var(--parent-font-size-xl);
+    font-weight: var(--parent-font-weight-semibold);
+    color: var(--parent-dark);
+    margin: 0;
+}
+
+.chart-subtitle {
+    color: var(--parent-muted);
+    font-size: var(--parent-font-size-sm);
+    margin: 0;
+}
+
+/* Chart Controls */
+.chart-controls {
+    display: flex;
+    gap: var(--parent-space-md);
+    align-items: center;
+}
+
+.chart-select {
+    border: 1px solid #e5e7eb;
+    border-radius: var(--parent-radius-md);
+    padding: var(--parent-space-sm) var(--parent-space-md);
+    font-size: var(--parent-font-size-sm);
+    background: white;
+    color: var(--parent-dark);
+}
+
+.chart-select:focus {
+    outline: none;
+    border-color: var(--parent-primary);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Chart Canvas */
+.chart-canvas {
+    width: 100%;
+    height: 300px;
+    position: relative;
+}
+
+.chart-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--parent-muted);
+}
+
+.chart-loading-spinner {
+    margin-right: var(--parent-space-sm);
+    color: var(--parent-primary);
+}
+
+/* Chart Legend */
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--parent-space-md);
+    margin-top: var(--parent-space-lg);
+    padding-top: var(--parent-space-md);
+    border-top: 1px solid #e5e7eb;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--parent-space-xs);
+    font-size: var(--parent-font-size-sm);
+    color: var(--parent-muted);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--parent-radius-sm);
+    flex-shrink: 0;
+}
+
+/* Chart Types */
+.line-chart {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.bar-chart {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.pie-chart {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+/* Chart Stats */
+.chart-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--parent-space-lg);
+    margin-top: var(--parent-space-xl);
+}
+
+.stat-card {
+    background: var(--parent-light);
+    border-radius: var(--parent-radius-md);
+    padding: var(--parent-space-lg);
+    text-align: center;
+    border: 1px solid #e5e7eb;
+}
+
+.stat-value {
+    font-size: var(--parent-font-size-2xl);
+    font-weight: var(--parent-font-weight-bold);
+    color: var(--parent-primary);
+    margin-bottom: var(--parent-space-xs);
+}
+
+.stat-label {
+    font-size: var(--parent-font-size-sm);
+    color: var(--parent-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-change {
+    font-size: var(--parent-font-size-xs);
+    margin-top: var(--parent-space-xs);
+}
+
+.stat-change.positive {
+    color: var(--parent-success);
+}
+
+.stat-change.negative {
+    color: var(--parent-danger);
+}
+
+/* Chart Tooltip */
+.chart-tooltip {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: var(--parent-space-sm) var(--parent-space-md);
+    border-radius: var(--parent-radius-md);
+    font-size: var(--parent-font-size-sm);
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .chart-container {
+        padding: var(--parent-space-lg);
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--parent-space-sm);
+    }
+
+    .chart-title {
+        font-size: var(--parent-font-size-lg);
+    }
+
+    .chart-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .chart-canvas {
+        height: 250px;
+    }
+
+    .chart-legend {
+        justify-content: center;
+    }
+
+    .chart-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--parent-space-md);
+    }
+
+    .stat-card {
+        padding: var(--parent-space-md);
+    }
+
+    .stat-value {
+        font-size: var(--parent-font-size-xl);
+    }
+}

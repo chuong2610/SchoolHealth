@@ -7,11 +7,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 // Common styles
 import './styles/common/index.css';
 import './styles/common/main.css';
-
-
-import './styles/common/sidebar.css';
 import './styles/common/header.css';
-
+import './styles/common/parent-menu.css';
 import './styles/common/animations.css';
 import './styles/common/chat-notifications.css';
 
@@ -39,6 +36,8 @@ import './styles/parent/parent-healthdeclaration-redesign.css';
 // Login & Component specific styles
 import './pages/login/Login.css';
 
+// Sidebar CSS - Import last for highest priority
+import './styles/common/sidebar.css';
 
 import './fontawesome.js';
 

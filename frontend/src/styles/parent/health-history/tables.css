@@ -1,0 +1,171 @@
+/* ==========================================
+   Parent Health History Tables Styles
+   ========================================== */
+
+/* Table Container */
+.health-history-table-container {
+    background: white;
+    border-radius: var(--parent-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--parent-shadow-sm);
+    margin-bottom: var(--parent-space-xl);
+}
+
+/* Table Styles */
+.health-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.health-history-table th {
+    background: var(--parent-primary);
+    color: white;
+    padding: var(--parent-space-md);
+    text-align: left;
+    font-weight: var(--parent-font-weight-semibold);
+    font-size: var(--parent-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.health-history-table td {
+    padding: var(--parent-space-md);
+    border-bottom: 1px solid #e5e7eb;
+    font-size: var(--parent-font-size-sm);
+    vertical-align: middle;
+}
+
+.health-history-table tr:hover {
+    background: var(--parent-light);
+    transition: var(--parent-transition-fast);
+}
+
+.health-history-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: var(--parent-space-xs) var(--parent-space-sm);
+    border-radius: var(--parent-radius-full);
+    font-size: var(--parent-font-size-xs);
+    font-weight: var(--parent-font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-completed {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--parent-success);
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--parent-warning);
+}
+
+.status-cancelled {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--parent-danger);
+}
+
+.status-scheduled {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--parent-primary);
+}
+
+/* Action Buttons */
+.table-action-btn {
+    background: none;
+    border: none;
+    color: var(--parent-primary);
+    padding: var(--parent-space-xs);
+    border-radius: var(--parent-radius-sm);
+    transition: var(--parent-transition-fast);
+    cursor: pointer;
+    margin-right: var(--parent-space-xs);
+}
+
+.table-action-btn:hover {
+    background: var(--parent-light);
+    color: var(--parent-accent);
+}
+
+.table-action-btn.danger {
+    color: var(--parent-danger);
+}
+
+.table-action-btn.danger:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--parent-danger);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--parent-space-3xl);
+    color: var(--parent-muted);
+}
+
+.empty-state-icon {
+    font-size: var(--parent-font-size-4xl);
+    margin-bottom: var(--parent-space-lg);
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: var(--parent-font-size-xl);
+    font-weight: var(--parent-font-weight-semibold);
+    margin-bottom: var(--parent-space-sm);
+    color: var(--parent-dark);
+}
+
+.empty-state-text {
+    font-size: var(--parent-font-size-base);
+    line-height: 1.5;
+}
+
+/* Loading State */
+.table-loading {
+    text-align: center;
+    padding: var(--parent-space-3xl);
+}
+
+.loading-spinner {
+    color: var(--parent-primary);
+    font-size: var(--parent-font-size-2xl);
+    margin-bottom: var(--parent-space-md);
+}
+
+.loading-text {
+    color: var(--parent-muted);
+    font-size: var(--parent-font-size-base);
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .health-history-table-container {
+        overflow-x: auto;
+    }
+
+    .health-history-table {
+        min-width: 600px;
+    }
+
+    .health-history-table th,
+    .health-history-table td {
+        padding: var(--parent-space-sm);
+        font-size: var(--parent-font-size-xs);
+    }
+
+    .status-badge {
+        font-size: 10px;
+        padding: 2px var(--parent-space-xs);
+    }
+
+    .table-action-btn {
+        padding: 4px;
+        font-size: var(--parent-font-size-xs);
+    }
+}

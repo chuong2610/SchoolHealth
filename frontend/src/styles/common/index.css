@@ -1,13 +1,1 @@
-/* ====================================================================
-   COMMON STYLES INDEX - SHARED ACROSS ALL ROLES
-   ==================================================================== */
-
-/* Core Application Styles */
-@import './main.css';
-
-/* Layout Components */
-@import './sidebar.css';
-@import './header.css';
-@import './layout-fix.css';
-
-/* Dashboard (shared by all roles) */
+ 

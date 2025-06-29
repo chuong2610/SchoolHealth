@@ -139,10 +139,8 @@ const Profile = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setEditMode(false);
-      // showNotification("Cập nhật thông tin thành công!", "success");
       toast.success("Cập nhật thông tin thành công!");
     } catch (error) {
-      // showNotification("Lỗi khi cập nhật thông tin!", "error");
       toast.error("Lỗi khi cập nhật thông tin!");
     } finally {
       setLoading(false);
@@ -160,7 +158,6 @@ const Profile = () => {
     }
 
     if (passwordData.newPassword !== passwordData.confirmNewPassword) {
-      // showNotification("Mật khẩu xác nhận không khớp!", "error");
       toast.error("Mật khẩu xác nhận không khớp!");
       setPasswordData({
         currentPassword: "",
@@ -175,7 +172,6 @@ const Profile = () => {
       const res = await updatePassword(nurseId, passwordData);
       if (res?.success === true) {
         toast.success("Đổi mật khẩu thành công!");
-        // showNotification("Đổi mật khẩu thành công!", "success");
         setShowChangePassword(false);
         setPasswordData({
           currentPassword: "",
@@ -184,10 +180,8 @@ const Profile = () => {
         });
       } else {
         toast.error("Đổi mật khẩu thất bại!");
-        // showNotification("Đổi mật khẩu thất bại!", "error");
       }
     } catch (error) {
-      // alert("Có lỗi khi đổi mật khẩu!");
       console.error(error);
       toast.error("Có lỗi khi đổi mật khẩu!");
       return;
@@ -199,57 +193,41 @@ const Profile = () => {
   const handleChangeImage = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // setSelectedImage(file);
-      // console.log("dsad", selectedImage);
       hanldeUpdateProfile(file);
     }
-    // } else {
-    //   setSelectedImage(null);
-    // }
   };
 
   const hanldeUpdateProfile = async (file) => {
     try {
-      let imageUrl = nurseInfo.imageUrl;
-
-      // Nếu userInfo.imageUrl là URL đầy đủ, tách lấy tên file
-      if (imageUrl && imageUrl.startsWith("http")) {
-        // Lấy phần sau cùng của đường dẫn
-        imageUrl = imageUrl.split("/").pop();
-      }
-
       if (file) {
-        imageUrl = await uploadAvatar(file);
+        const res = await uploadAvatar(nurseId, file);
+        if (res?.success === true) {
+          setNurseInfo((prev) => ({ ...prev, imageUrl: res.imageUrl }));
+          updateAvatarVersion();
+          toast.success("Cập nhật ảnh thành công");
+        } else {
+          toast.error("Cập nhật ảnh thất bại");
+        }
       }
-
-      await updateProfile(nurseId, {
-        ...formData,
-        imageUrl,
-      });
-
-      setEditMode(false);
-      // Reload lại userInfo nếu muốn cập nhật giao diện ngay
-      fetchNurseInfo(nurseId);
-      // Reload lai Header
-      updateAvatarVersion();
     } catch (error) {
-      alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
+      console.error(error);
+      toast.error("Cập nhật ảnh thất bại");
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const res = await updateProfile(nurseId, formData);
+      if (res?.success === true) {
+        setNurseInfo(res);
+      }
+    } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div
-      className="container-fluid nurse-theme medicine-management"
-      style={{
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-        backgroundColor: "#f8f9fc",
-        minHeight: "100vh",
-        position: "relative",
-        zIndex: 1,
-      }}
-    >
-
+    <div className="profile-management">
       {/* Notification */}
       {notification && (
         <Alert
@@ -268,21 +246,17 @@ const Profile = () => {
           <div className="col-md-auto text-center text-md-start mb-3 mb-md-0">
             <div className="profile-avatar-container">
               <img
-                src={nurseInfo.imageUrl}
+                src={nurseInfo.imageUrl || "/default-avatar.png"}
                 alt="Avatar"
                 className="profile-avatar"
               />
               <div
                 className="avatar-upload-btn"
                 title="Đổi ảnh đại diện"
-                onClick={
-                  // Trigger click vào input type="file"
-                  () => fileInputRef.current.click()
-                }
+                onClick={() => fileInputRef.current.click()}
               >
                 <FaCamera style={{ color: "white", fontSize: "14px" }} />
               </div>
-              {/* Input ẩn để chọn file */}
               <input
                 type="file"
                 accept="image/*"
@@ -302,37 +276,8 @@ const Profile = () => {
                     margin: "0 0 0.5rem 0",
                   }}
                 >
-                  {nurseInfo.name}
+                  {nurseInfo.name || "Mary Nurse"}
                 </h1>
-                {/* <div className="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
-                  <Badge className="status-badge active">
-                    <FaStethoscope className="me-1" />
-                    {nurseInfo.position}
-                  </Badge>
-                  <Badge
-                    bg="light"
-                    text="dark"
-                    style={{
-                      padding: "0.5rem 1rem",
-                      borderRadius: "20px",
-                      fontWeight: "600",
-                    }}
-                  >
-                    <FaIdCard className="me-1" />
-                    {nurseInfo.id}
-                  </Badge>
-                  <Badge
-                    bg="info"
-                    style={{
-                      padding: "0.5rem 1rem",
-                      borderRadius: "20px",
-                      fontWeight: "600",
-                    }}
-                  >
-                    <FaBuilding className="me-1" />
-                    {nurseInfo.department}
-                  </Badge>
-                </div> */}
               </div>
               <div className="profile-action-buttons d-flex gap-2">
                 {!editMode ? (
@@ -385,35 +330,20 @@ const Profile = () => {
                   Thông tin cá nhân
                 </Nav.Link>
               </Nav.Item>
-              {/* <Nav.Item>
-                <Nav.Link eventKey="professional">
-                  <FaUserNurse className="me-2" />
-                  Thông tin nghề nghiệp
-                </Nav.Link>
-              </Nav.Item> */}
               <Nav.Item>
                 <Nav.Link eventKey="security">
                   <FaShieldAlt className="me-2" />
                   Bảo mật
                 </Nav.Link>
               </Nav.Item>
-              {/* <Nav.Item>
-                <Nav.Link eventKey="settings">
-                  <FaCog className="me-2" />
-                  Cài đặt
-                </Nav.Link>
-              </Nav.Item> */}
             </Nav>
 
             <Tab.Content style={{ padding: "2rem" }}>
               <Tab.Pane eventKey="profile">
                 <Row>
                   <Col lg={6}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
-                      <FaUser className="me-2" style={{ color: "#667eea" }} />
+                    <h5>
+                      <FaUser className="me-2" style={{ color: "#FF6B8D" }} />
                       Thông tin cơ bản
                     </h5>
 
@@ -440,38 +370,13 @@ const Profile = () => {
                             }
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.email}</div>
+                          <div style={{ color: "#666" }}>{nurseInfo.email || "nurse@gmail.com"}</div>
                         )}
                       </div>
                     </div>
 
-                    {/* <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaBirthdayCake />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Ngày sinh
-                        </div>
-                        {editMode ? (
-                          <Form.Control
-                          disabled
-                            type="date"
-                            value={formatDDMMYYYY(nurseInfo.dateOfBirth)}
-                            onChange={(e) =>
-                              setFormData({ ...formData, dob: e.target.value })
-                            }
-                          />
-                        ) : (
-                          <div style={{ color: "#666" }}>{formatDDMMYYYY(nurseInfo.dateOfBirth)}</div>
-                        )}
-                      </div>
-                    </div> */}
-
                     <div className="info-item">
-                      <div className="info-icon purple">
+                      <div className="info-icon warning">
                         <FaVenusMars />
                       </div>
                       <div className="flex-grow-1">
@@ -490,37 +395,25 @@ const Profile = () => {
                               })
                             }
                           >
-                            <option value="Male">Nam</option>
-                            <option value="Female">Nữ</option>
-                            <option value="Other">Khác</option>
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
                           </Form.Select>
                         ) : (
-                          <div style={{ color: "#666" }}>
-                            {nurseInfo.gender === "Male"
-                              ? "Nam"
-                              : nurseInfo.gender === "Female"
-                              ? "Nữ"
-                              : "Khác"}
-                          </div>
+                          <div style={{ color: "#666" }}>{nurseInfo.gender || "Nữ"}</div>
                         )}
                       </div>
                     </div>
                   </Col>
 
                   <Col lg={6}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
-                      <FaMapMarkerAlt
-                        className="me-2"
-                        style={{ color: "#667eea" }}
-                      />
+                    <h5>
+                      <FaMapMarkerAlt className="me-2" style={{ color: "#FF6B8D" }} />
                       Thông tin liên hệ
                     </h5>
 
                     <div className="info-item">
-                      <div className="info-icon primary">
+                      <div className="info-icon success">
                         <FaMapMarkerAlt />
                       </div>
                       <div className="flex-grow-1">
@@ -531,8 +424,7 @@ const Profile = () => {
                         </div>
                         {editMode ? (
                           <Form.Control
-                            as="textarea"
-                            rows={2}
+                            type="text"
                             value={formData.address}
                             onChange={(e) =>
                               setFormData({
@@ -540,11 +432,10 @@ const Profile = () => {
                                 address: e.target.value,
                               })
                             }
+                            placeholder="Nhập địa chỉ"
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>
-                            {nurseInfo.address}
-                          </div>
+                          <div style={{ color: "#666" }}>{nurseInfo.address || "456 Oak Ave"}</div>
                         )}
                       </div>
                     </div>
@@ -569,211 +460,11 @@ const Profile = () => {
                                 phone: e.target.value,
                               })
                             }
+                            placeholder="Nhập số điện thoại"
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.phone}</div>
+                          <div style={{ color: "#666" }}>{nurseInfo.phone || "2"}</div>
                         )}
-                        </div>
-                      </div>
-                  
-                    {/* <div className="info-item">
-                      <div className="info-icon success">
-                        <FaHeart />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Nhóm máu</div>
-                        {editMode ? (
-                          <Form.Select
-                            value={formData.bloodType}
-                            onChange={(e) => setFormData({ ...formData, bloodType: e.target.value })}
-                          >
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                          </Form.Select>
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.bloodType}</div>
-                        )}
-                      </div>
-                    </div> */}
-
-                    {/* <div className="info-item">
-                      <div className="info-icon purple">
-                        <FaExclamationTriangle />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Dị ứng</div>
-                        {editMode ? (
-                          <Form.Control
-                            as="textarea"
-                            rows={2}
-                            value={formData.allergies}
-                            onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
-                            placeholder="Mô tả các loại dị ứng (nếu có)"
-                          />
-                        ) : (
-                          <div style={{ color: '#666' }}>{formData.allergies}</div>
-                        )}
-                      </div>
-                    </div> */}
-                  </Col>
-                </Row>
-              </Tab.Pane>
-
-              <Tab.Pane eventKey="professional">
-                <Row>
-                  <Col lg={6}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
-                      <FaUserNurse
-                        className="me-2"
-                        style={{ color: "#667eea" }}
-                      />
-                      Thông tin công việc
-                    </h5>
-
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaBuilding />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Phòng ban
-                        </div>
-                        <div style={{ color: "#666" }}>
-                          {formData.department}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon success">
-                        <FaStethoscope />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Chức vụ
-                        </div>
-                        <div style={{ color: "#666" }}>{formData.position}</div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaCalendarAlt />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Ngày bắt đầu
-                        </div>
-                        <div style={{ color: "#666" }}>
-                          {formData.startDate}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon purple">
-                        <FaChartLine />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Kinh nghiệm
-                        </div>
-                        <div style={{ color: "#666" }}>
-                          {formData.experience}
-                        </div>
-                      </div>
-                    </div>
-                  </Col>
-
-                  <Col lg={6}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
-                      <FaCertificate
-                        className="me-2"
-                        style={{ color: "#667eea" }}
-                      />
-                      Bằng cấp & Chứng chỉ
-                    </h5>
-
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaGraduationCap />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Trình độ học vấn
-                        </div>
-                        <div style={{ color: "#666" }}>
-                          {formData.education}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon success">
-                        <FaCertificate />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Chứng chỉ hành nghề
-                        </div>
-                        <div style={{ color: "#666" }}>{formData.license}</div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaMedkit />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Chuyên môn
-                        </div>
-                        <div style={{ color: "#666" }}>
-                          {formData.specialization}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="info-item">
-                      <div className="info-icon purple">
-                        <FaAward />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Trạng thái
-                        </div>
-                        <Badge className="status-badge active">
-                          <FaCheck className="me-1" />
-                          {formData.status}
-                        </Badge>
                       </div>
                     </div>
                   </Col>
@@ -783,13 +474,10 @@ const Profile = () => {
               <Tab.Pane eventKey="security">
                 <Row>
                   <Col lg={8}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
+                    <h5>
                       <FaShieldAlt
                         className="me-2"
-                        style={{ color: "#667eea" }}
+                        style={{ color: "#FF6B8D" }}
                       />
                       Bảo mật tài khoản
                     </h5>
@@ -815,99 +503,8 @@ const Profile = () => {
                           <FaKey className="me-1" />
                           Đổi mật khẩu
                         </Button>
-                        </div>
                       </div>
-                    
-                    {/* <div className="info-item">
-                      <div className="info-icon success">
-                        <FaHistory />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Lịch sử đăng nhập</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Xem lịch sử đăng nhập gần đây</div>
-                        <Button variant="outline-success" size="sm">
-                          <FaHistory className="me-1" />
-                          Xem lịch sử
-                        </Button>
-                      </div>
-                    </div> */}
-                  </Col>
-                </Row>
-              </Tab.Pane>
-
-              <Tab.Pane eventKey="settings">
-                <Row>
-                  <Col lg={8}>
-                    <h5
-                      className="mb-4"
-                      style={{ fontWeight: "700", color: "#333" }}
-                    >
-                      <FaCog className="me-2" style={{ color: "#667eea" }} />
-                      Cài đặt ứng dụng
-                    </h5>
-
-                    <div className="info-item">
-                      <div className="info-icon primary">
-                        <FaBell />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div
-                          style={{ fontWeight: "600", marginBottom: "0.25rem" }}
-                        >
-                          Thông báo
-                        </div>
-                        <div style={{ color: "#666", marginBottom: "0.5rem" }}>
-                          Quản lý thông báo và cảnh báo
-                        </div>
-                        <Form.Check
-                          type="switch"
-                          id="notifications"
-                          label="Nhận thông báo qua email"
-                          defaultChecked
-                        />
-                        <Form.Check
-                          type="switch"
-                          id="push-notifications"
-                          label="Thông báo đẩy"
-                          defaultChecked
-                        />
-                        </div>
-                      </div>
-                   
-
-                    {/* <div className="info-item">
-                      <div className="info-icon success">
-                        <FaLanguage />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Ngôn ngữ</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Chọn ngôn ngữ hiển thị</div>
-                        <Form.Select style={{ maxWidth: '200px' }}>
-                          <option value="vi">Tiếng Việt</option>
-                          <option value="en">English</option>
-                        </Form.Select>
-                      </div>
-                    </div> */}
-
-                    {/* <div className="info-item">
-                      <div className="info-icon warning">
-                        <FaPalette />
-                      </div>
-                      <div className="flex-grow-1">
-                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>Giao diện</div>
-                        <div style={{ color: '#666', marginBottom: '0.5rem' }}>Tùy chỉnh giao diện ứng dụng</div>
-                        <div className="d-flex gap-2">
-                          <Button variant="outline-primary" size="sm">
-                            <FaSun className="me-1" />
-                            Sáng
-                          </Button>
-                          <Button variant="outline-secondary" size="sm">
-                            <FaMoon className="me-1" />
-                            Tối
-                          </Button>
-                        </div>
-                      </div>
-                    </div> */}
+                    </div>
                   </Col>
                 </Row>
               </Tab.Pane>
@@ -973,28 +570,28 @@ const Profile = () => {
                 placeholder="Nhập lại mật khẩu mới"
               />
             </Form.Group>
+            <div className="d-flex gap-2 justify-content-end">
+              <Button
+                variant="outline-secondary"
+                onClick={() => setShowChangePassword(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleChangePassword}
+                disabled={loading}
+                style={{
+                  background: "linear-gradient(135deg, #FF6B8D, #FF4757)",
+                  border: "none",
+                }}
+              >
+                {loading ? <FaSpinner className="fa-spin me-1" /> : null}
+                Đổi mật khẩu
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
-        <Modal.Footer className="modal-footer-custom">
-          <Button
-            variant="secondary"
-            onClick={() => setShowChangePassword(false)}
-          >
-            Hủy
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleChangePassword}
-            disabled={loading}
-          >
-            {loading ? (
-              <FaSpinner className="fa-spin me-1" />
-            ) : (
-              <FaSave className="me-1" />
-            )}
-            Đổi mật khẩu
-          </Button>
-        </Modal.Footer>
       </Modal>
     </div>
   );
