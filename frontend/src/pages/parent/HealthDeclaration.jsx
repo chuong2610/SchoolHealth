@@ -225,7 +225,7 @@ const HealthDeclaration = () => {
         // Cập nhật lại lịch sử
         setCurrentPage(1);
         await fetchDeclarationHistory(selectedStudent?.id);
-        
+
         // Chuyển sang tab lịch sử
         setActiveTab("history");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -259,44 +259,44 @@ const HealthDeclaration = () => {
     });
   };
 
-  // Tính toán thống kê nhanh
-  const getQuickStats = () => {
-    const totalDeclarations = declarationHistory.length;
-    const recentDeclarations = declarationHistory.filter(item => {
-      const declarationDate = new Date(item.declarationDate);
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      return declarationDate >= thirtyDaysAgo;
-    }).length;
+  // // Tính toán thống kê nhanh
+  // const getQuickStats = () => {
+  //   const totalDeclarations = declarationHistory.length;
+  //   const recentDeclarations = declarationHistory.filter(item => {
+  //     const declarationDate = new Date(item.declarationDate);
+  //     const thirtyDaysAgo = new Date();
+  //     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  //     return declarationDate >= thirtyDaysAgo;
+  //   }).length;
 
-    const studentsWithAllergies = declarationHistory.filter(item =>
-      item.allergys && item.allergys !== "none"
-    ).length;
+  //   const studentsWithAllergies = declarationHistory.filter(item =>
+  //     item.allergys && item.allergys !== "none"
+  //   ).length;
 
-    const studentsWithChronicIllness = declarationHistory.filter(item =>
-      item.chronicIllnesss && item.chronicIllnesss !== "none"
-    ).length;
+  //   const studentsWithChronicIllness = declarationHistory.filter(item =>
+  //     item.chronicIllnesss && item.chronicIllnesss !== "none"
+  //   ).length;
 
-    return {
-      total: totalDeclarations,
-      recent: recentDeclarations,
-      allergies: studentsWithAllergies,
-      chronicIllness: studentsWithChronicIllness
-    };
-  };
+  //   return {
+  //     total: totalDeclarations,
+  //     recent: recentDeclarations,
+  //     allergies: studentsWithAllergies,
+  //     chronicIllness: studentsWithChronicIllness
+  //   };
+  // };
 
-  const stats = getQuickStats();
+  // const stats = getQuickStats();
 
-  // Lọc dữ liệu theo search và filter
-  const filteredHistory = declarationHistory.filter(item => {
-    const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.className.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === "all" ||
-      (filterStatus === "allergies" && item.allergys && item.allergys !== "none") ||
-      (filterStatus === "chronic" && item.chronicIllnesss && item.chronicIllnesss !== "none");
+  // // Lọc dữ liệu theo search và filter
+  // const filteredHistory = declarationHistory.filter(item => {
+  //   const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     item.className.toLowerCase().includes(searchTerm.toLowerCase());
+  //   const matchesFilter = filterStatus === "all" ||
+  //     (filterStatus === "allergies" && item.allergys && item.allergys !== "none") ||
+  //     (filterStatus === "chronic" && item.chronicIllnesss && item.chronicIllnesss !== "none");
 
-    return matchesSearch && matchesFilter;
-  });
+  //   return matchesSearch && matchesFilter;
+  // });
 
   return (
     <div className="health-declaration-page animate-fade-in">
@@ -546,7 +546,7 @@ const HealthDeclaration = () => {
                 )}
 
                 {activeTab === "history" && (
-                  <>
+                  <div className="health-history-tab-section">
                     {/* Student Selection Section */}
                     <div className="health-form-section animate-fade-in-up delay-700">
                       <div className="health-section-header">
@@ -555,7 +555,6 @@ const HealthDeclaration = () => {
                         </div>
                         <h3 className="health-section-title">Chọn học sinh</h3>
                       </div>
-
                       <div className="health-form-group">
                         <Form.Label className="health-form-label">
                           <FaGraduationCap className="label-medical-icon" />
@@ -578,7 +577,6 @@ const HealthDeclaration = () => {
                           ))}
                         </Form.Select>
                       </div>
-
                       {selectedStudent && (
                         <div className="health-student-card animate-scale-in-center delay-200">
                           <div className="health-student-info">
@@ -594,7 +592,6 @@ const HealthDeclaration = () => {
                         </div>
                       )}
                     </div>
-
                     {declarationHistory.length === 0 ? (
                       <div className="health-empty-state animate-fade-in-up">
                         <FaClipboardList
@@ -623,14 +620,10 @@ const HealthDeclaration = () => {
                             </h3>
                             {selectedStudent && (
                               <p className="health-section-title ms-auto fw-normal fs-6">
-                                Cập nhật lần cuối:{" "}
-                                {formatDateTime(
-                                  declarationHistory?.lastChangeDate
-                                )}
+                                Cập nhật lần cuối: {formatDateTime(declarationHistory?.lastChangeDate)}
                               </p>
                             )}
                           </div>
-
                           <div className="health-medical-grid">
                             <div className="health-medical-field animate-stagger-fade-in animate-lift">
                               <div className="health-form-group">
@@ -650,7 +643,6 @@ const HealthDeclaration = () => {
                                 />
                               </div>
                             </div>
-
                             <div className="health-medical-field animate-stagger-fade-in animate-lift">
                               <div className="health-form-group">
                                 <Form.Label className="health-form-label">
@@ -669,7 +661,6 @@ const HealthDeclaration = () => {
                                 />
                               </div>
                             </div>
-
                             <div className="health-medical-field animate-stagger-fade-in animate-lift">
                               <div className="health-form-group">
                                 <Form.Label className="health-form-label">
@@ -682,15 +673,12 @@ const HealthDeclaration = () => {
                                   rows={4}
                                   className="health-form-control animate-input"
                                   name="longTermMedications"
-                                  value={
-                                    declarationHistory?.longTermMedications
-                                  }
+                                  value={declarationHistory?.longTermMedications}
                                   onChange={handleChange}
                                   placeholder="Không có"
                                 />
                               </div>
                             </div>
-
                             <div className="health-medical-field animate-stagger-fade-in animate-lift">
                               <div className="health-form-group">
                                 <Form.Label className="health-form-label">
@@ -703,9 +691,7 @@ const HealthDeclaration = () => {
                                   rows={4}
                                   className="health-form-control animate-input"
                                   name="otherMedicalConditions"
-                                  value={
-                                    declarationHistory?.otherMedicalConditions
-                                  }
+                                  value={declarationHistory?.otherMedicalConditions}
                                   onChange={handleChange}
                                   placeholder="Không có"
                                 />
@@ -715,7 +701,7 @@ const HealthDeclaration = () => {
                         </div>
                       </>
                     )}
-                  </>
+                  </div>
                 )}
               </Card.Body>
             </Card>

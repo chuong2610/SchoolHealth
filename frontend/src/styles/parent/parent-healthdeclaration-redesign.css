@@ -805,3 +805,113 @@
         padding: 0.5rem !important;
     }
 }
+
+.health-history-tab-section {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 0.7rem 0.7rem 0.5rem 0.7rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 6px rgba(59, 130, 246, 0.06);
+    font-size: 0.97rem;
+}
+
+.health-history-tab-section .health-form-section {
+    margin-bottom: 0.7rem;
+    padding: 0.5rem 0.5rem 0.2rem 0.5rem;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(59, 130, 246, 0.04);
+}
+
+.health-history-tab-section .health-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.health-history-tab-section .health-section-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.health-history-tab-section .health-form-group {
+    margin-bottom: 0.4rem;
+}
+
+.health-history-tab-section .health-student-card {
+    margin-top: 0.3rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    background: #f1f5f9;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.04);
+}
+
+.health-history-tab-section .health-student-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.97rem;
+}
+
+.health-history-tab-section .health-student-name,
+.health-history-tab-section .health-student-class {
+    font-size: 0.97rem;
+    font-weight: 500;
+}
+
+.health-history-tab-section .health-medical-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.health-history-tab-section .health-medical-field {
+    background: #f8fafc;
+    border-radius: 6px;
+    padding: 0.3rem 0.5rem;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.03);
+}
+
+.health-history-tab-section .health-form-label {
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-bottom: 0.1rem;
+}
+
+.health-history-tab-section .health-form-control {
+    font-size: 0.95rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    .health-history-tab-section {
+        padding: 0.3rem 0.2rem 0.2rem 0.2rem;
+        font-size: 0.92rem;
+    }
+
+    .health-history-tab-section .health-form-section {
+        padding: 0.2rem 0.2rem 0.1rem 0.2rem;
+    }
+
+    .health-history-tab-section .health-section-title {
+        font-size: 0.95rem;
+    }
+
+    .health-history-tab-section .health-medical-grid {
+        grid-template-columns: 1fr;
+        gap: 0.3rem;
+    }
+
+    .health-history-tab-section .health-medical-field {
+        padding: 0.2rem 0.2rem;
+    }
+
+    .health-history-tab-section .health-form-control {
+        font-size: 0.9rem;
+        padding: 0.2rem 0.3rem;
+    }
+}
