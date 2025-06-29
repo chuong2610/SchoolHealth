@@ -333,9 +333,9 @@ const ParentDashboard = () => {
                   totalPages={totalPages}
                   onPageChange={handlePageChange}
                 />
-                <div className="mt-2 text-muted">
+                {/* <div className="mt-2 text-muted">
                   Hiển thị {blogs.length} trong tổng số {totalItems} bài viết
-                </div>
+                </div> */}
               </div>
             )}
           </div>

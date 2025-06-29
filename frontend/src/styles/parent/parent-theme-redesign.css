@@ -60,21 +60,48 @@
     --parent-transition-slow: 0.5s ease-in-out;
 }
 
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 /* ==========================================
-   Global Parent Styles
+   Parent Layout with Fixed Header
    ========================================== */
 
-.parent-container {
-    font-family: var(--parent-font-family);
-    color: #374151;
-    background: #f8fafc;
+.parent-layout {
     min-height: 100vh;
-    padding: var(--parent-spacing-xl);
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
     position: relative;
 }
 
+/* Fixed Header */
+.parent-fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--parent-gradient-header);
+    box-shadow: var(--parent-shadow-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content with margin-top */
+.parent-main-content {
+    margin-top: 60px;
+    /* Chiều cao header + 1rem spacing */
+    flex: 1;
+    /* padding: var(--parent-spacing-md); */
+    position: relative;
+    z-index: 1;
+}
+
 /* Background image for parent pages (behind forms) */
-.parent-container::before {
+.parent-main-content::before {
     content: '';
     position: fixed;
     top: 0;
@@ -92,7 +119,7 @@
 }
 
 /* Parallax Star Background */
-.parent-container::after {
+.parent-main-content::after {
     content: '';
     position: fixed;
     top: 0;
@@ -124,19 +151,35 @@
 }
 
 /* ==========================================
-   Page Headers
+   Global Parent Styles (Updated for new layout)
+   ========================================== */
+
+.parent-container {
+    font-family: var(--parent-font-family);
+    color: #374151;
+    background: transparent;
+    /* Changed from #f8fafc to transparent */
+    min-height: calc(100vh - 80px);
+    /* Adjust for fixed header */
+    position: relative;
+    /* Remove padding since it's now handled by parent-main-content */
+}
+
+/* ==========================================
+   Page Headers (Updated for new layout)
    ========================================== */
 
 .parent-page-header {
     position: relative;
     height: 22vh;
-    margin: calc(-1 * var(--parent-spacing-xl)) calc(-1 * var(--parent-spacing-xl)) var(--parent-spacing-xl) calc(-1 * var(--parent-spacing-xl));
+    margin: calc(-1 * var(--parent-spacing-md)) calc(-1 * var(--parent-spacing-md)) var(--parent-spacing-xl) calc(-1 * var(--parent-spacing-md));
     border-radius: 0 0 var(--parent-border-radius-2xl) var(--parent-border-radius-2xl);
     overflow: hidden;
     box-shadow: var(--parent-shadow-lg);
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 1rem;
 }
 
 .parent-page-header-bg {
@@ -705,32 +748,17 @@
 }
 
 /* ==========================================
-   Responsive Design - Complete Breakpoint System
+   Responsive Design for Fixed Header Layout
    ========================================== */
 
-/* Large Desktops (1200px and up) */
 @media (min-width: 1200px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-md); */
+    }
+
     .parent-container {
-        padding: var(--parent-spacing-xl) var(--parent-spacing-2xl);
-    }
-
-    .parent-card {
-        padding: var(--parent-spacing-2xl);
-    }
-
-    .parent-page-header {
-        height: 25vh;
-    }
-
-    .parent-page-title {
-        font-size: 3.5rem;
-    }
-}
-
-/* Desktops (992px to 1199px) */
-@media (max-width: 1199px) and (min-width: 992px) {
-    .parent-container {
-        padding: var(--parent-spacing-lg) var(--parent-spacing-xl);
+        min-height: calc(100vh - 80px);
     }
 
     .parent-card {
@@ -740,12 +768,24 @@
     .parent-page-header {
         height: 22vh;
     }
+
+    .parent-page-title {
+        font-size: var(--parent-font-size-3xl);
+    }
 }
 
-/* Tablets (768px to 991px) */
-@media (max-width: 991px) and (min-width: 768px) {
+@media (max-width: 1199px) and (min-width: 992px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-sm); */
+    }
+
     .parent-container {
-        padding: var(--parent-spacing-md) var(--parent-spacing-lg);
+        min-height: calc(100vh - 75px);
+    }
+
+    .parent-card {
+        padding: var(--parent-spacing-lg);
     }
 
     .parent-page-header {
@@ -757,45 +797,74 @@
     }
 
     .parent-nav-tabs {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: var(--parent-spacing-xs);
+        gap: var(--parent-spacing-sm);
     }
 
     .parent-stat-card {
-        margin-bottom: var(--parent-spacing-lg);
+        padding: var(--parent-spacing-md);
     }
 }
 
-/* Mobile Landscape & Small Tablets (576px to 767px) */
-@media (max-width: 767px) {
+@media (max-width: 991px) and (min-width: 768px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-sm); */
+    }
+
     .parent-container {
-        padding: var(--parent-spacing-sm) var(--parent-spacing-md);
+        min-height: calc(100vh - 70px);
     }
 
     .parent-page-header {
         height: 18vh;
-        margin: calc(-1 * var(--parent-spacing-sm)) calc(-1 * var(--parent-spacing-md)) var(--parent-spacing-md) calc(-1 * var(--parent-spacing-md));
+    }
+
+    .parent-page-title {
+        font-size: var(--parent-font-size-xl);
+    }
+
+    .parent-nav-tabs {
+        flex-direction: column;
+        gap: var(--parent-spacing-xs);
+    }
+
+    .parent-stat-card {
+        padding: var(--parent-spacing-sm);
+    }
+}
+
+@media (max-width: 767px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-xs); */
+    }
+
+    .parent-container {
+        min-height: calc(100vh - 65px);
+    }
+
+    .parent-page-header {
+        height: 16vh;
+        margin: calc(-1 * var(--parent-spacing-xs)) calc(-1 * var(--parent-spacing-xs)) var(--parent-spacing-lg) calc(-1 * var(--parent-spacing-xs));
     }
 
     .parent-page-header-content {
         padding: var(--parent-spacing-lg) var(--parent-spacing-md);
-        text-align: center;
     }
 
     .parent-page-title {
-        font-size: var(--parent-font-size-2xl);
+        font-size: var(--parent-font-size-lg);
         flex-direction: column;
         gap: var(--parent-spacing-sm);
     }
 
     .parent-page-subtitle {
-        font-size: var(--parent-font-size-sm);
+        font-size: var(--parent-font-size-base);
     }
 
     .parent-card {
-        padding: var(--parent-spacing-lg);
-        margin-bottom: var(--parent-spacing-lg);
+        padding: var(--parent-spacing-md);
+        border-radius: var(--parent-border-radius-lg);
     }
 
     .parent-nav-tabs {
@@ -804,8 +873,8 @@
     }
 
     .parent-nav-tab {
-        text-align: center;
-        border-radius: var(--parent-border-radius-md);
+        padding: var(--parent-spacing-sm) var(--parent-spacing-md);
+        font-size: var(--parent-font-size-sm);
     }
 
     .parent-table-container {
@@ -814,12 +883,13 @@
     }
 
     .parent-table {
-        min-width: 600px;
+        min-width: 700px;
+        font-size: var(--parent-font-size-sm);
     }
 
     .parent-btn {
-        width: 100%;
-        margin-bottom: var(--parent-spacing-sm);
+        padding: var(--parent-spacing-sm) var(--parent-spacing-md);
+        font-size: var(--parent-font-size-sm);
     }
 
     .parent-modal .modal-dialog {
@@ -828,19 +898,24 @@
     }
 
     .parent-stat-card {
+        padding: var(--parent-spacing-sm);
         text-align: center;
     }
 }
 
-/* Mobile Portrait (481px to 575px) */
 @media (max-width: 575px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-xs); */
+    }
+
     .parent-container {
-        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
+        min-height: calc(100vh - 60px);
     }
 
     .parent-page-header {
-        height: 16vh;
-        margin: calc(-1 * var(--parent-spacing-xs)) calc(-1 * var(--parent-spacing-sm)) var(--parent-spacing-sm) calc(-1 * var(--parent-spacing-sm));
+        height: 14vh;
+        margin: calc(-1 * var(--parent-spacing-xs)) calc(-1 * var(--parent-spacing-xs)) var(--parent-spacing-md) calc(-1 * var(--parent-spacing-xs));
     }
 
     .parent-page-header-content {
@@ -848,44 +923,57 @@
     }
 
     .parent-page-title {
-        font-size: var(--parent-font-size-xl);
+        font-size: var(--parent-font-size-base);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--parent-spacing-sm);
     }
 
     .parent-page-subtitle {
-        font-size: var(--parent-font-size-xs);
-        display: none;
-        /* Hide on very small screens */
+        font-size: var(--parent-font-size-sm);
     }
 
     .parent-card {
-        padding: var(--parent-spacing-md);
-        border-radius: var(--parent-border-radius-lg);
+        padding: var(--parent-spacing-sm);
+        border-radius: var(--parent-border-radius-md);
     }
 
     .parent-card-title {
         font-size: var(--parent-font-size-lg);
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--parent-spacing-xs);
+        gap: var(--parent-spacing-sm);
     }
 
-    .parent-btn {
-        padding: var(--parent-spacing-sm) var(--parent-spacing-md);
-        font-size: var(--parent-font-size-sm);
+    .parent-nav-tab {
+        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
+        font-size: var(--parent-font-size-xs);
+    }
+
+    .parent-table {
+        min-width: 600px;
+        font-size: var(--parent-font-size-xs);
     }
 
     .parent-table thead th {
-        padding: var(--parent-spacing-sm);
+        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
         font-size: var(--parent-font-size-xs);
     }
 
     .parent-table tbody td {
-        padding: var(--parent-spacing-sm);
-        font-size: var(--parent-font-size-sm);
+        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
+    }
+
+    .parent-btn {
+        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
+        font-size: var(--parent-font-size-xs);
+        width: 100%;
+        margin-bottom: var(--parent-spacing-xs);
     }
 
     .parent-form-control {
         font-size: var(--parent-font-size-sm);
+        padding: var(--parent-spacing-sm);
     }
 
     .parent-modal .modal-dialog {
@@ -895,30 +983,39 @@
     .parent-modal .modal-header,
     .parent-modal .modal-body,
     .parent-modal .modal-footer {
-        padding: var(--parent-spacing-md);
+        padding: var(--parent-spacing-sm);
     }
 }
 
-/* Small Mobile (360px to 480px) */
 @media (max-width: 480px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-xs); */
+    }
+
+    .parent-container {
+        min-height: calc(100vh - 55px);
+    }
+
     .parent-page-header {
-        height: 14vh;
+        height: 12vh;
     }
 
     .parent-page-title {
-        font-size: var(--parent-font-size-lg);
+        font-size: var(--parent-font-size-sm);
     }
 
     .parent-card {
-        padding: var(--parent-spacing-sm);
+        padding: var(--parent-spacing-xs);
     }
 
     .parent-stat-card {
-        padding: var(--parent-spacing-sm);
+        padding: var(--parent-spacing-xs);
+        text-align: center;
     }
 
     .parent-stat-value {
-        font-size: var(--parent-font-size-xl);
+        font-size: var(--parent-font-size-lg);
     }
 
     .parent-stat-label {
@@ -926,37 +1023,63 @@
     }
 
     .parent-btn {
-        padding: var(--parent-spacing-xs) var(--parent-spacing-sm);
+        padding: var(--parent-spacing-xs);
         font-size: var(--parent-font-size-xs);
     }
 
     .parent-table {
+        min-width: 500px;
         font-size: var(--parent-font-size-xs);
     }
 }
 
-/* Extra Small Mobile (less than 360px) */
 @media (max-width: 359px) {
+    .parent-main-content {
+        margin-top: 60px;
+        /* padding: var(--parent-spacing-xs); */
+    }
+
     .parent-container {
-        padding: var(--parent-spacing-xs);
+        min-height: calc(100vh - 50px);
     }
 
     .parent-page-header {
-        height: 12vh;
-        margin: calc(-1 * var(--parent-spacing-xs)) calc(-1 * var(--parent-spacing-xs)) var(--parent-spacing-xs) calc(-1 * var(--parent-spacing-xs));
+        height: 10vh;
     }
 
     .parent-page-title {
-        font-size: var(--parent-font-size-md);
+        font-size: var(--parent-font-size-xs);
     }
 
     .parent-card {
         padding: var(--parent-spacing-xs);
-        border-radius: var(--parent-border-radius-md);
+        border-radius: var(--parent-border-radius-sm);
     }
 
     .parent-card-title {
-        font-size: var(--parent-font-size-md);
+        font-size: var(--parent-font-size-sm);
+    }
+
+    .parent-table {
+        min-width: 450px;
+        font-size: var(--parent-font-size-xs);
+    }
+
+    .parent-nav-tab {
+        padding: var(--parent-spacing-xs);
+        font-size: var(--parent-font-size-xs);
+    }
+
+    .parent-stat-card {
+        padding: var(--parent-spacing-xs);
+    }
+
+    .parent-stat-value {
+        font-size: var(--parent-font-size-base);
+    }
+
+    .parent-stat-label {
+        font-size: var(--parent-font-size-xs);
     }
 }
 

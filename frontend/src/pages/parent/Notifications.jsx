@@ -121,7 +121,7 @@ export default function Notifications() {
   const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 5;
+  const pageSize = 15;
   const [notificationStats, setNotificationStats] = useState({
     totalNotification: 0,
     pendingNotification: 0,
@@ -281,7 +281,7 @@ export default function Notifications() {
   return (
     <div className="parent-container">
       {/* Page Header */}
-      <div className="parent-page-header parent-animate-fade-in">
+      {/* <div className="parent-page-header parent-animate-fade-in">
         <div className="parent-page-header-bg"></div>
         <div className="parent-page-header-content">
           <h1 className="parent-page-title">
@@ -291,23 +291,9 @@ export default function Notifications() {
           <p className="parent-page-subtitle">
             Theo dõi và phản hồi các thông báo quan trọng từ nhà trường
           </p>
-          {/* Debug button */}
-          {/* <Button
-            variant="outline-light"
-            size="sm"
-            onClick={() => {
-              console.log("🔍 Manual API test");
-              console.log("👤 Current user:", user);
-              console.log("🆔 User ID:", user?.id);
-              console.log("🎭 User role:", user?.role);
-              fetchNotifications();
-            }}
-            style={{ marginTop: "1rem" }}
-          >
-            🔍 Test API
-          </Button> */}
+          
         </div>
-      </div>
+      </div> */}
       <div
         style={{
           backgroundColor: "rgb(255, 255, 255)",
@@ -392,12 +378,12 @@ export default function Notifications() {
                                 ? "white"
                                 : "var(--parent-primary)",
                             border: `2px solid ${activeTab === tab.key
-                                ? "transparent"
-                                : "rgba(37, 99, 235, 0.2)"
+                              ? "transparent"
+                              : "rgba(37, 99, 235, 0.2)"
                               }`,
-                            fontWeight: "600",
-                            borderRadius: "var(--parent-border-radius-lg)",
-                            padding: "0.75rem 1.5rem",
+                            fontWeight: "500",
+                            borderRadius: "var(--parent-border-radius-sm)",
+                            padding: "0.375rem .75rem",
                             transition: "all var(--parent-transition-normal)",
                           }}
                         >
@@ -412,13 +398,9 @@ export default function Notifications() {
               <Tab.Content>
                 {/* Search Section */}
                 <div className="parent-card-body mb-4">
-                  <Row>
+                  <Row className="align-items-center gx-2 mt-3">
                     <Col md={8}>
-                      <Form.Group>
-                        <Form.Label className="parent-form-label">
-                          <FaSearch className="me-2" />
-                          Tìm kiếm thông báo
-                        </Form.Label>
+                      <Form.Group className="mb-0">
                         <div style={{ position: "relative" }}>
                           <FaSearch
                             style={{
@@ -428,28 +410,37 @@ export default function Notifications() {
                               transform: "translateY(-50%)",
                               color: "var(--parent-primary)",
                               zIndex: 2,
+                              fontSize: "1rem"
                             }}
                           />
                           <Form.Control
                             type="text"
-                            className=" "
-                            placeholder="      Tìm theo tiêu đề, nội dung thông báo..."
+                            className="search-input"
+                            placeholder="Tìm theo tiêu đề, nội dung thông báo..."
                             value={search}
                             onChange={(e) => {
                               setSearch(e.target.value);
                               setPage(1);
                             }}
-                            style={{ paddingLeft: "2rem" }}
+                            style={{
+                              paddingLeft: "2.2rem",
+                              paddingRight: "1rem",
+                              height: "40px",
+                              fontSize: "0.95rem"
+                            }}
                           />
                         </div>
                       </Form.Group>
                     </Col>
-                    <Col md={4} className="d-flex align-items-end">
+                    <Col md={4}>
                       <Button
                         className="parent-secondary-btn w-100"
+                        style={{
+                          height: "40px",
+                          fontSize: "0.95rem"
+                        }}
                         onClick={() => {
                           setSearch("");
-                          // setActiveTab("all"); // Optional: decide if you want to reset tab as well
                         }}
                       >
                         <FaTimes className="me-2" />
@@ -632,10 +623,10 @@ export default function Notifications() {
                               <td className="text-center">
                                 <Badge
                                   className={`status-badge ${notification.status === "Confirmed"
-                                      ? "status-confirmed"
-                                      : notification.status === "Rejected"
-                                        ? "status-rejected"
-                                        : "status-pending"
+                                    ? "status-confirmed"
+                                    : notification.status === "Rejected"
+                                      ? "status-rejected"
+                                      : "status-pending"
                                     }`}
                                   style={{
                                     padding: "0.5rem 1rem",
@@ -888,10 +879,10 @@ export default function Notifications() {
                 <div className="text-center mb-3">
                   <Badge
                     className={`status-badge ${modal.notification?.status === "Confirmed"
-                        ? "status-confirmed"
-                        : modal.notification?.status === "Rejected"
-                          ? "status-rejected"
-                          : "status-pending"
+                      ? "status-confirmed"
+                      : modal.notification?.status === "Rejected"
+                        ? "status-rejected"
+                        : "status-pending"
                       }`}
                     style={{
                       fontSize: "1rem",
@@ -976,7 +967,7 @@ export default function Notifications() {
                       </Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={2}
                         className="parent-form-control"
                         placeholder="Nhập ý kiến của bạn về thông báo này..."
                         value={reason}

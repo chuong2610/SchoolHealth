@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
@@ -41,15 +41,98 @@ const MainLayout = ({ children }) => {
     );
   }
 
-  // Parent role có layout riêng - Header full-width
+  // Parent role có layout riêng - Header cố định
   if (user?.role === 'parent') {
     return (
-      <>
-        {/* Header full-width cho parent */}
-        <Header onLogout={() => setShowLogoutModal(true)} />
+      <div className="parent-layout">
+        {/* Header cố định cho parent */}
+        <div className="parent-fixed-header">
+          <Header onLogout={() => setShowLogoutModal(true)} />
+        </div>
 
-        {/* Content trực tiếp không wrapper */}
-        <Outlet />
+        {/* Content với margin-top để cách header */}
+        <div className="parent-main-content">
+          <Outlet />
+        </div>
+
+        {/* Footer for parent */}
+        <footer className="footer bg-white border-top">
+          <div className="container">
+            <div className="row py-4">
+              <div className="col-md-4">
+                <h5 className="mb-3">Hệ thống Quản lý Y tế Học đường</h5>
+                <p className="text-muted mb-0">
+                  Giải pháp quản lý y tế học đường toàn diện, giúp theo dõi và
+                  chăm sóc sức khỏe học sinh hiệu quả.
+                </p>
+              </div>
+              <div className="col-md-4">
+                <h5 className="mb-3">Liên kết nhanh</h5>
+                <ul className="list-unstyled">
+                  <li>
+                    <Link to="/about" className="text-muted">
+                      Giới thiệu
+                    </Link>
+                  </li>
+                  {/* <li>
+                    <Link to="/contact" className="text-muted">
+                      Liên hệ
+                    </Link>
+                  </li> */}
+                  <li>
+                    <Link to="/faq" className="text-muted">
+                      Câu hỏi thường gặp
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/privacy" className="text-muted">
+                      Chính sách bảo mật
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              <div className="col-md-4">
+                <h5 className="mb-3">Liên hệ</h5>
+                <ul className="list-unstyled text-muted">
+                  <li>
+                    <i className="fas fa-map-marker-alt me-2"></i> 123 Đường ABC,
+                    Quận XYZ, TP.HCM
+                  </li>
+                  <li>
+                    <i className="fas fa-phone me-2"></i> (028) 1234 5678
+                  </li>
+                  <li>
+                    <i className="fas fa-envelope me-2"></i>{" "}
+                    contact@schoolhealth.com
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <hr />
+            <div className="row py-3">
+              <div className="col-md-6 text-center text-md-start">
+                <p className="text-muted mb-0">
+                  &copy; 2024 Hệ thống Quản lý Y tế Học đường. All rights
+                  reserved.
+                </p>
+              </div>
+              <div className="col-md-6 text-center text-md-end">
+                <a href="#" className="text-muted me-3">
+                  <i className="fab fa-facebook"></i>
+                </a>
+                <a href="#" className="text-muted me-3">
+                  <i className="fab fa-twitter"></i>
+                </a>
+                <a href="#" className="text-muted me-3">
+                  <i className="fab fa-linkedin"></i>
+                </a>
+                <a href="#" className="text-muted">
+                  <i className="fab fa-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
 
         {/* Logout Modal */}
         <CustomModal
@@ -63,7 +146,7 @@ const MainLayout = ({ children }) => {
         >
           <p>Bạn có muốn đăng xuất không?</p>
         </CustomModal>
-      </>
+      </div>
     );
   }
 
@@ -82,6 +165,8 @@ const MainLayout = ({ children }) => {
         <div className="main-content">
           <Outlet />
         </div>
+
+
       </div>
 
       {/* Logout Modal */}

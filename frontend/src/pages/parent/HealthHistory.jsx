@@ -278,7 +278,7 @@ const HealthHistory = () => {
   return (
     <div className="parent-container">
       {/* Page Header */}
-      <div className="parent-page-header parent-animate-fade-in">
+      {/* <div className="parent-page-header parent-animate-fade-in">
         <div className="parent-page-header-bg"></div>
         <div className="parent-page-header-content">
           <h1 className="parent-page-title">
@@ -289,7 +289,7 @@ const HealthHistory = () => {
             Theo dõi toàn bộ lịch sử chăm sóc sức khỏe của học sinh
           </p>
         </div>
-      </div>
+      </div> */}
       <div
         style={{
           backgroundColor: "white",
@@ -301,7 +301,7 @@ const HealthHistory = () => {
       >
         <Container>
           {/* Statistics Cards */}
-          <Row className="mb-4 parent-animate-slide-in">
+          {/* <Row className="mb-4 parent-animate-slide-in">
             <Col md={4} className="mb-3">
               <div className="parent-stat-card">
                 <div className="parent-stat-icon">
@@ -341,7 +341,7 @@ const HealthHistory = () => {
                 <div className="parent-stat-label">Lượt gửi thuốc</div>
               </div>
             </Col>
-          </Row>
+          </Row> */}
 
           {/* Main Content */}
           <div className="parent-card parent-animate-scale-in">
@@ -364,21 +364,14 @@ const HealthHistory = () => {
                       <Nav.Link
                         eventKey="checkup"
                         style={{
-                          background:
-                            activeTab === "checkup" ? "#2563eb" : "transparent",
-                          color:
-                            activeTab === "checkup"
-                              ? "white"
-                              : "var(--parent-primary)",
-                          border: `2px solid ${
-                            activeTab === "checkup"
-                              ? "transparent"
-                              : "rgba(37, 99, 235, 0.2)"
-                          }`,
-                          fontWeight: "600",
-                          borderRadius: "var(--parent-border-radius-lg)",
-                          padding: "0.75rem 1.5rem",
-                          margin: "0 0.25rem",
+                          background: activeTab === "checkup" ? "#2563eb" : "transparent",
+                          color: activeTab === "checkup" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "checkup" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
                           transition: "all var(--parent-transition-normal)",
                         }}
                       >
@@ -390,23 +383,14 @@ const HealthHistory = () => {
                       <Nav.Link
                         eventKey="vaccination"
                         style={{
-                          background:
-                            activeTab === "vaccination"
-                              ? "#2563eb"
-                              : "transparent",
-                          color:
-                            activeTab === "vaccination"
-                              ? "white"
-                              : "var(--parent-primary)",
-                          border: `2px solid ${
-                            activeTab === "vaccination"
-                              ? "transparent"
-                              : "rgba(37, 99, 235, 0.2)"
-                          }`,
-                          fontWeight: "600",
-                          borderRadius: "var(--parent-border-radius-lg)",
-                          padding: "0.75rem 1.5rem",
-                          margin: "0 0.25rem",
+                          background: activeTab === "vaccination" ? "#2563eb" : "transparent",
+                          color: activeTab === "vaccination" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "vaccination" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
                           transition: "all var(--parent-transition-normal)",
                         }}
                       >
@@ -418,21 +402,14 @@ const HealthHistory = () => {
                       <Nav.Link
                         eventKey="chart"
                         style={{
-                          background:
-                            activeTab === "chart" ? "#2563eb" : "transparent",
-                          color:
-                            activeTab === "chart"
-                              ? "white"
-                              : "var(--parent-primary)",
-                          border: `2px solid ${
-                            activeTab === "chart"
-                              ? "transparent"
-                              : "rgba(37, 99, 235, 0.2)"
-                          }`,
-                          fontWeight: "600",
-                          borderRadius: "var(--parent-border-radius-lg)",
-                          padding: "0.75rem 1.5rem",
-                          margin: "0 0.25rem",
+                          background: activeTab === "chart" ? "#2563eb" : "transparent",
+                          color: activeTab === "chart" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "chart" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
                           transition: "all var(--parent-transition-normal)",
                         }}
                       >
@@ -444,23 +421,14 @@ const HealthHistory = () => {
                       <Nav.Link
                         eventKey="medication"
                         style={{
-                          background:
-                            activeTab === "medication"
-                              ? "#2563eb"
-                              : "transparent",
-                          color:
-                            activeTab === "medication"
-                              ? "white"
-                              : "var(--parent-primary)",
-                          border: `2px solid ${
-                            activeTab === "medication"
-                              ? "transparent"
-                              : "rgba(37, 99, 235, 0.2)"
-                          }`,
-                          fontWeight: "600",
-                          borderRadius: "var(--parent-border-radius-lg)",
-                          padding: "0.75rem 1.5rem",
-                          margin: "0 0.25rem",
+                          background: activeTab === "medication" ? "#2563eb" : "transparent",
+                          color: activeTab === "medication" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "medication" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
                           transition: "all var(--parent-transition-normal)",
                         }}
                       >
@@ -472,23 +440,14 @@ const HealthHistory = () => {
                       <Nav.Link
                         eventKey="event"
                         style={{
-                          background:
-                            activeTab === "event"
-                              ? "#2563eb"
-                              : "transparent",
-                          color:
-                            activeTab === "event"
-                              ? "white"
-                              : "var(--parent-primary)",
-                          border: `2px solid ${
-                            activeTab === "event"
-                              ? "transparent"
-                              : "rgba(37, 99, 235, 0.2)"
-                          }`,
-                          fontWeight: "600",
-                          borderRadius: "var(--parent-border-radius-lg)",
-                          padding: "0.75rem 1.5rem",
-                          margin: "0 0.25rem",
+                          background: activeTab === "event" ? "#2563eb" : "transparent",
+                          color: activeTab === "event" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "event" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
                           transition: "all var(--parent-transition-normal)",
                         }}
                       >
@@ -503,13 +462,9 @@ const HealthHistory = () => {
               <Tab.Content>
                 {/* Search Section */}
                 <div className="parent-card-body mb-4">
-                  <Row>
+                  <Row className="align-items-center gx-2 mt-3">
                     <Col md={8}>
-                      <Form.Group>
-                        {/* <Form.Label className="parent-form-label">
-                          <FaSearch className="me-2" />
-                          Tìm kiếm lịch sử y tế
-                        </Form.Label> */}
+                      <Form.Group className="mb-0">
                         <div style={{ position: "relative" }}>
                           <FaSearch
                             style={{
@@ -519,27 +474,39 @@ const HealthHistory = () => {
                               transform: "translateY(-50%)",
                               color: "var(--parent-primary)",
                               zIndex: 2,
+                              fontSize: "1rem"
                             }}
                           />
                           <Form.Control
                             type="text"
-                            placeholder="Tìm theo tên học sinh, bác sĩ, kết luận, vắc-xin..."
+                            className="search-input"
+                            placeholder="Tìm theo tiêu đề, nội dung thông báo..."
                             value={searchTerm}
                             onChange={(e) => {
                               setSearchTerm(e.target.value);
                               setCurrentPage(1);
                             }}
-                            style={{ paddingLeft: "3rem" }}
+                            style={{
+                              paddingLeft: "2.2rem",
+                              paddingRight: "1rem",
+                              height: "40px",
+                              fontSize: "0.95rem",
+                              borderRadius: "8px"
+                            }}
                           />
                         </div>
                       </Form.Group>
                     </Col>
-                    <Col md={4} className="d-flex align-items-end">
+                    <Col md={4}>
                       <Button
                         className="parent-secondary-btn w-100"
+                        style={{
+                          height: "40px",
+                          fontSize: "0.95rem",
+                          borderRadius: "8px"
+                        }}
                         onClick={() => {
                           setSearchTerm("");
-                          setCurrentPage(1);
                         }}
                       >
                         <FaTimes className="me-2" />
@@ -865,8 +832,8 @@ const HealthHistory = () => {
                                           {item.conclusion === "Healthy"
                                             ? "Khỏe mạnh"
                                             : item.conclusion === "Sick"
-                                            ? "Bệnh"
-                                            : "Cần chú ý"}
+                                              ? "Bệnh"
+                                              : "Cần chú ý"}
                                         </Badge>
                                       </td>
                                       <td className="text-center">
@@ -875,7 +842,7 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         <Button
                                           size="sm"
-                                          className="action-btn"
+                                          className="parent-primary-btn"
                                           onClick={() =>
                                             handleShowDetail(item.id, "checkup")
                                           }
@@ -893,8 +860,8 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         {item.date
                                           ? new Date(
-                                              item.date
-                                            ).toLocaleDateString("vi-VN")
+                                            item.date
+                                          ).toLocaleDateString("vi-VN")
                                           : "-"}
                                       </td>
                                       <td className="text-center">
@@ -912,7 +879,7 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         <Button
                                           size="sm"
-                                          className="action-btn"
+                                          className="parent-primary-btn"
                                           onClick={() =>
                                             handleShowDetail(
                                               item.id,
@@ -936,8 +903,8 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         {item.date
                                           ? new Date(
-                                              item.date
-                                            ).toLocaleDateString("vi-VN")
+                                            item.date
+                                          ).toLocaleDateString("vi-VN")
                                           : ""}
                                       </td>
                                       <td className="text-center">
@@ -965,8 +932,8 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         {item.createdDate
                                           ? new Date(
-                                              item.createdDate
-                                            ).toLocaleDateString("vi-VN")
+                                            item.createdDate
+                                          ).toLocaleDateString("vi-VN")
                                           : "-"}
                                       </td>
                                       <td className="text-center">
@@ -978,16 +945,16 @@ const HealthHistory = () => {
                                           {item.status === "Active"
                                             ? "Đang sử dụng"
                                             : item.status === "Pending"
-                                            ? "Chờ xác nhận"
-                                            : item.status === "Completed"
-                                            ? "Đã hoàn thành"
-                                            : item.status}
+                                              ? "Chờ xác nhận"
+                                              : item.status === "Completed"
+                                                ? "Đã hoàn thành"
+                                                : item.status}
                                         </Badge>
                                       </td>
                                       <td className="text-center">
                                         <Button
                                           size="sm"
-                                          className="action-btn"
+                                          className="parent-primary-btn"
                                           onClick={() =>
                                             handleShowMedicationDetail(item.id)
                                           }
@@ -1224,20 +1191,19 @@ const HealthHistory = () => {
                         </strong>
                         <div className="mt-2">
                           <Badge
-                            className={`badge-status ${
-                              detail.conclusion === "Healthy"
-                                ? "healthy"
-                                : detail.conclusion === "Sick"
+                            className={`badge-status ${detail.conclusion === "Healthy"
+                              ? "healthy"
+                              : detail.conclusion === "Sick"
                                 ? "sick"
                                 : "pending"
-                            }`}
+                              }`}
                             style={{
                               background:
                                 detail.conclusion === "Healthy"
                                   ? "#059669"
                                   : detail.conclusion === "Sick"
-                                  ? "#dc2626"
-                                  : "#F59E0B",
+                                    ? "#dc2626"
+                                    : "#F59E0B",
                               color: "white",
                               padding: "0.75rem 1.5rem",
                               borderRadius: "var(--parent-border-radius-lg)",
@@ -1249,8 +1215,8 @@ const HealthHistory = () => {
                             {detail.conclusion === "Healthy"
                               ? "Khỏe mạnh"
                               : detail.conclusion === "Sick"
-                              ? "Bệnh"
-                              : "Cần chú ý"}
+                                ? "Bệnh"
+                                : "Cần chú ý"}
                           </Badge>
                         </div>
                       </div>
@@ -1386,20 +1352,19 @@ const HealthHistory = () => {
                         </strong>
                         <div className="mt-2">
                           <Badge
-                            className={`badge-status ${
-                              detail.result === "Successful"
-                                ? "successful"
-                                : detail.result === "Rejected"
+                            className={`badge-status ${detail.result === "Successful"
+                              ? "successful"
+                              : detail.result === "Rejected"
                                 ? "rejected"
                                 : "pending"
-                            }`}
+                              }`}
                             style={{
                               background:
                                 detail.result === "Successful"
                                   ? "#059669"
                                   : detail.result === "Rejected"
-                                  ? "#dc2626"
-                                  : "#F59E0B",
+                                    ? "#dc2626"
+                                    : "#F59E0B",
                               color: "white",
                               padding: "0.5rem 1rem",
                               borderRadius: "var(--parent-border-radius-lg)",
@@ -1410,10 +1375,10 @@ const HealthHistory = () => {
                             {detail.result === "Successful"
                               ? "Đã tiêm"
                               : detail.result === "Pending"
-                              ? "Chờ tiêm"
-                              : detail.result === "Rejected"
-                              ? "Đã từ chối"
-                              : detail.result}
+                                ? "Chờ tiêm"
+                                : detail.result === "Rejected"
+                                  ? "Đã từ chối"
+                                  : detail.result}
                           </Badge>
                         </div>
                       </div>
@@ -1582,8 +1547,8 @@ const HealthHistory = () => {
                     >
                       {medicationDetail.createdDate
                         ? new Date(
-                            medicationDetail.createdDate
-                          ).toLocaleDateString("vi-VN")
+                          medicationDetail.createdDate
+                        ).toLocaleDateString("vi-VN")
                         : "-"}
                     </div>
                   </div>
@@ -1641,8 +1606,8 @@ const HealthHistory = () => {
                     >
                       {medicationDetail.reviceDate
                         ? new Date(
-                            medicationDetail.reviceDate
-                          ).toLocaleDateString("vi-VN")
+                          medicationDetail.reviceDate
+                        ).toLocaleDateString("vi-VN")
                         : "-"}
                     </div>
                   </div>
@@ -1650,22 +1615,21 @@ const HealthHistory = () => {
                 <Col xs={12}>
                   <div className="mb-3 text-center">
                     <Badge
-                      className={`badge-status ${
-                        medicationDetail.status === "Completed"
-                          ? "completed"
-                          : medicationDetail.status === "Rejected"
+                      className={`badge-status ${medicationDetail.status === "Completed"
+                        ? "completed"
+                        : medicationDetail.status === "Rejected"
                           ? "rejected"
                           : medicationDetail.status === "Active"
-                          ? "active"
-                          : "pending"
-                      }`}
+                            ? "active"
+                            : "pending"
+                        }`}
                       style={{
                         background:
                           medicationDetail.status === "Completed"
                             ? "#059669"
                             : medicationDetail.status === "Rejected"
-                            ? "#dc2626"
-                            : "#F59E0B",
+                              ? "#dc2626"
+                              : "#F59E0B",
                         color: "white",
                         padding: "0.75rem 1.5rem",
                         borderRadius: "var(--parent-border-radius-lg)",
@@ -1677,10 +1641,10 @@ const HealthHistory = () => {
                       {medicationDetail.status === "Completed"
                         ? "Đã hoàn thành"
                         : medicationDetail.status === "Active"
-                        ? "Đang sử dụng"
-                        : medicationDetail.status === "Pending"
-                        ? "Chờ xác nhận"
-                        : medicationDetail.status}
+                          ? "Đang sử dụng"
+                          : medicationDetail.status === "Pending"
+                            ? "Chờ xác nhận"
+                            : medicationDetail.status}
                     </Badge>
                   </div>
                   <div className="mb-3">
@@ -1700,7 +1664,7 @@ const HealthHistory = () => {
                     >
                       <ul style={{ margin: 0, paddingLeft: "1rem" }}>
                         {medicationDetail.medications &&
-                        medicationDetail.medications.length > 0 ? (
+                          medicationDetail.medications.length > 0 ? (
                           medicationDetail.medications.map((med, idx) => (
                             <li key={idx} style={{ marginBottom: "0.5rem" }}>
                               <strong>{med.medicationName}</strong> -{" "}

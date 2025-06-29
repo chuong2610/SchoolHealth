@@ -198,20 +198,36 @@ const Profile = () => {
   };
 
   const hanldeUpdateProfile = async (file) => {
+    
     try {
-      if (file) {
-        const res = await uploadAvatar(nurseId, file);
-        if (res?.success === true) {
-          setNurseInfo((prev) => ({ ...prev, imageUrl: res.imageUrl }));
-          updateAvatarVersion();
-          toast.success("Cập nhật ảnh thành công");
-        } else {
-          toast.error("Cập nhật ảnh thất bại");
-        }
+      let imageUrl = nurseInfo.imageUrl;
+
+      // Nếu userInfo.imageUrl là URL đầy đủ, tách lấy tên file
+      if (imageUrl && imageUrl.startsWith("http")) {
+        // Lấy phần sau cùng của đường dẫn
+        imageUrl = imageUrl.split("/").pop();
       }
+
+      if (file) {
+        imageUrl = await uploadAvatar(file);
+      }
+
+      await updateProfile(nurseId, {
+        ...formData,
+        imageUrl,
+      });
+
+      setEditMode(false);
+      // Reload lại userInfo nếu muốn cập nhật giao diện ngay
+      fetchNurseInfo(nurseId);
+      // Reload lai Header
+      updateAvatarVersion();
+
+      toast.success("Cập nhật thông tin thành công!");
     } catch (error) {
+      alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
+      toast.error("Có lỗi khi lưu thông tin hoặc upload ảnh!");
       console.error(error);
-      toast.error("Cập nhật ảnh thất bại");
     }
   };
 
@@ -304,7 +320,6 @@ const Profile = () => {
                     <Button
                       onClick={() => {
                         setEditMode(false);
-                        handleUpdateProfile();
                       }}
                       className="cancel-btn"
                     >

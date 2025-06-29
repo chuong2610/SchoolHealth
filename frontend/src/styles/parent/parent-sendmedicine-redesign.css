@@ -92,8 +92,8 @@
 .medicine-hero-header {
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
     color: white;
-    height: 16vh;
-    margin-bottom: 1.5rem;
+    height: 12vh;
+    margin-bottom: 1rem;
     position: relative;
     overflow: hidden;
     z-index: 5;
@@ -169,10 +169,10 @@
 }
 
 .hero-sen-title {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     font-weight: 800;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+    margin-top: 0.3rem;
     text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
     display: flex;
     align-items: center;
@@ -190,38 +190,36 @@
 }
 
 .hero-sen-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     opacity: 0.95;
     font-weight: 400;
     max-width: 500px;
     margin: 0 auto;
     line-height: 1.5;
-    margin-top: -0.5rem;
+    margin-top: -0.3rem;
 }
 
 /* Main Container */
 .medicine-main-container {
+    padding: 0.5rem;
     position: relative;
     z-index: 1;
-    padding: 0 1rem;
-
 }
 
 .medicine-form-wrapper {
-    background: rgba(255, 255, 255, 0.97);
-    backdrop-filter: blur(25px);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    margin-top: -1.5rem;
     box-shadow:
-        0 25px 50px rgba(0, 0, 0, 0.08),
-        0 0 0 1px rgba(255, 255, 255, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border: none;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        0 8px 32px rgba(37, 99, 235, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(37, 99, 235, 0.2) !important;
     position: relative;
-    z-index: 10;
-    isolation: isolate;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .medicine-form-wrapper:hover {
@@ -234,9 +232,8 @@
 
 /* Form Header */
 .form-header-section {
-    background: white;
-    padding: 1.25rem;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
     position: relative;
 }
 
@@ -253,13 +250,14 @@
 }
 
 .form-main-title {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: #1e293b;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    line-height: 1.3;
 }
 
 .form-main-title .title-icon {
@@ -276,29 +274,28 @@
 }
 
 .form-description-text {
+    font-size: 0.85rem;
     color: #64748b;
-    font-size: 0.9rem;
-    line-height: 1.5;
     margin: 0;
+    line-height: 1.4;
 }
 
 /* Form Body */
 .form-body-section {
-    padding: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 /* Section Styling */
 .info-section {
-    background: rgba(255, 255, 255, 0.97);
-    backdrop-filter: blur(15px);
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(37, 99, 235, 0.1);
     position: relative;
-    z-index: 8;
-    isolation: isolate;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
 }
 
 /* .info-section::before {
@@ -321,10 +318,9 @@
 .section-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #e2e8f0;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    position: relative;
 }
 
 .section-icon-wrapper {
@@ -341,25 +337,27 @@
 }
 
 .section-title-text {
-    font-size: 1.15rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: #1e293b;
     margin: 0;
+    line-height: 1.3;
 }
 
 /* Form Groups */
 .enhanced-form-group {
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .enhanced-label {
+    font-size: 0.85rem;
     font-weight: 600;
     color: #374151;
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    line-height: 1.3;
 }
 
 .enhanced-label .label-icon {
@@ -368,13 +366,13 @@
 }
 
 .enhanced-control {
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 0.65rem 1rem;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: white;
-    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
 }
 
 .enhanced-control:focus {
@@ -396,11 +394,11 @@
 
 /* Student Info Card */
 .student-display-card {
-    background: linear-gradient(135deg, #E3F2FD 0%, #DBEAFE 100%);
-    border: 2px solid #2563EB;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-top: 0.75rem;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(37, 99, 235, 0.2);
     position: relative;
     overflow: hidden;
 }
@@ -417,39 +415,43 @@
 }
 
 .student-info-row {
-    position: relative;
-    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .student-name-display {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1E3A8A;
-    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    flex: 1;
 }
 
 .student-class-display {
-    font-size: 0.9rem;
-    color: #1E40AF;
-    font-weight: 600;
+    font-size: 0.8rem;
+    color: #64748b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
+    font-weight: 500;
 }
 
 /* Medicine Cards */
 .medicine-item-card {
-    background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: 14px;
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(37, 99, 235, 0.15);
     position: relative;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* .medicine-item-card::before {
@@ -473,37 +475,41 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
 }
 
 .medicine-number-badge {
-    background: #f59e0b;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
     font-weight: 700;
-    font-size: 1rem;
-    box-shadow: 0 3px 12px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    position: relative;
+    z-index: 2;
 }
 
 /* Action Buttons */
 .remove-medicine-button {
-    background: #dc2626;
-    border: none;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    padding: 0.6rem 1rem;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .remove-medicine-button:hover {
@@ -513,34 +519,33 @@
 }
 
 .add-medicine-button {
-    background: #2563eb;
-    border: none;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    display: inline-flex;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-    margin-bottom: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+    margin-top: 0.5rem;
+    width: 100%;
+    justify-content: center;
 }
 
 .add-medicine-button:hover {
-    background: #1d4ed8;
+    background: #047857;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
 /* Submit Section */
 .submit-area {
-    background: white;
-    padding: 1.25rem;
+    margin-top: 1rem;
     text-align: center;
     position: relative;
 }
@@ -558,21 +563,22 @@
 }
 
 .primary-submit-button {
-    background: #2563eb;
-    border: none;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: white;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    display: inline-flex;
+    border: none;
+    padding: 0.6rem 2rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
 }
 
 .primary-submit-button:hover:not(:disabled) {
@@ -740,307 +746,182 @@
 /* Desktops (992px to 1199px) */
 @media (max-width: 1199px) and (min-width: 992px) {
     .medicine-main-container {
-        padding: 1.5rem 2rem;
+        padding: 0.4rem;
     }
 
     .medicine-hero-header {
-        height: 22vh;
+        height: 10vh;
     }
 
     .hero-sen-title {
-        font-size: 3rem;
+        font-size: 1.2rem;
     }
 
     .hero-sen-subtitle {
-        font-size: 1.3rem;
+        font-size: 0.8rem;
     }
 
     .form-header-section,
     .form-body-section,
     .submit-area {
-        padding: 2rem;
+        padding: 0.6rem;
+        margin-bottom: 0.6rem;
     }
 }
 
 /* Tablets (768px to 991px) */
 @media (max-width: 991px) and (min-width: 768px) {
     .medicine-main-container {
-        padding: 1.25rem 1.5rem;
+        padding: 0.3rem;
     }
 
     .medicine-hero-header {
-        height: 20vh;
+        height: 9vh;
     }
 
     .hero-sen-title {
-        font-size: 2.5rem;
+        font-size: 1.1rem;
     }
 
     .hero-sen-subtitle {
-        font-size: 1.2rem;
+        font-size: 0.75rem;
     }
 
     .medicine-form-wrapper {
-        margin: 0 1rem 2rem;
+        padding: 0.8rem !important;
     }
 
     .form-header-section,
-    .form-body-section,
-    .submit-area {
-        padding: 1.875rem;
-    }
-
     .info-section {
-        padding: 1.625rem;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
     }
 
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
+        margin-bottom: 0.6rem;
     }
 
     .medicine-card-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
+        margin-bottom: 0.6rem;
     }
 
     .primary-submit-button {
-        width: 100%;
-        justify-content: center;
+        padding: 0.5rem 1.5rem;
+        font-size: 0.85rem;
     }
 }
 
 /* Mobile Landscape & Small Tablets (576px to 767px) */
 @media (max-width: 767px) {
     .medicine-main-container {
-        padding: 1rem;
+        padding: 0.25rem;
     }
 
     .medicine-hero-header {
-        height: 18vh;
-        margin: -1rem -1rem 1rem;
+        height: 8vh;
+        margin-bottom: 0.75rem;
     }
 
     .hero-content {
-        padding: 1.5rem 1rem;
-        text-align: center;
+        padding: 0.5rem;
     }
 
     .hero-sen-title {
-        font-size: 2rem;
-        flex-direction: column;
-        gap: 0.75rem;
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+        margin-top: 0.2rem;
     }
 
     .hero-sen-subtitle {
-        font-size: 1.125rem;
+        font-size: 0.7rem;
     }
 
     .medicine-form-wrapper {
-        margin: 0 0.5rem 2rem 0.5rem;
-        border-radius: 16px;
+        padding: 0.6rem !important;
+        margin-top: -1rem;
     }
 
     .form-header-section,
-    .form-body-section,
-    .submit-area {
-        padding: 1.75rem;
-    }
-
     .info-section {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
+        padding: 0.4rem;
+        margin-bottom: 0.4rem;
     }
 
     .form-main-title {
-        font-size: 1.5rem;
-        text-align: center;
+        font-size: 1.1rem;
     }
 
     .form-description-text {
-        font-size: 1rem;
-        text-align: center;
+        font-size: 0.75rem;
     }
 
     .medicine-card-header {
         flex-direction: column;
-        gap: 1rem;
         align-items: flex-start;
+        gap: 0.3rem;
     }
 
     .primary-submit-button {
-        width: 100%;
-        justify-content: center;
-        padding: 1rem 2rem;
+        padding: 0.4rem 1.2rem;
+        font-size: 0.8rem;
     }
 
     .add-medicine-button {
-        width: 100%;
-        justify-content: center;
-        margin: 1.5rem 0 0;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
     }
 
     .remove-medicine-button {
-        width: 100%;
-        justify-content: center;
-        margin-top: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
     }
 
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
+        margin-bottom: 0.5rem;
     }
 
     .section-title-text {
-        font-size: 1.25rem;
+        font-size: 0.9rem;
     }
 
     .enhanced-form-group {
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.6rem;
     }
 
     .enhanced-label {
-        font-size: 0.9rem;
-        margin-bottom: 0.75rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
     }
 
     .enhanced-control {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
     }
 
     .student-display-card {
-        padding: 1.25rem;
-        margin-top: 1rem;
+        padding: 0.4rem;
+        margin-top: 0.4rem;
     }
 
     .student-name-display {
-        font-size: 1.05rem;
-        text-align: center;
+        font-size: 0.8rem;
     }
 
     .student-class-display {
-        font-size: 0.9rem;
-        text-align: center;
-        justify-content: center;
+        font-size: 0.75rem;
     }
 
     .medicine-item-card {
-        padding: 1.25rem;
-        margin-bottom: 1.5rem;
+        padding: 0.6rem;
+        margin-bottom: 0.6rem;
     }
 
     .medicine-number-badge {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
     }
 
-    /* Modal adjustments */
-    .confirmation-modal .modal-dialog {
-        margin: 1rem;
-        max-width: calc(100vw - 2rem);
-    }
-
-    .confirmation-modal .modal-header,
-    .confirmation-modal .modal-body,
-    .confirmation-modal .modal-footer {
-        padding: 1.5rem;
-    }
-}
-
-/* Mobile Portrait (481px to 575px) */
-@media (max-width: 575px) {
-    .medicine-main-container {
-        padding: 0.75rem;
-    }
-
-    .medicine-hero-header {
-        height: 16vh;
-        margin: -0.75rem -0.75rem 0.75rem;
-    }
-
-    .hero-content {
-        padding: 1.25rem 0.75rem;
-    }
-
-    .hero-sen-title {
-        font-size: 1.75rem;
-    }
-
-    .hero-sen-subtitle {
-        font-size: 1rem;
-    }
-
-    .medicine-form-wrapper {
-        margin: 0 0.25rem 1.5rem;
-        border-radius: 12px;
-    }
-
-    .form-header-section,
-    .form-body-section,
-    .submit-area {
-        padding: 1.25rem;
-    }
-
-    .info-section {
-        padding: 1.25rem;
-    }
-
-    .form-main-title {
-        font-size: 1.3rem;
-    }
-
-    .form-description-text {
-        font-size: 0.9rem;
-    }
-
-    .medicine-item-card {
-        padding: 1.125rem;
-    }
-
-    .medicine-number-badge {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-    }
-
-    .enhanced-label {
-        font-size: 0.85rem;
-    }
-
-    .enhanced-control {
-        padding: 0.6rem 0.875rem;
-        font-size: 0.875rem;
-    }
-
-    .section-title-text {
-        font-size: 1.1rem;
-    }
-
-    .student-name-display {
-        font-size: 1rem;
-    }
-
-    .student-class-display {
-        font-size: 0.85rem;
-    }
-
-    .primary-submit-button {
-        padding: 0.875rem 1.75rem;
-        font-size: 0.9rem;
-    }
-
-    .add-medicine-button,
-    .remove-medicine-button {
-        padding: 0.6rem 1.25rem;
-        font-size: 0.875rem;
-    }
-
-    /* Modal adjustments */
     .confirmation-modal .modal-dialog {
         margin: 0.5rem;
     }
@@ -1048,175 +929,257 @@
     .confirmation-modal .modal-header,
     .confirmation-modal .modal-body,
     .confirmation-modal .modal-footer {
-        padding: 1.25rem;
+        padding: 0.75rem;
+    }
+}
+
+/* Mobile Portrait (481px to 575px) */
+@media (max-width: 575px) {
+    .medicine-main-container {
+        padding: 0.2rem;
+    }
+
+    .medicine-hero-header {
+        height: 7vh;
+    }
+
+    .hero-content {
+        padding: 0.4rem;
+    }
+
+    .hero-sen-title {
+        font-size: 0.9rem;
+    }
+
+    .hero-sen-subtitle {
+        font-size: 0.65rem;
+    }
+
+    .medicine-form-wrapper {
+        padding: 0.5rem !important;
+    }
+
+    .form-header-section,
+    .info-section {
+        padding: 0.3rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .form-main-title {
+        font-size: 1rem;
+    }
+
+    .form-description-text {
+        font-size: 0.7rem;
+    }
+
+    .medicine-item-card {
+        padding: 0.5rem;
+    }
+
+    .medicine-number-badge {
+        width: 22px;
+        height: 22px;
+        font-size: 0.7rem;
+    }
+
+    .enhanced-label {
+        font-size: 0.75rem;
+    }
+
+    .enhanced-control {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.5rem;
+    }
+
+    .section-title-text {
+        font-size: 0.85rem;
+    }
+
+    .student-name-display {
+        font-size: 0.75rem;
+    }
+
+    .student-class-display {
+        font-size: 0.7rem;
+    }
+
+    .primary-submit-button {
+        padding: 0.35rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .add-medicine-button,
+    .remove-medicine-button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .confirmation-modal .modal-dialog {
+        margin: 0.3rem;
+    }
+
+    .confirmation-modal .modal-header,
+    .confirmation-modal .modal-body,
+    .confirmation-modal .modal-footer {
+        padding: 0.6rem;
     }
 
     .confirmation-modal .modal-title {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
     }
 }
 
 /* Small Mobile (360px to 480px) */
 @media (max-width: 480px) {
     .medicine-main-container {
-        padding: 0.5rem;
+        padding: 0.15rem;
     }
 
     .medicine-hero-header {
-        height: 14vh;
-        margin: -0.5rem -0.5rem 0.5rem;
+        height: 6vh;
     }
 
     .hero-sen-title {
-        font-size: 1.5rem;
+        font-size: 0.85rem;
     }
 
     .hero-sen-subtitle {
-        font-size: 0.9rem;
+        font-size: 0.6rem;
     }
 
     .medicine-form-wrapper {
-        margin: 0 0.125rem 1.25rem;
+        padding: 0.4rem !important;
     }
 
     .form-header-section,
-    .form-body-section,
-    .submit-area {
-        padding: 1rem;
-    }
-
     .info-section {
-        padding: 1rem;
+        padding: 0.25rem;
+        margin-bottom: 0.25rem;
     }
 
     .form-main-title {
-        font-size: 1.2rem;
+        font-size: 0.9rem;
     }
 
     .form-description-text {
-        font-size: 0.85rem;
+        font-size: 0.65rem;
     }
 
     .medicine-item-card {
-        padding: 1rem;
+        padding: 0.4rem;
     }
 
     .medicine-number-badge {
-        width: 30px;
-        height: 30px;
-        font-size: 0.85rem;
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
     }
 
     .enhanced-label {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
 
     .enhanced-control {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.4rem;
     }
 
     .section-title-text {
-        font-size: 1rem;
-    }
-
-    .student-display-card {
-        padding: 1rem;
-    }
-
-    .student-name-display {
-        font-size: 0.95rem;
-    }
-
-    .student-class-display {
         font-size: 0.8rem;
     }
 
+    .student-display-card {
+        padding: 0.3rem;
+        margin-top: 0.3rem;
+    }
+
+    .student-name-display {
+        font-size: 0.7rem;
+    }
+
+    .student-class-display {
+        font-size: 0.65rem;
+    }
+
     .primary-submit-button {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.85rem;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.7rem;
     }
 
     .add-medicine-button,
     .remove-medicine-button {
-        padding: 0.5rem 1rem;
-        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
     }
 
     .section-icon-wrapper {
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
     }
 }
 
 /* Extra Small Mobile (less than 360px) */
 @media (max-width: 359px) {
     .medicine-main-container {
-        padding: 0.375rem;
+        padding: 0.1rem;
     }
 
     .medicine-hero-header {
-        height: 12vh;
-        margin: -0.375rem -0.375rem 0.375rem;
+        height: 5vh;
     }
 
     .hero-sen-title {
-        font-size: 1.25rem;
+        font-size: 0.8rem;
     }
 
     .hero-sen-subtitle {
-        font-size: 0.8rem;
+        font-size: 0.55rem;
     }
 
     .medicine-form-wrapper {
-        margin: 0 0 1rem;
-        border-radius: 10px;
+        padding: 0.3rem !important;
     }
 
     .form-header-section,
-    .form-body-section,
-    .submit-area {
-        padding: 0.875rem;
-    }
-
     .info-section {
-        padding: 0.875rem;
+        padding: 0.2rem;
+        margin-bottom: 0.2rem;
     }
 
     .form-main-title {
-        font-size: 1.1rem;
+        font-size: 0.85rem;
     }
 
     .form-description-text {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
     }
 
     .medicine-item-card {
-        padding: 0.875rem;
-        border-radius: 10px;
+        padding: 0.3rem;
     }
 
     .medicine-number-badge {
-        width: 28px;
-        height: 28px;
-        font-size: 0.8rem;
+        width: 18px;
+        height: 18px;
+        font-size: 0.6rem;
     }
 
     .enhanced-control {
-        padding: 0.4rem 0.6rem;
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.3rem;
     }
 
     .primary-submit-button {
-        padding: 0.6rem 1.25rem;
-        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
+        font-size: 0.65rem;
     }
 
     .section-icon-wrapper {
-        width: 30px;
-        height: 30px;
-        font-size: 0.9rem;
+        width: 20px;
+        height: 20px;
+        font-size: 0.65rem;
     }
 }
 

@@ -43,8 +43,8 @@
 /* Header Banner */
 .nurse-header-banner {
     background: var(--nurse-bg-header);
-    border-radius: 16px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    margin-bottom: 16px;
     overflow: hidden;
     box-shadow: var(--nurse-shadow);
 }
@@ -53,26 +53,27 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 32px;
+    padding: 18px 20px;
     position: relative;
+    gap: 12px;
 }
 
 .nurse-header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     z-index: 2;
 }
 
 .nurse-avatar {
-    width: 60px;
-    height: 60px;
+    width: 38px;
+    height: 38px;
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -83,19 +84,19 @@
 }
 
 .nurse-welcome-title {
-    font-size: 2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: white;
-    margin: 0 0 8px 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 0 4px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .nurse-welcome-subtitle {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
+    font-size: 0.78rem;
     font-weight: 500;
 }
 
@@ -108,20 +109,20 @@
 }
 
 .nurse-header-illustration {
-    width: 120px;
+    width: 60px;
     height: auto;
     opacity: 0.8;
 }
 
 /* Statistics Section */
 .nurse-stats-section {
-    margin-bottom: 32px;
+    margin-bottom: 18px;
 }
 
 .nurse-stat-card {
     background: var(--nurse-bg-card);
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 12px 10px;
     box-shadow: var(--nurse-shadow);
     border: 1px solid var(--nurse-border);
     transition: all 0.3s ease;
@@ -136,32 +137,32 @@
 .nurse-stat-content {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 8px;
 }
 
 .nurse-stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.nurse-stat-info {
-    flex: 1;
+.nurse-stat-icon svg {
+    opacity: 1 !important;
 }
 
 .nurse-stat-label {
-    font-size: 0.875rem;
+    font-size: 0.72rem;
     color: var(--nurse-text-secondary);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     font-weight: 500;
 }
 
 .nurse-stat-number {
-    font-size: 2rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--nurse-text-primary);
     line-height: 1;
@@ -185,7 +186,7 @@
 }
 
 .nurse-stat-card.appointments-today .nurse-stat-icon {
-    background: linear-gradient(135deg, #42A5F5, #1E88E5);
+    background: linear-gradient(135deg, #0088ff, #cdcdd8);
 }
 
 .nurse-stat-card.appointments-today .nurse-stat-number {
@@ -276,71 +277,81 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .nurse-dashboard-container {
-        padding: 16px;
+        padding: 8px;
     }
 
     .nurse-header-content {
         flex-direction: column;
         text-align: center;
-        gap: 20px;
-        padding: 24px;
+        gap: 10px;
+        padding: 12px 8px;
     }
 
     .nurse-header-left {
         flex-direction: column;
-        gap: 16px;
+        gap: 8px;
     }
 
     .nurse-welcome-title {
-        font-size: 1.5rem;
+        font-size: 0.95rem;
     }
 
     .nurse-welcome-subtitle {
         justify-content: center;
         flex-wrap: wrap;
+        font-size: 0.7rem;
     }
 
     .nurse-header-illustration {
-        width: 80px;
+        width: 38px;
     }
 
     .nurse-stat-content {
         flex-direction: column;
         text-align: center;
-        gap: 12px;
+        gap: 6px;
     }
 
     .nurse-stat-number {
-        font-size: 1.75rem;
+        font-size: 1rem;
+    }
+
+    .nurse-stat-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .nurse-stat-card {
+        padding: 8px 4px;
     }
 }
 
 @media (max-width: 576px) {
     .nurse-header-content {
-        padding: 20px;
+        padding: 6px 2px;
     }
 
     .nurse-avatar {
-        width: 50px;
-        height: 50px;
-        font-size: 1.25rem;
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
     }
 
     .nurse-welcome-title {
-        font-size: 1.25rem;
+        font-size: 0.8rem;
     }
 
     .nurse-welcome-subtitle {
-        font-size: 0.875rem;
+        font-size: 0.6rem;
     }
 
     .nurse-stat-card {
-        padding: 20px;
+        padding: 4px 2px;
     }
 
     .nurse-stat-icon {
-        width: 50px;
-        height: 50px;
+        width: 18px;
+        height: 18px;
     }
 
     .nurse-chart-card {
@@ -412,16 +423,18 @@
 .nurse-table-header {
     background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
     color: white;
-    padding: 20px 24px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .nurse-table-header svg {
-    font-size: 1.2rem;
+    font-size: 1rem;
     opacity: 0.9;
 }
 
@@ -497,8 +510,13 @@
 /* Responsive Tables */
 @media (max-width: 768px) {
     .nurse-table-header {
-        padding: 16px 20px;
-        font-size: 1rem;
+        padding: 6px 6px;
+        font-size: 0.82rem;
+        gap: 4px;
+    }
+
+    .nurse-table-header svg {
+        font-size: 0.85rem;
     }
 
     .nurse-schedule-table thead th,
@@ -525,8 +543,13 @@
     }
 
     .nurse-table-header {
-        padding: 14px 16px;
-        font-size: 0.95rem;
+        padding: 4px 2px;
+        font-size: 0.7rem;
+        gap: 2px;
+    }
+
+    .nurse-table-header svg {
+        font-size: 0.7rem;
     }
 
     .nurse-schedule-table thead th,

@@ -222,23 +222,23 @@ const NotificationsManagement = () => {
         // Check if this is sample data (sample data has predictable IDs 1-4)
         const isSampleData = validClasses.every(cls => [1, 2, 3, 4].includes(cls.id));
 
-        if (isSampleData) {
-          toast.info(`Sử dụng dữ liệu mẫu: ${validClasses.length} lớp học`);
-        } else {
-          toast.success(`Đã tải ${validClasses.length} lớp học từ hệ thống`);
-        }
+        // if (isSampleData) {
+        //   toast.info(`Sử dụng dữ liệu mẫu: ${validClasses.length} lớp học`);
+        // } else {
+        //   toast.success(`Đã tải ${validClasses.length} lớp học từ hệ thống`);
+        // }
 
         return true;
       } else {
 
         setClassList([]);
-        toast.error("Không có dữ liệu lớp học");
+        // toast.error("Không có dữ liệu lớp học");
         return false;
       }
     } catch (error) {
 
       setClassList([]);
-      toast.error("Lỗi không mong đợi khi tải lớp học");
+      // toast.error("Lỗi không mong đợi khi tải lớp học");
       return false;
     } finally {
       setLoadingClasses(false);
@@ -275,23 +275,23 @@ const NotificationsManagement = () => {
         // Check if this is sample data (sample data has predictable IDs 1-4)
         const isSampleData = validNurses.every(nurse => [1, 2, 3, 4].includes(nurse.id));
 
-        if (isSampleData) {
-          toast.info(`Sử dụng dữ liệu mẫu: ${validNurses.length} y tá`);
-        } else {
-          toast.success(`Đã tải ${validNurses.length} y tá từ hệ thống`);
-        }
+        // if (isSampleData) {
+        //   toast.info(`Sử dụng dữ liệu mẫu: ${validNurses.length} y tá`);
+        // } else {
+        //   toast.success(`Đã tải ${validNurses.length} y tá từ hệ thống`);
+        // }
 
         return true;
       } else {
 
         setNurseList([]);
-        toast.error("Không có dữ liệu y tá");
+        // toast.error("Không có dữ liệu y tá");
         return false;
       }
     } catch (error) {
 
       setNurseList([]);
-      toast.error("Lỗi không mong đợi khi tải y tá");
+      //  toast.error("Lỗi không mong đợi khi tải y tá");
       return false;
     } finally {
       setLoadingNurses(false);
@@ -313,12 +313,12 @@ const NotificationsManagement = () => {
       ]);
 
       if (!classSuccess) {
-        toast.error("Không thể tải danh sách lớp học. Vui lòng thử lại.");
+        // toast.error("Không thể tải danh sách lớp học. Vui lòng thử lại.");
         return;
       }
 
       if (!nurseSuccess) {
-        toast.error("Không thể tải danh sách y tá. Vui lòng thử lại.");
+        //  toast.error("Không thể tải danh sách y tá. Vui lòng thử lại.");
         return;
       }
 
@@ -328,7 +328,7 @@ const NotificationsManagement = () => {
 
     } catch (error) {
 
-      toast.error("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.");
+    toast.error("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại.");
     }
   };
 
@@ -1508,7 +1508,7 @@ const NotificationsManagement = () => {
               </button>
 
               {/* Debug Info - Development only */}
-              {process.env.NODE_ENV === 'development' && (
+              {/* {process.env.NODE_ENV === 'development' && (
                 <details style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#6b7280' }}>
                   <summary style={{ cursor: 'pointer', fontWeight: '600' }}>
                     🐛 Debug: Current Form Data
@@ -1525,7 +1525,7 @@ const NotificationsManagement = () => {
                     {JSON.stringify(modalAdd.notification, null, 2)}
                   </pre>
                 </details>
-              )}
+              )} */}
             </div>
           </Form>
         </Modal.Body>

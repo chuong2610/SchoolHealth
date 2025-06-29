@@ -69,9 +69,10 @@
 /* Main Container */
 .parent-dashboard {
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100%;
   background: #f8fafc;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Background image for dashboard */
@@ -168,7 +169,7 @@
   text-align: left;
   color: white;
   max-width: 800px;
-  padding: 0 2rem;
+  padding: 0rem;
   width: 100%;
   margin-left: 0;
   animation: slideInLeft 2s ease-out;
@@ -232,7 +233,7 @@
   background: #2563eb;
   color: white;
   border: none;
-  padding: 1rem 2rem;
+  padding: .5rem 2rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
@@ -410,6 +411,10 @@
   padding: 4rem 3rem;
   background: white;
   margin-bottom: 2rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .section-title {
@@ -430,14 +435,14 @@
 }
 
 .about-content {
-  padding-left: 0,5rem;
+  padding-left: 0, 5rem;
 }
 
 .about-content p {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   line-height: 1.8;
   font-family: 'Inter', sans-serif, 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 600;
+  font-weight: 525;
   color: #2d3748;
   margin-bottom: 1.5rem;
 }
@@ -447,6 +452,10 @@
   padding: 3rem 0;
   background: white;
   margin-bottom: 1.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .feature-card {
@@ -460,6 +469,8 @@
   height: 100%;
   position: relative;
   overflow: hidden;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .feature-card::before {
@@ -523,6 +534,10 @@
 .blog-section {
   padding: 2.5rem 0 1.5rem 0;
   background: #fff;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .blog-card {
@@ -533,6 +548,7 @@
   transition: all 0.3s ease;
   height: 100%;
   max-width: 100%;
+  overflow-x: hidden;
 }
 
 .blog-card:hover {

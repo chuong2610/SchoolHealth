@@ -797,14 +797,12 @@ const NurseChat = () => {
                         <Tab
                             eventKey="conversations"
                             title={
-                                <span>
+                                <span style={{ maxWidth: "140px" }}>
                                     <FaComments style={{ marginRight: '4px' }} />
                                     Trò chuyện
-                                    {conversations.length > 0 && (
-                                        <span className="nurse-chat-badge">
-                                            {conversations.length}
-                                        </span>
-                                    )}
+                                    <span className="nurse-chat-badge">
+                                        {conversations?.length}
+                                    </span>
                                 </span>
                             }
                         >
@@ -813,14 +811,12 @@ const NurseChat = () => {
                         <Tab
                             eventKey="unassigned"
                             title={
-                                <span>
+                                <span style={{ maxWidth: "140px" }} >
                                     <FaClock style={{ marginRight: '4px' }} />
                                     Chờ xử lý
-                                    {unassignedMessages.length > 0 && (
-                                        <span className="nurse-chat-badge">
-                                            {unassignedMessages.length}
-                                        </span>
-                                    )}
+                                    <span className="nurse-chat-badge">
+                                        {unassignedMessages?.length}
+                                    </span>
                                 </span>
                             }
                         >

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert, Row } from 'react-bootstrap';
 import { FaComments, FaPaperPlane, FaArrowLeft } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import simpleChatAPI from '../../api/simpleChatApi';
@@ -18,6 +18,7 @@ const ParentChat = () => {
     const [loading, setLoading] = useState(true);
     const [sending, setSending] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [showMobileChat, setShowMobileChat] = useState(false);
     const [isNewChatMode, setIsNewChatMode] = useState(false);
@@ -33,6 +34,23 @@ const ParentChat = () => {
     const handlersRef = useRef({});
 
     // ===== STEP 2: DEFINE FUNCTIONS FIRST =====
+
+
+    // Auto-hide error
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => setError(''), 3000); // 3s
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
+
+    // Auto-hide success
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => setSuccess(''), 3000); // 3s
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
 
     // Load conversation list (debounced to prevent multiple calls)
     const loadConversations = useCallback(async () => {
@@ -76,7 +94,7 @@ const ParentChat = () => {
                 console.error('❌ Error loading conversations:', error);
                 setError('Không thể tải danh sách cuộc trò chuyện');
             }
-        }, 300); // 300ms debounce
+        }, 3000); // 3000ms debounce
     }, [userId]);
 
     // Load chat history when clicking a conversation
@@ -309,7 +327,7 @@ const ParentChat = () => {
                 setIsNewChatMode(false);
                 await loadConversations();
 
-                setError('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
+                set('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
 
             } catch (error) {
                 console.error('❌ Error sending new chat message:', error);
@@ -453,7 +471,7 @@ const ParentChat = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
                         <div className="nurse-name">
-                            {conversation.nurseName || `Y tá #${conversation.user || conversation.User || 'Unknown'}`}
+                            {conversation.userName || 'Unknown'}
                         </div>
                         <div className="last-message">
                             {conversation.lastMessage || conversation.LastMessage || 'Chưa có tin nhắn'}
@@ -501,13 +519,15 @@ const ParentChat = () => {
             </div>
 
             <div style={{ padding: '16px' }}>
-                <Button
-                    className="btn-new-chat"
-                    variant="primary"
-                    onClick={startNewChat}
-                >
-                    + Tạo cuộc trò chuyện mới
-                </Button>
+                <Row className="justify-content-center mx-5">
+                    <Button
+                        className="btn-new-chat"
+                        variant="primary"
+                        onClick={startNewChat}
+                    >
+                        + Trò chuyện mới
+                    </Button>
+                </Row>
 
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -623,7 +643,7 @@ const ParentChat = () => {
                     )}
                     <h6>
                         <span className="nurse-status"></span>
-                        {selectedConversation.nurseName || 'Y tá'}
+                        {selectedConversation.userName || 'Y tá'}
                     </h6>
                 </div>
 
@@ -732,6 +752,12 @@ const ParentChat = () => {
             {error && (
                 <Alert variant="danger" dismissible onClose={() => setError('')}>
                     {error}
+                </Alert>
+            )}
+
+            {success && (
+                <Alert variant="success" dismissible onClose={() => setSuccess('')}>
+                    {success}
                 </Alert>
             )}
 

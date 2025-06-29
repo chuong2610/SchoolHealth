@@ -62,6 +62,7 @@ import {
   FaUserMd,
   FaInfoCircle,
   FaUserFriends,
+  FaSyringe,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 import axiosInstance from "../../api/axiosInstance";
@@ -657,7 +658,7 @@ const HealthEvents = () => {
           >
             <FaFilter /> Lọc
           </button>
-          <button
+          {/* <button
             className="export-btn"
             onClick={() => {
               const filename =
@@ -672,7 +673,7 @@ const HealthEvents = () => {
             }}
           >
             <FaDownload /> Xuất Excel
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -723,8 +724,8 @@ const HealthEvents = () => {
                   }}
                 >
                   <div className={`event-type-badge ${event.eventType || 'other'}`}>
-                    <FaHeartbeat />
-                    {event.eventType || "N/A"}
+                    {event.eventType === "HealthCheck" ? <FaHeartbeat /> : <FaSyringe />}
+                    {event.eventType === "HealthCheck" ? "Khám sức khỏe" : "Tiêm phòng"}
                   </div>
                 </td>
                 <td
@@ -810,7 +811,7 @@ const HealthEvents = () => {
         </Table>
       </div>
 
-      {data.length > ROW_LIMIT && (
+      {/* {data.length > ROW_LIMIT && (
         <div className="table-footer">
           <Button
             variant="link"
@@ -822,7 +823,7 @@ const HealthEvents = () => {
               : `Xem thêm ${data.length - ROW_LIMIT} sự kiện`}
           </Button>
         </div>
-      )}
+      )} */}
     </div>
   );
 
@@ -868,15 +869,36 @@ const HealthEvents = () => {
       )}
 
       {/* Page Header with Coral Theme */}
-      <div className="page-header">
-        <div className="header-content">
-          <div className="page-title">
-            <h1>Quản lý Sự kiện Y tế</h1>
-          </div>
-          <p className="page-subtitle">
+      <div className="page-header" style={{ padding: '6px 20px' }}>
+        <Row className="align-items-center">
+          <Col md={8}>
+            <div className="header-content">
+              <div className="nurse-avatar">
+                <span><FaUserNurse /></span>
+              </div>
+              <div className="page-title">
+                <h1>Quản lý Sự kiện Y tế</h1>
+              </div>
+              {/* <p className="page-subtitle">
             Theo dõi và quản lý các sự kiện y tế trong trường
-          </p>
-        </div>
+          </p> */}
+
+            </div>
+          </Col>
+          <Col md={4} className="mt-4">
+            {/* Add Event Button */}
+            <div className="add-event-container col">
+              <Button
+                variant="dark"
+                size="lg"
+                onClick={() => fetchMedicalSupply()}
+                className="add-event-btn"
+              >
+                <FaPlus className="me-2" /> Thêm Sự kiện Y tế
+              </Button>
+            </div>
+          </Col>
+        </Row>
       </div>
 
       {/* Statistics Cards */}
@@ -916,17 +938,7 @@ const HealthEvents = () => {
         </div>
       </div>
 
-      {/* Add Event Button */}
-      <div className="add-event-container">
-        <Button
-          variant="success"
-          size="lg"
-          onClick={() => fetchMedicalSupply()}
-          className="add-event-btn"
-        >
-          <FaPlus className="me-2" /> Thêm Sự kiện Y tế
-        </Button>
-      </div>
+
 
       {/* Main Content */}
       <div className="main-content">
@@ -947,15 +959,15 @@ const HealthEvents = () => {
             >
               <Tab
                 eventKey="all"
-                title={
-                  <div className="tab-title pending">
-                    <FaList className="tab-icon" />
-                    <span>Tất cả</span>
-                    <Badge bg="primary" className="tab-badge">
-                      {totalItems}
-                    </Badge>
-                  </div>
-                }
+              // title={
+              //   <div className="tab-title pending">
+              //     <FaList className="tab-icon" />
+              //     <span>Tất cả</span>
+              //     <Badge bg="primary" className="tab-badge">
+              //       {totalItems}
+              //     </Badge>
+              //   </div>
+              // }
               >
                 <div className="tab-content">
                   {renderTable(
@@ -1058,14 +1070,14 @@ const HealthEvents = () => {
               <div className="simple-card">
                 <div className="simple-card-title"><FaUserFriends style={{ marginRight: 6 }} />Người liên quan</div>
                 <div className="person-row-simple">
-                  <img src={modalEventDetail?.studentAvatar || '/default-avatar.png'} className="avatar-simple" alt="student" />
+                  {/* <img src={modalEventDetail?.studentAvatar || '/default-avatar.png'} className="avatar-simple" alt="student" /> */}
                   <div className="person-info">
                     <span className="person-label">Học sinh:</span>
                     <span className="person-name">{modalEventDetail?.studentName}</span>
                   </div>
                 </div>
                 <div className="person-row-simple">
-                  <img src={modalEventDetail?.nurseAvatar || '/default-avatar.png'} className="avatar-simple" alt="nurse" />
+                  {/* <img src={modalEventDetail?.nurseAvatar || '/default-avatar.png'} className="avatar-simple" alt="nurse" /> */}
                   <div className="person-info">
                     <span className="person-label">Y tá:</span>
                     <span className="person-name">{modalEventDetail?.nurseName}</span>
@@ -1084,8 +1096,8 @@ const HealthEvents = () => {
                 <div className="simple-card-title"><FaMedkit style={{ marginRight: 6 }} />Vật tư y tế sử dụng</div>
                 {(modalEventDetail?.supplies || []).map((s, idx) => (
                   <div className="supply-row-simple" key={idx}>
-                    <span className="supply-name">{s.name}</span>
-                    <span className="supply-qty-simple">({s.quantity} lần)</span>
+                    <span className="supply-name">{s.medicalSupplyName}</span>
+                    <span className="supply-qty-simple">Số lượng: ({s.quantity})</span>
                   </div>
                 ))}
                 {(modalEventDetail?.supplies || []).length === 0 && (
@@ -1138,12 +1150,8 @@ const HealthEvents = () => {
                   required
                 >
                   <option value="">Chọn loại sự kiện...</option>
-                  <option value="health_check">Khám sức khỏe</option>
-                  <option value="vaccination">Tiêm phòng</option>
-                  <option value="emergency">Cấp cứu</option>
-                  <option value="medication">Cho thuốc</option>
-                  <option value="injury">Chấn thương</option>
-                  <option value="other">Khác</option>
+                  <option value="HealthCheck">Khám sức khỏe</option>
+                  <option value="Vaccination">Tiêm phòng</option>
                 </Form.Select>
                 <Form.Control.Feedback type="invalid">Vui lòng chọn loại sự kiện</Form.Control.Feedback>
               </Form.Group>

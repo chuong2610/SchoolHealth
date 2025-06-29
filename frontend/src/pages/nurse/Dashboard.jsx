@@ -99,6 +99,7 @@ const CalendarSvg = () => (
     height="40"
     viewBox="0 0 1024 1024"
     xmlns="http://www.w3.org/2000/svg"
+    style={{ opacity: 1 }}
   >
     <defs>
       <linearGradient id="folderGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -174,7 +175,7 @@ const Dashboard = () => {
 
   // Use real nurse profile from user context instead of hardcoded data
   const nurseProfile = {
-    name: user?.fullName || user?.name || "Chưa cập nhật",
+    name: user?.fullName || user?.name || "Y tá",
     role: user?.role || "Y tá",
     email: user?.email || "Chưa cập nhật",
     avatar: user?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user?.fullName || user?.name || "Nurse") + "&background=F06292&color=fff&size=200"
@@ -333,19 +334,19 @@ const Dashboard = () => {
         <div className="nurse-header-content">
           <div className="nurse-header-left">
             <div className="nurse-avatar">
-              <span>NU</span>
+              <span><FaUserNurse /></span>
             </div>
             <div className="nurse-header-text">
-              <h1 className="nurse-welcome-title">
-                Chào mừng, {nurseProfile.name}!
-              </h1>
-              <div className="nurse-welcome-subtitle">
+              <h2 style={{ color: '#fff', marginBottom: 0 }}>
+                Chào mừng, {nurseProfile.name}
+              </h2>
+              {/* <div className="nurse-welcome-subtitle">
                 <FaUserNurse />
                 {nurseProfile.role}
                 <span>•</span>
                 <FaEnvelope />
                 {nurseProfile.email}
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="nurse-header-right">

@@ -569,7 +569,7 @@ const ReceiveMedicine = () => {
           >
             <FaFilter /> Lọc
           </button>
-          <button
+          {/* <button
             className="export-btn"
             onClick={() => {
               const filename =
@@ -582,7 +582,7 @@ const ReceiveMedicine = () => {
             }}
           >
             <FaDownload /> Xuất Excel
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -660,84 +660,79 @@ const ReceiveMedicine = () => {
         </Alert>
       )}
 
-      {/* Page Header with Coral Theme */}
-      <div className="page-header">
-        <div className="header-content">
-          <div className="page-title">
-            <FaStethoscope className="page-icon" />
-            <h1>Quản lý Thuốc Y tế</h1>
+      {/* Page Header with Coral Theme - MATCH DASHBOARD STRUCTURE */}
+      <div className="nurse-header-banner">
+        <div className="nurse-header-content" style={{ padding: '36px 20px' }}>
+          <div className="nurse-header-left">
+            <div className="nurse-avatar">
+              <span><FaStethoscope /></span>
+            </div>
+            <div className="nurse-header-text">
+              <h2 style={{ color: '#fff', marginBottom: 0 }}>
+                Quản lý Thuốc Y tế
+              </h2>
+            </div>
           </div>
-          <p style={{
-            fontSize: "1.2rem",
-            fontWeight: "600",
-            color: "rgb(255, 255, 255)",
-            lineHeight: "1.4",
-            textAlign: "center",
-            opacity: 0.95
-          }}>
-            Theo dõi và xử lý các đơn thuốc từ phụ huynh
-          </p>
+          <div className="nurse-header-right">
+            {/* You can use the same illustration as dashboard or a medicine SVG */}
+          </div>
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="nurse-medicine-stats">
-        <div className="nurse-medicine-stat-card">
-          <div className="nurse-medicine-stat-icon">
-            <img
-              src={waiting}
-              alt="Waiting"
-              className="tab-icon"
-              style={{ width: "55px", height: "55px" }}
-            />
+      {/* Statistics Cards - MATCH DASHBOARD STRUCTURE */}
+      <div className="nurse-stats-section">
+        <div className="row" style={{ marginLeft: 0, marginRight: 0 }}>
+          <div className="col-xs-12 col-sm-6 col-lg-3 p-0">
+            <div className="nurse-medicine-stat-card">
+              <div className="nurse-stat-content">
+                <div className="nurse-medicine-stat-icon" style={{ background: 'linear-gradient(135deg, #FFB300, #FFA000)' }}>
+                  <img src={waiting} alt="Waiting" />
+                </div>
+                <div className="nurse-medicine-stat-info">
+                  <div className="nurse-medicine-stat-label">Yêu cầu chờ duyệt</div>
+                  <div className="nurse-medicine-stat-value">{ReceiveMedicineStatistics.totalPending}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="nurse-medicine-stat-label">Yêu cầu chờ duyệt</div>
-          <div className="nurse-medicine-stat-value">
-            {ReceiveMedicineStatistics.totalPending}
+          <div className="col-xs-12 col-sm-6 col-lg-3">
+            <div className="nurse-medicine-stat-card">
+              <div className="nurse-stat-content">
+                <div className="nurse-medicine-stat-icon" style={{ background: 'linear-gradient(135deg, #81C784, #66BB6A)' }}>
+                  <img src={using} alt="Using" />
+                </div>
+                <div className="nurse-medicine-stat-info">
+                  <div className="nurse-medicine-stat-label">Đang sử dụng thuốc</div>
+                  <div className="nurse-medicine-stat-value">{ReceiveMedicineStatistics.totalActive}</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="nurse-medicine-stat-card">
-          <div className="nurse-medicine-stat-icon">
-            <img
-              src={using}
-              alt="Using"
-              className="tab-icon"
-              style={{ width: "55px", height: "55px" }}
-            />
+          <div className="col-xs-12 col-sm-6 col-lg-3">
+            <div className="nurse-medicine-stat-card">
+              <div className="nurse-stat-content">
+                <div className="nurse-medicine-stat-icon" style={{ background: 'linear-gradient(135deg, #0088ff, #cdcdd8)' }}>
+                  <img src={done} alt="Done" />
+                </div>
+                <div className="nurse-medicine-stat-info">
+                  <div className="nurse-medicine-stat-label">Đã hoàn thành</div>
+                  <div className="nurse-medicine-stat-value">{ReceiveMedicineStatistics.totalCompleted}</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="nurse-medicine-stat-label">Đang sử dụng thuốc</div>
-          <div className="nurse-medicine-stat-value">
-            {ReceiveMedicineStatistics.totalActive}
-          </div>
-        </div>
-
-        <div className="nurse-medicine-stat-card">
-          <div className="nurse-medicine-stat-icon">
-            <img
-              src={done}
-              alt="Done"
-              className="tab-icon"
-              style={{ width: "55px", height: "55px" }}
-            />
-          </div>
-          <div className="nurse-medicine-stat-label">Đã hoàn thành</div>
-          <div className="nurse-medicine-stat-value">
-            {ReceiveMedicineStatistics.totalCompleted}
-          </div>
-        </div>
-
-        <div className="nurse-medicine-stat-card">
-          <div className="nurse-medicine-stat-icon">
-            <img
-              src={CalendarClockIcon}
-              alt="Calendar Clock"
-              style={{ width: "55px", height: "55px" }}
-            />
-          </div>
-          <div className="nurse-medicine-stat-label">Yêu cầu hôm nay</div>
-          <div className="nurse-medicine-stat-value">
-            {ReceiveMedicineStatistics.totalToday}
+          <div className="col-xs-12 col-sm-6 col-lg-3 p-0">
+            <div className="nurse-medicine-stat-card">
+              <div className="nurse-stat-content">
+                <div className="nurse-medicine-stat-icon" style={{ background: 'linear-gradient(135deg, #FF8A65, #FF7043)' }}>
+                  <img src={CalendarClockIcon} alt="Calendar Clock" />
+                </div>
+                <div className="nurse-medicine-stat-info">
+                  <div className="nurse-medicine-stat-label">Yêu cầu hôm nay</div>
+                  <div className="nurse-medicine-stat-value">{ReceiveMedicineStatistics.totalToday}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -774,7 +769,7 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
-                  <div className="tab-content-header">
+                  {/* <div className="tab-content-header">
                     <div className="content-icon pending">
                       <FaExclamationTriangle />
                     </div>
@@ -782,7 +777,7 @@ const ReceiveMedicine = () => {
                       <h3>Đơn thuốc chờ xác nhận</h3>
                       <p>Danh sách các đơn thuốc từ phụ huynh cần được y tá xác nhận nhận thuốc</p>
                     </div>
-                  </div>
+                  </div> */}
                   {renderTable(
                     // filteredPending,
                     pendingRequests,
@@ -808,7 +803,7 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
-                  <div className="tab-content-header">
+                  {/* <div className="tab-content-header">
                     <div className="content-icon active">
                       <FaClock />
                     </div>
@@ -816,7 +811,7 @@ const ReceiveMedicine = () => {
                       <h3>Thuốc đang sử dụng</h3>
                       <p>Danh sách học sinh hiện đang sử dụng thuốc theo đơn đã được xác nhận</p>
                     </div>
-                  </div>
+                  </div> */}
                   {renderTable(
                     // filteredActive,
                     activeRequests,
@@ -842,7 +837,7 @@ const ReceiveMedicine = () => {
                 }
               >
                 <div className="tab-content">
-                  <div className="tab-content-header">
+                  {/* <div className="tab-content-header">
                     <div className="content-icon completed">
                       <FaCheckCircle />
                     </div>
@@ -850,7 +845,7 @@ const ReceiveMedicine = () => {
                       <h3>Đã hoàn thành sử dụng</h3>
                       <p>Danh sách học sinh đã hoàn thành việc sử dụng thuốc theo đơn</p>
                     </div>
-                  </div>
+                  </div> */}
                   {renderTable(
                     // filteredCompleted,
                     completedRequests,

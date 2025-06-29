@@ -148,7 +148,7 @@ const SendMedicine = () => {
   return (
     <div className="send-medicine-page animate-fade-in">
       {/* Hero Header */}
-      <div className="medicine-hero-header animate-slide-in-down">
+      {/* <div className="medicine-hero-header animate-slide-in-down">
         <Container>
           <div className="hero-sen-content text-center">
             <h1 className="hero-sen-title animate-fade-in-up delay-200">
@@ -162,7 +162,7 @@ const SendMedicine = () => {
             </p>
           </div>
         </Container>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <Container className="medicine-main-container ">
@@ -307,7 +307,7 @@ const SendMedicine = () => {
                       </Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={2}
                         className="enhanced-control animate-input"
                         placeholder="Nhập hướng dẫn sử dụng, thời gian uống thuốc, lưu ý đặc biệt..."
                         value={med.notes}

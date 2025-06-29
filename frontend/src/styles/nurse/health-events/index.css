@@ -14,13 +14,13 @@
 /* Header Section with Coral Theme */
 .page-header {
     background: linear-gradient(135deg, #FF6B8D 0%, #FF4757 100%);
-    border-radius: 20px;
-    padding: 2.5rem 2rem;
-    margin-bottom: 2rem;
+    border-radius: 12px;
+    padding: 1.1rem 1rem;
+    margin-bottom: 1rem;
     color: white;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(255, 107, 141, 0.3);
+    box-shadow: 0 4px 16px rgba(255, 107, 141, 0.18);
 }
 
 .page-header::before {
@@ -42,34 +42,34 @@
 }
 
 .page-title h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 500;
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .page-subtitle {
-    font-size: 1.2rem;
+    font-size: 0.98rem;
     font-weight: 600;
     opacity: 0.95;
-    margin-top: 0.5rem;
+    margin-top: 0.2rem;
 }
 
 /* Statistics Cards with Coral Theme */
 .nurse-events-stats-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 1rem;
 }
 
 .nurse-events-stat-card {
     background: white;
-    border-radius: 20px;
-    padding: 2rem 1.5rem;
-    box-shadow: 0 8px 32px rgba(255, 107, 141, 0.1);
-    border: 1px solid rgba(255, 107, 141, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 10px;
+    padding: 16px 10px;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.08);
+    border: 1px solid rgba(255, 107, 141, 0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -77,7 +77,7 @@
 
 .nurse-events-stat-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 16px 48px rgba(255, 107, 141, 0.2);
+    box-shadow: 0 16px 48px rgba(255, 107, 141, 0.15);
 }
 
 .nurse-events-stat-card::before {
@@ -94,9 +94,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1rem;
+    width: 32px;
+    height: 32px;
+    margin: 0 auto 0.3rem;
     border-radius: 50%;
     background: none !important;
     box-shadow: none !important;
@@ -104,8 +104,8 @@
 }
 
 .nurse-events-stat-icon img {
-    width: 56px;
-    height: 56px;
+    width: 18px;
+    height: 18px;
     object-fit: contain;
     filter: none !important;
     display: block;
@@ -113,16 +113,16 @@
 }
 
 .nurse-events-stat-label {
-    font-size: 1rem;
+    font-size: 0.72rem;
     color: #64748b;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    font-weight: 500;
+    margin-bottom: 2px;
     letter-spacing: 0.02em;
 }
 
 .nurse-events-stat-value {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 1.15rem;
+    font-weight: 700;
     line-height: 1;
 }
 
@@ -134,23 +134,30 @@
 }
 
 .add-event-btn {
-    background: linear-gradient(135deg, #FF6B8D, #FF4757);
+    /* background: linear-gradient(135deg, #00aaff, #00c8ff); */
+    color: #3b82f6;
     border: none;
-    border-radius: 12px;
-    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    padding: 0.45rem 1.1rem;
     font-weight: 600;
-    color: white;
-    box-shadow: 0 4px 16px rgba(255, 107, 141, 0.3);
-    transition: all 0.3s;
+    color: #FF4757;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.18);
+    transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.32rem;
+    font-size: 0.98rem;
+    min-height: 32px;
+    line-height: 1.1;
 }
 
-.add-event-btn:hover {
-    background: linear-gradient(135deg, #FF4757, #E91E63);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 141, 0.4);
+/* .add-event-btn:hover {
+    color: #FF6B8D;
+    background: linear-gradient(135deg, #f8f8f8, #fce4ec);
+} */
+
+.add-event-btn .me-2 {
+    margin-right: 0.18rem !important;
 }
 
 /* Main Content */
@@ -173,19 +180,22 @@
 
 .medicine-tabs .nav-link {
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     color: #64748b;
     font-weight: 600;
-    padding: 1rem 2rem;
-    margin: 0 0.25rem;
+    padding: 0.45rem 1.1rem;
+    margin: 0 0.12rem;
+    font-size: 0.98rem;
     background: transparent;
     transition: all 0.3s;
+    min-height: 32px;
+    line-height: 1.1;
 }
 
 .medicine-tabs .nav-link.active {
     background: linear-gradient(135deg, #FF6B8D, #FF4757);
-    color: white;
-    box-shadow: 0 4px 16px rgba(255, 107, 141, 0.3);
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.18);
 }
 
 .medicine-tabs .nav-link:hover:not(.active) {
@@ -196,11 +206,14 @@
 .tab-title {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.32rem;
+    font-size: 0.98rem;
+    min-height: 28px;
 }
 
 .tab-title .tab-icon {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-right: 0.18rem;
 }
 
 .tab-badge {
@@ -214,73 +227,69 @@
 
 /* Search and Filter Section */
 .search-filter-section {
-    padding: 1.5rem 2rem;
-    background: #fafafa;
-    border-bottom: 1px solid rgba(255, 107, 141, 0.1);
     display: flex;
-    gap: 1rem;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0px;
+    padding: 0;
 }
 
 .search-container {
-    flex: 1;
-    min-width: 300px;
-    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 0px;
+    box-shadow: 0 1px 4px rgba(255, 107, 141, 0.06);
+    padding: 0 0px;
+    height: 34px;
+    min-width: 0;
+    flex: 1 1 0%;
 }
 
 .search-input {
-    width: 100%;
-    padding: 0.875rem 1rem 0.875rem 3rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.3s;
-    background: white;
-}
-
-.search-input:focus {
-    border-color: #FF6B8D;
-    box-shadow: 0 0 0 3px rgba(255, 107, 141, 0.1);
+    border: none;
     outline: none;
+    background: transparent;
+    font-size: 0.98rem;
+    padding: 0 6px;
+    height: 36px;
+    min-width: 0;
+    flex: 1 1 0%;
 }
 
 .search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    color: #FF6B8D;
+    margin-right: 4px;
+    opacity: 0.85;
 }
 
 .filter-actions {
     display: flex;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 6px;
+    margin-left: 4px;
 }
 
-.filter-btn,
-.export-btn {
-    padding: 0.875rem 1.5rem;
-    border: 2px solid #FF6B8D;
-    border-radius: 12px;
-    background: white;
-    color: #FF6B8D;
-    font-weight: 600;
-    transition: all 0.3s;
+.filter-btn {
+    background: linear-gradient(135deg, #FF6B8D, #FF4757);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 0.98rem;
+    font-weight: 500;
+    padding: 0 14px;
+    height: 34px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 0.95rem;
+    gap: 4px;
+    box-shadow: 0 1px 4px rgba(255, 107, 141, 0.08);
+    transition: background 0.2s;
 }
 
-.filter-btn:hover,
-.export-btn:hover {
-    background: #FF6B8D;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 141, 0.3);
+.filter-btn:hover {
+    background: linear-gradient(135deg, #FF4757, #FF6B8D);
+    color: #fff;
 }
 
 /* Table Styles */
@@ -294,22 +303,35 @@
 }
 
 .table th {
-    background: #f8fafc;
-    border: none;
-    color: #374151;
+    background: #fff6f8;
+    color: #FF6B8D;
     font-weight: 700;
-    padding: 1.25rem 1rem;
-    font-size: 0.95rem;
-    text-transform: uppercase;
+    font-size: 1.01rem;
+    padding: 7px 8px;
+    border: none;
+    border-bottom: 2px solid #FF6B8D;
     text-align: center;
-    letter-spacing: 0.05em;
+    vertical-align: middle;
+    height: 34px;
+    letter-spacing: 0.5px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.table th:first-child {
+    border-top-left-radius: 7px;
+}
+
+.table th:last-child {
+    border-top-right-radius: 7px;
 }
 
 .table td {
-    border: none;
-    padding: 1.25rem 1rem;
+    font-size: 0.98rem;
+    padding: 7px 8px;
+    text-align: center;
     vertical-align: middle;
-    border-bottom: 1px solid #f1f5f9;
+    height: 34px;
 }
 
 .table tbody tr {
@@ -359,23 +381,23 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-.event-type-badge.health_check {
+.event-type-badge.HealthCheck {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     border-color: rgba(16, 185, 129, 0.3);
 }
 
-.event-type-badge.health_check:hover {
+.event-type-badge.HealthCheck:hover {
     box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
-.event-type-badge.vaccination {
+.event-type-badge.Vaccination {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border-color: rgba(59, 130, 246, 0.3);
 }
 
-.event-type-badge.vaccination:hover {
+.event-type-badge.Vaccination:hover {
     box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
 }
 
@@ -744,40 +766,205 @@
         padding: 1rem;
     }
 
+    .page-header {
+        padding: 0.7rem 0.5rem;
+        border-radius: 8px;
+    }
+
     .page-title h1 {
-        font-size: 2rem;
+        font-size: 1.05rem;
     }
 
     .nurse-events-stats-row {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        gap: 0.3rem;
+    }
+
+    .nurse-events-stat-card {
+        padding: 8px 4px;
+        border-radius: 8px;
+    }
+
+    .nurse-events-stat-icon {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 0.1rem;
+    }
+
+    .nurse-events-stat-icon img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.62rem;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 0.92rem;
+    }
+
+    .add-event-btn {
+        font-size: 0.89rem;
+        height: 28px;
+        border-radius: 6px;
+        padding: 0 8px;
+    }
+
+    .search-filter-section {
+        gap: 4px;
+        margin-bottom: 6px;
+    }
+
+    .search-container {
+        height: 28px;
+        border-radius: 6px;
+        padding: 0 3px;
+    }
+
+    .search-input {
+        font-size: 0.89rem;
+        height: 26px;
+    }
+
+    .filter-btn {
+        font-size: 0.89rem;
+        height: 28px;
+        border-radius: 6px;
+        padding: 0 8px;
+    }
+
+    .search-icon {
+        font-size: 0.92rem;
+    }
+
+    .medicine-tabs .nav-link {
+        padding: 0.32rem 0.7rem;
+        font-size: 0.89rem;
+        border-radius: 7px;
+    }
+
+    .tab-title {
+        font-size: 0.89rem;
+        gap: 0.18rem;
+        min-height: 24px;
+    }
+
+    .tab-title .tab-icon {
+        font-size: 0.92rem;
+    }
+
+    .table th {
+        font-size: 0.92rem;
+        padding: 5px 4px;
+        height: 28px;
+    }
+
+    .table td {
+        font-size: 0.89rem;
+        padding: 5px 4px;
+        height: 28px;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 0.3rem 0.2rem;
+        border-radius: 6px;
+    }
+
+    .page-title h1 {
+        font-size: 0.8rem;
+    }
+
+    .nurse-events-stats-row {
+        gap: 0.1rem;
+    }
+
+    .nurse-events-stat-card {
+        padding: 4px 2px;
+        border-radius: 6px;
+    }
+
+    .nurse-events-stat-icon {
+        width: 14px;
+        height: 14px;
+        margin-bottom: 0.05rem;
+    }
+
+    .nurse-events-stat-icon img {
+        width: 10px;
+        height: 10px;
+    }
+
+    .nurse-events-stat-label {
+        font-size: 0.5rem;
+    }
+
+    .nurse-events-stat-value {
+        font-size: 0.7rem;
+    }
+
+    .add-event-btn {
+        font-size: 0.8rem;
+        height: 24px;
+        border-radius: 5px;
+        padding: 0 6px;
     }
 
     .search-filter-section {
         flex-direction: column;
         align-items: stretch;
+        gap: 3px;
     }
 
     .search-container {
-        min-width: auto;
+        height: 24px;
+        border-radius: 5px;
+        padding: 0 2px;
     }
 
-    .filter-actions {
-        justify-content: center;
+    .search-input {
+        font-size: 0.8rem;
+        height: 20px;
     }
 
-    .add-event-container {
-        justify-content: center;
+    .filter-btn {
+        font-size: 0.8rem;
+        height: 24px;
+        border-radius: 5px;
+        padding: 0 6px;
     }
 
-    .table-responsive {
-        font-size: 0.875rem;
+    .search-icon {
+        font-size: 0.8rem;
     }
 
-    .action-btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.7rem;
-        gap: 0.2rem;
+    .medicine-tabs .nav-link {
+        padding: 0.18rem 0.4rem;
+        font-size: 0.8rem;
+        border-radius: 6px;
+    }
+
+    .tab-title {
+        font-size: 0.8rem;
+        gap: 0.12rem;
+        min-height: 20px;
+    }
+
+    .tab-title .tab-icon {
+        font-size: 0.8rem;
+    }
+
+    .table th {
+        font-size: 0.8rem;
+        padding: 3px 2px;
+        height: 22px;
+    }
+
+    .table td {
+        font-size: 0.8rem;
+        padding: 3px 2px;
+        height: 22px;
     }
 }
 

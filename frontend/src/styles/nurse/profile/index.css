@@ -82,49 +82,20 @@
 .edit-btn,
 .save-btn,
 .cancel-btn {
-    padding: 0.875rem 2rem;
-    border-radius: 12px;
+    background: #fff !important;
+    color: #FF6B8D !important;
+    border: 1.5px solid #FF6B8D !important;
     font-weight: 600;
-    border: none;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    transition: all 0.2s;
 }
 
-.edit-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.edit-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: white;
-}
-
-.save-btn {
-    background: #10b981;
-    color: white;
-}
-
-.save-btn:hover {
-    background: #059669;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
-}
-
-.cancel-btn {
-    background: #ef4444;
-    color: white;
-}
-
+/* .edit-btn:hover,
+.save-btn:hover,
 .cancel-btn:hover {
-    background: #dc2626;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
-}
+    background: linear-gradient(135deg, #FF6B8D, #FF4757) !important;
+    color: #fff !important;
+    border: 1.5px solid #FF6B8D !important;
+} */
 
 /* Main Content */
 .main-content {

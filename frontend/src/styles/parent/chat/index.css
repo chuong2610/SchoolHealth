@@ -137,7 +137,7 @@
 /* Conversation Items */
 .parent-chat-container .conversation-item {
     padding: 16px 20px !important;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.3) !important;
+    border-bottom: 2px solid rgba(34, 100, 187, 0.3) !important;
     cursor: pointer;
     transition: all 0.3s ease !important;
     position: relative;
@@ -347,7 +347,7 @@
     background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
     border: none !important;
     color: white !important;
-    padding: 12px 24px !important;
+    padding: 6px 12px !important;
     border-radius: 25px !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
