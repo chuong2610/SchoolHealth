@@ -24,6 +24,9 @@ namespace backend.Data
         public DbSet<MedicationDeclare> MedicationDeclares { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<OtherCheck> OtherChecks { get; set; }
+        public DbSet<OtherCheckItem> OtherCheckItems { get; set; }
+        public DbSet<ConsultationAppointment> ConsultationAppointments { get; set; }
 
 
 
@@ -37,6 +40,12 @@ namespace backend.Data
 
             modelBuilder.Entity<NotificationStudent>()
                 .HasKey(nr => new { nr.NotificationId, nr.StudentId });
+
+            modelBuilder.Entity<ConsultationAppointment>()
+                .HasOne(ca => ca.Nurse)
+                .WithMany(n => n.ConsultationAppointments)
+                .HasForeignKey(ca => ca.NurseId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<NotificationStudent>()
                 .HasOne(nr => nr.Notification)
@@ -71,6 +80,12 @@ namespace backend.Data
                 .HasOne(h => h.Nurse)
                 .WithMany(u => u.HealthChecks)
                 .HasForeignKey(h => h.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OtherCheck>()
+                .HasOne(h => h.Nurse)
+                .WithMany(u => u.OtherChecks)
+                .HasForeignKey(h => h.NurseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MedicalEvent>()

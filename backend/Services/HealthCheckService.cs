@@ -31,6 +31,7 @@ namespace backend.Services
             return new HealthCheckDetailDTO
             {
                 StudentName = healthCheck.Student.Name ?? string.Empty,
+                StudentNumber = healthCheck.Student.StudentNumber ?? string.Empty,
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
                 VisionLeft = healthCheck.VisionLeft,
@@ -41,9 +42,10 @@ namespace backend.Services
                 Location = healthCheck.Location ?? string.Empty,
                 Description = healthCheck.Description ?? string.Empty,
                 Conclusion = healthCheck.Conclusion ?? string.Empty,
-                // Status = healthCheck.Status ?? string.Empty,
+                ResultAtHome = healthCheck.ResultAtHome ?? string.Empty,
+                NurseId = healthCheck.Nurse.Id,
                 Date = healthCheck.Date,
-                nurseName = healthCheck.Nurse.Name ?? string.Empty
+                NurseName = healthCheck.Nurse.Name ?? string.Empty
             };
         }
         public async Task<PageResult<HealthCheckDTO>> GetHealthChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
@@ -89,11 +91,16 @@ namespace backend.Services
         {
             return await _healthCheckRepository.CreateHealthCheckAsync(healthCheck);
         }
+        public async Task<bool> SubmitResultAtHomeAsync(int healthCheckId)
+        {
+            return await _healthCheckRepository.SubmitResultAtHomeAsync(healthCheckId);
+        }
         private HealthCheckDTO MapToDTO(HealthCheck healthCheck)
         {
             return new HealthCheckDTO
             {
                 StudentName = healthCheck.Student.Name ?? string.Empty,
+                StudentNumber = healthCheck.Student.StudentNumber ?? string.Empty,
                 Id = healthCheck.Id,
                 Height = healthCheck.Height,
                 Weight = healthCheck.Weight,
@@ -104,6 +111,37 @@ namespace backend.Services
             };
         }
 
+        public Task<PageResult<HealthCheckDTO>> GetHealthChecksByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search)
+        {
+            // Tách DateTime nếu chuỗi là ngày hợp lệ
+            DateTime? searchDate = null;
+            bool isDate = false;
 
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+
+            return _healthCheckRepository.GetHealthChecksByNurseIdAsync(nurseId, pageNumber, pageSize, search, searchDate)
+                .ContinueWith(task =>
+                {
+                    var healthChecks = task.Result;
+                    var dtos = healthChecks.Select(h => MapToDTO(h)).ToList();
+                    var totalCount = healthChecks.Count;
+
+                    var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+                    return new PageResult<HealthCheckDTO>
+                    {
+                        Items = dtos,
+                        TotalItems = totalCount,
+                        TotalPages = totalPages,
+                        CurrentPage = pageNumber
+                    };
+                });
+        }
     }
 }

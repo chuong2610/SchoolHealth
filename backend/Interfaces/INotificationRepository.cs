@@ -11,6 +11,8 @@ namespace backend.Interfaces
                 Task<int> CountHealthChecksNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate);
                 Task<List<NotificationStudent>> GetVaccinationsNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate);
                 Task<int> CountVaccinationsNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate);
+                Task<List<NotificationStudent>> GetOtherChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate);
+                Task<int> CountOtherChecksNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate);
                 Task<Notification?> GetNotificationByIdAsync(int id);
                 Task<List<Notification>> GetNotificationsByNurseIdAsync(int id);
                 Task<List<Notification>> Get5Notifications();
@@ -19,6 +21,8 @@ namespace backend.Interfaces
                 Task<bool> UpdateNotificationAsync(Notification notification);
                 Task<bool> DeleteNotificationAsync(Notification notification);
                 Task<List<Notification>> GetAllNotificationsAsync(int pageNumber, int pageSize, string? search, DateTime? searchDate);
+                Task<List<Notification>> GetNotificationsByNurseIdAsync(int nurseId,int pageNumber, int pageSize, string? search, DateTime? searchDate);
+                Task<int> CountNotificationsByNurseIdAsync(int nurseId, string? search, DateTime? searchDate);
                 Task<int> CountNotificationsAsync(string? search, DateTime? searchDate);
                 Task<bool> HasNotificationAsync(int parentId);
                 Task<NotificationCountDTO> GetNotificationCountsAsync(int parentId);

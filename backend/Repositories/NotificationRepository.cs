@@ -374,5 +374,127 @@ namespace backend.Repositories
                 NotificationsSentToday = sentToday
             };
         }
+
+        public Task<List<NotificationStudent>> GetOtherChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+        {
+            var query = _context.NotificationStudents
+                .Include(ns => ns.Notification)
+                .Include(ns => ns.Student)
+                .Where(ns => ns.Notification.Type == "OtherCheck"
+                            && ns.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
+            }
+
+            return query
+                .OrderByDescending(ns => ns.NotificationId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<List<Notification>> GetNotificationsByNurseIdAsync(int nurseId,int pageNumber, int pageSize, string? search, DateTime? searchDate)
+        {
+            var query = _context.Notifications
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
+                .Include(n => n.AssignedTo)
+                .Where(n => n.NotificationStudents.Any(ns => n.AssignedTo.Id == nurseId));
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(n =>
+                    n.Title.Contains(search) ||
+                    n.Message.Contains(search) ||
+                    n.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(n =>
+                    n.CreatedAt.Date == searchDate.Value.Date
+                );
+            }
+
+            return query
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public Task<int> CountOtherChecksNotificationsByParentIdAsync(int parentId, string? search, DateTime? searchDate)
+        {
+            var query = _context.NotificationStudents
+                .Include(ns => ns.Notification)
+                .Include(ns => ns.Student)
+                .Where(ns => ns.Notification.Type == "OtherCheck"
+                            && ns.Student.ParentId == parentId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(ns =>
+                    ns.Notification.Title.Contains(search) ||
+                    ns.Student.Name.Contains(search) ||
+                    ns.Status.Contains(search) ||
+                    ns.Notification.Name.Contains(search) ||
+                    ns.Notification.Message.Contains(search) ||
+                    ns.Notification.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(ns =>
+                    ns.Notification.CreatedAt.Date == searchDate.Value.Date
+                );
+            }
+
+            return query.CountAsync();
+        }
+
+        public Task<int> CountNotificationsByNurseIdAsync(int nurseId, string? search, DateTime? searchDate)
+        {
+            var query = _context.Notifications
+                .Include(n => n.NotificationStudents)
+                .ThenInclude(ns => ns.Student)
+                .Include(n => n.AssignedTo)
+                .Where(n => n.NotificationStudents.Any(ns => n.AssignedTo.Id == nurseId));
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(n =>
+                    n.Title.Contains(search) ||
+                    n.Message.Contains(search) ||
+                    n.Type.Contains(search)
+                );
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(n =>
+                    n.CreatedAt.Date == searchDate.Value.Date
+                );
+            }
+
+            return query.CountAsync();
+        }
     }
 }

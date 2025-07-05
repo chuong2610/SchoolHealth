@@ -13,6 +13,8 @@ namespace backend.Models
         public string Location { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int NotificationId { get; set; }
+        public string Conclusion { get; set; } = string.Empty;
+        public string? ResultAtHome { get; set; } = string.Empty;
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
         public Student Student { get; set; }   = null!;

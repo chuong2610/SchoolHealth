@@ -75,7 +75,7 @@ namespace backend.Repositories
 
             var grouped = messages
                 .GroupBy(x => x.FromUserId == userId ? x.ToUserId : x.FromUserId)
-                .Where(g => g.Key != null) 
+                .Where(g => g.Key != null)
                 .Select(g =>
                 {
                     var lastMessage = g.OrderByDescending(x => x.Timestamp).First();
@@ -84,8 +84,9 @@ namespace backend.Repositories
                         ? lastMessage.ToUser
                         : lastMessage.FromUser;
 
-                    return (user, lastMessage); 
+                    return (user, lastMessage);
                 })
+                .OrderByDescending(x => x.lastMessage.Timestamp) // 👈 Sắp xếp theo thời gian mới nhất
                 .ToList();
 
             return grouped;

@@ -11,5 +11,6 @@ namespace backend.Models
         public string StudentName { get; set; } = string.Empty;
         public int StudentId { get; set; }
         public string Status { get; set; } = string.Empty; // e.g., "Pending", "Confirmed", "Rejected"
+        
     }
 }

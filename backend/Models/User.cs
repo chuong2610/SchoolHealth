@@ -21,8 +21,10 @@ namespace backend.Models
         public List<Student> Students { get; set; } = new List<Student>();
         public List<HealthCheck> HealthChecks { get; set; } = new List<HealthCheck>();
         public List<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
+        public List<OtherCheck> OtherChecks { get; set; } = new List<OtherCheck>();
         public List<Notification> CreatedNotifications { get; set; } = new();
         public List<Notification> AssignedNotifications { get; set; } = new();
+        public List<ConsultationAppointment> ConsultationAppointments { get; set; } = new List<ConsultationAppointment>();
         public int RoleId { get; set; }
         [ForeignKey("RoleId")]
         public Role Role { get; set; } = null!;

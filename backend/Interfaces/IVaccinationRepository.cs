@@ -10,6 +10,7 @@ namespace backend.Repositories
         Task<int> CountVaccinationsByParentIdAsync(int parentId, string? search, DateTime? searchDate);
         Task<List<Vaccination>> GetVaccinationByNotificationIdAsync(int notificationId);
         Task<bool> CreateVaccinationAsync(Vaccination vaccination);
+        Task<bool> SubmitVaccinationAtHomeAsync(int vaccinationId);
 
     }
 }

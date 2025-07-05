@@ -142,6 +142,7 @@ namespace backend.Services
                 Address = user.Address,
                 Phone = user.Phone,
                 Gender = user.Gender,
+                DateOfBirth = user.DateOfBirth,
                 RoleName = user.Role.Name
             };
         }

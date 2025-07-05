@@ -11,5 +11,6 @@ namespace backend.Models.Request
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public int ClassId { get; set; }
         public int AssignedToId { get; set; }
+        public List<string>? CheckList { get; set; } = new List<string>();
     }
 }

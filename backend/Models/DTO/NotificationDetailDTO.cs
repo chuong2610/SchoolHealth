@@ -4,7 +4,7 @@ namespace backend.Models
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
-         public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public string Note { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -15,5 +15,6 @@ namespace backend.Models
         public string StudentName { get; set; } = string.Empty;
         public string NurseName { get; set; } = string.Empty;
         public int StudentId { get; set; }
+        public List<string>? CheckList { get; set; } = new List<string>();
     }
 }

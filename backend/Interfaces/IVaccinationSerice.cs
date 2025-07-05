@@ -10,5 +10,6 @@ namespace backend.Interfaces
         Task<PageResult<VaccinationDTO>> GetVaccinationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search);
         Task<List<VaccinationDTO>> GetVaccinationByNotificationIdAsync(int notificationId);
         Task<bool> CreateVaccinationAsync(Vaccination vaccination);
+        Task<bool> SubmitVaccinationAtHomeAsync(int vaccinationId);
     }
 }

@@ -61,5 +61,22 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+        [HttpPatch("submit-result/{vaccinationId}")]
+        public async Task<IActionResult> SubmitVaccinationResult(int vaccinationId)
+        {
+            try
+            {
+                var result = await _vaccinationService.SubmitVaccinationAtHomeAsync(vaccinationId);
+                if (!result)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Tiêm chủng không tồn tại", false));
+                }
+                return Ok(new BaseResponse<string>(null, "Cập nhật kết quả tiêm chủng thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

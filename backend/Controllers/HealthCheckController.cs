@@ -61,5 +61,23 @@ namespace backend.Controllers
                 return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
             }
         }
+        [HttpPatch("submit-result/{healthCheckId}")]
+        [Authorize(Policy = "ParentOnly")]
+        public async Task<IActionResult> SubmitResultAtHome(int healthCheckId)
+        {
+            try
+            {
+                var result = await _healthCheckService.SubmitResultAtHomeAsync(healthCheckId);
+                if (!result)
+                {
+                    return NotFound(new BaseResponse<string>(null, "Không tìm thấy kết quả kiểm tra sức khỏe", false));
+                }
+                return Ok(new BaseResponse<string>(null, "Nộp kết quả tại nhà thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

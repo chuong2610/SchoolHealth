@@ -21,7 +21,9 @@ namespace backend.Models
         public List<Medication> Medications { get; set; } = new List<Medication>();
         public List<MedicalEvent> MedicalEvents { get; set; } = new List<MedicalEvent>();
         public List<Vaccination> Vaccinations { get; set; } = new List<Vaccination>();
+        public List<OtherCheck> OtherChecks { get; set; } = new List<OtherCheck>();
         public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();
+        public List<ConsultationAppointment> ConsultationAppointments { get; set; } = new List<ConsultationAppointment>();
         public int ParentId { get; set; }
 
         [ForeignKey("ParentId")]

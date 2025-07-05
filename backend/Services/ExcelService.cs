@@ -13,15 +13,17 @@ namespace backend.Services
         private readonly INotificationService _notificationService;
         private readonly IHealthCheckService _healthCheckService;
         private readonly IVaccinationService _vaccinationService;
+        private readonly IOtherCheckService _otherCheckService;
         private readonly IClassService _classService;
 
-        public ExcelService(IStudentService studentService, IUserService userService, INotificationService notificationService, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IClassService classService)
+        public ExcelService(IStudentService studentService, IUserService userService, INotificationService notificationService, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IOtherCheckService otherCheckService, IClassService classService)
         {
             _studentService = studentService;
             _userService = userService;
             _notificationService = notificationService;
             _healthCheckService = healthCheckService;
             _vaccinationService = vaccinationService;
+            _otherCheckService = otherCheckService;
             _classService = classService;
         }
 
@@ -194,6 +196,18 @@ namespace backend.Services
                         "MSHS","Họ tên", "Vắc xin", "Mô tả", "Kết luận"
                     };
                     break;
+                case "Other":
+                    headers = new List<string>
+                    {
+                        "MSHS", "Họ tên"
+                    };
+                    foreach (var item in notification.CheckList) 
+                    {
+                        headers.Add(item);
+                    }
+                    headers.Add("Mô tả");
+                    headers.Add("Kết luận");  
+                    break;
             }
             
             for (int i = 0; i < headers.Count; i++)
@@ -358,7 +372,64 @@ namespace backend.Services
                         row++;
                     }
                     break;
+                case "Other":
+                    while (!worksheet.Cell(row, 1).IsEmpty())
+                    {
+                        try
+                        {
+                            string studentNumber = worksheet.Cell(row, 1).GetString().Trim();
+                            var student = await _studentService.GetStudentByStudentNumberAsync(studentNumber);
+                            if (student == null)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không tìm thấy học sinh với mã '{studentNumber}'");
+                                row++;
+                                continue;
+                            }
 
+                            // Bắt đầu từ cột thứ 3 trở đi là các item checklist
+                            var items = new List<OtherCheckItem>();
+                            for (int i = 0; i < notification.CheckList.Count; i++)
+                            {
+                                string name = notification.CheckList[i];
+                                string value = worksheet.Cell(row, i + 3).GetString().Trim();
+                                items.Add(new OtherCheckItem
+                                {
+                                    Name = name,
+                                    Value = value
+                                });
+                            }
+                            var description = worksheet.Cell(row, notification.CheckList.Count + 3).GetString().Trim();
+                            var conclusion = worksheet.Cell(row, notification.CheckList.Count + 4).GetString().Trim();
+
+                            var otherCheck = new OtherCheck
+                            {
+                                StudentId = student.Id,
+                                NotificationId = notificationId,
+                                Date = notification.Date,
+                                Location = notification.Location,
+                                NurseId = userId,
+                                CheckList = items,
+                                Description = description,
+                                Conclusion = conclusion,
+                                Name = notification.Title,
+                                ResultAtHome = null 
+                            };
+                            
+
+                            bool isCreated = await _otherCheckService.CreateOtherCheckAsync(otherCheck);
+                            if (!isCreated)
+                            {
+                                importResult.ErrorMessages.Add($"Dòng {row}: Không thể lưu thông tin kiểm tra khác cho học sinh '{student.StudentName}'");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            importResult.ErrorMessages.Add($"Dòng {row}: Lỗi khi xử lý - {ex.Message}");
+                        }
+
+                        row++;
+                    }
+                    break;
                 default:
                     throw new Exception("Loại biểu mẫu không được hỗ trợ.");
             }
