@@ -2,6 +2,7 @@ namespace backend.Models.DTO
 {
     public class VaccinationDetailDTO
     {
+        public int Id { get; set; }
         public string VaccineName { get; set; } = string.Empty;
         public string Result { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.UtcNow;
