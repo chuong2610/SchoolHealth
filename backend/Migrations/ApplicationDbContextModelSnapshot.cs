@@ -112,6 +112,51 @@ namespace backend.Migrations
                     b.ToTable("Classes");
                 });
 
+            modelBuilder.Entity("backend.Models.ConsultationAppointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NurseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NurseId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("ConsultationAppointments");
+                });
+
             modelBuilder.Entity("backend.Models.HealthCheck", b =>
                 {
                     b.Property<int>("Id")
@@ -152,6 +197,9 @@ namespace backend.Migrations
                     b.Property<int>("NotificationId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ResultAtHome")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
@@ -174,48 +222,6 @@ namespace backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("HealthChecks");
-                });
-
-            modelBuilder.Entity("backend.Models.HealthDeclareHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Allergys")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ChronicIllnesss")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DeclarationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LongTermMedications")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OtherMedicalConditions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentProfileId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("StudentProfileId");
-
-                    b.ToTable("HealthDeclareHistories");
                 });
 
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>
@@ -382,6 +388,9 @@ namespace backend.Migrations
                     b.Property<int>("AssignedToId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CheckListJson")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ClassName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -448,6 +457,80 @@ namespace backend.Migrations
                     b.HasIndex("StudentId");
 
                     b.ToTable("NotificationStudents");
+                });
+
+            modelBuilder.Entity("backend.Models.OtherCheck", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Conclusion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NurseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ResultAtHome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NurseId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("OtherChecks");
+                });
+
+            modelBuilder.Entity("backend.Models.OtherCheckItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OtherCheckId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OtherCheckId");
+
+                    b.ToTable("OtherCheckItems");
                 });
 
             modelBuilder.Entity("backend.Models.Role", b =>
@@ -524,6 +607,9 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("LastChangeDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LongTermMedications")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -599,6 +685,10 @@ namespace backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Conclusion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -615,6 +705,9 @@ namespace backend.Migrations
 
                     b.Property<string>("Result")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResultAtHome")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
@@ -664,6 +757,25 @@ namespace backend.Migrations
                     b.Navigation("ToUser");
                 });
 
+            modelBuilder.Entity("backend.Models.ConsultationAppointment", b =>
+                {
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("ConsultationAppointments")
+                        .HasForeignKey("NurseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Student", "Student")
+                        .WithMany("ConsultationAppointments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nurse");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("backend.Models.HealthCheck", b =>
                 {
                     b.HasOne("backend.Models.Student", "Student")
@@ -681,25 +793,6 @@ namespace backend.Migrations
                     b.Navigation("Nurse");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("backend.Models.HealthDeclareHistory", b =>
-                {
-                    b.HasOne("backend.Models.User", "Parent")
-                        .WithMany("HealthDeclareHistories")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("backend.Models.StudentProfile", "StudentProfile")
-                        .WithMany("HealthDeclareHistories")
-                        .HasForeignKey("StudentProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Parent");
-
-                    b.Navigation("StudentProfile");
                 });
 
             modelBuilder.Entity("backend.Models.MedicalEvent", b =>
@@ -807,6 +900,36 @@ namespace backend.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("backend.Models.OtherCheck", b =>
+                {
+                    b.HasOne("backend.Models.User", "Nurse")
+                        .WithMany("OtherChecks")
+                        .HasForeignKey("NurseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.Student", "Student")
+                        .WithMany("OtherChecks")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nurse");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("backend.Models.OtherCheckItem", b =>
+                {
+                    b.HasOne("backend.Models.OtherCheck", "OtherCheck")
+                        .WithMany("CheckList")
+                        .HasForeignKey("OtherCheckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OtherCheck");
+                });
+
             modelBuilder.Entity("backend.Models.Student", b =>
                 {
                     b.HasOne("backend.Models.Class", "Class")
@@ -892,6 +1015,11 @@ namespace backend.Migrations
                     b.Navigation("NotificationStudents");
                 });
 
+            modelBuilder.Entity("backend.Models.OtherCheck", b =>
+                {
+                    b.Navigation("CheckList");
+                });
+
             modelBuilder.Entity("backend.Models.Role", b =>
                 {
                     b.Navigation("Users");
@@ -899,6 +1027,8 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.Student", b =>
                 {
+                    b.Navigation("ConsultationAppointments");
+
                     b.Navigation("HealthChecks");
 
                     b.Navigation("MedicalEvents");
@@ -907,15 +1037,12 @@ namespace backend.Migrations
 
                     b.Navigation("NotificationStudents");
 
+                    b.Navigation("OtherChecks");
+
                     b.Navigation("Profile")
                         .IsRequired();
 
                     b.Navigation("Vaccinations");
-                });
-
-            modelBuilder.Entity("backend.Models.StudentProfile", b =>
-                {
-                    b.Navigation("HealthDeclareHistories");
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -924,15 +1051,17 @@ namespace backend.Migrations
 
                     b.Navigation("BlogPosts");
 
+                    b.Navigation("ConsultationAppointments");
+
                     b.Navigation("CreatedNotifications");
 
                     b.Navigation("HealthChecks");
 
-                    b.Navigation("HealthDeclareHistories");
-
                     b.Navigation("MedicalEvents");
 
                     b.Navigation("Medications");
+
+                    b.Navigation("OtherChecks");
 
                     b.Navigation("Students");
 

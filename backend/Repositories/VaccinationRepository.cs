@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Models;
+using ClosedXML;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Repositories
@@ -93,5 +94,19 @@ namespace backend.Repositories
             _context.Vaccinations.Add(vaccination);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> SubmitVaccinationAtHomeAsync(int vaccinationId)
+        {
+            var vaccination = await _context.Vaccinations
+                .FirstOrDefaultAsync(v => v.Id == vaccinationId);
+            if (vaccination != null)
+            {
+                vaccination.ResultAtHome = "good";
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
+        
     }
 }

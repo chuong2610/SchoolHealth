@@ -65,12 +65,15 @@ namespace backend.Services
             return new VaccinationDetailDTO
             {
                 StudentName = vaccination.Student?.Name ?? string.Empty,
+                StudentNumber = vaccination.Student?.StudentNumber ?? string.Empty,
                 VaccineName = vaccination.VaccineName,
                 Result = vaccination.Result ?? string.Empty,
                 Date = vaccination.Date,
                 Location = vaccination.Location ?? string.Empty,
                 Description = vaccination.Description ?? string.Empty,
-                // Status = vaccination.Status ?? string.Empty,
+                Conclusion = vaccination.Conclusion ?? string.Empty,
+                ResultAtHome = vaccination.ResultAtHome ?? string.Empty,
+                NurseId = vaccination.Nurse?.Id ?? 0,
                 NurseName = vaccination.Nurse?.Name ?? string.Empty
             };
         }
@@ -83,6 +86,10 @@ namespace backend.Services
         {
             return await _vaccinationRepository.CreateVaccinationAsync(vaccination);
         }
+        public async Task<bool> SubmitVaccinationAtHomeAsync(int vaccinationId)
+        {
+            return await _vaccinationRepository.SubmitVaccinationAtHomeAsync(vaccinationId);
+        }
         private VaccinationDTO MapToDTO(Vaccination vaccination)
         {
             return new VaccinationDTO
@@ -90,9 +97,10 @@ namespace backend.Services
                 Id = vaccination.Id,
                 VaccineName = vaccination.VaccineName,
                 Location = vaccination.Location,
-                date = DateOnly.FromDateTime(vaccination.Date),
+                Date = DateOnly.FromDateTime(vaccination.Date),
                 NurseName = vaccination.Nurse?.Name ?? string.Empty,
-                StudentName = vaccination.Student?.Name ?? string.Empty
+                StudentName = vaccination.Student?.Name ?? string.Empty,
+                StudentNumber = vaccination.Student?.StudentNumber ?? string.Empty
             };
         }
 

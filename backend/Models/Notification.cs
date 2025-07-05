@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
 
 namespace backend.Models
 {
@@ -14,6 +15,7 @@ namespace backend.Models
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string ClassName { get; set; } = string.Empty;
+        public string? CheckListJson { get; set; } = string.Empty; // JSON string for checklist items
         public List<NotificationStudent> NotificationStudents { get; set; } = new List<NotificationStudent>();
 
         // Người tạo (Admin)
@@ -27,6 +29,16 @@ namespace backend.Models
         public int AssignedToId { get; set; }
         [ForeignKey("AssignedToId")]
         public User? AssignedTo { get; set; }
+
+        [NotMapped]
+        public List<string>? CheckList
+        {
+            get => string.IsNullOrWhiteSpace(CheckListJson)
+                ? null
+                : JsonSerializer.Deserialize<List<string>>(CheckListJson);
+
+            set => CheckListJson = value == null ? null : JsonSerializer.Serialize(value);
+        }
 
     }
 }

@@ -6,6 +6,7 @@ using backend.Models.DTO;
 using backend.Models.Request;
 using backend.Repositories;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace backend.Services
 {
@@ -14,14 +15,16 @@ namespace backend.Services
         private readonly INotificationRepository _notificationRepository;
         private readonly IHealthCheckService _healthCheckService;
         private readonly IVaccinationService _vaccinationService;
+        private readonly IOtherCheckService _otherCheckService;
         private readonly IStudentRepository _studentRepository;
         private readonly IClassRepository _classrRepository;
         private readonly IHubContext<NotificationHub> _hub;
-        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IStudentRepository studentRepository, IClassRepository classrRepository, IHubContext<NotificationHub> hub)
+        public NotificationService(INotificationRepository notificationRepository, IHealthCheckService healthCheckService, IVaccinationService vaccinationService, IOtherCheckService otherCheckService, IStudentRepository studentRepository, IClassRepository classrRepository, IHubContext<NotificationHub> hub)
         {
             _notificationRepository = notificationRepository;
             _healthCheckService = healthCheckService;
             _vaccinationService = vaccinationService;
+            _otherCheckService = otherCheckService;
             _studentRepository = studentRepository;
             _classrRepository = classrRepository;
             _hub = hub;
@@ -135,7 +138,8 @@ namespace backend.Services
                 Date = notification.Date,
                 StudentName = notification.NotificationStudents.FirstOrDefault(ns => ns.StudentId == studentId)?.Student.Name ?? string.Empty,
                 StudentId = studentId,
-                NurseName = notification.AssignedTo?.Name ?? string.Empty
+                NurseName = notification.AssignedTo?.Name ?? string.Empty,
+                CheckList = notification.CheckList ?? new List<string>()
 
             };
         }
@@ -174,7 +178,8 @@ namespace backend.Services
                 Date = notification.Date,
                 NurseName = notification.AssignedTo?.Name ?? string.Empty,
                 ClassName = notification.ClassName ?? string.Empty,
-                NurseId = notification.AssignedToId
+                NurseId = notification.AssignedToId,
+                CheckList = notification.CheckList ?? new List<string>()
             };
 
             switch (notification.Type)
@@ -189,7 +194,10 @@ namespace backend.Services
                     var vaccinations = await _vaccinationService.GetVaccinationByNotificationIdAsync(notification.Id);
                     dto.Results = vaccinations.Cast<object>().ToList();
                     break;
-
+                case "Other":
+                    var otherChecks = await _otherCheckService.GetOtherChecksByNotificationIdAsync(notification.Id);
+                    dto.Results = otherChecks.Cast<object>().ToList();
+                    break;
 
                 default:
                     dto.Results = new List<object>();
@@ -276,6 +284,7 @@ namespace backend.Services
                 CreatedById = createdById,
                 AssignedToId = request.AssignedToId,
                 ClassName = classEntity.ClassName,
+                CheckListJson = JsonConvert.SerializeObject(request.CheckList),
                 NotificationStudents = studentsInClass.Select(s => new NotificationStudent
                 {
                     StudentId = s.Id,
@@ -371,6 +380,74 @@ namespace backend.Services
         public async Task<NotificationAdminCountDTO> GetNotificationAdminCountsAsync()
         {
             return await _notificationRepository.GetNotificationAdminCountsAsync();
+        }
+
+        public async Task<PageResult<NotificationParentDTO>> GetOtherChecksNotificationsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountOtherChecksNotificationsByParentIdAsync(parentId, search, searchDate);
+            var items = await _notificationRepository.GetOtherChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
+
+            var result = items.Select(item => MapToNotificationParentDTO(
+                item.Notification,
+                item.Student.Id,
+                item.Student.Name
+            )).ToList();
+
+            return new PageResult<NotificationParentDTO>
+            {
+                Items = result,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                CurrentPage = pageNumber
+            };
+        }
+
+        public async Task<PageResult<NotificationClassDTO>> GetNotificationByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search)
+        {
+            DateTime? searchDate = null;
+            bool isDate = false;
+
+            if (!string.IsNullOrEmpty(search) &&
+                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+            {
+                searchDate = parsedDate;
+                isDate = true;
+            }
+
+            search = isDate ? null : search;
+            var totalItems = await _notificationRepository.CountNotificationsByNurseIdAsync(nurseId, search, searchDate);
+            var notifications = await _notificationRepository.GetNotificationsByNurseIdAsync(nurseId, pageNumber, pageSize, search, searchDate);
+
+            var notificationDtos = notifications
+                    .Select(n => new NotificationClassDTO
+                    {
+                        Id = n.Id,
+                        VaccineName = n.Name ?? string.Empty,
+                        Title = n.Title,
+                        Type = n.Type,
+                        Message = n.Message,
+                        CreatedAt = n.CreatedAt,
+                        ClassName = n.ClassName
+                    }).ToList();
+
+            return new PageResult<NotificationClassDTO>
+            {
+                Items = notificationDtos,
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                CurrentPage = pageNumber
+            };
         }
     }
 }

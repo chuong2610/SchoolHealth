@@ -245,5 +245,33 @@ namespace backend.Controllers
                 ));
             }
         }
+        [HttpGet("nurse/{nurseId}")]
+        [Authorize(Policy = "NurseOnly")]
+        public async Task<ActionResult<BaseResponse<PageResult<NotificationClassDTO>>>> GetNotificationByNurseId(int nurseId, int pageNumber, int pageSize, string? search)
+        {
+            try
+            {
+                var notifications = await _notificationService.GetNotificationByNurseIdAsync(nurseId, pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<NotificationClassDTO>>(notifications, "Lấy danh sách thông báo theo nurseId thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
+        [HttpGet("parent/{parentId}/OtherCheck")]
+        [Authorize(Policy = "ParentOnly")]
+        public async Task<IActionResult> GetOtherChecksNotificationsByParentId(int parentId, int pageNumber, int pageSize, string? search)
+        {
+            try
+            {
+                var notifications = await _notificationService.GetOtherChecksNotificationsByParentIdAsync(parentId, pageNumber, pageSize, search);
+                return Ok(new BaseResponse<PageResult<NotificationParentDTO>>(notifications, "Lấy danh sách thông báo theo parentId thành công", true));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+            }
+        }
     }
 }

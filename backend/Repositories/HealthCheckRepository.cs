@@ -155,5 +155,51 @@ namespace backend.Repositories
 
         }
 
+        public async Task<bool> SubmitResultAtHomeAsync(int healthCheckId)
+        {
+            var healthCheck = await _context.HealthChecks.FirstOrDefaultAsync(h => h.Id == healthCheckId);
+            if (healthCheck == null)
+            {
+                return false;
+            }
+
+            healthCheck.ResultAtHome = "Good";
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<HealthCheck>> GetHealthChecksByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+        {
+            var query = _context.HealthChecks
+                .Include(h => h.Nurse)
+                .Include(h => h.Student)
+                .Where(h => h.Nurse.Id == nurseId);
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(h =>
+                    // Các trường dạng chuỗi
+                    h.Nurse.Name.Contains(search) ||
+                    h.Student.Name.Contains(search) ||
+                    h.Location.Contains(search) ||
+                    h.Description.Contains(search) ||
+                    h.Conclusion.Contains(search) ||
+                    h.BloodPressure.Contains(search) ||
+                    h.HeartRate.Contains(search) ||
+
+                    // Các trường dạng số
+                    h.Height.ToString().Contains(search) ||
+                    h.Weight.ToString().Contains(search) ||
+                    h.VisionLeft.ToString().Contains(search) ||
+                    h.VisionRight.ToString().Contains(search) ||
+                    h.Bmi.ToString().Contains(search)
+                );
+            }
+            if (searchDate.HasValue)
+            {
+                query = query.Where(m => m.Date.Date == searchDate.Value.Date);
+            }
+
+            return await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
     }
 }
