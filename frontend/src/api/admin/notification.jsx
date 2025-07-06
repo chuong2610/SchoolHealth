@@ -176,11 +176,11 @@ export const postNotification = async (notificationData) => {
   }
 };
 
-export const getNotificationDetail = async (notificationId, pageNumber = 1, pageSize = 10) => {
+export const getNotificationDetail = async (notificationId) => {
   try {
     const res = await axiosInstance.get(
       // `/Notification/admin/${notificationId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
-      `/Notification/admin/${notificationId}?pageNumber=1&pageSize=1000`
+      `/Notification/admin/${notificationId}`
     );
     if (res.data.success === true) {
       return res.data.data;
