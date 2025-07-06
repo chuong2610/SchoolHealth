@@ -30,6 +30,7 @@ namespace backend.Services
 
             return new HealthCheckDetailDTO
             {
+                Id = healthCheck.Id,
                 StudentName = healthCheck.Student.Name ?? string.Empty,
                 StudentNumber = healthCheck.Student.StudentNumber ?? string.Empty,
                 Height = healthCheck.Height,
