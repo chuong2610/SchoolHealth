@@ -2,7 +2,7 @@ import axiosInstance from './axiosInstance';
 
 /**
  * Simple Chat API Service - REST API Only
- * Following the new flow requirements
+ * Following the new flow requirements for nurse contact
  */
 class SimpleChatAPI {
 
@@ -72,14 +72,15 @@ class SimpleChatAPI {
     /**
      * 5. Load chat history between two users
      * GET /api/Chat/history?userA&userB&skip&take
+     * This is the main API for loading chat history when user opens "Liên hệ y tá"
      */
-    async getChatHistory(userId, partnerId, skip = 0, take = 50) {
+    async getChatHistory(userId, nurseId, skip = 0, take = 50) {
         try {
-            console.log('📜 Loading chat history:', JSON.stringify({ userId, partnerId, skip, take }, null, 2));
+            console.log('📜 Loading chat history:', JSON.stringify({ userId, nurseId, skip, take }, null, 2));
             const response = await axiosInstance.get('/Chat/history', {
                 params: {
-                    userA: userId,      // ← Fix parameter name
-                    userB: partnerId,   // ← Fix parameter name
+                    userA: userId,      // Current user ID
+                    userB: nurseId,     // Nurse ID
                     skip,
                     take
                 }
@@ -94,6 +95,7 @@ class SimpleChatAPI {
     /**
      * 6. Send message
      * POST /api/Chat/send
+     * This is the main API for sending new messages
      */
     async sendMessage(fromUserId, toUserId, message) {
         try {

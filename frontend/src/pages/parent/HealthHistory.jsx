@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axiosInstance from "../../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Row,
@@ -37,11 +38,13 @@ import {
   FaSearch,
   FaTimes,
   FaClipboardList,
+  FaComments,
 } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 import { getHealthHistoryStatistics } from "../../api/parent/HealthHistoryApi";
 import { useDebounce } from "use-debounce";
 import { formatDateTime, formatDDMMYYYY } from "../../utils/dateFormatter";
+import { toast } from "react-toastify";
 
 // Styles được import từ main.jsx
 
@@ -53,6 +56,7 @@ const HealthHistory = () => {
   const [error, setError] = useState("");
   const { user } = useAuth();
   const parentId = user?.id ? Number(user.id) : undefined;
+  const navigate = useNavigate();
 
   // State cho modal chi tiết
   const [showModal, setShowModal] = useState(false);
@@ -81,6 +85,20 @@ const HealthHistory = () => {
     totalVaccinations: 0,
     totalMedicationsSent: 0,
   });
+
+  // State xác nhận tiêm chủng
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  // Hàm xử lý liên hệ với y tá
+  const handleContactNurse = (nurseName, nurseId) => {
+    navigate('/parent/chat', {
+      state: {
+        nurseName: nurseName,
+        nurseId: nurseId,
+        autoStartChat: true
+      }
+    });
+  };
 
   // Fetch healthHistory statistics
   const fetchHealthHistoryStats = async () => {
@@ -116,6 +134,8 @@ const HealthHistory = () => {
       baseUrl = `/Medication/parent/${parentId}`;
     } else if (activeTab === "event") {
       baseUrl = `/MedicalEvent/parent/${parentId}`;
+    } else if (activeTab === "other") {
+      baseUrl = `/OtherCheck/parent/${parentId}`;
     }
 
     if (!baseUrl) return;
@@ -169,6 +189,7 @@ const HealthHistory = () => {
     if (type === "checkup") url = `/HealthCheck/${id}`;
     else if (type === "vaccination") url = `/Vaccination/${id}`;
     else if (type === "medicine") url = `/Medication/${id}`;
+    else if (type === "other") url = `/OtherCheck/${id}`;
 
     try {
       const res = await axiosInstance.get(url);
@@ -196,6 +217,25 @@ const HealthHistory = () => {
       setMedicationDetail(null);
     } finally {
       setLoadingMedicationDetail(false);
+    }
+  };
+
+  // Hàm xác nhận tiêm chủng bình thường
+  const handleConfirmVaccination = async (vaccinationId) => {
+    if (!vaccinationId) return;
+    setConfirmLoading(true);
+    try {
+      await axiosInstance.patch(`/Vaccination/submit-result/${vaccinationId}`);
+      // Gọi lại API lấy chi tiết để cập nhật trạng thái mới
+      const res = await axiosInstance.get(`/Vaccination/${vaccinationId}`);
+      if (res.data.success) {
+        setDetail(res.data.data);
+        toast.success("Xác nhận thành công!");
+      }
+    } catch (e) {
+      toast.error("Xác nhận thất bại. Vui lòng thử lại!");
+    } finally {
+      setConfirmLoading(false);
     }
   };
 
@@ -260,6 +300,12 @@ const HealthHistory = () => {
           (med?.medicationName || "").toLowerCase().includes(searchLower)
         );
         return statusMatch || medicationMatch;
+      } else if (activeTab === "other") {
+        return (
+          (item.name || "").toLowerCase().includes(searchLower) ||
+          (item.conclusion || "").toLowerCase().includes(searchLower) ||
+          (item.location || "").toLowerCase().includes(searchLower)
+        );
       }
 
       return false;
@@ -453,6 +499,25 @@ const HealthHistory = () => {
                       >
                         <FaPills className="me-2" />
                         Sự kiện
+                      </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                      <Nav.Link
+                        eventKey="other"
+                        style={{
+                          background: activeTab === "other" ? "#2563eb" : "transparent",
+                          color: activeTab === "other" ? "white" : "var(--parent-primary)",
+                          border: `1.5px solid ${activeTab === "other" ? "transparent" : "rgba(37, 99, 235, 0.2)"}`,
+                          fontWeight: 600,
+                          borderRadius: "8px",
+                          padding: "0.5rem 1.25rem",
+                          margin: "0 0.15rem",
+                          fontSize: "0.95rem",
+                          transition: "all var(--parent-transition-normal)",
+                        }}
+                      >
+                        <FaClipboardList className="me-2" />
+                        Khác
                       </Nav.Link>
                     </Nav.Item>
                   </Nav>
@@ -799,6 +864,36 @@ const HealthHistory = () => {
                                     <th className="text-center">Y tá</th>
                                   </>
                                 )}
+
+                                {activeTab === "other" && (
+                                  <>
+                                    <th className="text-center">
+                                      <FaUser className="me-2" />
+                                      Học sinh
+                                    </th>
+                                    <th className="text-center">
+                                      <FaClipboardList className="me-2" />
+                                      Tên kiểm tra
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCalendarAlt className="me-2" />
+                                      Ngày kiểm tra
+                                    </th>
+                                    <th className="text-center">
+                                      <FaBuilding className="me-2" />
+                                      Địa điểm
+                                    </th>
+                                    <th className="text-center">
+                                      <FaCheckCircle className="me-2" />
+                                      Kết luận
+                                    </th>
+                                    <th className="text-center">
+                                      <FaUserMd className="me-2" />
+                                      Y tá
+                                    </th>
+                                    <th className="text-center">Thao tác</th>
+                                  </>
+                                )}
                               </tr>
                             </thead>
                             <tbody>
@@ -987,6 +1082,51 @@ const HealthHistory = () => {
                                       </td>
                                     </>
                                   )}
+
+                                  {/* Thêm kiểm tra khác */}
+                                  {activeTab === "other" && (
+                                    <>
+                                      <td className="text-center">
+                                        {item.studentName}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.name}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.date
+                                          ? new Date(item.date).toLocaleDateString("vi-VN")
+                                          : "-"}
+                                      </td>
+                                      <td className="text-center">
+                                        {item.location}
+                                      </td>
+                                      <td className="text-center">
+                                        <Badge className={getStatusConclusion(item.conclusion)}>
+                                          {item.conclusion === "Healthy"
+                                            ? "Khỏe mạnh"
+                                            : item.conclusion === "Sick"
+                                              ? "Bệnh"
+                                              : item.conclusion || "Chưa có kết luận"}
+                                        </Badge>
+                                      </td>
+                                      <td className="text-center">
+                                        {item.nurseName}
+                                      </td>
+                                      <td className="text-center">
+                                        <Button
+                                          size="sm"
+                                          className="parent-primary-btn"
+                                          onClick={() =>
+                                            handleShowDetail(item.id, "other")
+                                          }
+                                          title="Xem chi tiết"
+                                        >
+                                          <FaEye className="me-1" />
+                                          Chi tiết
+                                        </Button>
+                                      </td>
+                                    </>
+                                  )}
                                 </tr>
                               ))}
                             </tbody>
@@ -1025,7 +1165,9 @@ const HealthHistory = () => {
             <FaStethoscope className="me-2" />
             {activeTab === "checkup"
               ? "Chi tiết khám sức khỏe"
-              : "Chi tiết tiêm chủng"}
+              : activeTab === "vaccination"
+                ? "Chi tiết tiêm chủng"
+                : "Chi tiết kiểm tra khác"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1426,10 +1568,275 @@ const HealthHistory = () => {
                   </Row>
                 </div>
               )}
+              {activeTab === "other" ? (
+                <div
+                  style={{
+                    background: "white",
+                    padding: "1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    border: "1px solid rgba(37, 99, 235, 0.1)",
+                    boxShadow: "var(--parent-shadow-sm)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#2563eb",
+                    }}
+                  ></div>
+
+                  <Row>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaCalendarAlt className="me-2" />
+                          Ngày kiểm tra:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background: "#f8fafc",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(37, 99, 235, 0.1)",
+                          }}
+                        >
+                          {detail.date
+                            ? new Date(detail.date).toLocaleDateString("vi-VN")
+                            : ""}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaClipboardList className="me-2" />
+                          Tên kiểm tra:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {detail.name}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaBuilding className="me-2" />
+                          Địa điểm:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                          }}
+                        >
+                          {detail.location}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaUserMd className="me-2" />
+                          Y tá:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                            fontWeight: "600",
+                          }}
+                        >
+                          {detail.nurseName}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Kết quả tại nhà:
+                        </strong>
+                        <div
+                          style={{
+                            marginTop: "0.5rem",
+                            padding: "0.75rem",
+                            background:
+                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                            borderRadius: "var(--parent-border-radius-md)",
+                            border: "1px solid rgba(107, 70, 193, 0.1)",
+                          }}
+                        >
+                          {detail.resultAtHome || "Chưa có"}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={12}>
+                      <div className="mb-3 text-center">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          <FaCheckCircle className="me-2" />
+                          Kết luận:
+                        </strong>
+                        <div className="mt-2">
+                          <Badge
+                            className={`badge-status ${detail.conclusion === "Healthy"
+                              ? "healthy"
+                              : detail.conclusion === "Sick"
+                                ? "sick"
+                                : "pending"
+                              }`}
+                            style={{
+                              background:
+                                detail.conclusion === "Healthy"
+                                  ? "#059669"
+                                  : detail.conclusion === "Sick"
+                                    ? "#dc2626"
+                                    : "#F59E0B",
+                              color: "white",
+                              padding: "0.75rem 1.5rem",
+                              borderRadius: "var(--parent-border-radius-lg)",
+                              fontWeight: "600",
+                              fontSize: "1rem",
+                              border: "none",
+                            }}
+                          >
+                            {detail.conclusion === "Healthy"
+                              ? "Khỏe mạnh"
+                              : detail.conclusion === "Sick"
+                                ? "Bệnh"
+                                : detail.conclusion || "Chưa có kết luận"}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Danh sách kiểm tra */}
+                      {detail.checkList && detail.checkList.length > 0 && (
+                        <div className="mb-3">
+                          <strong style={{ color: "var(--parent-primary)" }}>
+                            <FaClipboardList className="me-2" />
+                            Danh sách kiểm tra:
+                          </strong>
+                          <div
+                            style={{
+                              marginTop: "0.5rem",
+                              padding: "1rem",
+                              background:
+                                "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                              borderRadius: "var(--parent-border-radius-md)",
+                              border: "1px solid rgba(107, 70, 193, 0.1)",
+                            }}
+                          >
+                            {detail.checkList.map((item, index) => (
+                              <div key={index} className="d-flex justify-content-between mb-2">
+                                <span style={{ fontWeight: "600" }}>{item.name}:</span>
+                                <span>{item.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {detail.description && (
+                        <div className="mb-3">
+                          <strong style={{ color: "var(--parent-primary)" }}>
+                            Mô tả:
+                          </strong>
+                          <div
+                            style={{
+                              marginTop: "0.5rem",
+                              padding: "1rem",
+                              background:
+                                "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
+                              borderRadius: "var(--parent-border-radius-md)",
+                              border: "1px solid rgba(107, 70, 193, 0.1)",
+                              lineHeight: "1.6",
+                            }}
+                          >
+                            {detail.description}
+                          </div>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </Modal.Body>
         <Modal.Footer>
+          {/* Nút xác nhận tiêm chủng - chỉ hiển thị cho vaccination */}
+          {activeTab === "vaccination" && detail && (
+            (!detail.resultAtHome || detail.resultAtHome.trim() === "") ? (
+              <Button
+                className="parent-primary-btn"
+                onClick={() => handleConfirmVaccination(detail.id)}
+                disabled={confirmLoading || !detail.id}
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  fontWeight: "600",
+                  borderRadius: "var(--parent-border-radius-lg)",
+                  marginRight: "0.5rem",
+                  background: "#059669",
+                  border: "none"
+                }}
+              >
+                {confirmLoading ? "Đang xác nhận..." : "Xác nhận không có dấu hiệu"}
+              </Button>
+            ) : (
+              <Button
+                className="parent-primary-btn"
+                disabled
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  fontWeight: "600",
+                  borderRadius: "var(--parent-border-radius-lg)",
+                  marginRight: "0.5rem",
+                  background: "#059669",
+                  border: "none",
+                  cursor: "not-allowed",
+                  opacity: 1
+                }}
+              >
+                Đã xác nhận không có dấu hiệu bất thường
+              </Button>
+            )
+          )}
+          {/* Nút liên hệ - hiển thị cho checkup, vaccination và other tab */}
+          {((activeTab === "checkup" || activeTab === "vaccination" || activeTab === "other") && detail && detail.nurseName) && (
+            <Button
+              className="parent-primary-btn"
+              onClick={() => {
+                handleContactNurse(detail.nurseName, detail.nurseId);
+                setShowModal(false);
+              }}
+              style={{
+                padding: "0.75rem 1.5rem",
+                fontWeight: "600",
+                borderRadius: "var(--parent-border-radius-lg)",
+                marginRight: "0.5rem",
+              }}
+            >
+              <FaComments className="me-1" />
+              Liên hệ y tá
+            </Button>
+          )}
           <Button
             className="parent-secondary-btn"
             onClick={() => setShowModal(false)}
@@ -1693,6 +2100,25 @@ const HealthHistory = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
+          {/* Nút liên hệ - hiển thị cho medication detail nếu có thông tin y tá */}
+          {medicationDetail && medicationDetail.nurseName && (
+            <Button
+              className="parent-primary-btn"
+              onClick={() => {
+                handleContactNurse(medicationDetail.nurseName, medicationDetail.nurseId);
+                setShowMedicationDetail(false);
+              }}
+              style={{
+                padding: "0.75rem 1.5rem",
+                fontWeight: "600",
+                borderRadius: "var(--parent-border-radius-lg)",
+                marginRight: "0.5rem",
+              }}
+            >
+              <FaComments className="me-1" />
+              Liên hệ y tá
+            </Button>
+          )}
           <Button
             className="parent-secondary-btn"
             onClick={() => setShowMedicationDetail(false)}

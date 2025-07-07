@@ -136,14 +136,26 @@ const Sidebar = (props) => {
       {
         path: "/nurse/health-events",
         icon: <FaCalendarAlt />,
-        label: "Sự kiện sức khỏe",
+        label: "Sự kiện y tế",
+      },
+      {
+        path: "/nurse/notification/management",
+        icon: <FaBell />,
+        label: "Lịch khám sức khỏe",
+      },
+      {
+        path: "/nurse/consultation",
+        icon: <FaCalendarAlt />,
+        label: "Lịch tư vấn",
       },
       {
         path: "/nurse/chat",
-        icon: <div className="chat-icon-container">
-          <ChatNotificationBadge showIcon={true} iconSize="lg" />
-        </div>,
-        label: "Tư vấn sức khỏe"
+        icon: (
+          <div className="chat-icon-container">
+            <ChatNotificationBadge showIcon={true} iconSize="lg" />
+          </div>
+        ),
+        label: "Tư vấn sức khỏe",
       },
       { path: "/nurse/profile", icon: <FaUserCog />, label: "Hồ sơ cá nhân" },
     ];
@@ -208,8 +220,9 @@ const Sidebar = (props) => {
               <li key={idx} role="none">
                 <Link
                   to={item.path}
-                  className={`app-sidebar-link menu-item${location.pathname === item.path ? " active" : ""
-                    }`}
+                  className={`app-sidebar-link menu-item${
+                    location.pathname === item.path ? " active" : ""
+                  }`}
                   role="menuitem"
                   aria-current={
                     location.pathname === item.path ? "page" : undefined

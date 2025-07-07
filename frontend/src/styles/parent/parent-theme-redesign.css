@@ -563,12 +563,13 @@
     background: #2563eb;
     color: white;
     font-weight: 600;
-    padding: var(--parent-spacing-lg);
-    text-align: left;
+    padding: 16px 8px;
+    text-align: center;
     border: none;
     font-size: var(--parent-font-size-sm);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 /* .parent-table thead th:first-child {
@@ -580,10 +581,12 @@
 } */
 
 .parent-table tbody td {
-    padding: var(--parent-spacing-lg);
+    padding: 16px 8px;
     border-bottom: 1px solid #f0f0f0;
     vertical-align: middle;
     transition: all var(--parent-transition-normal);
+    text-align: center;
+    white-space: nowrap;
 }
 
 .parent-table tbody tr:hover {
