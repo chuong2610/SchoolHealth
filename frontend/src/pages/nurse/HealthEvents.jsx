@@ -745,18 +745,7 @@ const HealthEvents = () => {
                     maxWidth: "150px",
                   }}
                 >
-                  <div
-                    className={`event-type-badge ${event.eventType || "other"}`}
-                  >
-                    {event.eventType === "HealthCheck" ? (
-                      <FaHeartbeat />
-                    ) : (
-                      <FaSyringe />
-                    )}
-                    {event.eventType === "HealthCheck"
-                      ? "Khám sức khỏe"
-                      : "Tiêm phòng"}
-                  </div>
+                  {event.eventType}
                 </td>
                 <td
                   style={{

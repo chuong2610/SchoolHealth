@@ -47,8 +47,8 @@ import {
   FaHistory,
   FaChartLine,
   FaMedkit,
-  FaUserMd
-} from 'react-icons/fa';
+  FaUserMd,
+} from "react-icons/fa";
 // Import CSS cho Nurse Profile
 import "../../styles/nurse/profile/index.css";
 
@@ -198,7 +198,6 @@ const Profile = () => {
   };
 
   const hanldeUpdateProfile = async (file) => {
-    
     try {
       let imageUrl = nurseInfo.imageUrl;
 
@@ -385,7 +384,9 @@ const Profile = () => {
                             }
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.email || "nurse@gmail.com"}</div>
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.email || "nurse@gmail.com"}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -411,11 +412,17 @@ const Profile = () => {
                             }
                           >
                             <option value="">Chọn giới tính</option>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
+                            <option value="Male">Nam</option>
+                            <option value="Female">Nữ</option>
                           </Form.Select>
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.gender || "Nữ"}</div>
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.gender === "Male"
+                              ? "Nam"
+                              : nurseInfo.gender === "Female"
+                              ? "Nữ"
+                              : "Khác"}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -423,7 +430,10 @@ const Profile = () => {
 
                   <Col lg={6}>
                     <h5>
-                      <FaMapMarkerAlt className="me-2" style={{ color: "#FF6B8D" }} />
+                      <FaMapMarkerAlt
+                        className="me-2"
+                        style={{ color: "#FF6B8D" }}
+                      />
                       Thông tin liên hệ
                     </h5>
 
@@ -450,7 +460,9 @@ const Profile = () => {
                             placeholder="Nhập địa chỉ"
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.address || "456 Oak Ave"}</div>
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.address || "456 Oak Ave"}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -478,7 +490,9 @@ const Profile = () => {
                             placeholder="Nhập số điện thoại"
                           />
                         ) : (
-                          <div style={{ color: "#666" }}>{nurseInfo.phone || "2"}</div>
+                          <div style={{ color: "#666" }}>
+                            {nurseInfo.phone || "2"}
+                          </div>
                         )}
                       </div>
                     </div>
