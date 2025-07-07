@@ -97,19 +97,19 @@ public class OtherCheckController : ControllerBase
             return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
         }
     }
-    [HttpGet("notification/{notificationId}")]
-    public async Task<IActionResult> GetOtherChecksByNotificationId(int notificationId)
-    {
-        try
-        {
-            var otherChecks = await _otherCheckService.GetOtherChecksByNotificationIdAsync(notificationId);
-            return Ok(new BaseResponse<List<OtherCheckDTO>>(otherChecks, "Lấy danh sách kiểm tra khác theo thông báo thành công", true));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
-        }
-    }
+    // [HttpGet("notification/{notificationId}")]
+    // public async Task<IActionResult> GetOtherChecksByNotificationId(int notificationId)
+    // {
+    //     try
+    //     {
+    //         var otherChecks = await _otherCheckService.GetOtherChecksByNotificationIdAsync(notificationId);
+    //         return Ok(new BaseResponse<List<OtherCheckDTO>>(otherChecks, "Lấy danh sách kiểm tra khác theo thông báo thành công", true));
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+    //     }
+    // }
     
 
 }

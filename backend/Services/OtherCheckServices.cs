@@ -37,11 +37,12 @@ public class OtherCheckService : IOtherCheckService
             }).ToList(),
             Date = otherCheck.Date,
             Location = otherCheck.Location,
+            Description = otherCheck.Description ?? string.Empty,
             Conclusion = otherCheck.Conclusion,
-            ResultAtHome = otherCheck.ResultAtHome,
-            NurseName = otherCheck.Nurse.Name,
+            ResultAtHome = otherCheck.ResultAtHome ?? string.Empty,
+            NurseName = otherCheck.Nurse.Name ?? string.Empty,
             NurseId = otherCheck.Nurse.Id,
-            StudentName = otherCheck.Student.Name
+            StudentName = otherCheck.Student.Name ?? string.Empty
         };
     }
     public async Task<PageResult<OtherCheckDTO>> GetOtherChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
@@ -89,10 +90,16 @@ public class OtherCheckService : IOtherCheckService
             Location = oc.Location,
             Date = oc.Date,
             Conclusion = oc.Conclusion,
-            ResultAtHome = oc.ResultAtHome,
-            NurseName = oc.Nurse.Name,
-            StudentName = oc.Student.Name,
-
+            ResultAtHome = oc.ResultAtHome ?? string.Empty,
+            NurseName = oc.Nurse.Name ?? string.Empty,
+            StudentName = oc.Student.Name ?? string.Empty,
+            NotificationId = oc.NotificationId,
+            Description = oc.Description ?? string.Empty,
+            CheckList = oc.CheckList.Select(item => new OtherCheckItemDTO
+            {
+                Name = item.Name,
+                Value = item.Value
+            }).ToList()
         }).ToList();
 
         return Task.FromResult(otherCheckDTOs);

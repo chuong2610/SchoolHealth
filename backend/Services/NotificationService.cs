@@ -194,7 +194,7 @@ namespace backend.Services
                     var vaccinations = await _vaccinationService.GetVaccinationByNotificationIdAsync(notification.Id);
                     dto.Results = vaccinations.Cast<object>().ToList();
                     break;
-                case "Other":
+                case "OtherCheck":
                     var otherChecks = await _otherCheckService.GetOtherChecksByNotificationIdAsync(notification.Id);
                     dto.Results = otherChecks.Cast<object>().ToList();
                     break;

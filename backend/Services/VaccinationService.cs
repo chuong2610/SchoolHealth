@@ -64,6 +64,7 @@ namespace backend.Services
 
             return new VaccinationDetailDTO
             {
+                Id = vaccination.Id,
                 StudentName = vaccination.Student?.Name ?? string.Empty,
                 StudentNumber = vaccination.Student?.StudentNumber ?? string.Empty,
                 VaccineName = vaccination.VaccineName,
