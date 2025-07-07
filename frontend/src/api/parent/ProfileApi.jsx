@@ -42,6 +42,8 @@ export const updateProfile = async (parentId, data) => {
 };
 
 export const uploadAvatar = async (file) => {
+
+  if(!file) return null;
   const formData = new FormData();
   formData.append("file", file);
 

@@ -17,11 +17,11 @@ public class ConsultationAppointmentController : ControllerBase
         _consultationAppointmentService = consultationAppointmentService;
     }
     [HttpGet("parent/{parentId}")]
-    public async Task<IActionResult> GetConsultationAppointmentsByParentId(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<IActionResult> GetConsultationAppointmentsByParentId(int parentId, int pageNumber, int pageSize, string? search)
     {
         try
         {
-            var result = await _consultationAppointmentService.GetConsultationAppointmentsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
+            var result = await _consultationAppointmentService.GetConsultationAppointmentsByParentIdAsync(parentId, pageNumber, pageSize, search);
             return Ok(new BaseResponse<PageResult<ConsultationAppointmentDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn thành công", true));
         }
         catch (Exception ex)
@@ -30,11 +30,11 @@ public class ConsultationAppointmentController : ControllerBase
         }
     }
     [HttpGet("nurse/{nurseId}")]
-    public async Task<IActionResult> GetConsultationAppointmentsByNurseId(int nurseId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<IActionResult> GetConsultationAppointmentsByNurseId(int nurseId, int pageNumber, int pageSize, string? search)
     {
         try
         {
-            var result = await _consultationAppointmentService.GetConsultationAppointmentsByNurseIdAsync(nurseId, pageNumber, pageSize, search, searchDate);
+            var result = await _consultationAppointmentService.GetConsultationAppointmentsByNurseIdAsync(nurseId, pageNumber, pageSize, search);
             return Ok(new BaseResponse<PageResult<ConsultationAppointmentDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn theo y tá thành công", true));
         }
         catch (Exception ex)
@@ -43,11 +43,11 @@ public class ConsultationAppointmentController : ControllerBase
         }
     }
     [HttpGet("parent/{parentId}/pending")]
-    public async Task<IActionResult> GetConsultationAppointmentsByParentIdAndPending(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<IActionResult> GetConsultationAppointmentsByParentIdAndPending(int parentId, int pageNumber, int pageSize, string? search)
     {
         try
         {
-            var result = await _consultationAppointmentService.GetConsultationAppointmentsByParentIdAndPendingAsync(parentId, pageNumber, pageSize, search, searchDate);
+            var result = await _consultationAppointmentService.GetConsultationAppointmentsByParentIdAndPendingAsync(parentId, pageNumber, pageSize, search);
             return Ok(new BaseResponse<PageResult<ConsultationAppointmentDetailDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn đang chờ theo phụ huynh thành công", true));
         }
         catch (Exception ex)

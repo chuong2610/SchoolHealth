@@ -142,34 +142,85 @@ const Profile = () => {
     }
   };
 
-  const handleSaveProfile = async (file) => {
+  // const handleSaveProfile = async (file) => {
+  //   try {
+  //     let imageUrl = userInfo.imageUrl || "";
+
+  //     // Nếu là URL đầy đủ, lấy tên file ảnh
+  //     if (imageUrl.startsWith("http")) {
+  //       // Lấy phần sau cùng của đường dẫn
+  //       imageUrl = imageUrl.split("/").pop();
+  //     }
+
+  //     if (selectedImage || file) {
+  //       imageUrl = await uploadAvatar(selectedImage || file);
+  //     }
+
+  //     await axiosInstance.patch(`/User/profile/${userId}`, {
+  //       ...formData,
+  //       imageUrl,
+  //     });
+
+  //     setShowEditModal(false);
+  //     // Reload lại userInfo nếu muốn cập nhật giao diện ngay
+  //     const response = await axiosInstance.get(`/User/${userId}`);
+  //     setUserInfo(response.data);
+  //     // Reload lai Header
+  //     updateAvatarVersion();
+  //   } catch (error) {
+  //     alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
+  //     console.error(error);
+  //   }
+  // };
+
+  const handleSaveProfile = async () => {
     try {
-      let imageUrl = userInfo.imageUrl;
-
-      // Nếu userInfo.imageUrl là URL đầy đủ, tách lấy tên file
-      if (imageUrl && imageUrl.startsWith("http")) {
-        // Lấy phần sau cùng của đường dẫn
-        imageUrl = imageUrl.split("/").pop();
+      let finalImageUrl = ""; // giữ nguyên ảnh cũ
+      // ✅ Nếu user đã có ảnh trước đó → tách lấy tên file từ URL
+      if (userInfo.imageUrl && userInfo.imageUrl.includes("/")) {
+        finalImageUrl = userInfo.imageUrl.split("/").pop(); // lấy abc.png từ http://localhost:.../abc.png
+      } else {
+        finalImageUrl = userInfo.imageUrl; // trong trường hợp đã là tên file
       }
 
-      if (selectedImage || file) {
-        imageUrl = await uploadAvatar(selectedImage || file);
+      // Nếu có ảnh mới → upload trước
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append("file", selectedImage);
+
+        const uploadRes = await axios.post(
+          "http://localhost:5182/api/Upload/image",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (uploadRes.data.success) {
+          finalImageUrl = uploadRes.data.fileName; // lấy tên file làm imageUrl
+        } else {
+          throw new Error("Upload ảnh thất bại.");
+        }
       }
 
-      await axiosInstance.patch(`/User/profile/${userId}`, {
-        ...formData,
-        imageUrl,
+      // Gửi PATCH cập nhật thông tin
+      await axios.patch(`http://localhost:5182/api/User/profile/${userId}`, {
+        ...formData, // dữ liệu người dùng: tên, email, v.v.
+        imageUrl: finalImageUrl, // ảnh mới hoặc cũ
       });
 
+      // Sau khi thành công
       setShowEditModal(false);
-      // Reload lại userInfo nếu muốn cập nhật giao diện ngay
-      const response = await axiosInstance.get(`/User/${userId}`);
-      setUserInfo(response.data);
-      // Reload lai Header
+
+      // Cập nhật lại UI
+      const res = await axios.get(`http://localhost:5182/api/User/${userId}`);
+      setUserInfo(res.data);
       updateAvatarVersion();
-    } catch (error) {
-      alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
-      console.error(error);
+    } catch (err) {
+      alert("Lỗi khi lưu hồ sơ.");
+      console.error(err);
     }
   };
 
@@ -193,16 +244,19 @@ const Profile = () => {
         confirmNewPassword, // xác nhận mật khẩu mới
       };
 
-      const res = await axiosInstance.patch(`/User/change-password/${userId}`, payload);
+      const res = await axiosInstance.patch(
+        `/User/change-password/${userId}`,
+        payload
+      );
 
-      if(res?.data?.message) {
-        if(res?.data?.success === false) {
+      if (res?.data?.message) {
+        if (res?.data?.success === false) {
           alert(res?.data?.message);
           return;
         }
-          alert(res?.data?.message);
+        alert(res?.data?.message);
       }
-  
+
       // alert("Đổi mật khẩu thành công!");
       setShowPasswordModal(false);
       setCurrentPassword("");

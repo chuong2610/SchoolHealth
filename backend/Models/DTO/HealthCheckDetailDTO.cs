@@ -2,6 +2,7 @@ namespace backend.Models.DTO
 {
     public class HealthCheckDetailDTO
     {
+        public int Id { get; set; }
         public string StudentName { get; set; } = string.Empty;
         public string StudentNumber { get; set; } = string.Empty;
         public decimal Height { get; set; }

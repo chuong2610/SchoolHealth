@@ -15,17 +15,17 @@ public class OtherCheckRepository : IOtherCheckRepository
 
     public async Task<List<OtherCheck>> GetAllOtherChecksAsync()
     {
-        return await _context.OtherChecks.ToListAsync();
+        return await _context.OtherChecks.Include(oc => oc.CheckList).Include(oc => oc.Student).Include(oc => oc.Nurse).ToListAsync();
     }
 
     public async Task<OtherCheck?> GetOtherCheckByIdAsync(int id)
     {
-        return await _context.OtherChecks.FindAsync(id);
+        return await _context.OtherChecks.Include(oc => oc.CheckList).Include(oc => oc.Student).Include(oc => oc.Nurse).FirstOrDefaultAsync(oc => oc.Id == id);
     }
 
     public async Task<List<OtherCheck>> GetOtherChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
-        var query = _context.OtherChecks.Include(oc => oc.Student).Include(oc => oc.Nurse).AsQueryable();
+        var query = _context.OtherChecks.Include(oc => oc.Student).Include(oc => oc.Nurse).Include(oc => oc.CheckList).AsQueryable();
 
         if (search != null)
         {
@@ -66,6 +66,9 @@ public class OtherCheckRepository : IOtherCheckRepository
     public async Task<List<OtherCheck>> GetOtherChecksByNotificationIdAsync(int notificationId)
     {
         return await _context.OtherChecks
+            .Include(oc => oc.CheckList)
+            .Include(oc => oc.Student)
+            .Include(oc => oc.Nurse)
             .Where(oc => oc.NotificationId == notificationId)
             .ToListAsync();
     }

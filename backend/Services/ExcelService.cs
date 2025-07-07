@@ -196,7 +196,7 @@ namespace backend.Services
                         "MSHS","Họ tên", "Vắc xin", "Mô tả", "Kết luận"
                     };
                     break;
-                case "Other":
+                case "OtherCheck":
                     headers = new List<string>
                     {
                         "MSHS", "Họ tên"
@@ -372,7 +372,7 @@ namespace backend.Services
                         row++;
                     }
                     break;
-                case "Other":
+                case "OtherCheck":
                     while (!worksheet.Cell(row, 1).IsEmpty())
                     {
                         try

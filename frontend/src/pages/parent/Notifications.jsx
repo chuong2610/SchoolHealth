@@ -46,6 +46,7 @@ import {
   getHealthCheckNotifications,
   getVaccinationNotifications,
   getNotificationsStatistics,
+  getOtherNotifications,
 } from "../../api/parent/notificationApi";
 import { formatDateTime } from "../../utils/dateFormatter";
 import PaginationBar from "../../components/common/PaginationBar";
@@ -79,6 +80,15 @@ const tabList = [
       </>
     ),
     color: "#3b82f6",
+  },
+  {
+    key: "other",
+    label: (
+      <>
+        <FaClipboardList className="me-2" /> Khác
+      </>
+    ),
+    color: "#6366f1",
   },
 ];
 
@@ -173,6 +183,9 @@ export default function Notifications() {
           break;
         case "Vaccination":
           res = await apiCall(getVaccinationNotifications);
+          break;
+        case "other":
+          res = await apiCall(getOtherNotifications);
           break;
         case "all":
         default:
@@ -872,6 +885,31 @@ export default function Notifications() {
                       }}
                     >
                       {modal.notification?.note}
+                    </div>
+                  </div>
+                )}
+
+                {/* Danh sách kiểm tra cho OtherCheck */}
+                {modal.notification?.type === "OtherCheck" && Array.isArray(modal.notification?.checkList) && modal.notification.checkList.length > 0 && (
+                  <div style={{ marginTop: 16 }}>
+                    <div style={{ fontWeight: 600, color: "#2563eb", display: "flex", alignItems: "center", gap: 6 }}>
+                      <FaClipboardList style={{ color: "#2563eb" }} /> Danh sách kiểm tra:
+                    </div>
+                    <div style={{
+                      background: "#f8fafd",
+                      borderRadius: 8,
+                      padding: "12px 20px",
+                      marginTop: 8,
+                      border: "1px solid #e3e8ee"
+                    }}>
+                      {modal.notification.checkList.map((item, idx) => (
+                        <div key={idx} style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                          <span>-{typeof item === 'string' ? item : item.name}</span>
+                          {typeof item === 'object' && item.result && (
+                            <span style={{ color: "#444" }}>{item.result}</span>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}

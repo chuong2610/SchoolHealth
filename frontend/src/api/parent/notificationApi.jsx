@@ -108,3 +108,26 @@ export const getNotificationsStatistics = async (parentId) => {
   }
 };
 
+export const getOtherNotifications = async (
+  parentId,
+  pageNumber,
+  pageSize,
+  search
+) => {
+  try {
+    const res = await axiosInstance.get(
+      `/Notification/parent/${parentId}/OtherCheck`,
+      {
+        params: { pageNumber, pageSize, search },
+      }
+    );
+    if (res.data.success === true) {
+      return res.data.data;
+    } else {
+      return { items: [], totalPages: 0 };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+

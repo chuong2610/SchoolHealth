@@ -5,10 +5,12 @@ import { useAuth } from '../../context/AuthContext';
 import simpleChatAPI from '../../api/simpleChatApi';
 import simpleSignalR from '../../services/simpleSignalR';
 import '../../styles/parent/chat/index.css';
+import { useLocation } from 'react-router-dom';
 
 const ParentChat = () => {
     const { user, clearUnreadMessages } = useAuth();
     const userId = user?.id;
+    const location = useLocation();
 
     // States
     const [conversations, setConversations] = useState([]);
@@ -34,7 +36,6 @@ const ParentChat = () => {
     const handlersRef = useRef({});
 
     // ===== STEP 2: DEFINE FUNCTIONS FIRST =====
-
 
     // Auto-hide error
     useEffect(() => {
@@ -65,46 +66,25 @@ const ParentChat = () => {
                 console.log('📋 [PARENT] Loading conversations...');
                 const data = await simpleChatAPI.getConversations(userId);
 
-                // Detailed logging for debugging
                 console.log('📋 [PARENT] Conversations count:', data?.length || 0);
                 console.log('📋 [PARENT] Conversations data:', data);
 
-                if (data && data.length > 0) {
-                    console.log('📋 [PARENT] All conversations:', data);
-                    console.log('📋 [PARENT] First conversation sample:', {
-                        keys: Object.keys(data[0]),
-                        values: data[0]
-                    });
-
-                    // Test partner ID detection for each conversation
-                    data.forEach((conv, index) => {
-                        const partnerId = conv.nurseId || conv.otherUserId || conv.userId ||
-                            conv.User || conv.user || conv.NurseId || conv.UserId;
-                        console.log(`📋 [PARENT] Conversation ${index} partnerId detection:`, {
-                            conversationObject: conv,
-                            detectedPartnerId: partnerId,
-                            availableFields: Object.keys(conv)
-                        });
-                    });
-                }
-
-                setConversations(data);
+                setConversations(data || []);
                 setError('');
             } catch (error) {
                 console.error('❌ Error loading conversations:', error);
                 setError('Không thể tải danh sách cuộc trò chuyện');
             }
-        }, 3000); // 3000ms debounce
+        }, 300); // Reduced debounce time
     }, [userId]);
 
     // Load chat history when clicking a conversation
     const loadChatHistory = useCallback(async (conversation) => {
         try {
-            console.log('📜 [PARENT] Selected conversation object:', conversation);
+            console.log('📜 [PARENT] Loading chat history for conversation:', conversation);
 
-            // Try multiple possible field names for partner ID
-            // API returns 'User' field as the partner ID
-            const partnerId = conversation.User ||     // ← PRIMARY FIELD FROM API
+            // Get partner ID (nurse ID) from conversation
+            const nurseId = conversation.User ||
                 conversation.nurseId ||
                 conversation.otherUserId ||
                 conversation.userId ||
@@ -112,17 +92,17 @@ const ParentChat = () => {
                 conversation.NurseId ||
                 conversation.UserId;
 
-            console.log('📜 [PARENT] Loading chat history with partnerId:', partnerId);
+            console.log('📜 [PARENT] Loading chat history with nurseId:', nurseId);
 
-            if (!partnerId) {
-                console.error('❌ No valid partnerId found in conversation:', Object.keys(conversation));
-                setError('Không thể xác định người nhận. Vui lòng thử lại.');
+            if (!nurseId) {
+                console.error('❌ No valid nurseId found in conversation:', Object.keys(conversation));
+                setError('Không thể xác định y tá. Vui lòng thử lại.');
                 return;
             }
 
             // Reset pagination and load latest messages (skip: 0, take: 50)
             console.log('📜 [PARENT] Loading latest 50 messages...');
-            const history = await simpleChatAPI.getChatHistory(userId, partnerId, 0, 50);
+            const history = await simpleChatAPI.getChatHistory(userId, nurseId, 0, 50);
 
             console.log('📜 [PARENT] Loaded messages:', history.length);
 
@@ -148,7 +128,7 @@ const ParentChat = () => {
             // Auto scroll to bottom (latest message)
             setTimeout(() => scrollToBottom(), 100);
 
-            // Manual delay then refresh conversation list
+            // Refresh conversation list after a short delay
             setTimeout(async () => {
                 await loadConversations();
             }, 500);
@@ -157,7 +137,7 @@ const ParentChat = () => {
             console.error('❌ Error loading chat history:', error);
             setError('Không thể tải lịch sử chat');
         }
-    }, [userId, loadConversations]);
+    }, [userId, loadConversations, isMobile]);
 
     // Load more older messages (pagination)
     const loadMoreMessages = useCallback(async () => {
@@ -166,8 +146,8 @@ const ParentChat = () => {
         try {
             setLoadingMore(true);
 
-            // Get partner ID from selected conversation
-            const partnerId = selectedConversation.User ||
+            // Get nurse ID from selected conversation
+            const nurseId = selectedConversation.User ||
                 selectedConversation.nurseId ||
                 selectedConversation.otherUserId ||
                 selectedConversation.userId ||
@@ -176,14 +156,14 @@ const ParentChat = () => {
                 selectedConversation.UserId;
 
             console.log('📜 [PARENT] Loading more messages...', {
-                partnerId,
+                nurseId,
                 currentSkip: skip,
                 nextSkip: skip,
                 take: 50
             });
 
             // Load older messages (skip current amount, take 50 more)
-            const olderMessages = await simpleChatAPI.getChatHistory(userId, partnerId, skip, 50);
+            const olderMessages = await simpleChatAPI.getChatHistory(userId, nurseId, skip, 50);
 
             console.log('📜 [PARENT] Loaded older messages:', olderMessages.length);
 
@@ -240,6 +220,56 @@ const ParentChat = () => {
             }
         };
     }, [userId, clearUnreadMessages, loadConversations]);
+
+    // ===== AUTO-START CHAT WITH SPECIFIC NURSE (from navigation state) =====
+    useEffect(() => {
+        if (!userId || loading || !location.state?.autoStartChat || !location.state?.nurseName) return;
+
+        console.log('🚀 [PARENT] Auto-starting chat with nurse:', location.state.nurseName, 'nurseId:', location.state.nurseId);
+
+        // Wait for conversations to load, then try to find the nurse
+        const timer = setTimeout(async () => {
+            // Helper function to get nurse ID from conversation
+            const getNurseIdFromConversation = (conv) => {
+                return conv?.User || conv?.user || conv?.nurseId || conv?.otherUserId ||
+                    conv?.userId || conv?.NurseId || conv?.UserId;
+            };
+
+            // Helper function to get nurse name from conversation
+            const getNurseNameFromConversation = (conv) => {
+                return conv?.userName || conv?.nurseName || conv?.UserName || conv?.NurseName;
+            };
+
+            // Try to find existing conversation with the nurse
+            const nurseConversation = conversations.find(conv => {
+                const convNurseId = getNurseIdFromConversation(conv);
+                const convNurseName = getNurseNameFromConversation(conv);
+
+                // Match by nurseId if available, otherwise match by name
+                if (location.state.nurseId) {
+                    return convNurseId === location.state.nurseId;
+                } else {
+                    return convNurseName === location.state.nurseName;
+                }
+            });
+
+            if (nurseConversation) {
+                console.log('🚀 [PARENT] Found existing conversation with nurse:', {
+                    nurseId: getNurseIdFromConversation(nurseConversation),
+                    nurseName: getNurseNameFromConversation(nurseConversation)
+                });
+                await loadChatHistory(nurseConversation);
+            } else {
+                console.log('🚀 [PARENT] Starting new chat with nurse:', {
+                    nurseId: location.state.nurseId,
+                    nurseName: location.state.nurseName
+                });
+                startNewChat(location.state.nurseName, location.state.nurseId);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [userId, loading, conversations, location.state, loadChatHistory]);
 
     // ===== STEP 3: SETUP SIGNALR EVENT LISTENERS FOR AUTO-REFRESH =====
     useEffect(() => {
@@ -309,59 +339,57 @@ const ParentChat = () => {
         e.preventDefault();
         if (!newMessage.trim() || sending) return;
 
-        // Handle new chat mode - send message to system
-        if (isNewChatMode || selectedConversation?.isNewChat) {
-            try {
-                setSending(true);
-                setError('');
-
-                console.log('📤 [PARENT] Sending new chat message to system');
-
-                // Send to system (no specific nurse ID) - backend will handle assignment
-                await simpleChatAPI.sendMessage(userId, null, newMessage);
-
-                // Clear input
-                setNewMessage('');
-
-                // Exit new chat mode and reload conversations
-                setIsNewChatMode(false);
-                await loadConversations();
-
-                set('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
-
-            } catch (error) {
-                console.error('❌ Error sending new chat message:', error);
-                setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
-            } finally {
-                setSending(false);
-            }
-            return;
-        }
-
         try {
             setSending(true);
             setError('');
 
+            // If it's a new chat with specific nurse (has nurseId), send directly to nurseId
+            if ((isNewChatMode || selectedConversation?.isNewChat) && selectedConversation?.nurseId) {
+                console.log('📤 [PARENT] Sending new chat message to nurseId:', selectedConversation.nurseId);
+
+                await simpleChatAPI.sendMessage(userId, selectedConversation.nurseId, newMessage);
+
+                setNewMessage('');
+                setIsNewChatMode(false);
+                await loadConversations();
+                setSuccess('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
+                return;
+            }
+
+            // If it's a new chat without specific nurse (send to system)
+            if (isNewChatMode || selectedConversation?.isNewChat) {
+                console.log('📤 [PARENT] Sending new chat message to system');
+
+                await simpleChatAPI.sendMessage(userId, null, newMessage);
+
+                setNewMessage('');
+                setIsNewChatMode(false);
+                await loadConversations();
+                setSuccess('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
+                return;
+            }
+
+            // Existing conversation - send to specific nurse
             console.log('📤 [PARENT] Selected conversation for sending:', selectedConversation);
 
-            // Try multiple possible field names for partner ID
-            const partnerId = selectedConversation?.user ||     // ← PRIMARY FIELD FROM API (lowercase)
-                selectedConversation?.User ||     // ← Fallback to uppercase
+            // Get nurse ID from selected conversation
+            const nurseId = selectedConversation?.user ||
+                selectedConversation?.User ||
                 selectedConversation?.nurseId ||
                 selectedConversation?.otherUserId ||
                 selectedConversation?.userId ||
                 selectedConversation?.NurseId ||
                 selectedConversation?.UserId;
 
-            if (!partnerId) {
-                console.error('❌ No valid partnerId found in selectedConversation:', Object.keys(selectedConversation || {}));
-                throw new Error('Không xác định được người nhận. Cấu trúc dữ liệu không đúng.');
+            if (!nurseId) {
+                console.error('❌ No valid nurseId found in selectedConversation:', Object.keys(selectedConversation || {}));
+                throw new Error('Không xác định được y tá. Cấu trúc dữ liệu không đúng.');
             }
 
-            console.log('📤 [PARENT] Sending message to partnerId:', partnerId);
+            console.log('📤 [PARENT] Sending message to nurseId:', nurseId);
 
             // Send via REST API
-            await simpleChatAPI.sendMessage(userId, partnerId, newMessage);
+            await simpleChatAPI.sendMessage(userId, nurseId, newMessage);
 
             // Clear input immediately
             setNewMessage('');
@@ -378,12 +406,13 @@ const ParentChat = () => {
     };
 
     // Start new chat
-    const startNewChat = () => {
+    const startNewChat = (nurseName = null, nurseId = null) => {
         // Create a temporary conversation object for new chat
         const tempConversation = {
             id: 'new-chat-temp',
-            nurseId: null,
-            nurseName: 'Hệ thống tư vấn',
+            nurseId: nurseId,
+            nurseName: nurseName || 'Hệ thống tư vấn',
+            userName: nurseName || 'Hệ thống tư vấn',
             lastMessage: '',
             lastMessageTime: null,
             unreadCount: 0,
@@ -514,7 +543,7 @@ const ParentChat = () => {
             <div className="conversations-header">
                 <h5 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <FaComments />
-                    Tin nhắn tư vấn
+                    Liên hệ y tá
                 </h5>
             </div>
 
@@ -564,7 +593,9 @@ const ParentChat = () => {
                         )}
                         <h6>
                             <span className="nurse-status"></span>
-                            Cuộc trò chuyện mới
+                            {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
+                                ? `Liên hệ với ${selectedConversation?.nurseName}`
+                                : 'Cuộc trò chuyện mới'}
                         </h6>
                     </div>
 
@@ -580,7 +611,11 @@ const ParentChat = () => {
                     }}>
                         <div>
                             <FaComments size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-                            <div>Gửi tin nhắn đầu tiên để bắt đầu cuộc trò chuyện với y tá</div>
+                            <div>
+                                {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
+                                    ? `Gửi tin nhắn tới ${selectedConversation?.nurseName}`
+                                    : 'Gửi tin nhắn đầu tiên để bắt đầu cuộc trò chuyện với y tá'}
+                            </div>
                             <div style={{ fontSize: '0.9rem', marginTop: '8px' }}>
                                 Y tá sẽ phản hồi sớm nhất có thể
                             </div>

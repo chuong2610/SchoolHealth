@@ -8,7 +8,7 @@ public class OtherCheckDetailDTO
     public string Description { get; set; } = string.Empty;
     public List<OtherCheckItemDTO> CheckList { get; set; } = new List<OtherCheckItemDTO>();
     public string Conclusion { get; set; } = string.Empty;
-    public string ResultAtHome { get; set; } = string.Empty;
+    public string? ResultAtHome { get; set; } = string.Empty;
     public int NotificationId { get; set; }
     public int NurseId { get; set; }
     public string NurseName { get; set; } = string.Empty;

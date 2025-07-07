@@ -32,11 +32,11 @@ export const getClassList = async () => {
 
     // Transform backend field names to frontend expected format
     if (classData && Array.isArray(classData) && classData.length > 0) {
-      const transformedData = classData.map(cls => ({
+      const transformedData = classData.map((cls) => ({
         id: cls.classId || cls.id, // Backend sends 'classId', frontend expects 'id'
         name: cls.className || cls.name, // Backend sends 'className', frontend expects 'name'
         className: cls.className || cls.name, // Keep both for compatibility
-        classId: cls.classId || cls.id // Keep original for reference
+        classId: cls.classId || cls.id, // Keep original for reference
       }));
 
       return transformedData;
@@ -48,7 +48,7 @@ export const getClassList = async () => {
         { id: 1, name: "Lớp 10A1", className: "10A1" },
         { id: 2, name: "Lớp 10A2", className: "10A2" },
         { id: 3, name: "Lớp 11B1", className: "11B1" },
-        { id: 4, name: "Lớp 12C1", className: "12C1" }
+        { id: 4, name: "Lớp 12C1", className: "12C1" },
       ];
     }
 
@@ -59,7 +59,7 @@ export const getClassList = async () => {
       { id: 1, name: "Lớp 10A1", className: "10A1" },
       { id: 2, name: "Lớp 10A2", className: "10A2" },
       { id: 3, name: "Lớp 11B1", className: "11B1" },
-      { id: 4, name: "Lớp 12C1", className: "12C1" }
+      { id: 4, name: "Lớp 12C1", className: "12C1" },
     ];
   }
 };
@@ -77,21 +77,22 @@ export const getNurseList = async () => {
       nurseData = res.data.data;
     } else if (res.data && res.data.success === false) {
       nurseData = [];
-    } else if (res.data && typeof res.data === 'object') {
+    } else if (res.data && typeof res.data === "object") {
       // Try to extract array from object
-      nurseData = Object.values(res.data).find(val => Array.isArray(val)) || [];
+      nurseData =
+        Object.values(res.data).find((val) => Array.isArray(val)) || [];
     } else {
       nurseData = [];
     }
 
     // Transform backend field names to frontend expected format
     if (nurseData && Array.isArray(nurseData) && nurseData.length > 0) {
-      const transformedData = nurseData.map(nurse => ({
+      const transformedData = nurseData.map((nurse) => ({
         id: nurse.id, // Backend sends 'id' correctly
         fullName: nurse.nurseName || nurse.fullName || nurse.name, // Backend sends 'nurseName', frontend expects 'fullName'
         name: nurse.nurseName || nurse.fullName || nurse.name, // Keep both for compatibility
         nurseName: nurse.nurseName || nurse.name, // Keep original for reference
-        role: nurse.role || "Nurse"
+        role: nurse.role || "Nurse",
       }));
 
       return transformedData;
@@ -100,29 +101,64 @@ export const getNurseList = async () => {
     // If no data from API, return sample data for development
     if (!nurseData || nurseData.length === 0) {
       return [
-        { id: 1, fullName: "Nguyễn Thị Hạnh", name: "Nguyễn Thị Hạnh", role: "Nurse" },
-        { id: 2, fullName: "Trần Văn Minh", name: "Trần Văn Minh", role: "Nurse" },
+        {
+          id: 1,
+          fullName: "Nguyễn Thị Hạnh",
+          name: "Nguyễn Thị Hạnh",
+          role: "Nurse",
+        },
+        {
+          id: 2,
+          fullName: "Trần Văn Minh",
+          name: "Trần Văn Minh",
+          role: "Nurse",
+        },
         { id: 3, fullName: "Lê Thị Mai", name: "Lê Thị Mai", role: "Nurse" },
-        { id: 4, fullName: "Phạm Văn Hùng", name: "Phạm Văn Hùng", role: "Nurse" }
+        {
+          id: 4,
+          fullName: "Phạm Văn Hùng",
+          name: "Phạm Văn Hùng",
+          role: "Nurse",
+        },
       ];
     }
 
     return nurseData;
   } catch (error) {
-    // Return sample data on API error  
+    // Return sample data on API error
     return [
-      { id: 1, fullName: "Nguyễn Thị Hạnh", name: "Nguyễn Thị Hạnh", role: "Nurse" },
-      { id: 2, fullName: "Trần Văn Minh", name: "Trần Văn Minh", role: "Nurse" },
+      {
+        id: 1,
+        fullName: "Nguyễn Thị Hạnh",
+        name: "Nguyễn Thị Hạnh",
+        role: "Nurse",
+      },
+      {
+        id: 2,
+        fullName: "Trần Văn Minh",
+        name: "Trần Văn Minh",
+        role: "Nurse",
+      },
       { id: 3, fullName: "Lê Thị Mai", name: "Lê Thị Mai", role: "Nurse" },
-      { id: 4, fullName: "Phạm Văn Hùng", name: "Phạm Văn Hùng", role: "Nurse" }
+      {
+        id: 4,
+        fullName: "Phạm Văn Hùng",
+        name: "Phạm Văn Hùng",
+        role: "Nurse",
+      },
     ];
   }
 };
 
-export const getNotifications = async (pageNumber = 1, pageSize = 10, search) => {
+export const getNotifications = async (
+  pageNumber = 1,
+  pageSize = 10,
+  search
+) => {
   try {
     const res = await axiosInstance.get(
-      `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}` + (search ? `&search=${search}` : "")
+      `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}` +
+        (search ? `&search=${search}` : "")
     );
     if (res.data) {
       return res.data;
@@ -135,6 +171,9 @@ export const getNotifications = async (pageNumber = 1, pageSize = 10, search) =>
 };
 
 export const postNotification = async (notificationData) => {
+  console.log("checkListJson:", notificationData.checkList);
+  console.log(Array.isArray(notificationData.checkList)); // nên là true
+
   try {
     // Validate and clean data before transformation
     const classId = notificationData.classId;
@@ -146,7 +185,9 @@ export const postNotification = async (notificationData) => {
     }
 
     if (!assignedToId || assignedToId === "" || isNaN(parseInt(assignedToId))) {
-      throw new Error(`Invalid assignedToId: "${assignedToId}". Expected a numeric ID.`);
+      throw new Error(
+        `Invalid assignedToId: "${assignedToId}". Expected a numeric ID.`
+      );
     }
 
     // Transform camelCase to PascalCase for backend
@@ -157,8 +198,11 @@ export const postNotification = async (notificationData) => {
       Message: notificationData.message || "",
       Note: notificationData.note || "",
       Location: notificationData.location || "",
-      Date: notificationData.date ? new Date(notificationData.date).toISOString() : new Date().toISOString(),
+      Date: notificationData.date
+        ? new Date(notificationData.date).toISOString()
+        : new Date().toISOString(),
       ClassId: parseInt(classId),
+      CheckList: notificationData.checkList || [], // ✔️ đúng theo DTO trong backend
       AssignedToId: parseInt(assignedToId),
     };
 
@@ -176,7 +220,8 @@ export const postNotification = async (notificationData) => {
   }
 };
 
-export const getNotificationDetail = async (notificationId, pageNumber = 1, pageSize = 10) => {
+{/**Lấy ra chi tiết thông báo dựa vào id */}
+export const getNotificationDetail = async (notificationId) => {
   try {
     const res = await axiosInstance.get(
       // `/Notification/admin/${notificationId}?pageNumber=${pageNumber}&pageSize=${pageSize}`

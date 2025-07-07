@@ -48,6 +48,11 @@ const Header = ({ onLogout }) => {
     },
     { path: '/parent/notifications', icon: <NotificationIcon />, label: 'Thông báo' },
     { path: '/parent/health-history', icon: <FaHistory />, label: 'Lịch sử sức khỏe' },
+    {
+      path: '/parent/consultation-appointments',
+      icon: <FaComments />,
+      label: 'Lịch hẹn tư vấn'
+    },
   ];
 
   const fetchParentInfo = async () => {
