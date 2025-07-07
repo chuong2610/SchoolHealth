@@ -79,6 +79,7 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
         {
             Items = appointments.Items.Select(a => new ConsultationAppointmentDetailDTO
             {
+                ConsultationAppointmentId = a.Id,
                 StudentName = a.Student.Name,
                 StudentNumber = a.Student.StudentNumber,
                 Date = a.Date,

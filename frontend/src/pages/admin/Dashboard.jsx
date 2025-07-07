@@ -438,7 +438,7 @@ const AdminDashboard = () => {
           </div>
           <div style={{ padding: "1.5rem" }}>
             {/* Debug info - remove in production */}
-            {process.env.NODE_ENV === "development" && (
+            {/* {process.env.NODE_ENV === "development" && (
               <div
                 style={{
                   fontSize: "0.8rem",
@@ -458,7 +458,7 @@ const AdminDashboard = () => {
                   </div>
                 )}
               </div>
-            )}
+            )} */}
 
             <ResponsiveContainer width="100%" height={350}>
               <BarChart
