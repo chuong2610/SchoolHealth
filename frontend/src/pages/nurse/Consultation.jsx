@@ -9,6 +9,7 @@ import {
 import { formatDateTime } from "../../utils/dateFormatter";
 import { toast } from "react-toastify";
 import "../../styles/nurse/consultation.css";
+import PaginationBar from "../../components/common/PaginationBar";
 
 // Mock student data
 const students = [
@@ -125,7 +126,8 @@ export default function Consultation() {
       throw error;
     }
 
-    setForm({ studentNumber: "", date: "", location: "", description: "" });
+    setForm({nurseId: nurseId, studentNumber: "", date: "", location: "", description: "", title: "" });
+    // setSelectedClass(null);
     setValidated(false); // reset form validation
   };
 
@@ -137,7 +139,7 @@ export default function Consultation() {
   };
 
   return (
-    <Container className="mt-4 nurse-theme">
+    <Container className="mt-4">
       <h2 className="mb-4 nurse-title">Đặt lịch tư vấn</h2>
       <Form
         noValidate
@@ -150,11 +152,11 @@ export default function Consultation() {
             <Form.Group controlId="classId">
               <Form.Label className="nurse-form-label">Lớp</Form.Label>
               <Form.Select
+                className="nurse-form-control"
                 required
                 name="classId"
                 value={selectedClass || ""}
                 onChange={(e) => setSelectedClass(e.target.value)}
-                className="nurse-form-control"
               >
                 <option value="">-- Chọn lớp --</option>
                 {classList.map((cls) => (
@@ -175,12 +177,12 @@ export default function Consultation() {
                 Chọn học sinh
               </Form.Label>
               <Form.Select
+                className="nurse-form-control"
                 disabled={!selectedClass}
                 required
                 name="studentNumber"
                 value={form.studentNumber}
                 onChange={handleChange}
-                className="nurse-form-control"
               >
                 {!selectedClass ? (
                   <option value="">-- Vui lòng chọn lớp --</option>
@@ -203,13 +205,13 @@ export default function Consultation() {
             <Form.Group controlId="date">
               <Form.Label className="nurse-form-label">Thời gian</Form.Label>
               <Form.Control
+                className="nurse-form-control"
                 required
                 type="datetime-local"
                 name="date"
                 min={getCurrentDateTimeLocal()}
                 value={form.date}
                 onChange={handleChange}
-                className="nurse-form-control"
               />
               <Form.Control.Feedback type="invalid">
                 Vui lòng chọn thời gian hợp lệ.
@@ -221,13 +223,13 @@ export default function Consultation() {
             <Form.Group controlId="location">
               <Form.Label className="nurse-form-label">Địa điểm</Form.Label>
               <Form.Control
+                className="nurse-form-control"
                 required
                 type="text"
                 name="location"
                 placeholder="Nhập địa điểm"
                 value={form.location}
                 onChange={handleChange}
-                className="nurse-form-control"
               />
               <Form.Control.Feedback type="invalid">
                 Vui lòng nhập địa điểm.
@@ -236,16 +238,16 @@ export default function Consultation() {
           </Col>
 
           <Col md={6} className="mt-3">
-            <Form.Group controlId="description">
+            <Form.Group controlId="title">
               <Form.Label className="nurse-form-label">Tiêu đề</Form.Label>
               <Form.Control
+                className="nurse-form-control"
                 required
                 type="text"
                 name="title"
                 placeholder="Nhập tiêu đề tư vấn"
                 value={form.title}
                 onChange={handleChange}
-                className="nurse-form-control"
               />
               <Form.Control.Feedback type="invalid">
                 Vui lòng nhập tiêu đề tư vấn.
@@ -257,13 +259,13 @@ export default function Consultation() {
             <Form.Group controlId="description">
               <Form.Label className="nurse-form-label">Nội dung</Form.Label>
               <Form.Control
+                className="nurse-form-control"
                 required
                 type="text"
                 name="description"
                 placeholder="Nhập nội dung tư vấn"
                 value={form.description}
                 onChange={handleChange}
-                className="nurse-form-control"
               />
               <Form.Control.Feedback type="invalid">
                 Vui lòng nhập nội dung tư vấn.
@@ -282,19 +284,19 @@ export default function Consultation() {
       <Row className="mb-3">
         <Col md={6}>
           <Form.Control
+            className="nurse-form-control"
             type="text"
-            placeholder="Tìm kiếm theo tên học sinh hoặc y tá"
+            placeholder="Tìm kiếm theo tên học sinh hoặc y tá..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="nurse-form-control"
           />
         </Col>
         {/* <Col md={6}>
           <Form.Control
+            className="nurse-form-control"
             type="date"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
-            className="nurse-form-control"
           />
         </Col> */}
       </Row>
@@ -320,12 +322,20 @@ export default function Consultation() {
           ) : (
             appointments.map((a, idx) => (
               <tr key={a.consultationAppointmentId}>
-                <td>{idx + 1}</td>
+                <td>{(currentPage - 1) * pageSize + idx + 1}</td>
                 <td>{a.studentName}</td>
                 <td>{a.nurseName}</td>
                 <td>{formatDateTime(a.date)}</td>
                 <td>{a.location}</td>
-                <td>{a.status}</td>
+                <td>
+                  {a.status === "Pending"
+                    ? "Chờ xác nhận"
+                    : a.status === "Confirmed"
+                    ? "Đã xác nhận"
+                    : a.status === "Rejected"
+                    ? "Đã từ chối"
+                    : a.status}
+                </td>
               </tr>
             ))
           )}

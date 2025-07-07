@@ -14,6 +14,7 @@ import {
   formatTime,
 } from "../../utils/dateFormatter";
 import "../../styles/nurse/notifications-nurse-management.css";
+import "../../styles/nurse/NotificationNurseManagement.css";
 import { exportExcelFile, importExcelFile } from "../../api/admin/excelApi";
 import { toast } from "react-toastify";
 import PaginationBar from "../../components/common/PaginationBar";
@@ -750,8 +751,8 @@ const NotificationsNurseManagement = () => {
                     </span>
                   </td>
 
-                  <td>
-                    <div className="admin-table-actions">
+                  <td className="nnm-action-cell">
+                    <div className="nnm-action-btn-group">
                       <button
                         className="admin-notification-action-btn view"
                         onClick={() => {
@@ -1659,21 +1660,23 @@ const NotificationsNurseManagement = () => {
                                   <td>{formatDDMMYYYY(result.date)}</td>
                                   <td>{result.vaccineName}</td>
                                   <td>{result.nurseName}</td>
-                                  <td>
-                                    {result.id && (
-                                      <button
-                                        className="admin-action-btn view"
-                                        onClick={() => {
-                                          if (result.id) {
-                                            fetchVaccinationResultDetail(
-                                              result.id
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <i className="fas fa-eye"></i>
-                                      </button>
-                                    )}
+                                  <td className="nnm-action-cell">
+                                    <div className="nnm-action-btn-group">
+                                      {result.id && (
+                                        <button
+                                          className="admin-action-btn view"
+                                          onClick={() => {
+                                            if (result.id) {
+                                              fetchVaccinationResultDetail(
+                                                result.id
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          <i className="fas fa-eye"></i>
+                                        </button>
+                                      )}
+                                    </div>
                                   </td>
                                 </tr>
                               )
@@ -1723,21 +1726,23 @@ const NotificationsNurseManagement = () => {
                                     {/* {modalDetail.notificationDetail.nurseName} */}
                                     {result.nurseName}
                                   </td>
-                                  <td>
-                                    {result.id && (
-                                      <button
-                                        className="admin-action-btn view"
-                                        onClick={() => {
-                                          if (result.id) {
-                                            fetchHealthCheckResultDetail(
-                                              result.id
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <i className="fas fa-eye"></i>
-                                      </button>
-                                    )}
+                                  <td className="nnm-action-cell">
+                                    <div className="nnm-action-btn-group">
+                                      {result.id && (
+                                        <button
+                                          className="admin-action-btn view"
+                                          onClick={() => {
+                                            if (result.id) {
+                                              fetchHealthCheckResultDetail(
+                                                result.id
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          <i className="fas fa-eye"></i>
+                                        </button>
+                                      )}
+                                    </div>
                                   </td>
                                 </tr>
                               )
@@ -1787,19 +1792,21 @@ const NotificationsNurseManagement = () => {
                                     {/* {modalDetail.notificationDetail.nurseName} */}
                                     {result.nurseName}
                                   </td>
-                                  <td>
-                                    {result.id && (
-                                      <button
-                                        className="admin-action-btn view"
-                                        onClick={() => {
-                                          if (result.id) {
-                                            fetchOtherResultDetail(result.id);
-                                          }
-                                        }}
-                                      >
-                                        <i className="fas fa-eye"></i>
-                                      </button>
-                                    )}
+                                  <td className="nnm-action-cell">
+                                    <div className="nnm-action-btn-group">
+                                      {result.id && (
+                                        <button
+                                          className="admin-action-btn view"
+                                          onClick={() => {
+                                            if (result.id) {
+                                              fetchOtherResultDetail(result.id);
+                                            }
+                                          }}
+                                        >
+                                          <i className="fas fa-eye"></i>
+                                        </button>
+                                      )}
+                                    </div>
                                   </td>
                                 </tr>
                               )

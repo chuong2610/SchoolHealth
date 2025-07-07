@@ -368,6 +368,19 @@ const Accounts = () => {
     confirmPassword: "",
   });
 
+  // Thêm hàm chuyển đổi tên vai trò sang id
+  const roleNameToId = (roleName) => {
+    switch (roleName) {
+      case "admin": return 1;
+      case "nurse": return 2;
+      case "parent": return 3;
+      case "Admin": return 1;
+      case "Nurse": return 2;
+      case "Parent": return 3;
+      default: return "";
+    }
+  };
+
   const handleShowModal = (type, user = null) => {
     setModalType(type);
     if (activeTab !== "student") {
@@ -379,7 +392,7 @@ const Accounts = () => {
           phone: user.phone || "",
           address: user.address || "",
           gender: user.gender || "",
-          role: user.role || activeTab, // Use current tab as default role
+          role: roleNameToId(user.roleName) || "",
           dateOfBirth: user.dateOfBirth || "",
           password: "", // Don't populate password for edit
           confirmPassword: "",
@@ -924,7 +937,6 @@ const Accounts = () => {
     try {
       await importExcelFile(file);
       toast.success("Thêm tệp kết quả thành công");
-      fetchUsers(); // Refresh user list
       fetchStudents();
     } catch (error) {
       toast.error("Thêm tệp kết quả thất bại");

@@ -1,0 +1,13 @@
+/* Căn giữa nội dung trong các ô thao tác của NotificationNurseManagement */
+.nnm-action-cell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.nnm-action-btn-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+}

@@ -519,13 +519,6 @@ const ReceiveMedicine = () => {
           >
             <FaCheckCircle />
           </button>
-          <button
-            className="action-btn reject"
-            onClick={() => handleReject(req)}
-            title="Từ chối"
-          >
-            <FaTimesCircle />
-          </button>
         </>
       )}
       {type === "active" && (
@@ -563,12 +556,12 @@ const ReceiveMedicine = () => {
           />
         </div>
         <div className="filter-actions">
-          <button
+          {/* <button
             className="filter-btn"
             onClick={() => setShowFilterModal(true)}
           >
             <FaFilter /> Lọc
-          </button>
+          </button> */}
           {/* <button
             className="export-btn"
             onClick={() => {
@@ -754,7 +747,7 @@ const ReceiveMedicine = () => {
                 // Giữ nguyên vị trí scroll
                 scrollPosition.current = window.scrollY;
               }}
-              className="nurse-medicine-tabs nurse-theme"
+              className="nurse-medicine-tabs"
             >
               <Tab
                 eventKey="pending"
