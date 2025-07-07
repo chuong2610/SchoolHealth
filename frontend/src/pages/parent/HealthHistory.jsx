@@ -190,6 +190,7 @@ const HealthHistory = () => {
     else if (type === "vaccination") url = `/Vaccination/${id}`;
     else if (type === "medicine") url = `/Medication/${id}`;
     else if (type === "other") url = `/OtherCheck/${id}`;
+    else if (type === "event") url = `/MedicalEvent/${id}`;
 
     try {
       const res = await axiosInstance.get(url);
@@ -862,6 +863,7 @@ const HealthHistory = () => {
                                       Địa điểm
                                     </th>
                                     <th className="text-center">Y tá</th>
+                                    <th className="text-center">Thao tác</th>
                                   </>
                                 )}
 
@@ -1080,6 +1082,17 @@ const HealthHistory = () => {
                                       <td className="text-center">
                                         {item.nurseName}
                                       </td>
+                                      <td className="text-center">
+                                        <Button
+                                          size="sm"
+                                          className="parent-primary-btn"
+                                          onClick={() => handleShowDetail(item.id, "event")}
+                                          title="Xem chi tiết"
+                                        >
+                                          <FaEye className="me-1" />
+                                          Chi tiết
+                                        </Button>
+                                      </td>
                                     </>
                                   )}
 
@@ -1185,7 +1198,7 @@ const HealthHistory = () => {
             </div>
           ) : detail ? (
             <div>
-              {activeTab === "checkup" ? (
+              {activeTab === "checkup" && (
                 <div
                   style={{
                     background: "white",
@@ -1385,7 +1398,8 @@ const HealthHistory = () => {
                     </Col>
                   </Row>
                 </div>
-              ) : (
+              )}
+              {activeTab === "vaccination" && (
                 <div
                   style={{
                     background: "white",
@@ -1568,7 +1582,7 @@ const HealthHistory = () => {
                   </Row>
                 </div>
               )}
-              {activeTab === "other" ? (
+              {activeTab === "other" && (
                 <div
                   style={{
                     background: "white",
@@ -1670,23 +1684,6 @@ const HealthHistory = () => {
                           {detail.nurseName}
                         </div>
                       </div>
-                      <div className="mb-3">
-                        <strong style={{ color: "var(--parent-primary)" }}>
-                          Kết quả tại nhà:
-                        </strong>
-                        <div
-                          style={{
-                            marginTop: "0.5rem",
-                            padding: "0.75rem",
-                            background:
-                              "linear-gradient(135deg, #faf7ff 0%, #f9fafb 100%)",
-                            borderRadius: "var(--parent-border-radius-md)",
-                            border: "1px solid rgba(107, 70, 193, 0.1)",
-                          }}
-                        >
-                          {detail.resultAtHome || "Chưa có"}
-                        </div>
-                      </div>
                     </Col>
                     <Col xs={12}>
                       <div className="mb-3 text-center">
@@ -1745,8 +1742,10 @@ const HealthHistory = () => {
                           >
                             {detail.checkList.map((item, index) => (
                               <div key={index} className="d-flex justify-content-between mb-2">
-                                <span style={{ fontWeight: "600" }}>{item.name}:</span>
-                                <span>{item.value}</span>
+                                <span style={{ fontWeight: "600" }}>{typeof item === 'string' ? item : item.name}</span>
+                                {typeof item === 'object' && item.value && (
+                                  <span>{item.value}</span>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -1776,13 +1775,107 @@ const HealthHistory = () => {
                     </Col>
                   </Row>
                 </div>
-              ) : null}
+              )}
+              {activeTab === "event" && (
+                <div
+                  style={{
+                    background: "white",
+                    padding: "1.5rem",
+                    borderRadius: "var(--parent-border-radius-lg)",
+                    border: "1px solid rgba(37, 99, 235, 0.1)",
+                    boxShadow: "var(--parent-shadow-sm)",
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: "3px",
+                      background: "#2563eb",
+                    }}
+                  ></div>
+                  <Row>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Học sinh:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "0.75rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)" }}>
+                          {detail.studentName}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Sự kiện:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "0.75rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)" }}>
+                          {detail.eventType}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Thời gian:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "0.75rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)" }}>
+                          {detail.date ? new Date(detail.date).toLocaleString("vi-VN") : "-"}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col md={6}>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Địa điểm:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "0.75rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)" }}>
+                          {detail.location}
+                        </div>
+                      </div>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Y tá:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "0.75rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)" }}>
+                          {detail.nurseName}
+                        </div>
+                      </div>
+                    </Col>
+                    <Col xs={12}>
+                      <div className="mb-3">
+                        <strong style={{ color: "var(--parent-primary)" }}>
+                          Mô tả:
+                        </strong>
+                        <div style={{ marginTop: "0.5rem", padding: "1rem", background: "#f8fafc", borderRadius: "var(--parent-border-radius-md)", border: "1px solid rgba(37, 99, 235, 0.1)", lineHeight: "1.6" }}>
+                          {detail.description || "-"}
+                        </div>
+                      </div>
+                      {detail.supplies && detail.supplies.length > 0 && (
+                        <div className="mb-3">
+                          <strong style={{ color: "var(--parent-primary)" }}>
+                            Vật tư sử dụng:
+                          </strong>
+                          <ul style={{ marginTop: "0.5rem", paddingLeft: "1.5rem" }}>
+                            {detail.supplies.map((supply, idx) => (
+                              <li key={idx}>
+                                {supply.medicalSupplyName} (số lượng: {supply.quantity})
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
+                </div>
+              )}
             </div>
           ) : null}
         </Modal.Body>
         <Modal.Footer>
-          {/* Nút xác nhận tiêm chủng - chỉ hiển thị cho vaccination */}
-          {activeTab === "vaccination" && detail && (
+          {/* Nút xác nhận tiêm chủng - chỉ hiển thị cho vaccination hoặc other */}
+          {(activeTab === "vaccination" || activeTab === "other") && detail && (
             (!detail.resultAtHome || detail.resultAtHome.trim() === "") ? (
               <Button
                 className="parent-primary-btn"
@@ -1818,8 +1911,8 @@ const HealthHistory = () => {
               </Button>
             )
           )}
-          {/* Nút liên hệ - hiển thị cho checkup, vaccination và other tab */}
-          {((activeTab === "checkup" || activeTab === "vaccination" || activeTab === "other") && detail && detail.nurseName) && (
+          {/* Nút liên hệ - hiển thị cho checkup, vaccination, other, event tab */}
+          {((activeTab === "checkup" || activeTab === "vaccination" || activeTab === "other" || activeTab === "event") && detail && detail.nurseName) && (
             <Button
               className="parent-primary-btn"
               onClick={() => {

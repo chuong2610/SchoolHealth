@@ -343,25 +343,23 @@ const ParentChat = () => {
             setSending(true);
             setError('');
 
-            // If it's a new chat with specific nurse (has nurseId), send directly to nurseId
-            if ((isNewChatMode || selectedConversation?.isNewChat) && selectedConversation?.nurseId) {
-                console.log('📤 [PARENT] Sending new chat message to nurseId:', selectedConversation.nurseId);
-
-                await simpleChatAPI.sendMessage(userId, selectedConversation.nurseId, newMessage);
-
+            // Nếu là chat mới và chưa có nurseId, gửi với toUserId: null
+            if ((isNewChatMode || selectedConversation?.isNewChat) && !selectedConversation?.nurseId) {
+                console.log('📤 [PARENT] Sending new chat message to system (toUserId: null)');
+                await simpleChatAPI.sendMessage(userId, null, newMessage);
                 setNewMessage('');
                 setIsNewChatMode(false);
-                await loadConversations();
-                setSuccess('Tin nhắn đã được gửi! Y tá sẽ sớm phản hồi.');
+                setSuccess('Tin nhắn của bạn đã được gửi đến y tá. Y tá sẽ phản hồi sớm nhất.');
+                // Sau khi gửi thành công, quay lại giao diện chat bình thường (không cần fetch lại danh sách chờ xử lý)
+                setSelectedConversation(null);
+                setMessages([]);
                 return;
             }
 
-            // If it's a new chat without specific nurse (send to system)
-            if (isNewChatMode || selectedConversation?.isNewChat) {
-                console.log('📤 [PARENT] Sending new chat message to system');
-
-                await simpleChatAPI.sendMessage(userId, null, newMessage);
-
+            // Nếu là chat mới với nurse cụ thể
+            if ((isNewChatMode || selectedConversation?.isNewChat) && selectedConversation?.nurseId) {
+                console.log('📤 [PARENT] Sending new chat message to nurseId:', selectedConversation.nurseId);
+                await simpleChatAPI.sendMessage(userId, selectedConversation.nurseId, newMessage);
                 setNewMessage('');
                 setIsNewChatMode(false);
                 await loadConversations();
@@ -371,8 +369,6 @@ const ParentChat = () => {
 
             // Existing conversation - send to specific nurse
             console.log('📤 [PARENT] Selected conversation for sending:', selectedConversation);
-
-            // Get nurse ID from selected conversation
             const nurseId = selectedConversation?.user ||
                 selectedConversation?.User ||
                 selectedConversation?.nurseId ||
@@ -380,23 +376,14 @@ const ParentChat = () => {
                 selectedConversation?.userId ||
                 selectedConversation?.NurseId ||
                 selectedConversation?.UserId;
-
             if (!nurseId) {
                 console.error('❌ No valid nurseId found in selectedConversation:', Object.keys(selectedConversation || {}));
                 throw new Error('Không xác định được y tá. Cấu trúc dữ liệu không đúng.');
             }
-
             console.log('📤 [PARENT] Sending message to nurseId:', nurseId);
-
-            // Send via REST API
             await simpleChatAPI.sendMessage(userId, nurseId, newMessage);
-
-            // Clear input immediately
             setNewMessage('');
-
-            // Reload chat history to show latest messages
             await loadChatHistory(selectedConversation);
-
         } catch (error) {
             console.error('❌ Error sending message:', error);
             setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
@@ -594,8 +581,8 @@ const ParentChat = () => {
                         <h6>
                             <span className="nurse-status"></span>
                             {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
-                                ? `Liên hệ với ${selectedConversation?.nurseName}`
-                                : 'Cuộc trò chuyện mới'}
+                                ? 'Cuộc trò chuyện mới' 
+                                : `Liên hệ với ${selectedConversation?.nurseName}`}
                         </h6>
                     </div>
 
@@ -613,8 +600,9 @@ const ParentChat = () => {
                             <FaComments size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
                             <div>
                                 {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
-                                    ? `Gửi tin nhắn tới ${selectedConversation?.nurseName}`
-                                    : 'Gửi tin nhắn đầu tiên để bắt đầu cuộc trò chuyện với y tá'}
+                                    ? 'Gửi tin nhắn đầu tiên để bắt đầu cuộc trò chuyện với y tá'
+                                    
+                                    : `Gửi tin nhắn tới ${selectedConversation?.nurseName}`}
                             </div>
                             <div style={{ fontSize: '0.9rem', marginTop: '8px' }}>
                                 Y tá sẽ phản hồi sớm nhất có thể

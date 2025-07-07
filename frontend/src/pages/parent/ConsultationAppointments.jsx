@@ -15,6 +15,7 @@ const ParentConsultationAppointments = () => {
     const [rejectReason, setRejectReason] = useState("");
     const [selectedId, setSelectedId] = useState(null);
     const [actionLoading, setActionLoading] = useState(false);
+    const [pendingAppointments, setPendingAppointments] = useState([]);
 
     const fetchAppointments = async () => {
         setLoading(true);
@@ -29,8 +30,24 @@ const ParentConsultationAppointments = () => {
         }
     };
 
+    const fetchPendingAppointments = async () => {
+        setLoading(true);
+        setError("");
+        try {
+            const res = await axiosInstance.get(`/ConsultationAppointment/parent/${parentId}/pending?pageNumber=1&pageSize=100`);
+            setPendingAppointments(res.data.data.items || []);
+        } catch (e) {
+            setError("Không thể tải lịch hẹn chờ xác nhận");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        if (parentId) fetchAppointments();
+        if (parentId) {
+            fetchAppointments();
+            fetchPendingAppointments();
+        }
     }, [parentId]);
 
     const handleConfirm = async (id) => {
@@ -43,6 +60,7 @@ const ParentConsultationAppointments = () => {
             });
             toast.success("Xác nhận lịch hẹn thành công!");
             fetchAppointments();
+            fetchPendingAppointments();
         } catch (e) {
             toast.error("Xác nhận thất bại");
         } finally {
@@ -64,6 +82,7 @@ const ParentConsultationAppointments = () => {
             setRejectReason("");
             setSelectedId(null);
             fetchAppointments();
+            fetchPendingAppointments();
         } catch (e) {
             toast.error("Từ chối thất bại");
         } finally {
@@ -78,15 +97,17 @@ const ParentConsultationAppointments = () => {
         return today.toDateString() === appointmentDate.toDateString();
     };
 
-    // Filter appointments by status and date
+    // Lịch hẹn hôm nay (đã xác nhận, hôm nay)
     const todayAppointments = appointments.filter(item =>
         item.status === "Confirmed" && isToday(item.date)
     );
 
-    const pendingAppointments = appointments.filter(item =>
-        item.status === "Pending"
+    // Lịch hẹn đã xác nhận (tất cả, không phân biệt ngày)
+    const confirmedAppointments = appointments.filter(item =>
+        item.status === "Confirmed"
     );
 
+    // Lịch hẹn đã từ chối
     const rejectedAppointments = appointments.filter(item =>
         item.status === "Rejected"
     );
@@ -322,30 +343,148 @@ const ParentConsultationAppointments = () => {
                 </div>
             ) : (
                 <div>
-                    {/* Bảng 1: Lịch hẹn hôm nay */}
-                    {renderAppointmentTable(
-                        todayAppointments,
-                        "Lịch hẹn hôm nay",
-                        <FaCalendarCheck size={20} />,
-                        "Không có lịch hẹn nào được xác nhận cho hôm nay"
-                    )}
+                    {/* Nhóm 1: Lịch hẹn sắp tới */}
+                    <div style={{ marginBottom: '2rem' }}>
+                        <h4 style={{ color: '#2563eb', fontWeight: 600, marginBottom: 16 }}>Lịch hẹn hôm nay</h4>
+                        <Card className="mb-4" style={{ border: '2px solid #2563eb', boxShadow: '0 2px 12px rgba(38,99,235,0.08)', background: 'linear-gradient(90deg, #e0e7ff 0%, #f8fafc 100%)' }}>
+                            <Card.Header style={{
+                                background: '#2563eb',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px 8px 0 0',
+                                fontWeight: 700,
+                                fontSize: '1.1rem',
+                                letterSpacing: 1
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <FaCalendarCheck size={20} />
+                                    Lịch hẹn hôm nay
+                                    <span style={{
+                                        background: 'rgba(255,255,255,0.2)',
+                                        padding: '2px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.8rem',
+                                        marginLeft: 8
+                                    }}>
+                                        {todayAppointments.length}
+                                    </span>
+                                </div>
+                            </Card.Header>
+                            <Card.Body style={{ padding: 0 }}>
+                                {todayAppointments.length === 0 ? (
+                                    <div style={{
+                                        textAlign: 'center',
+                                        padding: '2rem',
+                                        color: '#6c757d',
+                                        fontStyle: 'italic'
+                                    }}>
+                                        Không có lịch hẹn nào được xác nhận cho hôm nay
+                                    </div>
+                                ) : (
+                                    <Table responsive hover style={{ margin: 0 }}>
+                                        <thead style={{ background: '#f8f9fa' }}>
+                                            <tr>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>STT</th>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>Học sinh</th>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>Y tá</th>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>Giờ</th>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>Địa điểm</th>
+                                                <th style={{ border: 'none', padding: '12px 16px' }}>Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {todayAppointments.map((item, idx) => (
+                                                <tr key={item.consultationAppointmentId} style={{ borderBottom: '1px solid #f0f0f0', background: '#f1f5ff' }}>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#2563eb' }}>{idx + 1}</td>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: '500' }}>
+                                                        {item.studentName}
+                                                    </td>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            <div style={{
+                                                                width: '8px',
+                                                                height: '8px',
+                                                                borderRadius: '50%',
+                                                                background: '#28a745'
+                                                            }}></div>
+                                                            {item.nurseName}
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle', fontWeight: 600, color: '#2563eb' }}>
+                                                        {item.date ? (
+                                                            <div>
+                                                                <div style={{ fontWeight: '500' }}>
+                                                                    {new Date(item.date).toLocaleTimeString("vi-VN", {
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit'
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        ) : "-"}
+                                                    </td>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                                                        <span style={{
+                                                            background: '#e9ecef',
+                                                            padding: '4px 8px',
+                                                            borderRadius: '4px',
+                                                            fontSize: '0.9rem'
+                                                        }}>
+                                                            {item.location || "Chưa xác định"}
+                                                        </span>
+                                                    </td>
+                                                    <td style={{ padding: '12px 16px', verticalAlign: 'middle' }}>
+                                                        <span style={{
+                                                            background: '#d4edda',
+                                                            color: '#155724',
+                                                            padding: '4px 8px',
+                                                            borderRadius: '4px',
+                                                            fontSize: '0.9rem',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '4px',
+                                                            fontWeight: 600
+                                                        }}>
+                                                            <FaCheckCircle size={12} />
+                                                            Đã xác nhận
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                )}
+                            </Card.Body>
+                        </Card>
 
-                    {/* Bảng 2: Lịch hẹn chờ xác nhận */}
-                    {renderAppointmentTable(
-                        pendingAppointments,
-                        "Lịch hẹn chờ xác nhận",
-                        <FaClock size={20} />,
-                        "Không có lịch hẹn nào đang chờ xác nhận",
-                        true // Show actions
-                    )}
+                        {/* Bảng lịch hẹn đã xác nhận (toàn bộ) */}
+                        {renderAppointmentTable(
+                            confirmedAppointments,
+                            "Lịch hẹn đã xác nhận",
+                            <FaCheckCircle size={20} />,
+                            "Không có lịch hẹn nào đã xác nhận"
+                        )}
+                    </div>
 
-                    {/* Bảng 3: Lịch hẹn đã từ chối */}
-                    {renderAppointmentTable(
-                        rejectedAppointments,
-                        "Lịch hẹn đã từ chối",
-                        <FaTimesCircle size={20} />,
-                        "Không có lịch hẹn nào bị từ chối"
-                    )}
+                    {/* Nhóm 2: Lịch hẹn đang chờ xác nhận */}
+                    <div style={{ marginBottom: '2rem' }}>
+                        {renderAppointmentTable(
+                            pendingAppointments,
+                            "Lịch hẹn chờ xác nhận",
+                            <FaClock size={20} />,
+                            "Không có lịch hẹn nào đang chờ xác nhận",
+                            true // Show actions
+                        )}
+                    </div>
+
+                    {/* Nhóm 3: Lịch hẹn đã từ chối */}
+                    <div>
+                        {renderAppointmentTable(
+                            rejectedAppointments,
+                            "Lịch hẹn đã từ chối",
+                            <FaTimesCircle size={20} />,
+                            "Không có lịch hẹn nào bị từ chối"
+                        )}
+                    </div>
                 </div>
             )}
 
