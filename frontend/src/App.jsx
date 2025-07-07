@@ -69,6 +69,8 @@ import CreateBlogPost from "./pages/admin/CreateBlogPost";
 import EditBlogPost from "./pages/admin/EditBlogPost";
 import EditProfile from "./pages/admin/EditProfile";
 import { AvatarProvider } from "./context/AvatarContext";
+import NotificationsNurseManagement from "./pages/nurse/NotificationsNurseManagement";
+import Consultation from "./pages/nurse/Consultation";
 
 // Google OAuth Configuration
 const GOOGLE_CLIENT_ID =
@@ -143,6 +145,8 @@ const App = () => {
                         element={<NurseReceiveMedicine />}
                       />
                       <Route path="health-events" element={<NurseHealthEvents />} />
+                      <Route path="notification/management" element={<NotificationsNurseManagement />} />
+                      <Route path="consultation" element={<Consultation />} />
                       <Route path="chat" element={<NurseChat />} />
                       <Route path="profile" element={<NurseProfile />} />
                       <Route path="settings" element={<NurseSettings />} />

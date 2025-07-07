@@ -1,0 +1,50 @@
+/* Nurse Consultation Page Styles */
+.nurse-theme {
+  background: #fff;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+.nurse-title {
+  color: #f06292;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+.nurse-form-label {
+  color: #f06292;
+  font-weight: 600;
+}
+.nurse-form-control {
+  border-radius: 12px;
+  border: 2px solid #f8bbd9;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+.nurse-form-control:focus {
+  border-color: #f06292;
+  box-shadow: 0 0 0 2px #f8bbd9;
+}
+.nurse-table thead th {
+  background: #fce4ec;
+  color: #f06292;
+  font-weight: 700;
+  border: none;
+}
+.nurse-table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+.nurse-btn-primary {
+  background: linear-gradient(135deg, #f06292, #e91e63);
+  color: #fff !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 4px 12px rgba(240, 98, 146, 0.12);
+  transition: all 0.2s;
+}
+.nurse-btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 20px rgba(240, 98, 146, 0.18);
+}
