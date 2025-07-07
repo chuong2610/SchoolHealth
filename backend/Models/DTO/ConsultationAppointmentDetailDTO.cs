@@ -1,6 +1,7 @@
 namespace backend.Models.DTO;
 public class ConsultationAppointmentDetailDTO
 {
+    public int ConsultationAppointmentId { get; set; }
     public string StudentNumber { get; set; } = string.Empty;
     public string StudentName { get; set; } = string.Empty;
     public string NurseName { get; set; } = string.Empty;
