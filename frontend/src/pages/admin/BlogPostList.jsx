@@ -13,7 +13,7 @@ import {
   FaSpinner,
   FaFileAlt,
   FaChevronLeft,
-  FaChevronRight
+  FaChevronRight,
 } from "react-icons/fa";
 import "../../styles/admin/blog-post-list.css";
 
@@ -62,7 +62,12 @@ const BlogPostList = () => {
   };
 
   const handleDelete = async (id, title) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa blog "${title}" không?\n\nThao tác này không thể hoàn tác.`)) return;
+    if (
+      !window.confirm(
+        `Bạn có chắc muốn xóa blog "${title}" không?\n\nThao tác này không thể hoàn tác.`
+      )
+    )
+      return;
 
     try {
       setIsDeleting(true);
@@ -100,10 +105,10 @@ const BlogPostList = () => {
     if (!dateStr) return "Không xác định";
     const date = new Date(dateStr);
     if (isNaN(date.getTime())) return "Không xác định";
-    return new Intl.DateTimeFormat('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
+    return new Intl.DateTimeFormat("vi-VN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     }).format(date);
   };
 
@@ -136,11 +141,17 @@ const BlogPostList = () => {
       {/* Action Buttons */}
       <div className="admin-blog-list-actions">
         <div style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/admin/create-blog" className="admin-blog-list-btn admin-blog-list-btn-primary">
+          <Link
+            to="/admin/create-blog"
+            className="admin-blog-list-btn admin-blog-list-btn-primary"
+          >
             <FaPlus />
             Tạo bài viết mới
           </Link>
-          <Link to="/admin/blog-posts" className="admin-blog-list-btn admin-blog-list-btn-secondary">
+          <Link
+            to="/admin/blog-posts"
+            className="admin-blog-list-btn admin-blog-list-btn-secondary"
+          >
             <FaList />
             Danh sách bài viết
           </Link>
@@ -160,11 +171,17 @@ const BlogPostList = () => {
         {blogPosts.length === 0 ? (
           <div className="admin-blog-list-empty-state">
             <FaFileAlt className="admin-blog-list-empty-icon" />
-            <h3 className="admin-blog-list-empty-title">Chưa có bài viết nào</h3>
+            <h3 className="admin-blog-list-empty-title">
+              Chưa có bài viết nào
+            </h3>
             <p className="admin-blog-list-empty-subtitle">
               Hãy tạo bài viết đầu tiên của bạn để bắt đầu chia sẻ nội dung!
             </p>
-            <Link to="/admin/create-blog" className="admin-blog-list-btn admin-blog-list-btn-primary" style={{ marginTop: "1rem" }}>
+            <Link
+              to="/admin/create-blog"
+              className="admin-blog-list-btn admin-blog-list-btn-primary"
+              style={{ marginTop: "1rem" }}
+            >
               <FaPlus />
               Tạo bài viết đầu tiên
             </Link>
@@ -174,37 +191,42 @@ const BlogPostList = () => {
             <table className="admin-blog-list-table">
               <thead>
                 <tr>
-                  <th>STT</th>
-                  <th>Tiêu đề</th>
-                  <th>Tác giả</th>
-                  <th>Ngày tạo</th>
-                  <th>Thao tác</th>
+                  <th style={{ width: "10%" }}>STT</th>
+                  <th style={{ width: "40%" }}>Tiêu đề</th>
+                  <th style={{ width: "25%" }}>Ngày tạo</th>
+                  <th style={{ width: "25%" }}>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {blogPosts.map((post, index) => (
                   <tr key={post.id}>
                     <td>
-                      <strong>#{(currentPage - 1) * pageSize + index + 1}</strong>
+                      <strong>
+                        #{(currentPage - 1) * pageSize + index + 1}
+                      </strong>
                     </td>
                     <td>
-                      <div style={{
-                        maxWidth: "300px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontWeight: "600",
-                        color: "#2d3748"
-                      }}>
+                      <div
+                        style={{
+                          maxWidth: "300px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          fontWeight: "600",
+                          color: "#2d3748",
+                        }}
+                      >
                         {post.title}
                       </div>
                     </td>
+
                     <td>
-                      <div style={{ fontWeight: "500", color: "#4a5568" }}>
-                        {post.author || "Không xác định"}
-                      </div>
-                    </td>
-                    <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
                         <FaCalendarAlt style={{ color: "#4ECDC4" }} />
                         {formatDate(post.createdAt)}
                       </div>
@@ -225,7 +247,11 @@ const BlogPostList = () => {
                           disabled={isDeleting}
                           title="Xóa bài viết"
                         >
-                          {isDeleting ? <FaSpinner className="fa-spin" /> : <FaTrash />}
+                          {isDeleting ? (
+                            <FaSpinner className="fa-spin" />
+                          ) : (
+                            <FaTrash />
+                          )}
                           Xóa
                         </button>
                       </div>
@@ -254,8 +280,9 @@ const BlogPostList = () => {
                   {getPageNumbers().map((page) => (
                     <li
                       key={page}
-                      className={`admin-blog-list-pagination-item ${page === currentPage ? "active" : ""
-                        }`}
+                      className={`admin-blog-list-pagination-item ${
+                        page === currentPage ? "active" : ""
+                      }`}
                     >
                       <button
                         className="admin-blog-list-pagination-link"

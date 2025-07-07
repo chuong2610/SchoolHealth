@@ -88,7 +88,7 @@ const Accounts = () => {
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState("parent");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(2);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
@@ -218,13 +218,31 @@ const Accounts = () => {
           `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`
       );
       console.log(response.data);
-      if (response.data.success) {
-        console.log("totopages", response.data.data.totalPages);
-        setTotalPages(response.data?.data?.totalPages || 1);
-        setUsers(response.data?.data?.items || []);
+      // if (response.data.success) {
+      //   console.log("totopages", response.data.data.totalPages);
+      //   setTotalPages(response.data?.data?.totalPages || 1);
+      //   setUsers(response.data?.data?.items || []);
+      // } else {
+      //   setError(response.data.message || "Failed to fetch users.");
+      //   setUsers([]);
+      // }
+      {/**Mới thêm logic ở đây để sửa lỗi Cannot read properties of null (reading 'totalPages') */}
+      if (response.data.success && response.data.data) {
+        const { totalPages, items } = response.data.data;
+
+        if (!items || items.length === 0) {
+          setUsers([]);
+          setTotalPages(1);
+          setError(null); // ✅ Không hiển thị lỗi
+        } else {
+          setUsers(items);
+          setTotalPages(totalPages || 1);
+          setError(null); // ✅ Không có lỗi
+        }
       } else {
-        setError(response.data.message || "Failed to fetch users.");
         setUsers([]);
+        setTotalPages(1);
+        setError(response.data.message || "Không tìm thấy người dùng.");
       }
     } catch (err) {
       setError(
@@ -603,7 +621,19 @@ const Accounts = () => {
       const response = await axiosInstance.delete(`/User/${userToDelete?.id}`);
       if (response.data.success) {
         toast.success("Xóa người dùng thành công!");
-        fetchUsers(); // Refresh the user list
+
+        // fetchUsers(); // Refresh the user list
+
+        {/**Mới thêm logic ở đây để xử lý lỗi Cannot read properties of null (reading 'totalPages')*/}
+        // Nếu là phần tử cuối cùng trên trang hiện tại
+        const isLastItemOnPage = users.length === 1 && currentPage > 1;
+
+        if (isLastItemOnPage) {
+          setCurrentPage(currentPage - 1); // Lùi về trang trước
+          await fetchUsers(currentPage - 1); // Gọi dữ liệu trang trước
+        } else {
+          await fetchUsers(currentPage); // Gọi lại dữ liệu trang hiện tại
+        }
       } else {
         toast.error(
           "Lỗi khi xóa người dùng: " +
