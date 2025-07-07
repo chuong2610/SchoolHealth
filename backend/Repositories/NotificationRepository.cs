@@ -217,7 +217,10 @@ namespace backend.Repositories
         {
             return await _context.Notifications
                 .Include(n => n.NotificationStudents)
-                .ThenInclude(ns => ns.Student)
+                    .ThenInclude(ns => ns.Student)
+                .Include(n => n.AssignedTo)
+                .Include(n => n.CreatedBy)
+
                 .FirstOrDefaultAsync(n => n.Id == id);
         }
 
