@@ -6,6 +6,7 @@ public class OtherCheckDTO
     public DateTime Date { get; set; } = DateTime.UtcNow;
     public string Location { get; set; } = string.Empty;
     public List<OtherCheckItemDTO> CheckList { get; set; } = new List<OtherCheckItemDTO>();
+    public string Description { get; set; } = string.Empty;
     public string Conclusion { get; set; } = string.Empty;
     public string? ResultAtHome { get; set; } = string.Empty;
     public int NotificationId { get; set; }

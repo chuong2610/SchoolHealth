@@ -29,6 +29,7 @@ import {
   postNotification,
 } from "../../api/admin/notification";
 import { useDebounce } from "use-debounce";
+import axiosInstance from "../../api/axiosInstance";
 
 const icons = [
   {
@@ -101,6 +102,7 @@ const NotificationsManagement = () => {
       date: "",
       message: "",
       note: "",
+      checkList: [],
       assignedToId: null,
     },
   });
@@ -117,6 +119,7 @@ const NotificationsManagement = () => {
     status: false,
     healthCheck: {},
     vaccination: {},
+    other: {},
   });
   const [selectedTab, setSelectedTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
@@ -130,9 +133,7 @@ const NotificationsManagement = () => {
   {
     /**Tạo ra các trường mới cho loại thông báo khác */
   }
-  const [customFields, setCustomFields] = useState([
-    { label: "", type: "text", placeholder: "" },
-  ]);
+  const [customFields, setCustomFields] = useState([{ label: "" }]);
   {
     /**Tạo ra các trường mới cho loại thông báo khác */
   }
@@ -317,6 +318,7 @@ const NotificationsManagement = () => {
 
   useEffect(() => { }, [classList]);
 
+  // Bắt đầu xử lý việc tạo thông báo mới
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
     e.preventDefault();
@@ -328,6 +330,11 @@ const NotificationsManagement = () => {
     }
 
     const notificationData = { ...modalAdd?.notification };
+
+    //xử lý logic của CheckListJson
+    const labels = customFields.map((f) => f.label.trim()).filter(Boolean);
+    notificationData.checkList = labels;
+    //kết thúc xử lý logic của CheckListJson
 
     // Additional validation
     if (!notificationData.classId || notificationData.classId === "") {
@@ -412,6 +419,7 @@ const NotificationsManagement = () => {
       }
     }
   };
+  // Kết thúc xử lý việc tạo thông báo mới
 
   const handleClickImport = () => {
     fileInputRef.current.click();
@@ -437,6 +445,9 @@ const NotificationsManagement = () => {
     }
   };
 
+  {
+    /**Lấy ra chi tiết thông báo */
+  }
   const fetchNotificationDetail = async (notificationId) => {
     try {
       const res = await getNotificationDetail(
@@ -547,6 +558,27 @@ const NotificationsManagement = () => {
 
     fetchNurseList().catch((error) => { });
   }, []); // Empty dependency array - only run once on mount
+
+  {
+    /**Gọi API lấy ra chi tiết kết quả của Other */
+  }
+  const fetchOtherResultDetail = async (id) => {
+    try {
+      const res = await axiosInstance.get(`/OtherCheck/${id}`);
+      setModalResultDetail((prev) => ({
+        ...prev,
+        status: true,
+        other: res.data.data,
+      }));
+    } catch (error) {
+      toast.error("Không thể lấy chi tiết kết quả loại Khác");
+      console.log(error);
+    }
+  };
+
+  {
+    /**Kết thúc gọi API lấy ra chi tiết kết quả của Other */
+  }
 
   return (
     <div className="admin-notifications-container">
@@ -686,23 +718,35 @@ const NotificationsManagement = () => {
                       {notification.title}
                     </div>
                   </td>
+                  {/**Logic lấy ra loại thông báo */}
                   <td>
                     <span
-                      className={`admin-notification-type ${notification.type === "Vaccination" ? "health" : "event"
-                        }`}
+                      className={`admin-notification-type ${
+                        notification.type === "Vaccination"
+                          ? "health"
+                          : notification.type === "HealthCheck"
+                          ? "event"
+                          : "other"
+                      }`}
                     >
                       <i
                         className={
                           notification.type === "Vaccination"
                             ? "fas fa-syringe"
-                            : "fas fa-stethoscope"
+                            : notification.type === "HealthCheck"
+                            ? "fas fa-stethoscope"
+                            : ""
                         }
                       ></i>
                       {notification.type === "Vaccination"
                         ? "Tiêm chủng"
-                        : "Kiểm tra sức khỏe"}
+                        : notification.type === "HealthCheck"
+                        ? "Kiểm tra sức khỏe"
+                        : "Khác"}
                     </span>
                   </td>
+                  {/**Kết thúc logic lấy ra loại thông báo */}
+
                   <td>
                     <div className="admin-table-content">
                       {notification.message && notification.message.length > 80
@@ -920,7 +964,7 @@ const NotificationsManagement = () => {
                       <option key="healthcheck" value="HealthCheck">
                         🩺 Kiểm tra sức khỏe
                       </option>
-                      <option key="other" value="Other">
+                      <option key="other" value="OtherCheck">
                         🧩 Khác
                       </option>
                     </Form.Select>
@@ -1285,41 +1329,15 @@ const NotificationsManagement = () => {
                   Tạo loại thông báo mới
                 </legend>
 
-                {customFields.map((field, index) => (
+                {/* {customFields.map((field, index) => (
                   <Row key={index} className="mb-3">
-                    <Col md={4}>
+                    <Col md={11}>
                       <Form.Control
                         placeholder="Tên trường (Label)..."
                         value={field.label}
                         onChange={(e) => {
                           const newFields = [...customFields];
                           newFields[index].label = e.target.value;
-                          setCustomFields(newFields);
-                        }}
-                      />
-                    </Col>
-                    <Col md={3}>
-                      <Form.Select
-                        value={field.type}
-                        onChange={(e) => {
-                          const newFields = [...customFields];
-                          newFields[index].type = e.target.value;
-                          setCustomFields(newFields);
-                        }}
-                      >
-                        <option value="text">Text</option>
-                        <option value="number">Number</option>
-                        <option value="date">Date</option>
-                        <option value="select">Select</option>
-                      </Form.Select>
-                    </Col>
-                    <Col md={4}>
-                      <Form.Control
-                        placeholder="Placeholder..."
-                        value={field.placeholder}
-                        onChange={(e) => {
-                          const newFields = [...customFields];
-                          newFields[index].placeholder = e.target.value;
                           setCustomFields(newFields);
                         }}
                       />
@@ -1338,19 +1356,72 @@ const NotificationsManagement = () => {
                       </Button>
                     </Col>
                   </Row>
+                ))} */}
+                {customFields.map((field, index) => (
+                  <Row key={index} className="align-items-center mb-2">
+                    <Col xs={11}>
+                      <Form.Control
+                        value={field.label}
+                        placeholder="Nhập tên trường..."
+                        onChange={(e) => {
+                          const newFields = [...customFields];
+                          newFields[index].label = e.target.value;
+                          setCustomFields(newFields);
+                        }}
+                        style={{
+                          borderRadius: "10px",
+                          padding: "0.75rem 1rem",
+                          border: "2px solid #e5e7eb",
+                          fontSize: "0.95rem",
+                        }}
+                      />
+                    </Col>
+                    <Col xs={1}>
+                      <Button
+                        variant="outline-success"
+                        onMouseEnter={(e) =>
+                          (e.target.style.backgroundColor = "#fee2e2")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.backgroundColor = "transparent")
+                        }
+                        onClick={() => {
+                          const updated = customFields.filter(
+                            (_, i) => i !== index
+                          );
+                          setCustomFields(updated);
+                        }}
+                      >
+                        ❌
+                      </Button>
+                    </Col>
+                  </Row>
                 ))}
 
                 <div className="d-flex justify-content-end mt-3">
-                  <Button
+                  {/* <Button
                     variant="outline-success"
                     onClick={() =>
                       setCustomFields([
                         ...customFields,
-                        { label: "", type: "text", placeholder: "" },
+                        { label: ""},
                       ])
                     }
                   >
                     ➕ Thêm trường mới
+                  </Button> */}
+                  <Button
+                    variant="outline-success"
+                    onClick={() =>
+                      setCustomFields([...customFields, { label: "" }])
+                    }
+                    style={{
+                      borderRadius: "10px",
+                      padding: "0.5rem 1rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    <i className="fas fa-plus-circle me-2"></i>Thêm trường mới
                   </Button>
                 </div>
               </fieldset>
@@ -1592,7 +1663,8 @@ const NotificationsManagement = () => {
         </Modal.Body>
       </Modal>
 
-      {/* Detail Modal */}
+      {/* Chi tiết thông báo Modal */}
+
       <Modal
         show={modalDetail.status}
         onHide={() => {
@@ -1608,6 +1680,7 @@ const NotificationsManagement = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="admin-modal-body">
+          {/**Render ra Thông tin thông báo */}
           {modalDetail.notificationDetail && (
             <div className="admin-notification-detail">
               <div className="admin-detail-section">
@@ -1622,12 +1695,17 @@ const NotificationsManagement = () => {
                     <span
                       className={`admin-notification-type ${modalDetail.notificationDetail.type === "Vaccination"
                           ? "health"
-                          : "event"
-                        }`}
+                          : modalDetail.notificationDetail.type ===
+                            "HealthCheck"
+                          ? "event"
+                          : "other"
+                      }`}
                     >
                       {modalDetail.notificationDetail.type === "Vaccination"
                         ? "Tiêm chủng"
-                        : "Kiểm tra sức khỏe"}
+                        : modalDetail.notificationDetail.type === "HealthCheck"
+                        ? "Kiểm tra sức khỏe"
+                        : "Khác"}
                     </span>
                   </div>
                   <div className="admin-detail-item">
@@ -1651,8 +1729,30 @@ const NotificationsManagement = () => {
                   <label>Nội dung:</label>
                   <p>{modalDetail.notificationDetail.message}</p>
                 </div>
-              </div>
 
+                {/**Logic để render ra checkList */}
+                {/* {modalDetail.notificationDetail.checkList?.length > 0 && (
+                  <div className="admin-detail-section mt-3">
+                    <h5 className="admin-detail-title">Check List</h5>
+                    <div className="admin-detail-column">
+                      {modalDetail.notificationDetail.checkList.map(
+                        (label, index) => (
+                          <div
+                            key={index}
+                            style={{ marginBottom: "8px", color: "#374151" }}
+                          >
+                            <label>{label}</label>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )} */}
+                {/**Kết thúc logic để render ra checkList */}
+              </div>
+              {/**Kết thúc Render ra Thông tin thông báo */}
+
+              {/**Render ra kết quả thực hiện */}
               <div className="admin-detail-section">
                 <div className="admin-detail-header">
                   <h5 className="admin-detail-title">Kết quả thực hiện</h5>
@@ -1747,7 +1847,7 @@ const NotificationsManagement = () => {
                       </Table>
                     </div>
                   </div>
-                ) : (
+                ) : modalDetail.notificationDetail?.type === "HealthCheck" ? (
                   <div className="admin-table-container">
                     <Table className="admin-table">
                       <thead>
@@ -1811,6 +1911,60 @@ const NotificationsManagement = () => {
                       </Table>
                     </div>
                   </div>
+                ) : (
+                  // Tạo ra bảng loại "Other"
+                  <div className="admin-table-container">
+                    <Table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>STT</th>
+                          <th>Họ tên học sinh</th>
+                          <th>Y tá phụ trách</th>
+                          <th>Thời gian thực hiện</th>
+                          <th>Thao tác</th>
+                        </tr>
+                      </thead>
+                    </Table>
+
+                    <div
+                      className="admin-table-container"
+                      style={{ maxHeight: "400px", overflowY: "auto" }}
+                    >
+                      <Table className="admin-table">
+                        <tbody>
+                          {modalDetail.notificationDetail.results?.length ===
+                          0 ? (
+                            <tr>
+                              <td colSpan="5">Không có kết quả</td>
+                            </tr>
+                          ) : (
+                            modalDetail.notificationDetail.results?.map(
+                              (result, idx) => (
+                                <tr key={result.id || idx}>
+                                  <td>{(currentPage - 1) * 10 + idx + 1}</td>
+                                  <td>{result.studentName}</td>
+                                  <td>{result.nurseName}</td>
+                                  <td>{formatDDMMYYYY(result.date)}</td>
+                                  <td>
+                                    <button
+                                      className="admin-action-btn view"
+                                      onClick={() => {
+                                        if (result.id) {
+                                          fetchOtherResultDetail(result.id);
+                                        }
+                                      }}
+                                    >
+                                      <i className="fas fa-eye"></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              )
+                            )
+                          )}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
                 )}
                 {/* ))} */}
 
@@ -1827,6 +1981,7 @@ const NotificationsManagement = () => {
                   </div>
                 )}
               </div>
+              {/**Kết thúc Render ra kết quả thực hiện */}
             </div>
           )}
         </Modal.Body>
@@ -1944,6 +2099,80 @@ const NotificationsManagement = () => {
                     {modalResultDetail.vaccination.note || "Không có ghi chú"}
                   </p>
                 </div>
+              </div>
+            )}
+
+          {/**Xử lý logic của Other */}
+          {modalResultDetail.other &&
+            Object.keys(modalResultDetail.other).length !== 0 && (
+              <div className="admin-detail-section">
+                <div className="admin-detail-grid">
+                  <div className="admin-detail-item">
+                    <label>Mã kết quả:</label>
+                    <span>{modalResultDetail.other.id}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Họ tên học sinh:</label>
+                    <span>{modalResultDetail.other.studentName}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Ngày:</label>
+                    <span>{formatDDMMYYYY(modalResultDetail.other.date)}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Địa điểm:</label>
+                    <span>{modalResultDetail.other.location}</span>
+                  </div>
+                  <div className="admin-detail-item">
+                    <label>Y tá:</label>
+                    <span>{modalResultDetail.other.nurseName}</span>
+                  </div>
+                  {modalResultDetail.other.description && (
+                    <div className="admin-detail-item">
+                      <label>Mô tả:</label>
+                      <span>{modalResultDetail.other.description}</span>
+                    </div>
+                  )}
+                  {modalResultDetail.other.resultAtHome && (
+                    <div className="admin-detail-item">
+                      <label>Kết quả tại nhà:</label>
+                      <span>{modalResultDetail.other.resultAtHome}</span>
+                    </div>
+                  )}
+                  {modalResultDetail.other.conclusion && (
+                    <div className="admin-detail-item">
+                      <label>Kết luận:</label>
+                      <span>{modalResultDetail.other.conclusion}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Render Checklist nếu có */}
+                {modalResultDetail.other.checkList?.length > 0 && (
+                  <div style={{ marginTop: "1rem" }}>
+                    <h6 style={{ color: "#2E8B57" }}>Thông tin để kiểm tra</h6>
+                    <div className="table-responsive">
+                      <Table bordered size="sm">
+                        <thead>
+                          <tr>
+                            <th>Tên</th>
+                            <th>Giá trị</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {modalResultDetail.other.checkList.map(
+                            (item, idx) => (
+                              <tr key={idx}>
+                                <td>{item.name}</td>
+                                <td>{item.value}</td>
+                              </tr>
+                            )
+                          )}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
         </Modal.Body>

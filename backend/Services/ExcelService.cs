@@ -372,7 +372,7 @@ namespace backend.Services
                         row++;
                     }
                     break;
-                case "Other":
+                case "OtherCheck":
                     while (!worksheet.Cell(row, 1).IsEmpty())
                     {
                         try

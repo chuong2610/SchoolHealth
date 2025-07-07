@@ -15,7 +15,7 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
         _context = context;
     }
 
-    public async Task<List<ConsultationAppointment>> GetConsultationAppointmentsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
         var query = _context.ConsultationAppointments
                     .Include(ca => ca.Student)
@@ -35,14 +35,18 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
         {
             query = query.Where(ca => ca.Date.Date == searchDate.Value.Date);
         }
-        return await query
-            .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        return new PageResult<ConsultationAppointment>
+        {
+            Items = await query
+                .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(),
+            TotalItems = await query.CountAsync()
+        };
         
     }
-    public async Task<List<ConsultationAppointment>> GetConsultationAppointmentsByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
         var query = _context.ConsultationAppointments
                     .Include(ca => ca.Student)
@@ -63,13 +67,17 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
             query = query.Where(ca => ca.Date.Date == searchDate.Value.Date);
         }
 
-        return await query
-            .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        return new PageResult<ConsultationAppointment>
+        {
+            Items = await query
+                .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(),
+            TotalItems = await query.CountAsync()
+        };
     }
-    public async Task<List<ConsultationAppointment>> GetConsultationAppointmentsByParentIdAndPendingAsync(int parentId)
+    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsByParentIdAndPendingAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
         var query = _context.ConsultationAppointments
                     .Include(ca => ca.Student)
@@ -77,7 +85,28 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
                     .Where(ca => ca.Student.ParentId == parentId && ca.Status == "Pending") // lọc theo parentId và trạng thái Pending
                     .AsQueryable();
 
-        return await query.ToListAsync();
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(ca =>
+                ca.Reason.Contains(search) ||
+                ca.Student.Name.Contains(search) ||
+                ca.Nurse.Name.Contains(search));
+        }
+
+        if (searchDate.HasValue)
+        {
+            query = query.Where(ca => ca.Date.Date == searchDate.Value.Date);
+        }
+
+        return new PageResult<ConsultationAppointment>
+        {
+            Items = await query
+                .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(),
+            TotalItems = await query.CountAsync()
+        };
     }
     public async Task<ConsultationAppointment?> GetConsultationAppointmentByIdAsync(int id)
     {

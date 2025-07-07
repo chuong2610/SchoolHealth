@@ -37,6 +37,7 @@ public class OtherCheckService : IOtherCheckService
             }).ToList(),
             Date = otherCheck.Date,
             Location = otherCheck.Location,
+            Description = otherCheck.Description ?? string.Empty,
             Conclusion = otherCheck.Conclusion,
             ResultAtHome = otherCheck.ResultAtHome ?? string.Empty,
             NurseName = otherCheck.Nurse.Name ?? string.Empty,
@@ -93,6 +94,7 @@ public class OtherCheckService : IOtherCheckService
             NurseName = oc.Nurse.Name ?? string.Empty,
             StudentName = oc.Student.Name ?? string.Empty,
             NotificationId = oc.NotificationId,
+            Description = oc.Description ?? string.Empty,
             CheckList = oc.CheckList.Select(item => new OtherCheckItemDTO
             {
                 Name = item.Name,
