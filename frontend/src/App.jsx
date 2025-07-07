@@ -55,6 +55,7 @@ import ParentChat from "./pages/parent/Chat";
 import BlogDetail from "./pages/parent/BlogDetail";
 import MoreKnow from "./pages/parent/MoreKnow";
 import StudentHealthCheck from "./pages/parent/StudentHealthCheck";
+import ParentConsultationAppointments from "./pages/parent/ConsultationAppointments";
 
 // Public Pages
 import About from "./pages/About";
@@ -175,6 +176,10 @@ const App = () => {
                       <Route
                         path="health-check"
                         element={<StudentHealthCheck />}
+                      />
+                      <Route
+                        path="consultation-appointments"
+                        element={<ParentConsultationAppointments />}
                       />
                     </Route>
 
