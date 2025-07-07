@@ -519,13 +519,6 @@ const ReceiveMedicine = () => {
           >
             <FaCheckCircle />
           </button>
-          <button
-            className="action-btn reject"
-            onClick={() => handleReject(req)}
-            title="Từ chối"
-          >
-            <FaTimesCircle />
-          </button>
         </>
       )}
       {type === "active" && (
