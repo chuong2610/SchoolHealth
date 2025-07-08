@@ -316,18 +316,13 @@ const NotificationsManagement = () => {
     }
   };
 
-  useEffect(() => {}, [classList]);
+  useEffect(() => { }, [classList]);
 
   // Bắt đầu xử lý việc tạo thông báo mới
   const handleSubmitModalAdd = async (e) => {
     const form = e.currentTarget;
     e.preventDefault();
     e.stopPropagation();
-
-    if (form.checkValidity() === false) {
-      setValidated(true);
-      return;
-    }
 
     const notificationData = { ...modalAdd?.notification };
 
@@ -336,35 +331,60 @@ const NotificationsManagement = () => {
     notificationData.checkList = labels;
     //kết thúc xử lý logic của CheckListJson
 
-    // Additional validation
+    // VALIDATION BỔ SUNG
+    if (!notificationData.type || notificationData.type === "") {
+      toast.error("Vui lòng chọn loại thông báo");
+      setValidated(true);
+      return;
+    }
     if (!notificationData.classId || notificationData.classId === "") {
       toast.error("Vui lòng chọn lớp học");
       setValidated(true);
       return;
     }
-
-    if (
-      !notificationData.assignedToId ||
-      notificationData.assignedToId === ""
-    ) {
+    if (!notificationData.title || notificationData.title.trim().length < 5) {
+      toast.error("Tiêu đề thông báo phải có ít nhất 5 ký tự");
+      setValidated(true);
+      return;
+    }
+    if (!notificationData.message || notificationData.message.trim().length < 10) {
+      toast.error("Nội dung thông báo phải có ít nhất 10 ký tự");
+      setValidated(true);
+      return;
+    }
+    if (!notificationData.date || notificationData.date === "") {
+      toast.error("Vui lòng chọn ngày giờ thực hiện");
+      setValidated(true);
+      return;
+    }
+    // Kiểm tra ngày giờ không nhỏ hơn hiện tại
+    const now = new Date();
+    const selectedDate = new Date(notificationData.date);
+    if (selectedDate < now) {
+      toast.error("Ngày giờ thực hiện không được nhỏ hơn hiện tại");
+      setValidated(true);
+      return;
+    }
+    if (!notificationData.location || notificationData.location.trim() === "") {
+      toast.error("Vui lòng nhập địa điểm thực hiện");
+      setValidated(true);
+      return;
+    }
+    if (!notificationData.assignedToId || notificationData.assignedToId === "") {
       toast.error("Vui lòng chọn y tá phụ trách");
       setValidated(true);
       return;
     }
-
-    // Validate vaccine name only for Vaccination type
     if (notificationData.type === "Vaccination") {
-      if (
-        !notificationData.vaccineName ||
-        notificationData.vaccineName.trim() === ""
-      ) {
+      if (!notificationData.vaccineName || notificationData.vaccineName.trim() === "") {
         toast.error("Vui lòng nhập tên vắc xin cho thông báo tiêm chủng");
         setValidated(true);
         return;
       }
     }
+    // END VALIDATION BỔ SUNG
 
-    // Check for invalid ID values (emojis, non-numeric)
+    // Additional validation (giữ lại logic kiểm tra ID hợp lệ)
     if (
       isNaN(parseInt(notificationData.classId)) ||
       notificationData.classId.includes("🎓")
@@ -372,11 +392,9 @@ const NotificationsManagement = () => {
       toast.error(
         `Lỗi: ID lớp học không hợp lệ: "${notificationData.classId}". Vui lòng chọn lại.`
       );
-
       setValidated(true);
       return;
     }
-
     if (
       isNaN(parseInt(notificationData.assignedToId)) ||
       notificationData.assignedToId.includes("👩‍⚕️")
@@ -384,7 +402,6 @@ const NotificationsManagement = () => {
       toast.error(
         `Lỗi: ID y tá không hợp lệ: "${notificationData.assignedToId}". Vui lòng chọn lại.`
       );
-
       setValidated(true);
       return;
     }
@@ -486,7 +503,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => {}, [modalResultDetail]);
+  useEffect(() => { }, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
     try {
@@ -503,7 +520,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => {}, [modalResultDetail]);
+  useEffect(() => { }, [modalResultDetail]);
 
   const fetchNotification = async (pageNumber = 1) => {
     try {
@@ -554,9 +571,9 @@ const NotificationsManagement = () => {
   // Preload class and nurse data when component mounts
   useEffect(() => {
     // Don't wait for these, just start loading in background
-    fetchClassList().catch((error) => {});
+    fetchClassList().catch((error) => { });
 
-    fetchNurseList().catch((error) => {});
+    fetchNurseList().catch((error) => { });
   }, []); // Empty dependency array - only run once on mount
 
   {
@@ -722,28 +739,27 @@ const NotificationsManagement = () => {
                   {/**Logic lấy ra loại thông báo */}
                   <td>
                     <span
-                      className={`admin-notification-type ${
-                        notification.type === "Vaccination"
+                      className={`admin-notification-type ${notification.type === "Vaccination"
                           ? "health"
                           : notification.type === "HealthCheck"
-                          ? "event"
-                          : "other"
-                      }`}
+                            ? "event"
+                            : "other"
+                        }`}
                     >
                       <i
                         className={
                           notification.type === "Vaccination"
                             ? "fas fa-syringe"
                             : notification.type === "HealthCheck"
-                            ? "fas fa-stethoscope"
-                            : ""
+                              ? "fas fa-stethoscope"
+                              : ""
                         }
                       ></i>
                       {notification.type === "Vaccination"
                         ? "Tiêm chủng"
                         : notification.type === "HealthCheck"
-                        ? "Kiểm tra sức khỏe"
-                        : "Khác"}
+                          ? "Kiểm tra sức khỏe"
+                          : "Khác"}
                     </span>
                   </td>
                   {/**Kết thúc logic lấy ra loại thông báo */}
@@ -762,9 +778,8 @@ const NotificationsManagement = () => {
                   </td>
                   <td>
                     <span
-                      className={`admin-notification-status ${
-                        notification.status || "sent"
-                      }`}
+                      className={`admin-notification-status ${notification.status || "sent"
+                        }`}
                     >
                       <i className="fas fa-check-circle"></i>
                       Đã gửi
@@ -1695,20 +1710,19 @@ const NotificationsManagement = () => {
                   <div className="admin-detail-item">
                     <label>Loại:</label>
                     <span
-                      className={`admin-notification-type ${
-                        modalDetail.notificationDetail.type === "Vaccination"
+                      className={`admin-notification-type ${modalDetail.notificationDetail.type === "Vaccination"
                           ? "health"
                           : modalDetail.notificationDetail.type ===
                             "HealthCheck"
-                          ? "event"
-                          : "other"
-                      }`}
+                            ? "event"
+                            : "other"
+                        }`}
                     >
                       {modalDetail.notificationDetail.type === "Vaccination"
                         ? "Tiêm chủng"
                         : modalDetail.notificationDetail.type === "HealthCheck"
-                        ? "Kiểm tra sức khỏe"
-                        : "Khác"}
+                          ? "Kiểm tra sức khỏe"
+                          : "Khác"}
                     </span>
                   </div>
                   <div className="admin-detail-item">
@@ -1813,7 +1827,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                          0 ? (
+                            0 ? (
                             <tr>
                               <td colSpan="6">Không có kết quả</td>
                             </tr>
@@ -1873,7 +1887,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                          0 ? (
+                            0 ? (
                             <tr>
                               <td colSpan="7">Không có kết quả</td>
                             </tr>
@@ -1936,7 +1950,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                          0 ? (
+                            0 ? (
                             <tr>
                               <td colSpan="5">Không có kết quả</td>
                             </tr>

@@ -29,10 +29,7 @@ const NurseChat = () => {
     const [hasMoreMessages, setHasMoreMessages] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
 
-    const messagesEndRef = useRef(null);
     const messagesContainerRef = useRef(null);
-
-    // Debouncing refs to prevent excessive API calls
     const loadConversationsTimeoutRef = useRef(null);
     const loadUnassignedTimeoutRef = useRef(null);
     const handlersRef = useRef({});
@@ -75,27 +72,35 @@ const NurseChat = () => {
 
     // Load unassigned messages
     const loadUnassignedMessages = useCallback(async () => {
-        try {
-            console.log('📥 [NURSE] Loading unassigned messages...');
-            const data = await simpleChatAPI.getUnassignedMessages();
-
-            if (data && data.length > 0) {
-                console.log('📥 [NURSE] Unassigned messages data:', data);
-                console.log('📥 [NURSE] First unassigned message sample:', {
-                    keys: Object.keys(data[0]),
-                    values: data[0]
-                });
-            } else {
-                console.log('📥 [NURSE] No unassigned messages found');
-            }
-
-            setUnassignedMessages(data);
-        } catch (error) {
-            console.error('❌ Error loading unassigned messages:', error);
-            if (activeTab === 'unassigned') {
-                setError('Không thể tải tin nhắn chưa được xử lý');
-            }
+        // Clear existing timeout
+        if (loadUnassignedTimeoutRef.current) {
+            clearTimeout(loadUnassignedTimeoutRef.current);
         }
+
+        // Debounce the actual API call
+        loadUnassignedTimeoutRef.current = setTimeout(async () => {
+            try {
+                console.log('📥 [NURSE] Loading unassigned messages...');
+                const data = await simpleChatAPI.getUnassignedMessages();
+
+                if (data && data.length > 0) {
+                    console.log('📥 [NURSE] Unassigned messages data:', data);
+                    console.log('📥 [NURSE] First unassigned message sample:', {
+                        keys: Object.keys(data[0]),
+                        values: data[0]
+                    });
+                } else {
+                    console.log('📥 [NURSE] No unassigned messages found');
+                }
+
+                setUnassignedMessages(data);
+            } catch (error) {
+                console.error('❌ Error loading unassigned messages:', error);
+                if (activeTab === 'unassigned') {
+                    setError('Không thể tải tin nhắn chưa được xử lý');
+                }
+            }
+        }, 300); // 300ms debounce
     }, [activeTab]);
 
     // Load chat history when clicking a conversation
@@ -145,8 +150,8 @@ const NurseChat = () => {
                 setShowMobileChat(true);
             }
 
-            // Auto scroll to bottom (latest message)
-            setTimeout(() => scrollToBottom(), 100);
+            // Auto scroll to bottom (latest message) - immediate scroll
+            scrollToBottom();
 
             // Manual delay then refresh conversation list
             setTimeout(async () => {
@@ -460,8 +465,17 @@ const NurseChat = () => {
 
     // Scroll to bottom
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
     };
+
+    // Auto scroll to bottom when new messages are added
+    useEffect(() => {
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [messages]);
 
     // Handle window resize
     useEffect(() => {
@@ -483,7 +497,7 @@ const NurseChat = () => {
 
             return () => clearInterval(interval);
         }
-    }, [activeTab]);
+    }, [activeTab, loadUnassignedMessages]);
 
     // ===== RENDERING =====
 
@@ -731,7 +745,6 @@ const NurseChat = () => {
                             </div>
                         ))
                     )}
-                    <div ref={messagesEndRef} />
                 </div>
 
                 {/* Message input */}

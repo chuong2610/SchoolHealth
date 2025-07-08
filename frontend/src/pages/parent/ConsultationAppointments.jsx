@@ -1,37 +1,61 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
-import { Button, Table, Modal, Form, Row, Col, Card } from "react-bootstrap";
-import { toast } from "react-toastify";
-import {
-  FaCalendarCheck,
-  FaClock,
-  FaTimesCircle,
-  FaCheckCircle,
-  FaTimes,
-} from "react-icons/fa";
+import { Button, Table, Modal, Form, Row, Card } from "react-bootstrap";
+import { FaCalendarCheck, FaInfoCircle } from "react-icons/fa";
 import PaginationBar from "../../components/common/PaginationBar";
 
 const ParentConsultationAppointments = () => {
   const { user } = useAuth();
   const parentId = user?.id;
+  // Phân trang cho bảng hôm nay
+  const [todayAppointments, setTodayAppointments] = useState([]);
+  const [todayTotalPages, setTodayTotalPages] = useState(1);
+  const [todayCurrentPage, setTodayCurrentPage] = useState(1);
+  // Phân trang cho bảng tất cả
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
-  const [selectedId, setSelectedId] = useState(null);
-  const [actionLoading, setActionLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 5;
 
+  // Modal chi tiết
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailData, setDetailData] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Phân trang bảng hôm nay
+  const handleTodayPageChange = (page) => {
+    if (page > 0 && page <= todayTotalPages) {
+      setTodayCurrentPage(page);
+    }
+  };
+  // Phân trang bảng tất cả
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
+  // Lấy lịch hẹn hôm nay
+  const fetchTodayAppointments = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/ConsultationAppointment/today/${parentId}?pageNumber=${todayCurrentPage}&pageSize=${pageSize}`
+      );
+      setTodayAppointments(res.data.data.items || []);
+      setTodayTotalPages(res.data.data.totalPages ?? 1);
+    } catch (e) {
+      setTodayAppointments([]);
+      setTodayTotalPages(1);
+    }
+  };
+
+  // Lấy tất cả lịch hẹn (có phân trang)
   const fetchAppointments = async () => {
     setLoading(true);
     setError("");
@@ -49,74 +73,86 @@ const ParentConsultationAppointments = () => {
   };
 
   useEffect(() => {
-    if (parentId) fetchAppointments();
+    if (parentId) {
+      fetchTodayAppointments();
+    }
+    // eslint-disable-next-line
+  }, [parentId, todayCurrentPage]);
+
+  useEffect(() => {
+    if (parentId) {
+      fetchAppointments();
+    }
+    // eslint-disable-next-line
   }, [parentId, currentPage]);
 
-  const handleConfirm = async (id) => {
+  // Xử lý xem chi tiết
+  const handleShowDetail = async (id) => {
+    setDetailLoading(true);
+    setShowDetailModal(true);
+    setShowRejectInput(false);
+    setRejectReason("");
+    try {
+      const res = await axiosInstance.get(`/ConsultationAppointment/${id}`);
+      setDetailData(res.data.data);
+    } catch (e) {
+      setDetailData(null);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  // Xác nhận lịch hẹn
+  const handleConfirm = async () => {
+    if (!detailData) return;
     setActionLoading(true);
     try {
       await axiosInstance.patch(`/ConsultationAppointment`, {
-        consultationAppointmentId: id,
+        consultationAppointmentId: detailData.consultationAppointmentId,
         status: "Confirmed",
-        reason: "",
+        reason: ""
       });
-      toast.success("Xác nhận lịch hẹn thành công!");
+      setShowDetailModal(false);
+      fetchTodayAppointments();
       fetchAppointments();
     } catch (e) {
-      toast.error("Xác nhận thất bại");
+      alert("Xác nhận thất bại");
     } finally {
       setActionLoading(false);
     }
   };
 
+  // Từ chối lịch hẹn
   const handleReject = async () => {
-    if (!selectedId) return;
+    if (!detailData || !rejectReason.trim()) return;
     setActionLoading(true);
     try {
       await axiosInstance.patch(`/ConsultationAppointment`, {
-        consultationAppointmentId: selectedId,
+        consultationAppointmentId: detailData.consultationAppointmentId,
         status: "Rejected",
-        reason: rejectReason,
+        reason: rejectReason.trim()
       });
-      toast.success("Từ chối lịch hẹn thành công!");
-      setShowRejectModal(false);
+      setShowDetailModal(false);
       setRejectReason("");
-      setSelectedId(null);
+      setShowRejectInput(false);
+      fetchTodayAppointments();
       fetchAppointments();
     } catch (e) {
-      toast.error("Từ chối thất bại");
+      alert("Từ chối thất bại");
     } finally {
       setActionLoading(false);
     }
   };
 
-  // Helper function to check if appointment is today
-  const isToday = (dateString) => {
-    const today = new Date();
-    const appointmentDate = new Date(dateString);
-    return today.toDateString() === appointmentDate.toDateString();
-  };
-
-  // Filter appointments by status and date
-  const todayAppointments = appointments.filter(
-    (item) => item.status === "Confirmed" && isToday(item.date)
-  );
-
-  const pendingAppointments = appointments.filter(
-    (item) => item.status === "Pending"
-  );
-
-  const rejectedAppointments = appointments.filter(
-    (item) => item.status === "Rejected"
-  );
-
-  // Helper function to render appointment table
+  // Render bảng lịch hẹn
   const renderAppointmentTable = (
     appointments,
     title,
-    icon,
     emptyMessage,
-    showActions = false
+    showPagination = false,
+    currentPageNum = 1,
+    totalPagesNum = 1,
+    onPageChangeFunc = null
   ) => (
     <Card
       className="mb-4"
@@ -124,16 +160,16 @@ const ParentConsultationAppointments = () => {
     >
       <Card.Header
         style={{
-          background: "#2563eb",
+          background: "linear-gradient(90deg, #2563eb 60%, #4f8cff 100%)",
           color: "white",
           border: "none",
           borderRadius: "8px 8px 0 0",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {icon}
+          <FaCalendarCheck size={20} />
           <h5 style={{ margin: 0, fontWeight: "600" }}>{title}</h5>
-          <span
+          {/* <span
             style={{
               background: "rgba(255,255,255,0.2)",
               padding: "2px 8px",
@@ -142,7 +178,7 @@ const ParentConsultationAppointments = () => {
             }}
           >
             {appointments.length}
-          </span>
+          </span> */}
         </div>
       </Card.Header>
       <Card.Body style={{ padding: 0 }}>
@@ -176,11 +212,9 @@ const ParentConsultationAppointments = () => {
                   <th style={{ border: "none", padding: "12px 16px" }}>
                     Trạng thái
                   </th>
-                  {showActions && (
-                    <th style={{ border: "none", padding: "12px 16px" }}>
-                      Thao tác
-                    </th>
-                  )}
+                  <th style={{ border: "none", padding: "12px 16px" }}>
+                    Chi tiết
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -189,10 +223,10 @@ const ParentConsultationAppointments = () => {
                     key={item.consultationAppointmentId}
                     style={{ borderBottom: "1px solid #f0f0f0" }}
                   >
-                    <td
-                      style={{ padding: "12px 16px", verticalAlign: "middle" }}
-                    >
-                      {(currentPage - 1) * pageSize + idx + 1}
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
+                      {showPagination
+                        ? (currentPageNum - 1) * pageSize + idx + 1
+                        : idx + 1}
                     </td>
                     <td
                       style={{
@@ -203,30 +237,10 @@ const ParentConsultationAppointments = () => {
                     >
                       {item.studentName}
                     </td>
-                    <td
-                      style={{ padding: "12px 16px", verticalAlign: "middle" }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "8px",
-                            height: "8px",
-                            borderRadius: "50%",
-                            background: "#28a745",
-                          }}
-                        ></div>
-                        {item.nurseName}
-                      </div>
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
+                      {item.nurseName}
                     </td>
-                    <td
-                      style={{ padding: "12px 16px", verticalAlign: "middle" }}
-                    >
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                       {item.date ? (
                         <div>
                           <div style={{ fontWeight: "500" }}>
@@ -243,9 +257,7 @@ const ParentConsultationAppointments = () => {
                         "-"
                       )}
                     </td>
-                    <td
-                      style={{ padding: "12px 16px", verticalAlign: "middle" }}
-                    >
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
                       <span
                         style={{
                           background: "#e9ecef",
@@ -257,117 +269,33 @@ const ParentConsultationAppointments = () => {
                         {item.location || "Chưa xác định"}
                       </span>
                     </td>
-                    <td
-                      style={{ padding: "12px 16px", verticalAlign: "middle" }}
-                    >
-                      {item.status === "Confirmed" ? (
-                        <span
-                          style={{
-                            background: "#d4edda",
-                            color: "#155724",
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                            fontSize: "0.9rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <FaCheckCircle size={12} />
-                          Đã xác nhận
-                        </span>
-                      ) : item.status === "Rejected" ? (
-                        <span
-                          style={{
-                            background: "#f8d7da",
-                            color: "#721c24",
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                            fontSize: "0.9rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <FaTimesCircle size={12} />
-                          Đã từ chối
-                        </span>
-                      ) : (
-                        <span
-                          style={{
-                            background: "#fff3cd",
-                            color: "#856404",
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                            fontSize: "0.9rem",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                          }}
-                        >
-                          <FaClock size={12} />
-                          Chờ xác nhận
-                        </span>
-                      )}
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
+                      {item.status === "Confirmed"
+                        ? "Đã xác nhận"
+                        : item.status === "Rejected"
+                          ? "Đã từ chối"
+                          : "Chờ xác nhận"}
                     </td>
-                    {showActions && (
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          verticalAlign: "middle",
-                        }}
+                    <td style={{ padding: "12px 16px", verticalAlign: "middle" }}>
+                      <Button
+                        size="sm"
+                        variant="primary"
+                        style={{ borderRadius: 20, fontWeight: 500, minWidth: 90, display: 'flex', alignItems: 'center', gap: 6 }}
+                        onClick={() => handleShowDetail(item.consultationAppointmentId)}
                       >
-                        <div style={{ display: "flex", gap: "8px" }}>
-                          <Button
-                            size="sm"
-                            variant="success"
-                            disabled={actionLoading}
-                            onClick={() =>
-                              handleConfirm(item.consultationAppointmentId)
-                            }
-                            style={{
-                              padding: "4px 8px",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                          >
-                            <FaCheckCircle size={10} />
-                            Xác nhận
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            disabled={actionLoading}
-                            onClick={() => {
-                              setSelectedId(item.consultationAppointmentId);
-                              setShowRejectModal(true);
-                            }}
-                            style={{
-                              padding: "4px 8px",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                          >
-                            <FaTimes size={10} />
-                            Từ chối
-                          </Button>
-                        </div>
-                      </td>
-                    )}
+                        <FaInfoCircle style={{ marginBottom: 2 }} /> Xem chi tiết
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
-            {totalPages > 1 && (
+            {showPagination && totalPagesNum > 1 && onPageChangeFunc && (
               <Row className="mt-3">
                 <PaginationBar
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
+                  currentPage={currentPageNum}
+                  totalPages={totalPagesNum}
+                  onPageChange={onPageChangeFunc}
                 />
               </Row>
             )}
@@ -403,7 +331,6 @@ const ParentConsultationAppointments = () => {
           Quản lý các lịch hẹn tư vấn sức khỏe cho con em
         </p>
       </div>
-
       {loading ? (
         <div
           style={{
@@ -435,114 +362,127 @@ const ParentConsultationAppointments = () => {
         </div>
       ) : (
         <div>
-          {console.log("app", appointments)}
-
-          {console.log("today", todayAppointments)}
           {/* Bảng 1: Lịch hẹn hôm nay */}
           {renderAppointmentTable(
             todayAppointments,
             "Lịch hẹn hôm nay",
-            <FaCalendarCheck size={20} />,
-            "Không có lịch hẹn nào được xác nhận cho hôm nay"
+            "Không có lịch hẹn nào cho hôm nay",
+            true,
+            todayCurrentPage,
+            todayTotalPages,
+            handleTodayPageChange
           )}
-          {console.log("pending", pendingAppointments)}
-
-          {/* Bảng 2: Lịch hẹn chờ xác nhận */}
+          {/* Bảng 2: Tất cả lịch hẹn tư vấn */}
           {renderAppointmentTable(
-            pendingAppointments,
-            "Lịch hẹn chờ xác nhận",
-            <FaClock size={20} />,
-            "Không có lịch hẹn nào đang chờ xác nhận",
-            true // Show actions
-          )}
-          {console.log("rj", rejectedAppointments)}
-
-          {/* Bảng 3: Lịch hẹn đã từ chối */}
-          {renderAppointmentTable(
-            rejectedAppointments,
-            "Lịch hẹn đã từ chối",
-            <FaTimesCircle size={20} />,
-            "Không có lịch hẹn nào bị từ chối"
+            appointments,
+            "Tất cả lịch hẹn tư vấn",
+            "Không có lịch hẹn nào",
+            true,
+            currentPage,
+            totalPages,
+            handlePageChange
           )}
         </div>
       )}
 
-      {/* Modal từ chối lịch hẹn */}
-      <Modal
-        show={showRejectModal}
-        onHide={() => setShowRejectModal(false)}
-        centered
-      >
+      {/* Modal chi tiết lịch hẹn */}
+      <Modal show={showDetailModal} onHide={() => setShowDetailModal(false)} centered>
         <Modal.Header
           closeButton
           style={{
-            background: "linear-gradient(135deg, #dc3545 0%, #c82333 100%)",
+            background: "linear-gradient(90deg, #2563eb 60%, #4f8cff 100%)",
             color: "white",
             border: "none",
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
           }}
         >
-          <Modal.Title
-            style={{ display: "flex", alignItems: "center", gap: "8px" }}
-          >
-            <FaTimesCircle />
-            Lý do từ chối lịch hẹn
+          <Modal.Title style={{ fontWeight: 600, letterSpacing: 1 }}>
+            <FaInfoCircle style={{ marginBottom: 3, marginRight: 6 }} /> Chi tiết lịch hẹn tư vấn
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ padding: "1.5rem" }}>
-          <Form.Group>
-            <Form.Label style={{ fontWeight: "500", marginBottom: "0.5rem" }}>
-              Vui lòng nhập lý do từ chối lịch hẹn này:
-            </Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={4}
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Nhập lý do từ chối..."
-              style={{
-                border: "1px solid #ced4da",
-                borderRadius: "8px",
-                resize: "vertical",
-              }}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer style={{ border: "none", padding: "1rem 1.5rem" }}>
-          <Button
-            variant="secondary"
-            onClick={() => setShowRejectModal(false)}
-            style={{
-              padding: "8px 16px",
-              borderRadius: "6px",
-            }}
-          >
-            Hủy
-          </Button>
-          <Button
-            variant="danger"
-            onClick={handleReject}
-            disabled={actionLoading || !rejectReason.trim()}
-            style={{
-              padding: "8px 16px",
-              borderRadius: "6px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            {actionLoading ? (
-              <>
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">Loading...</span>
+        <Modal.Body>
+          {detailLoading ? (
+            <div style={{ textAlign: "center", padding: "2rem" }}>
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+              <div>Đang tải chi tiết...</div>
+            </div>
+          ) : detailData ? (
+            <div>
+              <p><b>Học sinh:</b> {detailData.studentName}</p>
+              {/* <p><b>Mã học sinh:</b> {detailData.studentNumber}</p> */}
+              <p><b>Y tá:</b> {detailData.nurseName}</p>
+              <p><b>Thời gian:</b> {detailData.date ? new Date(detailData.date).toLocaleString("vi-VN") : "-"}</p>
+              <p><b>Địa điểm:</b> {detailData.location}</p>
+              <p><b>Mô tả:</b> {detailData.description}</p>
+              <p><b>Trạng thái:</b> {detailData.status === "Confirmed" ? "Đã xác nhận" : detailData.status === "Rejected" ? "Đã từ chối" : "Chờ xác nhận"}</p>
+              {detailData.status === "Pending" && (
+                <div style={{ marginTop: 24 }}>
+                  {!showRejectInput ? (
+                    <div style={{ display: 'flex', gap: 12 }}>
+                      <Button
+                        variant="success"
+                        style={{ borderRadius: 20, fontWeight: 500, minWidth: 100 }}
+                        onClick={handleConfirm}
+                        disabled={actionLoading}
+                      >
+                        {actionLoading ? 'Đang xác nhận...' : 'Xác nhận'}
+                      </Button>
+                      <Button
+                        variant="danger"
+                        style={{ borderRadius: 20, fontWeight: 500, minWidth: 100 }}
+                        onClick={() => setShowRejectInput(true)}
+                        disabled={actionLoading}
+                      >
+                        Từ chối
+                      </Button>
+                    </div>
+                  ) : (
+                    <Form onSubmit={e => { e.preventDefault(); handleReject(); }}>
+                      <Form.Group>
+                        <Form.Label>Lý do từ chối</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          value={rejectReason}
+                          onChange={e => setRejectReason(e.target.value)}
+                          placeholder="Nhập lý do từ chối..."
+                          style={{ borderRadius: 8 }}
+                          required
+                        />
+                      </Form.Group>
+                      <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+                        <Button
+                          variant="secondary"
+                          style={{ borderRadius: 20, minWidth: 100 }}
+                          onClick={() => { setShowRejectInput(false); setRejectReason(""); }}
+                          disabled={actionLoading}
+                        >
+                          Hủy
+                        </Button>
+                        <Button
+                          variant="danger"
+                          type="submit"
+                          style={{ borderRadius: 20, minWidth: 100 }}
+                          disabled={actionLoading || !rejectReason.trim()}
+                        >
+                          {actionLoading ? 'Đang gửi...' : 'Xác nhận từ chối'}
+                        </Button>
+                      </div>
+                    </Form>
+                  )}
                 </div>
-                Đang xử lý...
-              </>
-            ) : (
-              <>
-                <FaTimesCircle size={14} />
-                Từ chối lịch hẹn
-              </>
-            )}
+              )}
+            </div>
+          ) : (
+            <div style={{ color: "#dc3545" }}>Không thể tải chi tiết lịch hẹn.</div>
+          )}
+        </Modal.Body>
+        <Modal.Footer style={{ borderTop: 'none' }}>
+          <Button variant="secondary" onClick={() => setShowDetailModal(false)} style={{ borderRadius: 20, minWidth: 100 }}>
+            Đóng
           </Button>
         </Modal.Footer>
       </Modal>
