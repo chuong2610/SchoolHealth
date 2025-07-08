@@ -30,7 +30,6 @@ const ParentChat = () => {
     const [hasMoreMessages, setHasMoreMessages] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
 
-    const messagesEndRef = useRef(null);
     const messagesContainerRef = useRef(null);
     const loadConversationsTimeoutRef = useRef(null);
     const handlersRef = useRef({});
@@ -125,8 +124,8 @@ const ParentChat = () => {
                 setShowMobileChat(true);
             }
 
-            // Auto scroll to bottom (latest message)
-            setTimeout(() => scrollToBottom(), 100);
+            // Auto scroll to bottom (latest message) - immediate scroll
+            scrollToBottom();
 
             // Refresh conversation list after a short delay
             setTimeout(async () => {
@@ -435,8 +434,17 @@ const ParentChat = () => {
 
     // Scroll to bottom
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
     };
+
+    // Auto scroll to bottom when new messages are added
+    useEffect(() => {
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [messages]);
 
     // Handle window resize
     useEffect(() => {
@@ -581,7 +589,7 @@ const ParentChat = () => {
                         <h6>
                             <span className="nurse-status"></span>
                             {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
-                                ? 'Cuộc trò chuyện mới' 
+                                ? 'Cuộc trò chuyện mới'
                                 : `Liên hệ với ${selectedConversation?.nurseName}`}
                         </h6>
                     </div>
@@ -601,7 +609,7 @@ const ParentChat = () => {
                             <div>
                                 {selectedConversation?.nurseName !== 'Hệ thống tư vấn'
                                     ? 'Gửi tin nhắn đầu tiên để bắt đầu cuộc trò chuyện với y tá'
-                                    
+
                                     : `Gửi tin nhắn tới ${selectedConversation?.nurseName}`}
                             </div>
                             <div style={{ fontSize: '0.9rem', marginTop: '8px' }}>
@@ -732,7 +740,6 @@ const ParentChat = () => {
                             </div>
                         ))
                     )}
-                    <div ref={messagesEndRef} />
                 </div>
 
                 {/* Message input */}
