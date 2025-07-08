@@ -64,11 +64,7 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
 
         if (searchDate.HasValue)
         {
-            var southeastAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-            var searchDateInSEAsia = TimeZoneInfo.ConvertTimeFromUtc(searchDate.Value.ToUniversalTime(), southeastAsiaTimeZone).Date;
-
-            query = query.Where(ca =>
-                TimeZoneInfo.ConvertTimeFromUtc(ca.Date.ToUniversalTime(), southeastAsiaTimeZone).Date == searchDateInSEAsia);
+           query = query.Where(ca => ca.Date.Date == searchDate.Value.Date);
         }
 
         return new PageResult<ConsultationAppointment>
@@ -133,10 +129,12 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
 
     public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsTodayByUserIdAsync(int UserId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
+         var seAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var nowInSeAsia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, seAsiaTimeZone).Date;
         var query = _context.ConsultationAppointments
                     .Include(ca => ca.Student)
                     .Include(ca => ca.Nurse)
-                    .Where(ca => ca.Nurse.Id == UserId || ca.Student.ParentId == UserId && ca.Date.Date == DateTime.UtcNow.Date) 
+                    .Where(ca => ca.Nurse.Id == UserId || ca.Student.ParentId == UserId && TimeZoneInfo.ConvertTimeFromUtc(ca.Date, seAsiaTimeZone).Date == nowInSeAsia) 
                     .AsQueryable();
 
         if (!string.IsNullOrEmpty(search))
@@ -160,7 +158,14 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
 
     public async Task<bool> HasConsultationAppointmentTodayAsync(int userId)
     {
+        var seAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var nowInSeAsia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, seAsiaTimeZone).Date;
+
         return await _context.ConsultationAppointments
-            .AnyAsync(ca => (ca.Nurse.Id == userId || ca.Student.ParentId == userId) && ca.Status == "Pending");
+            .AnyAsync(ca =>
+                (ca.Nurse.Id == userId || ca.Student.ParentId == userId) &&
+                ca.Status == "Confirmed" &&
+                TimeZoneInfo.ConvertTimeFromUtc(ca.Date, seAsiaTimeZone).Date == nowInSeAsia
+            );
     }
 }
