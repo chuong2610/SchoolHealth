@@ -127,15 +127,21 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsTodayByUserIdAsync(int UserId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsTodayByUserIdAsync(int userId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
-         var seAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        var seAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var nowInSeAsia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, seAsiaTimeZone).Date;
+
+        var start = TimeZoneInfo.ConvertTimeToUtc(nowInSeAsia, seAsiaTimeZone);
+        var end = start.AddDays(1);
+
         var query = _context.ConsultationAppointments
-                    .Include(ca => ca.Student)
-                    .Include(ca => ca.Nurse)
-                    .Where(ca => ca.Nurse.Id == UserId || ca.Student.ParentId == UserId && TimeZoneInfo.ConvertTimeFromUtc(ca.Date, seAsiaTimeZone).Date == nowInSeAsia) 
-                    .AsQueryable();
+            .Include(ca => ca.Student)
+            .Include(ca => ca.Nurse)
+            .Where(ca =>
+                (ca.Nurse.Id == userId || ca.Student.ParentId == userId) &&
+                ca.Date >= start && ca.Date < end
+            );
 
         if (!string.IsNullOrEmpty(search))
         {
@@ -148,24 +154,30 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
         return new PageResult<ConsultationAppointment>
         {
             Items = await query
-                .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
+                .OrderByDescending(ca => ca.Date)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(),
+
             TotalItems = await query.CountAsync()
         };
     }
+
 
     public async Task<bool> HasConsultationAppointmentTodayAsync(int userId)
     {
         var seAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
         var nowInSeAsia = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, seAsiaTimeZone).Date;
 
+        var start = TimeZoneInfo.ConvertTimeToUtc(nowInSeAsia, seAsiaTimeZone);
+        var end = start.AddDays(1);
+
         return await _context.ConsultationAppointments
             .AnyAsync(ca =>
                 (ca.Nurse.Id == userId || ca.Student.ParentId == userId) &&
                 ca.Status == "Confirmed" &&
-                TimeZoneInfo.ConvertTimeFromUtc(ca.Date, seAsiaTimeZone).Date == nowInSeAsia
+                ca.Date >= start && ca.Date < end
             );
     }
+
 }
