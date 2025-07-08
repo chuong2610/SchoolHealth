@@ -20,14 +20,14 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
     public async Task<PageResult<ConsultationAppointmentDTO>> GetConsultationAppointmentsByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search)
     {
         DateTime? searchDate = null;
-            bool isDate = false;
+        bool isDate = false;
 
-            if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-            {
-                searchDate = parsedDate;
-                isDate = true;
-            }
+        if (!string.IsNullOrEmpty(search) &&
+            DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        {
+            searchDate = parsedDate;
+            isDate = true;
+        }
         var appointments = await _consultationAppointmentRepository.GetConsultationAppointmentsByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
 
         var totalPages = (int)Math.Ceiling((double)appointments.TotalItems / pageSize);
@@ -43,14 +43,14 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
     public async Task<PageResult<ConsultationAppointmentDTO>> GetConsultationAppointmentsByNurseIdAsync(int nurseId, int pageNumber, int pageSize, string? search)
     {
         DateTime? searchDate = null;
-            bool isDate = false;
+        bool isDate = false;
 
-            if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-            {
-                searchDate = parsedDate;
-                isDate = true;
-            }
+        if (!string.IsNullOrEmpty(search) &&
+            DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        {
+            searchDate = parsedDate;
+            isDate = true;
+        }
         var appointments = await _consultationAppointmentRepository.GetConsultationAppointmentsByNurseIdAsync(nurseId, pageNumber, pageSize, search, searchDate);
         var totalPages = (int)Math.Ceiling((double)appointments.TotalItems / pageSize);
         return new PageResult<ConsultationAppointmentDTO>
@@ -61,34 +61,23 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
             TotalItems = appointments.TotalItems
         };
     }
-    public async Task<PageResult<ConsultationAppointmentDetailDTO>> GetConsultationAppointmentsByParentIdAndPendingAsync(int parentId, int pageNumber, int pageSize, string? search)
+    public async Task<PageResult<ConsultationAppointmentDTO>> GetConsultationAppointmentsByParentIdAndPendingAsync(int parentId, int pageNumber, int pageSize, string? search)
     {
         DateTime? searchDate = null;
-            bool isDate = false;
+        bool isDate = false;
 
-            if (!string.IsNullOrEmpty(search) &&
-                DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-            {
-                searchDate = parsedDate;
-                isDate = true;
-            }
-        var appointments = await _consultationAppointmentRepository.GetConsultationAppointmentsByParentIdAndPendingAsync(parentId , pageNumber, pageSize, search, searchDate);
+        if (!string.IsNullOrEmpty(search) &&
+            DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        {
+            searchDate = parsedDate;
+            isDate = true;
+        }
+        var appointments = await _consultationAppointmentRepository.GetConsultationAppointmentsByParentIdAndPendingAsync(parentId, pageNumber, pageSize, search, searchDate);
         var totalPages = (int)Math.Ceiling((double)appointments.TotalItems / pageSize);
 
-        return new PageResult<ConsultationAppointmentDetailDTO>
+        return new PageResult<ConsultationAppointmentDTO>
         {
-            Items = appointments.Items.Select(a => new ConsultationAppointmentDetailDTO
-            {
-                ConsultationAppointmentId = a.Id,
-                StudentName = a.Student.Name,
-                StudentNumber = a.Student.StudentNumber,
-                Date = a.Date,
-                Description = a.Description,
-                Location = a.Location,
-                Status = a.Status,
-                NurseName = a.Nurse.Name,
-                Reason = a.Reason
-            }).ToList(),
+            Items = appointments.Items.Select(a => MapToDTO(a)).ToList(),
             TotalPages = totalPages,
             CurrentPage = pageNumber,
             TotalItems = appointments.TotalItems
@@ -140,4 +129,50 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
         };
     }
 
+    public async Task<PageResult<ConsultationAppointmentDTO>> GetConsultationAppointmentsTodayByUserIdAsync(int userId, int pageNumber, int pageSize, string? search)
+    {
+        DateTime? searchDate = null;
+        bool isDate = false;
+
+        if (!string.IsNullOrEmpty(search) &&
+            DateTime.TryParseExact(search, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+        {
+            searchDate = parsedDate;
+            isDate = true;
+        }
+        var consultationAppointments = await _consultationAppointmentRepository.GetConsultationAppointmentsTodayByUserIdAsync(userId, pageNumber, pageSize, search, searchDate);
+        var totalPages = (int)Math.Ceiling((double)consultationAppointments.TotalItems / pageSize);
+
+        return new PageResult<ConsultationAppointmentDTO>
+        {
+            Items = consultationAppointments.Items.Select(a => MapToDTO(a)).ToList(),
+            TotalPages = totalPages,
+            CurrentPage = pageNumber,
+            TotalItems = consultationAppointments.TotalItems
+        };
+    }
+    public async Task<ConsultationAppointmentDetailDTO?> GetConsultationAppointmentByIdAsync(int id)
+    {
+        var appointment = await _consultationAppointmentRepository.GetConsultationAppointmentByIdAsync(id);
+        if (appointment == null)
+        {
+            return null;
+        }
+
+        return new ConsultationAppointmentDetailDTO
+        {
+            ConsultationAppointmentId = appointment.Id,
+            StudentName = appointment.Student.Name,
+            NurseName = appointment.Nurse.Name,
+            Date = appointment.Date,
+            Location = appointment.Location,
+            Description = appointment.Description ?? string.Empty,
+            Reason = appointment.Reason ?? string.Empty,
+            Status = appointment.Status
+        };
+    }
+    public async Task<bool> HasConsultationAppointmentTodayAsync(int userId)
+    {
+        return await _consultationAppointmentRepository.HasConsultationAppointmentTodayAsync(userId);
+    }
 }    

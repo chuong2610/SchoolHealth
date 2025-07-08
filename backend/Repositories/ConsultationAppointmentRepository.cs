@@ -64,7 +64,11 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
 
         if (searchDate.HasValue)
         {
-            query = query.Where(ca => ca.Date.Date == searchDate.Value.Date);
+            var southeastAsiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            var searchDateInSEAsia = TimeZoneInfo.ConvertTimeFromUtc(searchDate.Value.ToUniversalTime(), southeastAsiaTimeZone).Date;
+
+            query = query.Where(ca =>
+                TimeZoneInfo.ConvertTimeFromUtc(ca.Date.ToUniversalTime(), southeastAsiaTimeZone).Date == searchDateInSEAsia);
         }
 
         return new PageResult<ConsultationAppointment>
@@ -127,4 +131,36 @@ public class ConsultationAppointmentRepository : IConsultationAppointmentReposit
         return await _context.SaveChangesAsync() > 0;
     }
 
+    public async Task<PageResult<ConsultationAppointment>> GetConsultationAppointmentsTodayByUserIdAsync(int UserId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    {
+        var query = _context.ConsultationAppointments
+                    .Include(ca => ca.Student)
+                    .Include(ca => ca.Nurse)
+                    .Where(ca => ca.Nurse.Id == UserId || ca.Student.ParentId == UserId && ca.Date.Date == DateTime.UtcNow.Date) 
+                    .AsQueryable();
+
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(ca =>
+                ca.Reason.Contains(search) ||
+                ca.Student.Name.Contains(search) ||
+                ca.Nurse.Name.Contains(search));
+        }
+
+        return new PageResult<ConsultationAppointment>
+        {
+            Items = await query
+                .OrderByDescending(ca => ca.Date) // Sắp xếp theo thời gian giảm dần
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(),
+            TotalItems = await query.CountAsync()
+        };
+    }
+
+    public async Task<bool> HasConsultationAppointmentTodayAsync(int userId)
+    {
+        return await _context.ConsultationAppointments
+            .AnyAsync(ca => (ca.Nurse.Id == userId || ca.Student.ParentId == userId) && ca.Status == "Pending");
+    }
 }
