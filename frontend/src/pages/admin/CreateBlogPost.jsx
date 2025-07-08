@@ -18,7 +18,6 @@ import {
   FaFileAlt
 } from "react-icons/fa";
 import "../../styles/admin/create-blog-post.css";
-
 const CreateBlogPost = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -71,12 +70,14 @@ const CreateBlogPost = () => {
     try {
       setImageUploading(true);
       setError("");
-      const res = await fetch("http://localhost:5182/api/Upload/image", {
-        method: "POST",
-        body: uploadFormData,
+      const res = await axiosInstance.post("/Upload/image", uploadFormData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      const data = await res.json();
+      const data = res.data;
       console.log("📦 Res upload ảnh:", data);
 
       // Chỉ lưu tên file được backend trả về vào userInfo
@@ -301,7 +302,7 @@ const CreateBlogPost = () => {
               <div className="admin-create-blog-image-preview">
                 <label className="admin-create-blog-image-label">Ảnh đã chọn:</label>
                 <img
-                  src={`http://localhost:5182/uploads/${formData.imageUrl}`}
+                  src={`${import.meta.env.VITE_API_BASE_URL_IMAGE}/uploads/${formData.imageUrl}`}
                   alt="Preview"
                   onError={(e) => {
                     e.target.style.display = 'none';

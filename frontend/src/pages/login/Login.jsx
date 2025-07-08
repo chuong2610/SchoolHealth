@@ -160,7 +160,7 @@ const Login = () => {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Mã OTP không chính xác! Vui lòng thử lại."
+        "Mã OTP không chính xác! Vui lòng thử lại."
       );
     } finally {
       setLoading(false);

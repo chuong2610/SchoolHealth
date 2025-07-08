@@ -138,7 +138,7 @@ export const NotificationProvider = ({ children }) => {
 
             // Create connection with better configuration
             // SignalR Hub doesn't use /api prefix
-            const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:5182';
+            const serverUrl = import.meta.env.VITE_SERVER_URL;
             const hubUrl = `${serverUrl}/notificationHub`;
 
             const newConnection = new HubConnectionBuilder()

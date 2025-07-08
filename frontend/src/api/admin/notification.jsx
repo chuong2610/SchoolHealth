@@ -158,7 +158,7 @@ export const getNotifications = async (
   try {
     const res = await axiosInstance.get(
       `/Notification?pageNumber=${pageNumber}&pageSize=${pageSize}` +
-        (search ? `&search=${search}` : "")
+      (search ? `&search=${search}` : "")
     );
     if (res.data) {
       return res.data;
@@ -171,8 +171,7 @@ export const getNotifications = async (
 };
 
 export const postNotification = async (notificationData) => {
-  console.log("checkListJson:", notificationData.checkList);
-  console.log(Array.isArray(notificationData.checkList)); // nên là true
+
 
   try {
     // Validate and clean data before transformation
@@ -220,7 +219,7 @@ export const postNotification = async (notificationData) => {
   }
 };
 
-{/**Lấy ra chi tiết thông báo dựa vào id */}
+{/**Lấy ra chi tiết thông báo dựa vào id */ }
 export const getNotificationDetail = async (notificationId) => {
   try {
     const res = await axiosInstance.get(

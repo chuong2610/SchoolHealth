@@ -420,8 +420,8 @@ const Profile = () => {
                             {nurseInfo.gender === "Male"
                               ? "Nam"
                               : nurseInfo.gender === "Female"
-                              ? "Nữ"
-                              : "Khác"}
+                                ? "Nữ"
+                                : "Khác"}
                           </div>
                         )}
                       </div>

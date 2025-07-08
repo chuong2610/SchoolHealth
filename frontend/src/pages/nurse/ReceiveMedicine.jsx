@@ -408,11 +408,7 @@ const ReceiveMedicine = () => {
   // Từ chối đơn thuốc
   const handleReject = async (req) => {
     try {
-      // TODO: Add API call to reject medication request
-      // const response = await fetch(`http://localhost:5182/api/Medication/${req.id}/reject`, {
-      //   method: "PATCH",
-      //   headers: { "Content-Type": "application/json" },
-      // });
+
 
       // For now, just remove from local state
       setPendingRequests((prev) => prev.filter((r) => r.id !== req.id));

@@ -5,11 +5,9 @@ export const deleteStudentById = async (studentId) => {
   try {
     const res = await axiosInstance.delete(`/Students/${studentId}`);
     if (res.data.success) {
-      console.log("Student deleted successfully", res.data.message);
       return true;
     }
   } catch (error) {
-    console.error("Error deleting student:", error);
   }
 };
 
@@ -17,11 +15,9 @@ export const getClasses = async () => {
   try {
     const res = await axiosInstance.get(`/Class`);
     if (res.data.success) {
-      console.log("Get classes successfully", res.data.message);
       return res.data.data;
     }
   } catch (error) {
-    console.error("Error Get classes: ", error);
   }
 };
 
@@ -37,11 +33,9 @@ export const getStudentsByClassId = async (
         `${search ? `&search=${search}` : ""}`
     );
     if (res.data.success) {
-      console.log("Get students by classId successfully", res.data.message);
       return res.data.data;
     }
   } catch (error) {
-    console.error("Error Get students by classId: ", error);
   }
 };
 
@@ -49,11 +43,9 @@ export const addStudentAndParent = async (newStudent) => {
   try {
     const res = await axiosInstance.post(`/Students`, newStudent);
     if (res.data.success) {
-      console.log("Post student successfully", res.data.message);
       return res.data.data;
     }
   } catch (error) {
-    console.error("Error post student: ", error);
   }
 };
 
@@ -61,11 +53,9 @@ export const updateStudent = async (newStudent, studentId) => {
   try {
     const res = await axiosInstance.patch(`/Students/${studentId}`, newStudent);
     if (res.data.success) {
-      console.log("Patch student successfully", res.data.message);
       return res.data.data;
     }
   } catch (error) {
-    console.error("Error patch student: ", error);
   }
 };
 

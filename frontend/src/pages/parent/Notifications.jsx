@@ -141,13 +141,11 @@ export default function Notifications() {
   // Fetch notifications stats
   const fetchNotificationsStats = async () => {
     if (!user?.id) {
-      console.log("❌ No user ID found:", user);
       return;
     }
 
     try {
       const res = await getNotificationsStatistics(user.id);
-      console.log("📊 Notifications statistics:", stats);
       if (res) {
         setNotificationStats({
           totalNotification: res.totalNotification || 0,
@@ -157,7 +155,6 @@ export default function Notifications() {
         });
       }
     } catch (error) {
-      console.error("❌ Error fetching notifications statistics:", error);
     }
   };
 

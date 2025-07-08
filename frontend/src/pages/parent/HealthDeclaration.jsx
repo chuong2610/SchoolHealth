@@ -114,7 +114,6 @@ const HealthDeclaration = () => {
   // Xử lý khi chọn học sinh từ dropdown
   const handleStudentChange = (e) => {
     const studentId = e.target.value;
-    console.log("Selected student ID:", studentId);
     const student = students.find((s) => s.id === parseInt(studentId));
     setSelectedStudent(student);
     if (student) {

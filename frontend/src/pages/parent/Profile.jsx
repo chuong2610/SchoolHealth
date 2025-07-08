@@ -73,7 +73,7 @@ const parent = {
   phone: "0523531942",
   address: "789 Pine Rd",
   gender: "Male",
-  imageUrl: "http://localhost:5182/uploads/default.jpg",
+  imageUrl: `${import.meta.env.VITE_API_BASE_URL_IMAGE}/uploads/default.jpg`,
   dateOfBirth: "1975-03-20",
   roleName: "Parent",
 };
@@ -702,8 +702,8 @@ const Profile = () => {
                                 {parentInfo.gender === "Male"
                                   ? "Nam"
                                   : parentInfo.gender === "Female"
-                                  ? "Nữ"
-                                  : "Khác"}
+                                    ? "Nữ"
+                                    : "Khác"}
                               </div>
                             )}
                           </div>
