@@ -88,7 +88,7 @@ const Accounts = () => {
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState("parent");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(2);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
@@ -218,13 +218,31 @@ const Accounts = () => {
           `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`
       );
       console.log(response.data);
-      if (response.data.success) {
-        console.log("totopages", response.data.data.totalPages);
-        setTotalPages(response.data?.data?.totalPages || 1);
-        setUsers(response.data?.data?.items || []);
+      // if (response.data.success) {
+      //   console.log("totopages", response.data.data.totalPages);
+      //   setTotalPages(response.data?.data?.totalPages || 1);
+      //   setUsers(response.data?.data?.items || []);
+      // } else {
+      //   setError(response.data.message || "Failed to fetch users.");
+      //   setUsers([]);
+      // }
+      {/**Mới thêm logic ở đây để sửa lỗi Cannot read properties of null (reading 'totalPages') */}
+      if (response.data.success && response.data.data) {
+        const { totalPages, items } = response.data.data;
+
+        if (!items || items.length === 0) {
+          setUsers([]);
+          setTotalPages(1);
+          setError(null); // ✅ Không hiển thị lỗi
+        } else {
+          setUsers(items);
+          setTotalPages(totalPages || 1);
+          setError(null); // ✅ Không có lỗi
+        }
       } else {
-        setError(response.data.message || "Failed to fetch users.");
         setUsers([]);
+        setTotalPages(1);
+        setError(response.data.message || "Không tìm thấy người dùng.");
       }
     } catch (err) {
       setError(
@@ -350,6 +368,19 @@ const Accounts = () => {
     confirmPassword: "",
   });
 
+  // Thêm hàm chuyển đổi tên vai trò sang id
+  const roleNameToId = (roleName) => {
+    switch (roleName) {
+      case "admin": return 1;
+      case "nurse": return 2;
+      case "parent": return 3;
+      case "Admin": return 1;
+      case "Nurse": return 2;
+      case "Parent": return 3;
+      default: return "";
+    }
+  };
+
   const handleShowModal = (type, user = null) => {
     setModalType(type);
     if (activeTab !== "student") {
@@ -361,7 +392,7 @@ const Accounts = () => {
           phone: user.phone || "",
           address: user.address || "",
           gender: user.gender || "",
-          role: user.role || activeTab, // Use current tab as default role
+          role: roleNameToId(user.roleName) || "",
           dateOfBirth: user.dateOfBirth || "",
           password: "", // Don't populate password for edit
           confirmPassword: "",
@@ -603,7 +634,19 @@ const Accounts = () => {
       const response = await axiosInstance.delete(`/User/${userToDelete?.id}`);
       if (response.data.success) {
         toast.success("Xóa người dùng thành công!");
-        fetchUsers(); // Refresh the user list
+
+        // fetchUsers(); // Refresh the user list
+
+        {/**Mới thêm logic ở đây để xử lý lỗi Cannot read properties of null (reading 'totalPages')*/}
+        // Nếu là phần tử cuối cùng trên trang hiện tại
+        const isLastItemOnPage = users.length === 1 && currentPage > 1;
+
+        if (isLastItemOnPage) {
+          setCurrentPage(currentPage - 1); // Lùi về trang trước
+          await fetchUsers(currentPage - 1); // Gọi dữ liệu trang trước
+        } else {
+          await fetchUsers(currentPage); // Gọi lại dữ liệu trang hiện tại
+        }
       } else {
         toast.error(
           "Lỗi khi xóa người dùng: " +
@@ -894,7 +937,6 @@ const Accounts = () => {
     try {
       await importExcelFile(file);
       toast.success("Thêm tệp kết quả thành công");
-      fetchUsers(); // Refresh user list
       fetchStudents();
     } catch (error) {
       toast.error("Thêm tệp kết quả thất bại");

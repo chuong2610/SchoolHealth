@@ -105,6 +105,8 @@
     width: 100%;
     border-collapse: collapse;
     margin: 0;
+        table-layout: fixed; /* ⚠️ Dòng này rất quan trọng để fix co lệch */
+
 }
 
 .admin-blog-list-table thead {
@@ -162,6 +164,7 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
+   
 }
 
 .admin-blog-list-action-btn {

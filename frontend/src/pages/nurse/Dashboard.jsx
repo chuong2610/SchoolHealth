@@ -663,24 +663,32 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {medicineSchedule.map((row) => (
-                        <tr key={row.key}>
-                          <td>{row.student}</td>
-                          <td>{row.class}</td>
-                          <td>{row.medicine}</td>
-                          <td>
-                            {row.status === "completed" ? (
-                              <span className="nurse-tag-success">
-                                <FaCheckCircle /> Hoàn thành
-                              </span>
-                            ) : (
-                              <span className="nurse-tag-warning">
-                                <FaClock /> Chờ uống
-                              </span>
-                            )}
+                      {medicineSchedule.length > 0 ? (
+                        medicineSchedule.map((row) => (
+                          <tr key={row.key}>
+                            <td>{row.student}</td>
+                            <td>{row.class}</td>
+                            <td>{row.medicine}</td>
+                            <td>
+                              {row.status === "completed" ? (
+                                <span className="nurse-tag-success">
+                                  <FaCheckCircle /> Hoàn thành
+                                </span>
+                              ) : (
+                                <span className="nurse-tag-warning">
+                                  <FaClock /> Chờ uống
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="text-center text-muted">
+                            Không có lịch uống thuốc hôm nay.
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </Table>
                 </div>
@@ -707,24 +715,32 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {todayHealthAppointments.map((row) => (
-                        <tr key={row.key}>
-                          <td>{row.eventType}</td>
-                          <td>{row.location}</td>
-                          <td>{row.studentName}</td>
-                          <td>
-                            {row.date
-                              ? new Date(row.date).toLocaleString("vi-VN", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric",
-                                })
-                              : ""}
+                      {todayHealthAppointments.length > 0 ? (
+                        todayHealthAppointments.map((row) => (
+                          <tr key={row.key}>
+                            <td>{row.eventType}</td>
+                            <td>{row.location}</td>
+                            <td>{row.studentName}</td>
+                            <td>
+                              {row.date
+                                ? new Date(row.date).toLocaleString("vi-VN", {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                  })
+                                : ""}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="text-center text-muted">
+                            Không có sự kiện nào hôm nay.
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </Table>
                 </div>

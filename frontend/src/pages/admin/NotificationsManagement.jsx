@@ -316,7 +316,7 @@ const NotificationsManagement = () => {
     }
   };
 
-  useEffect(() => { }, [classList]);
+  useEffect(() => {}, [classList]);
 
   // Bắt đầu xử lý việc tạo thông báo mới
   const handleSubmitModalAdd = async (e) => {
@@ -486,7 +486,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => { }, [modalResultDetail]);
+  useEffect(() => {}, [modalResultDetail]);
 
   const fetchVaccinationResultDetail = async (vaccinationId) => {
     try {
@@ -503,7 +503,7 @@ const NotificationsManagement = () => {
       console.error(error);
     }
   };
-  useEffect(() => { }, [modalResultDetail]);
+  useEffect(() => {}, [modalResultDetail]);
 
   const fetchNotification = async (pageNumber = 1) => {
     try {
@@ -554,9 +554,9 @@ const NotificationsManagement = () => {
   // Preload class and nurse data when component mounts
   useEffect(() => {
     // Don't wait for these, just start loading in background
-    fetchClassList().catch((error) => { });
+    fetchClassList().catch((error) => {});
 
-    fetchNurseList().catch((error) => { });
+    fetchNurseList().catch((error) => {});
   }, []); // Empty dependency array - only run once on mount
 
   {
@@ -565,6 +565,7 @@ const NotificationsManagement = () => {
   const fetchOtherResultDetail = async (id) => {
     try {
       const res = await axiosInstance.get(`/OtherCheck/${id}`);
+      setModalDetail({ ...modalDetail, status: false });
       setModalResultDetail((prev) => ({
         ...prev,
         status: true,
@@ -761,8 +762,9 @@ const NotificationsManagement = () => {
                   </td>
                   <td>
                     <span
-                      className={`admin-notification-status ${notification.status || "sent"
-                        }`}
+                      className={`admin-notification-status ${
+                        notification.status || "sent"
+                      }`}
                     >
                       <i className="fas fa-check-circle"></i>
                       Đã gửi
@@ -1693,7 +1695,8 @@ const NotificationsManagement = () => {
                   <div className="admin-detail-item">
                     <label>Loại:</label>
                     <span
-                      className={`admin-notification-type ${modalDetail.notificationDetail.type === "Vaccination"
+                      className={`admin-notification-type ${
+                        modalDetail.notificationDetail.type === "Vaccination"
                           ? "health"
                           : modalDetail.notificationDetail.type ===
                             "HealthCheck"
@@ -1810,7 +1813,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                            0 ? (
+                          0 ? (
                             <tr>
                               <td colSpan="6">Không có kết quả</td>
                             </tr>
@@ -1870,7 +1873,7 @@ const NotificationsManagement = () => {
                       <Table className="admin-table">
                         <tbody>
                           {modalDetail.notificationDetail.results?.length ===
-                            0 ? (
+                          0 ? (
                             <tr>
                               <td colSpan="7">Không có kết quả</td>
                             </tr>
