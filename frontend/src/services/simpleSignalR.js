@@ -16,13 +16,13 @@ class SimpleSignalRService {
     /**
      * Start SignalR connection
      */
-    async startConnection(userId) {
-        try {
-            console.log('🔧 Starting SignalR connection for userId:', userId);
 
+    async startConnection(userId) {
+
+
+        try {
             // Prevent multiple connections
             if (this.connection && this.isConnected) {
-                console.log('📌 SignalR already connected, skipping...');
                 return true;
             }
 
@@ -33,7 +33,6 @@ class SimpleSignalRService {
 
             const token = localStorage.getItem('token');
             if (!token) {
-                console.warn('⚠️ No token found for SignalR connection');
                 return false;
             }
 
@@ -56,34 +55,14 @@ class SimpleSignalRService {
             this.isConnected = true;
             this.reconnectAttempts = 0;
 
-            console.log('✅ SignalR connected successfully');
-
             // Join user group if available
             try {
                 await this.connection.invoke('JoinUserGroup', userId);
-                console.log('👤 Joined user group:', userId);
-
-                // Debug: Check token and user role
-                const token = localStorage.getItem('token');
-                if (token) {
-                    try {
-                        const payload = JSON.parse(atob(token.split('.')[1]));
-                        console.log('🔍 Token payload:', {
-                            role: payload.role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-                            userId: payload.sub || payload.userId,
-                            exp: new Date(payload.exp * 1000)
-                        });
-                    } catch (e) {
-                        console.warn('⚠️ Could not parse token:', e);
-                    }
-                }
             } catch (error) {
-                console.warn('⚠️ JoinUserGroup not available:', error.message);
             }
 
             return true;
         } catch (error) {
-            console.error('❌ SignalR connection failed:', error);
             this.isConnected = false;
             return false;
         }
@@ -97,50 +76,42 @@ class SimpleSignalRService {
 
         // Message received event (deduplicated)
         this.connection.on('ReceiveMessage', (data) => {
-            console.log('📨 SignalR: Message received', JSON.stringify(data, null, 2));
             this.notifyListeners('messageReceived', data);
         });
 
         this.connection.on('MessageReceived', (data) => {
-            console.log('📨 SignalR: Message received (MessageReceived event)', JSON.stringify(data, null, 2));
             // Don't notify again to avoid duplicates
             // this.notifyListeners('messageReceived', data);
         });
 
         // Message sent confirmation
         this.connection.on('MessageSent', (data) => {
-            console.log('📤 SignalR: Message sent confirmation', JSON.stringify(data, null, 2));
             this.notifyListeners('messageSent', data);
         });
 
         // New unassigned message
         this.connection.on('NewUnassignedMessage', (data) => {
-            console.log('📥 SignalR: New unassigned message', data);
             this.notifyListeners('newUnassignedMessage', data);
         });
 
         // Message assigned
         this.connection.on('MessageAssigned', (data) => {
-            console.log('👩‍⚕️ SignalR: Message assigned', data);
             this.notifyListeners('messageAssigned', data);
         });
 
         // Connection state events
         this.connection.onreconnecting(() => {
-            console.log('🔄 SignalR reconnecting...');
             this.isConnected = false;
             this.notifyListeners('reconnecting');
         });
 
         this.connection.onreconnected(() => {
-            console.log('✅ SignalR reconnected');
             this.isConnected = true;
             this.reconnectAttempts = 0;
             this.notifyListeners('reconnected');
         });
 
         this.connection.onclose((error) => {
-            console.log('❌ SignalR connection closed:', error?.message || 'No error details');
             this.isConnected = false;
             this.notifyListeners('disconnected', error);
         });
@@ -157,12 +128,10 @@ class SimpleSignalRService {
         // Check if callback already exists to prevent duplicates
         const eventListeners = this.listeners.get(event);
         if (eventListeners.has(callback)) {
-            console.log(`⚠️ Listener for '${event}' already exists, skipping...`);
             return;
         }
 
         eventListeners.add(callback);
-        console.log(`🎧 Added listener for '${event}', total: ${eventListeners.size}`);
     }
 
     /**
@@ -171,7 +140,6 @@ class SimpleSignalRService {
     removeEventListener(event, callback) {
         if (this.listeners.has(event)) {
             this.listeners.get(event).delete(callback);
-            console.log(`🧹 Removed listener for '${event}', remaining: ${this.listeners.get(event).size}`);
         }
     }
 
@@ -181,13 +149,11 @@ class SimpleSignalRService {
     notifyListeners(event, data = null) {
         if (this.listeners.has(event)) {
             const eventListeners = this.listeners.get(event);
-            console.log(`📢 Notifying ${eventListeners.size} listeners for '${event}'`);
 
             eventListeners.forEach((callback, index) => {
                 try {
                     callback(data);
                 } catch (error) {
-                    console.error(`Error in ${event} listener ${index + 1}:`, error);
                 }
             });
         }
@@ -200,9 +166,7 @@ class SimpleSignalRService {
         if (this.connection) {
             try {
                 await this.connection.stop();
-                console.log('🛑 SignalR connection stopped');
             } catch (error) {
-                console.error('Error stopping SignalR:', error);
             }
             this.connection = null;
         }

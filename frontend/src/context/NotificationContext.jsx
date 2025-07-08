@@ -189,7 +189,7 @@ export const NotificationProvider = ({ children }) => {
                     window.dispatchEvent(new CustomEvent('refreshNotifications'));
                 }
             });
-
+           
             // Start connection
             await newConnection.start();
 
@@ -289,16 +289,6 @@ export const NotificationProvider = ({ children }) => {
             await checkUnreadNotifications();
         }
     }, [user?.id, user?.role, checkUnreadNotifications]);
-
-    // Debug log for user object
-    useEffect(() => {
-        console.log('🔍 NotificationContext - User object:', {
-            id: user?.id,
-            role: user?.role,
-            idType: typeof user?.id,
-            fullUser: user
-        });
-    }, [user]);
 
     const contextValue = {
         connection,

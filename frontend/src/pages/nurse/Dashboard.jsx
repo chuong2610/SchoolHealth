@@ -286,8 +286,8 @@ const Dashboard = () => {
     avatar:
       user?.avatar ||
       "https://ui-avatars.com/api/?name=" +
-        encodeURIComponent(user?.fullName || user?.name || "Nurse") +
-        "&background=F06292&color=fff&size=200",
+      encodeURIComponent(user?.fullName || user?.name || "Nurse") +
+      "&background=F06292&color=fff&size=200",
   };
 
   useEffect(() => {
@@ -362,26 +362,26 @@ const Dashboard = () => {
   const todayIdx = today.getDay() === 0 ? 6 : today.getDay() - 1;
   const healthEventData = dashboardData.weeklyMedicalEventCounts
     ? Object.entries(dashboardData.weeklyMedicalEventCounts)
-        .map(([day, value], idx) => ({
-          day:
-            day === "Monday"
-              ? "T2"
-              : day === "Tuesday"
+      .map(([day, value], idx) => ({
+        day:
+          day === "Monday"
+            ? "T2"
+            : day === "Tuesday"
               ? "T3"
               : day === "Wednesday"
-              ? "T4"
-              : day === "Thursday"
-              ? "T5"
-              : day === "Friday"
-              ? "T6"
-              : day === "Saturday"
-              ? "T7"
-              : "CN",
-          events: value,
-          idx,
-        }))
-        .filter((d) => d.idx <= todayIdx)
-        .map(({ day, events }) => ({ day, events }))
+                ? "T4"
+                : day === "Thursday"
+                  ? "T5"
+                  : day === "Friday"
+                    ? "T6"
+                    : day === "Saturday"
+                      ? "T7"
+                      : "CN",
+        events: value,
+        idx,
+      }))
+      .filter((d) => d.idx <= todayIdx)
+      .map(({ day, events }) => ({ day, events }))
     : [];
 
   // Cấu hình cột cho bảng
@@ -454,12 +454,12 @@ const Dashboard = () => {
         <span>
           {date
             ? new Date(date).toLocaleString("vi-VN", {
-                hour: "2-digit",
-                minute: "2-digit",
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })
+              hour: "2-digit",
+              minute: "2-digit",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
             : ""}
         </span>
       ),
@@ -481,13 +481,6 @@ const Dashboard = () => {
               <h2 style={{ color: "#fff", marginBottom: 0 }}>
                 Chào mừng, {nurseProfile.name}
               </h2>
-              {/* <div className="nurse-welcome-subtitle">
-                <FaUserNurse />
-                {nurseProfile.role}
-                <span>•</span>
-                <FaEnvelope />
-                {nurseProfile.email}
-              </div> */}
             </div>
           </div>
           <div className="nurse-header-right">
@@ -724,12 +717,12 @@ const Dashboard = () => {
                             <td>
                               {row.date
                                 ? new Date(row.date).toLocaleString("vi-VN", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  })
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  day: "2-digit",
+                                  month: "2-digit",
+                                  year: "numeric",
+                                })
                                 : ""}
                             </td>
                           </tr>

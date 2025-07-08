@@ -11,13 +11,6 @@ import { toast } from "react-toastify";
 import "../../styles/nurse/consultation.css";
 import PaginationBar from "../../components/common/PaginationBar";
 
-// Mock student data
-const students = [
-  { id: "1", name: "Nguyễn Văn A" },
-  { id: "2", name: "Trần Thị B" },
-  { id: "3", name: "Lê Văn C" },
-];
-
 export default function Consultation() {
   const nurseId = localStorage.userId;
   const [classList, setClassList] = useState([]);
@@ -70,10 +63,13 @@ export default function Consultation() {
   };
 
   useEffect(() => {
-    fetchStudentList();
+    if(selectedClass){
+      fetchStudentList();
+    }
   }, [selectedClass]);
 
   const fetchConsultations = async () => {
+
     try {
       // const searchDate = filterDate ? `${filterDate}T00:00:00` : null;
       const res = await getConsultations(
@@ -113,7 +109,6 @@ export default function Consultation() {
     }
 
     try {
-      console.log("form:", form);
       const res = await postConsultation(form);
       if (res === true) {
         toast.success("Tạo lịch tư vấn thành công.");
@@ -126,7 +121,7 @@ export default function Consultation() {
       throw error;
     }
 
-    setForm({nurseId: nurseId, studentNumber: "", date: "", location: "", description: "", title: "" });
+    setForm({ nurseId: nurseId, studentNumber: "", date: "", location: "", description: "", title: "" });
     // setSelectedClass(null);
     setValidated(false); // reset form validation
   };
@@ -331,10 +326,10 @@ export default function Consultation() {
                   {a.status === "Pending"
                     ? "Chờ xác nhận"
                     : a.status === "Confirmed"
-                    ? "Đã xác nhận"
-                    : a.status === "Rejected"
-                    ? "Đã từ chối"
-                    : a.status}
+                      ? "Đã xác nhận"
+                      : a.status === "Rejected"
+                        ? "Đã từ chối"
+                        : a.status}
                 </td>
               </tr>
             ))

@@ -41,28 +41,6 @@ const ChatNotificationBadge = ({
 
     const showBadge = shouldShowBadge();
 
-    // Debug logging for nurses
-    const currentRole = localStorage.getItem('role');
-    if (currentRole?.toLowerCase() === 'nurse') {
-        console.log('👩‍⚕️ [NurseBadge] State:', {
-            hasUnreadMessages,
-            hasUnassignedMessages,
-            showBadge,
-            timestamp: new Date().toISOString()
-        });
-
-        // Extra debug: Check why hasUnassignedMessages might be false
-        if (!hasUnassignedMessages) {
-            console.log('❓ [NurseBadge] hasUnassignedMessages is FALSE - checking reasons...');
-            console.log('❓ [NurseBadge] AuthContext state:', {
-                'user exists': !!user,
-                'user role': user?.role,
-                'hasUnreadMessages': hasUnreadMessages,
-                'hasUnassignedMessages': hasUnassignedMessages
-            });
-        }
-    }
-
     // Get role-specific colors
     const getRoleColors = () => {
         const role = user?.role?.toLowerCase();

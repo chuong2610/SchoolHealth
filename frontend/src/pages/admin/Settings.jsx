@@ -23,17 +23,17 @@ const Settings = () => {
                   <Form>
                     <Form.Group className="mb-3">
                       <Form.Label>Tên đăng nhập</Form.Label>
-                      <Form.Control value="admin123" readOnly />
+                      <Form.Control value="" readOnly />
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Form.Label>Tên hiển thị</Form.Label>
-                      <Form.Control value="Nguyễn Văn Admin" />
+                      <Form.Control value="" />
                     </Form.Group>
                     <Form.Group className="mb-3">
                       <Form.Label>Email</Form.Label>
                       <Form.Control
                         type="email"
-                        value="admin@schoolhealth.com"
+                        value=""
                       />
                     </Form.Group>
                     <Form.Group className="mb-3">

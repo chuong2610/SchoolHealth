@@ -40,44 +40,6 @@ import { useAvatar } from "../../context/AvatarContext";
 import { toast } from "react-toastify";
 // Styles được import từ main.jsx
 
-const parentInfo = {
-  avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  name: "Nguyễn Văn B",
-  code: "PH001",
-  email: "nguyenvanb@gmail.com",
-  phone: "0912 345 678",
-  address: "123 Đường Lê Lợi, Quận 1, TP.HCM",
-  dob: "15/05/1980",
-  gender: "Nam",
-  role: "Phụ huynh",
-  emergencyContact: "0909 876 543",
-  workplace: "Công ty ABC",
-  occupation: "Kỹ sư",
-  relationship: "Bố",
-  children: [
-    {
-      name: "Nguyễn Văn C",
-      class: "10A1",
-      id: "HS001",
-      relationship: "Con trai",
-      birthDate: "12/03/2008",
-      bloodType: "O+",
-      allergies: "Không có",
-    },
-  ],
-};
-
-const parent = {
-  name: "Peter Parent",
-  email: "chauhieunhan01@gmail.com",
-  phone: "0523531942",
-  address: "789 Pine Rd",
-  gender: "Male",
-  imageUrl: `${import.meta.env.VITE_API_BASE_URL_IMAGE}/uploads/default.jpg`,
-  dateOfBirth: "1975-03-20",
-  roleName: "Parent",
-};
-
 const Profile = () => {
   const parentId = localStorage.userId;
   const { updateAvatarVersion } = useAvatar();
@@ -89,7 +51,7 @@ const Profile = () => {
     newPassword: "",
     confirmNewPassword: "",
   });
-  const [parentInfo, setParentInfo] = useState([{ ...parent }]);
+  const [parentInfo, setParentInfo] = useState([]);
   const [formData, setFormData] = useState([
     {
       name: "",
@@ -104,15 +66,7 @@ const Profile = () => {
   ]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [children, setChildren] = useState([
-    {
-      id: null,
-      studentName: "",
-      className: "",
-      dateOfBirth: "",
-      studentNumber: "",
-    },
-  ]);
+  const [children, setChildren] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -123,10 +77,10 @@ const Profile = () => {
         setParentInfo(res);
         setFormData(res);
       } else {
-        setParentInfo(parentInfo);
+        setParentInfo([]);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Có lỗi khi lấy thông tin phụ huynh!");
     }
   };
 
@@ -140,10 +94,10 @@ const Profile = () => {
       if (res) {
         setChildren(res);
       } else {
-        setChildren({});
+        setChildren([]);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Có lỗi khi lấy thông tin con em!");
     }
   };
 
@@ -162,7 +116,6 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       setSelectedImage(file);
-      // console.log("dsad", selectedImage);
       hanldeUpdateProfile(file);
     } else {
       setSelectedImage(null);
@@ -190,7 +143,7 @@ const Profile = () => {
 
       setIsEditing(false);
       // Reload lại userInfo nếu muốn cập nhật giao diện ngay
-      fetchParentInfo(parentId);
+      fetchParentInfo();
       // Reload lai Header
       updateAvatarVersion();
     } catch (error) {
@@ -265,8 +218,7 @@ const Profile = () => {
         });
       }
     } catch (error) {
-      // alert("Có lỗi khi đổi mật khẩu!");
-      console.error(error);
+      console.error("Có lỗi khi đổi mật khẩu!");
       setNotification({
         type: "error",
         message: error.message || "Có lỗi khi đổi mật khẩu!",

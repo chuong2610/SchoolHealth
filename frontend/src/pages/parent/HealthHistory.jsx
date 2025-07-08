@@ -112,7 +112,7 @@ const HealthHistory = () => {
         });
       }
     } catch (error) {
-      console.error("Error fetching health history statistics:", error);
+      
       setStatistics({
         totalHealthChecks: 0,
         totalVaccinations: 0,
@@ -145,7 +145,6 @@ const HealthHistory = () => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get(url);
-        console.log("API response from", url, response.data);
 
         const responseData = response.data.data;
 
@@ -175,7 +174,7 @@ const HealthHistory = () => {
       }
     };
     fetchData();
-    fetchHealthHistoryStats();
+   
   }, [parentId, activeTab, currentPage, debouncedSearch]);
 
   // Hàm lấy chi tiết
@@ -311,7 +310,6 @@ const HealthHistory = () => {
 
       return false;
     } catch (e) {
-      console.error("Error filtering item:", item, e);
       return false; // Exclude item that causes an error from the results
     }
   });

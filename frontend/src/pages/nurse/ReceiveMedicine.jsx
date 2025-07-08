@@ -117,7 +117,6 @@ const ReceiveMedicine = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       setReceiveMedicineStatistics({
         totalPending: 0,
         totalActive: 0,
@@ -847,8 +846,7 @@ const ReceiveMedicine = () => {
                 </div>
               </Tab>
             </Tabs>
-            {console.log("Currentpage", currentPage)}
-            {console.log("Totalpages", totalPages)}
+            
 
             {totalPages > 1 && (
               <PaginationBar

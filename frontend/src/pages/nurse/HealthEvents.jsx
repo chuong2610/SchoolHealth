@@ -131,7 +131,6 @@ const HealthEvents = () => {
           todayCount: res.todayCount,
         });
       } else {
-        console.log("Không có dữ liệu thống kê");
         setHealthEventStatistics({
           totalCount: 0,
           last7DaysCount: 0,
@@ -139,7 +138,6 @@ const HealthEvents = () => {
         });
       }
     } catch (error) {
-      console.error("Error fetching health event statistics:", error);
       setHealthEventStatistics({
         totalCount: 0,
         last7DaysCount: 0,
@@ -436,15 +434,15 @@ const HealthEvents = () => {
         medicalEventSupplys:
           validSupplies.length > 0
             ? validSupplies.map((supply) => ({
-                medicalSupplyId: parseInt(supply.medicalSupplyId),
-                quantity: parseInt(supply.quantity),
-              }))
+              medicalSupplyId: parseInt(supply.medicalSupplyId),
+              quantity: parseInt(supply.quantity),
+            }))
             : [
-                {
-                  medicalSupplyId: 0,
-                  quantity: 0,
-                },
-              ],
+              {
+                medicalSupplyId: 0,
+                quantity: 0,
+              },
+            ],
         nurseId: parseInt(user.id),
       };
 
@@ -481,8 +479,8 @@ const HealthEvents = () => {
         Array.isArray(updatedEvents)
           ? updatedEvents
           : Array.isArray(updatedEvents?.items)
-          ? updatedEvents.items
-          : []
+            ? updatedEvents.items
+            : []
       );
     } catch (error) {
       // More detailed error handling
@@ -496,9 +494,8 @@ const HealthEvents = () => {
             "Lỗi server: Không thể tạo sự kiện. Vui lòng kiểm tra dữ liệu đầu vào.";
         }
       } else if (error.response?.status === 400) {
-        errorMessage = `Dữ liệu không hợp lệ: ${
-          error.response?.data?.message || "Vui lòng kiểm tra lại thông tin"
-        }`;
+        errorMessage = `Dữ liệu không hợp lệ: ${error.response?.data?.message || "Vui lòng kiểm tra lại thông tin"
+          }`;
       } else if (error.response?.data?.message) {
         errorMessage = `Lỗi: ${error.response.data.message}`;
       } else if (error.message) {
@@ -808,10 +805,10 @@ const HealthEvents = () => {
                       {type === "all"
                         ? "Hiện tại chưa có sự kiện y tế nào trong hệ thống"
                         : type === "recent"
-                        ? "Không có sự kiện y tế nào trong 7 ngày qua"
-                        : type === "today"
-                        ? "Hôm nay chưa có sự kiện y tế nào được ghi nhận"
-                        : "Không có sự kiện nào trong danh mục này"}
+                          ? "Không có sự kiện y tế nào trong 7 ngày qua"
+                          : type === "today"
+                            ? "Hôm nay chưa có sự kiện y tế nào được ghi nhận"
+                            : "Không có sự kiện nào trong danh mục này"}
                     </p>
                   </div>
                 </td>
@@ -961,15 +958,15 @@ const HealthEvents = () => {
             >
               <Tab
                 eventKey="all"
-                // title={
-                //   <div className="tab-title pending">
-                //     <FaList className="tab-icon" />
-                //     <span>Tất cả</span>
-                //     <Badge bg="primary" className="tab-badge">
-                //       {totalItems}
-                //     </Badge>
-                //   </div>
-                // }
+              // title={
+              //   <div className="tab-title pending">
+              //     <FaList className="tab-icon" />
+              //     <span>Tất cả</span>
+              //     <Badge bg="primary" className="tab-badge">
+              //       {totalItems}
+              //     </Badge>
+              //   </div>
+              // }
               >
                 <div className="tab-content">
                   {renderTable(

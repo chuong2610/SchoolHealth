@@ -92,17 +92,7 @@ const Accounts = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 500); // 500ms delay
-  const [students, setStudents] = useState([
-    // {
-    //   id: 1,
-    //   studentName: "Tom Smith",
-    //   studentNumber: "STU001",
-    //   gender: "Male",
-    //   dateOfBirth: "2015-04-10",
-    //   className: "Grade 1A",
-    //   parentName: "Peter Parent 1",
-    // },
-  ]);
+  const [students, setStudents] = useState([]);
   const [newStudent, setNewStudent] = useState({
     name: "",
     studentNumber: "",
@@ -138,7 +128,7 @@ const Accounts = () => {
         ]);
       }
     } catch (error) {
-      console.log(error);
+      setError(error);
     }
   };
 
@@ -161,7 +151,6 @@ const Accounts = () => {
         setStudents([]);
       }
     } catch (err) {
-      console.log(err);
       setStudents([]);
     }
   };
@@ -210,34 +199,22 @@ const Accounts = () => {
         break;
     }
 
-    console.log("Gọi API với roleName:", roleName);
-
     try {
       const response = await axiosInstance.get(
         `/User/role/${roleName}?pageNumber=${currentPage}&pageSize=${pageSize}` +
-          `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`
+        `${debouncedSearch ? `&search=${debouncedSearch}` : ""}`
       );
-      console.log(response.data);
-      // if (response.data.success) {
-      //   console.log("totopages", response.data.data.totalPages);
-      //   setTotalPages(response.data?.data?.totalPages || 1);
-      //   setUsers(response.data?.data?.items || []);
-      // } else {
-      //   setError(response.data.message || "Failed to fetch users.");
-      //   setUsers([]);
-      // }
-      {/**Mới thêm logic ở đây để sửa lỗi Cannot read properties of null (reading 'totalPages') */}
       if (response.data.success && response.data.data) {
         const { totalPages, items } = response.data.data;
 
         if (!items || items.length === 0) {
           setUsers([]);
           setTotalPages(1);
-          setError(null); // ✅ Không hiển thị lỗi
+          setError(null);
         } else {
           setUsers(items);
           setTotalPages(totalPages || 1);
-          setError(null); // ✅ Không có lỗi
+          setError(null);
         }
       } else {
         setUsers([]);
@@ -263,7 +240,7 @@ const Accounts = () => {
   }, [activeTab, currentPage, debouncedSearch]);
 
   useEffect(() => {
-    console.log("totalPages dsa", totalPages);
+    // No-op: remove debug log for totalPages
   }, [totalPages]);
 
   const [showModal, setShowModal] = useState(false);
@@ -362,7 +339,7 @@ const Accounts = () => {
     phone: "",
     address: "",
     gender: "",
-    role: null,
+    role: "",
     dateOfBirth: "",
     password: "",
     confirmPassword: "",
@@ -392,7 +369,7 @@ const Accounts = () => {
           phone: user.phone || "",
           address: user.address || "",
           gender: user.gender || "",
-          role: roleNameToId(user.roleName) || "",
+          role: String(roleNameToId(user.roleName)) || "",
           dateOfBirth: user.dateOfBirth || "",
           password: "", // Don't populate password for edit
           confirmPassword: "",
@@ -404,7 +381,7 @@ const Accounts = () => {
           phone: "",
           address: "",
           gender: "",
-          role: null, // Default to current tab role
+          role: "", // Default to current tab role
           dateOfBirth: "",
           password: "",
           confirmPassword: "",
@@ -580,7 +557,7 @@ const Accounts = () => {
           phone: "",
           address: "",
           gender: "",
-          role: null,
+          role: "",
           dateOfBirth: "",
           password: "",
           confirmPassword: "",
@@ -609,7 +586,7 @@ const Accounts = () => {
         } else {
           alert(
             "Dữ liệu không hợp lệ: " +
-              (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
+            (err.response.data.title || "Vui lòng kiểm tra lại thông tin")
           );
         }
       } else if (err.response?.status === 409) {
@@ -619,9 +596,9 @@ const Accounts = () => {
       } else {
         alert(
           "Lỗi: " +
-            (err.response?.data?.title ||
-              err.response?.data?.message ||
-              err.message)
+          (err.response?.data?.title ||
+            err.response?.data?.message ||
+            err.message)
         );
       }
     } finally {
@@ -637,7 +614,7 @@ const Accounts = () => {
 
         // fetchUsers(); // Refresh the user list
 
-        {/**Mới thêm logic ở đây để xử lý lỗi Cannot read properties of null (reading 'totalPages')*/}
+        {/**Mới thêm logic ở đây để xử lý lỗi Cannot read properties of null (reading 'totalPages')*/ }
         // Nếu là phần tử cuối cùng trên trang hiện tại
         const isLastItemOnPage = users.length === 1 && currentPage > 1;
 
@@ -650,13 +627,13 @@ const Accounts = () => {
       } else {
         toast.error(
           "Lỗi khi xóa người dùng: " +
-            (response.data.message || "Lỗi không xác định")
+          (response.data.message || "Lỗi không xác định")
         );
       }
     } catch (err) {
       toast.error(
         "Lỗi khi xóa người dùng: " +
-          (err.response?.data?.message || err.message)
+        (err.response?.data?.message || err.message)
       );
     }
     setShowDeleteModal(false);
@@ -664,7 +641,6 @@ const Accounts = () => {
 
   const handleDeleteStudent = async () => {
     try {
-      console.log("heheh");
       const res = await deleteStudentById(userToDelete?.id);
       if (res) {
         toast.success("Xóa học sinh thành công");
@@ -766,7 +742,7 @@ const Accounts = () => {
         toast.error("Thêm học sinh thất bại");
       }
     } catch (err) {
-      console.log(err);
+      setError(err);
     }
   };
 
@@ -1930,18 +1906,17 @@ const Accounts = () => {
                         </td>
                         <td>
                           <div
-                            className={`admin-role-badge ${
-                              user.gender?.toLowerCase() === "male" ||
-                              user.gender === "Nam"
+                            className={`admin-role-badge ${user.gender?.toLowerCase() === "male" ||
+                                user.gender === "Nam"
                                 ? "parent"
                                 : user.gender?.toLowerCase() === "female" ||
                                   user.gender === "Nữ"
-                                ? "parent"
-                                : "nurse"
-                            }`}
+                                  ? "parent"
+                                  : "nurse"
+                              }`}
                           >
                             {user.gender?.toLowerCase() === "male" ||
-                            user.gender === "Nam" ? (
+                              user.gender === "Nam" ? (
                               <FaMars />
                             ) : user.gender?.toLowerCase() === "female" ||
                               user.gender === "Nữ" ? (
@@ -2064,18 +2039,17 @@ const Accounts = () => {
                           <td>{formatDDMMYYYY(student.dateOfBirth)}</td>
                           <td>
                             <div
-                              className={`admin-role-badge ${
-                                student.gender?.toLowerCase() === "male" ||
-                                student.gender === "Nam"
+                              className={`admin-role-badge ${student.gender?.toLowerCase() === "male" ||
+                                  student.gender === "Nam"
                                   ? "parent"
                                   : student.gender?.toLowerCase() ===
-                                      "female" || student.gender === "Nữ"
-                                  ? "parent"
-                                  : "nurse"
-                              }`}
+                                    "female" || student.gender === "Nữ"
+                                    ? "parent"
+                                    : "nurse"
+                                }`}
                             >
                               {student.gender?.toLowerCase() === "male" ||
-                              student.gender === "Nam" ? (
+                                student.gender === "Nam" ? (
                                 <FaMars />
                               ) : student.gender?.toLowerCase() === "female" ||
                                 student.gender === "Nữ" ? (

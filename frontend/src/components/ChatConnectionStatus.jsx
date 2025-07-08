@@ -86,7 +86,6 @@ const ChatConnectionStatus = ({ showText = true, size = 'sm' }) => {
                 setError('Không thể kết nối SignalR. Sử dụng REST API fallback.');
             }
         } catch (error) {
-            console.error('Connection retry failed:', error);
             setConnectionStatus('Failed');
             setError(`Lỗi kết nối: ${error.message}`);
         }

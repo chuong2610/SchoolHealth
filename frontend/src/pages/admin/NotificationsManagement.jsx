@@ -157,7 +157,6 @@ const NotificationsManagement = () => {
           notificationsSentToday: res.notificationsSentToday,
         });
       } else {
-        console.log("failed to fetch stats");
         setStats({
           totalNotifications: 0,
           vaccinationNotifications: 0,
@@ -166,7 +165,6 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
       setStats({
         totalNotifications: 0,
         vaccinationNotifications: 0,
@@ -407,7 +405,6 @@ const NotificationsManagement = () => {
     }
 
     try {
-      console.log("notificationData", notificationData);
       const res = await postNotification(notificationData);
       toast.success("Tạo và gửi thông báo thành công");
       setReload(!reload);
@@ -480,12 +477,14 @@ const NotificationsManagement = () => {
         // setDetailTotalPages(res.pagedResults.totalPages || 1);
       }
     } catch (error) {
-      console.error(error);
+      
     }
   };
 
   useEffect(() => {
-    fetchNotificationDetail(modalDetail?.notificationDetail?.id || "");
+    if(modalDetail?.notificationDetail?.id){
+      fetchNotificationDetail(modalDetail?.notificationDetail?.id);
+    }
   }, [currentDetailPage]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
@@ -500,7 +499,7 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+     
     }
   };
   useEffect(() => { }, [modalResultDetail]);
@@ -517,7 +516,7 @@ const NotificationsManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+     
     }
   };
   useEffect(() => { }, [modalResultDetail]);
@@ -590,7 +589,6 @@ const NotificationsManagement = () => {
       }));
     } catch (error) {
       toast.error("Không thể lấy chi tiết kết quả loại Khác");
-      console.log(error);
     }
   };
 

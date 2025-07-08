@@ -230,7 +230,6 @@ const Profile = () => {
       updateAvatarVersion();
     } catch (err) {
       alert("Lỗi khi lưu hồ sơ.");
-      console.error(err);
     }
   };
 
@@ -293,9 +292,7 @@ const Profile = () => {
       try {
         const response = await axiosInstance.get(`/User/${userId}`);
         setUserInfo(response.data);
-        console.log(response.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
       }
     };
     fetchUserData();

@@ -117,7 +117,7 @@ const Settings = () => {
               </Form.Group>
 
               <div className="text-muted small mt-4">
-                * Đổi mật khẩu demo: mật khẩu hiện tại là <b>123456</b>.<br />* Các chức năng sẽ được cập nhật trong phiên bản tiếp theo.
+                * Các chức năng sẽ được cập nhật trong phiên bản tiếp theo.
               </div>
             </Card.Body>
           </Card>

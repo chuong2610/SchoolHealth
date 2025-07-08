@@ -64,7 +64,6 @@ const Header = ({ onLogout }) => {
         setParentInfo(parentInfo);
       }
     } catch (error) {
-      console.log(error);
     }
   };
 

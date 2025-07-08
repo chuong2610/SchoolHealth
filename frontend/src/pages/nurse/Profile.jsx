@@ -120,7 +120,6 @@ const Profile = () => {
         setFormData(res);
       }
     } catch (error) {
-      console.log("Error fetching nurse info:", error);
     }
   };
   useEffect(() => {
@@ -182,7 +181,6 @@ const Profile = () => {
         toast.error("Đổi mật khẩu thất bại!");
       }
     } catch (error) {
-      console.error(error);
       toast.error("Có lỗi khi đổi mật khẩu!");
       return;
     } finally {
@@ -226,7 +224,6 @@ const Profile = () => {
     } catch (error) {
       alert("Có lỗi khi lưu thông tin hoặc upload ảnh!");
       toast.error("Có lỗi khi lưu thông tin hoặc upload ảnh!");
-      console.error(error);
     }
   };
 
@@ -237,7 +234,6 @@ const Profile = () => {
         setNurseInfo(res);
       }
     } catch (error) {
-      console.error(error);
     }
   };
 

@@ -2,15 +2,13 @@ import React from 'react'
 import axiosInstance from '../axiosInstance';
 
 export const getNurseInfo = async (nurseId) => {
-  try{
+  try {
     const res = await axiosInstance.get(`/User/${nurseId}`);
-    if(res) {
-        return res.data;
+    if (res) {
+      return res.data;
     } else {
-        console.log("Error", res.message);
     }
-  }catch(error){
-    console.log(error);
+  } catch (error) {
   }
 }
 
@@ -20,10 +18,8 @@ export const updateProfile = async (nurseId, data) => {
     if (res.data.success) {
       return res.data;
     } else {
-      console.log("error update profile", res.data.message);
     }
   } catch (error) {
-    console.log(error);
   }
 };
 
@@ -43,17 +39,14 @@ export const uploadAvatar = async (file) => {
 };
 
 export const updatePassword = async (nurseId, data) => {
-  console.log(data);
   try {
     const res = await axiosInstance.patch(`/User/change-password/${nurseId}`, data);
     if (res.data.success) {
       return res.data;
     } else {
-      console.log("error load children info", res.data.message);
       return res.data;
     }
   } catch (error) {
-    console.log(error.message);
   }
 };
 

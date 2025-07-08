@@ -22,14 +22,12 @@ function AuthCallback() {
 
             // Kiểm tra nếu user từ chối authorization
             if (error_param) {
-                console.warn('❌ Google OAuth error:', error_param);
                 setError('Đăng nhập bằng Google bị hủy');
                 setLoading(false);
                 return;
             }
 
             if (!code) {
-                console.error('❌ No authorization code received');
                 setError('Không nhận được mã xác thực từ Google');
                 setLoading(false);
                 return;
@@ -67,8 +65,6 @@ function AuthCallback() {
                 }, 800);
 
             } catch (err) {
-                console.error('❌ Google login failed:', err);
-
                 let errorMessage = 'Đăng nhập bằng Google thất bại!';
 
                 if (err.response) {

@@ -78,7 +78,6 @@ const CreateBlogPost = () => {
       });
 
       const data = res.data;
-      console.log("📦 Res upload ảnh:", data);
 
       // Chỉ lưu tên file được backend trả về vào userInfo
       setFormData((prev) => ({
@@ -87,7 +86,6 @@ const CreateBlogPost = () => {
       }));
       setSuccess("Upload ảnh thành công!");
     } catch (error) {
-      console.error("Lỗi upload ảnh:", error);
       setError("Tải ảnh thất bại! Vui lòng thử lại.");
     } finally {
       setImageUploading(false);
@@ -148,7 +146,6 @@ const CreateBlogPost = () => {
         error.response?.data?.message ||
         "Tạo bài viết thất bại. Vui lòng thử lại."
       );
-      console.error("Error:", error);
     } finally {
       setLoading(false);
     }

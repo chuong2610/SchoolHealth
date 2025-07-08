@@ -126,7 +126,6 @@ const MedicineInventory = () => {
           outOfStock: res.outOfStock,
         });
       } else {
-        console.log("Failed to fetch inventory statistics.");
         setInventoryStats({
           totalMedications: 0,
           inStock: 0,
@@ -135,7 +134,6 @@ const MedicineInventory = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       setInventoryStats({
         totalMedications: 0,
         inStock: 0,
@@ -245,21 +243,18 @@ const MedicineInventory = () => {
   const fetchInventory = async () => {
     try {
       const respond = await axiosInstance.get(
-        `/MedicalSupply?pageNumber=${currentPage}&pageSize=3${
-          search ? `&search=${search}` : ""
+        `/MedicalSupply?pageNumber=${currentPage}&pageSize=3${search ? `&search=${search}` : ""
         } `,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       const data = respond.data.data || [];
-      console.log("Fetched inventory:", data); // Log toàn bộ dữ liệu
       setInventory(data.items || []);
       setCurrentPage(data.currentPage || 1);
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       setError("Failed to fetch inventory.");
-      console.error("Fetch error:", error);
     }
   };
 
@@ -319,29 +314,22 @@ const MedicineInventory = () => {
       fetchMedicineInventoryStatistics();
     } catch (error) {
       setError("Faild to add item.");
-      console.log("Add error:", error);
     }
   };
 
   //Cập nhật vật tư
   const handleUpdate = async (e) => {
-    console.log("update 1");
     e.preventDefault();
-    console.log("update 2");
-    console.log("Số lượng: ", form.quantity);
     if (form.quantity < 1) {
       setError("Số lượng phải lớn hơn hoặc bằng 1.");
       return;
     }
 
-    console.log("update 5");
     try {
-      console.log("update 3");
       const response = await axiosInstance.patch(`/MedicalSupply/${form.id}`, {
         name: form.name,
         quantity: form.quantity,
       });
-      console.log("update 4");
       setInventory(
         inventory.map((item) =>
           item.id === form.id ? { ...item, ...form } : item
@@ -358,14 +346,11 @@ const MedicineInventory = () => {
       const message =
         error.response?.data?.message || "Lỗi không xác định khi cập nhật.";
       setError(message);
-      console.log("Update error:", error);
     }
   };
 
   //Xóa vật tư
   const handleDelete = async (id) => {
-    // Thêm log để kiểm tra id
-    console.log("Received id for delete:", id, "Type:", typeof id); // Log id
     try {
       const response = await axiosInstance.delete(
         `/MedicalSupply/${id}`,
@@ -379,7 +364,6 @@ const MedicineInventory = () => {
       setInventory(inventory.filter((item) => item.id !== id));
     } catch (error) {
       setError("Failed to delete item.");
-      console.log("Delete error:", error);
     }
   };
 
@@ -446,15 +430,6 @@ const MedicineInventory = () => {
         id: medicine.id,
         name: medicine.name,
         quantity: medicine.quantity,
-        // category: medicine.category,
-
-        // minStock: medicine.minStock,
-        // maxStock: medicine.maxStock,
-        // unit: medicine.unit,
-        // price: medicine.price,
-        // expiryDate: medicine.expiryDate,
-        // location: medicine.location,
-        // barcode: medicine.barcode,
       });
     } else {
       setForm({
@@ -951,10 +926,8 @@ const MedicineInventory = () => {
               className="btn btn-sm btn-outline-danger"
               onClick={(e) => {
                 if (modalType === "add") {
-                  console.log("add");
                   handleAdd(e);
                 } else {
-                  console.log("update");
                   handleUpdate(e);
                 }
               }}

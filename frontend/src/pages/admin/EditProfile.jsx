@@ -35,7 +35,6 @@ const EditProfile = () => {
       });
 
       const data = await res.json();
-      console.log("📦 Res upload ảnh:", data);
 
       // Chỉ lưu tên file được backend trả về vào userInfo
       setUserInfo((prev) => ({
@@ -45,7 +44,6 @@ const EditProfile = () => {
       }));
       setIsImageChanged(true);
     } catch (error) {
-      console.error("Lỗi upload ảnh:", error);
       alert("Tải ảnh thất bại!");
     }
   };
@@ -66,13 +64,11 @@ const EditProfile = () => {
         updatedData.imageUrl = userInfo.imageUrl;
       }
 
-      console.log("🧾 Updated data gửi đi:", updatedData);
       await axiosInstance.patch(`/User/profile/${userId}`, updatedData);
       alert("Cập nhật thành công!");
 
       navigate("/profile"); // quay lại trang Profile
     } catch (error) {
-      console.error("Lỗi khi cập nhật:", error);
       alert("Có lỗi xảy ra.");
     }
   };

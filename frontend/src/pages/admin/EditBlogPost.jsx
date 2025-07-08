@@ -54,10 +54,6 @@ const EditBlogPost = () => {
       });
     } catch (error) {
       setError("Không thể tải thông tin bài viết. Vui lòng thử lại.");
-      console.error(
-        "Fetch error: ",
-        error.response ? error.response.data : error.message
-      );
     } finally {
       setPageLoading(false);
     }
@@ -119,7 +115,6 @@ const EditBlogPost = () => {
       setTimeout(() => navigate("/admin/blog-posts"), 2000);
     } catch (error) {
       setError(error.response?.data?.message || "Cập nhật bài viết thất bại. Vui lòng thử lại.");
-      console.error("Update error:", error); // Debug
     } finally {
       setLoading(false);
     }
@@ -167,7 +162,6 @@ const EditBlogPost = () => {
       setIsImageChanged(true);
       setSuccess("Upload ảnh thành công!");
     } catch (error) {
-      console.error("Upload image failed:", error);
       setError("Upload ảnh thất bại. Vui lòng thử lại.");
     }
   };

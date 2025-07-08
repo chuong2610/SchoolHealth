@@ -7,10 +7,8 @@ export const getMedicineInventoryStatistics = async () => {
     if (res.data.success === true) {
       return res.data.data;
     } else {
-      console.log("error occured getMedicineInventoryStatistics", res.data.message);
     }
   } catch (error) {
-    console.log("error occured getMedicineInventoryStatistics", error);
     throw error;
   }
 }
