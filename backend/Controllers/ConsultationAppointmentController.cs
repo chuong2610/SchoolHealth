@@ -16,6 +16,23 @@ public class ConsultationAppointmentController : ControllerBase
     {
         _consultationAppointmentService = consultationAppointmentService;
     }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetConsultationAppointmentById(int id)
+    {
+        try
+        {
+            var result = await _consultationAppointmentService.GetConsultationAppointmentByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound(new BaseResponse<string>(null, "Cuộc hẹn tư vấn không tồn tại", false));
+            }
+            return Ok(new BaseResponse<ConsultationAppointmentDetailDTO>(result, "Lấy cuộc hẹn tư vấn thành công", true));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+        }
+    }
     [HttpGet("parent/{parentId}")]
     public async Task<IActionResult> GetConsultationAppointmentsByParentId(int parentId, int pageNumber, int pageSize, string? search)
     {
@@ -48,7 +65,7 @@ public class ConsultationAppointmentController : ControllerBase
         try
         {
             var result = await _consultationAppointmentService.GetConsultationAppointmentsByParentIdAndPendingAsync(parentId, pageNumber, pageSize, search);
-            return Ok(new BaseResponse<PageResult<ConsultationAppointmentDetailDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn đang chờ theo phụ huynh thành công", true));
+            return Ok(new BaseResponse<PageResult<ConsultationAppointmentDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn đang chờ theo phụ huynh thành công", true));
         }
         catch (Exception ex)
         {
@@ -93,6 +110,19 @@ public class ConsultationAppointmentController : ControllerBase
                 return Ok(new BaseResponse<string>(null, "Cập nhật cuộc hẹn tư vấn thành công", true));
             }
             return BadRequest(new BaseResponse<string>(null, "Cập nhật cuộc hẹn tư vấn thất bại", false));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new BaseResponse<string>(null, $"Lỗi: {ex.Message}", false));
+        }
+    }
+    [HttpGet("today/{userId}")]
+    public async Task<IActionResult> GetConsultationAppointmentsTodayByUserId(int userId, int pageNumber, int pageSize, string? search)
+    {
+        try
+        {
+            var result = await _consultationAppointmentService.GetConsultationAppointmentsTodayByUserIdAsync(userId, pageNumber, pageSize, search);
+            return Ok(new BaseResponse<PageResult<ConsultationAppointmentDTO>>(result, "Lấy danh sách cuộc hẹn tư vấn hôm nay theo người dùng thành công", true));
         }
         catch (Exception ex)
         {

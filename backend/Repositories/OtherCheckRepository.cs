@@ -1,3 +1,4 @@
+using Azure;
 using backend.Data;
 using backend.Interfaces;
 using backend.Models;
@@ -23,13 +24,13 @@ public class OtherCheckRepository : IOtherCheckRepository
         return await _context.OtherChecks.Include(oc => oc.CheckList).Include(oc => oc.Student).Include(oc => oc.Nurse).FirstOrDefaultAsync(oc => oc.Id == id);
     }
 
-    public async Task<List<OtherCheck>> GetOtherChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
+    public async Task<PageResult<OtherCheck>> GetOtherChecksByParentIdAsync(int parentId, int pageNumber, int pageSize, string? search, DateTime? searchDate)
     {
         var query = _context.OtherChecks.Include(oc => oc.Student).Include(oc => oc.Nurse).Include(oc => oc.CheckList).AsQueryable();
 
         if (search != null)
         {
-            query = query.Where(oc => oc.Name.Contains(search)||
+            query = query.Where(oc => oc.Name.Contains(search) ||
                                       oc.Description.Contains(search) ||
                                       oc.Location.Contains(search) ||
                                       oc.Student.Name.Contains(search) ||
@@ -41,11 +42,17 @@ public class OtherCheckRepository : IOtherCheckRepository
             query = query.Where(oc => oc.Date.Date == searchDate.Value.Date);
         }
 
-        return await query
-            .Where(oc => oc.Student.ParentId == parentId)
+        var totalItems = await query.CountAsync();
+        var items = await query.OrderByDescending(oc => oc.Date)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
+
+        return new PageResult<OtherCheck>
+        {
+            Items = items,
+            TotalItems = totalItems
+        };
     }
 
     public async Task<bool> CreateOtherCheckAsync(OtherCheck otherCheck)

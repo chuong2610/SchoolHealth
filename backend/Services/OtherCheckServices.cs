@@ -62,9 +62,9 @@ public class OtherCheckService : IOtherCheckService
             var otherChecks = await _otherCheckRepository.GetOtherChecksByParentIdAsync(parentId, pageNumber, pageSize, search, searchDate);
             return new PageResult<OtherCheckDTO>
             {
-                Items = await MapToDTO(otherChecks),
-                TotalItems = otherChecks.Count,
-                TotalPages = (int)Math.Ceiling(otherChecks.Count / (double)pageSize),
+                Items = await MapToDTO(otherChecks.Items),
+                TotalItems = otherChecks.TotalItems,
+                TotalPages = (int)Math.Ceiling(otherChecks.TotalItems / (double)pageSize),
                 CurrentPage = pageNumber
             };
     }
