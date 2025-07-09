@@ -62,16 +62,11 @@ const ParentChat = () => {
         // Debounce the actual API call
         loadConversationsTimeoutRef.current = setTimeout(async () => {
             try {
-                console.log('📋 [PARENT] Loading conversations...');
                 const data = await simpleChatAPI.getConversations(userId);
-
-                console.log('📋 [PARENT] Conversations count:', data?.length || 0);
-                console.log('📋 [PARENT] Conversations data:', data);
 
                 setConversations(data || []);
                 setError('');
             } catch (error) {
-                console.error('❌ Error loading conversations:', error);
                 setError('Không thể tải danh sách cuộc trò chuyện');
             }
         }, 300); // Reduced debounce time
@@ -80,8 +75,6 @@ const ParentChat = () => {
     // Load chat history when clicking a conversation
     const loadChatHistory = useCallback(async (conversation) => {
         try {
-            console.log('📜 [PARENT] Loading chat history for conversation:', conversation);
-
             // Get partner ID (nurse ID) from conversation
             const nurseId = conversation.User ||
                 conversation.nurseId ||
@@ -91,19 +84,13 @@ const ParentChat = () => {
                 conversation.NurseId ||
                 conversation.UserId;
 
-            console.log('📜 [PARENT] Loading chat history with nurseId:', nurseId);
-
             if (!nurseId) {
-                console.error('❌ No valid nurseId found in conversation:', Object.keys(conversation));
                 setError('Không thể xác định y tá. Vui lòng thử lại.');
                 return;
             }
 
             // Reset pagination and load latest messages (skip: 0, take: 50)
-            console.log('📜 [PARENT] Loading latest 50 messages...');
             const history = await simpleChatAPI.getChatHistory(userId, nurseId, 0, 50);
-
-            console.log('📜 [PARENT] Loaded messages:', history.length);
 
             // Set messages (API returns newest first, so reverse to show oldest at top)
             setMessages(history.reverse());
@@ -113,12 +100,6 @@ const ParentChat = () => {
             // Reset pagination states
             setSkip(history.length);
             setHasMoreMessages(history.length === 50); // If we got 50 messages, there might be more
-
-            console.log('📜 [PARENT] Pagination state:', {
-                skip: history.length,
-                hasMoreMessages: history.length === 50,
-                totalLoaded: history.length
-            });
 
             if (isMobile) {
                 setShowMobileChat(true);
@@ -133,7 +114,6 @@ const ParentChat = () => {
             }, 500);
 
         } catch (error) {
-            console.error('❌ Error loading chat history:', error);
             setError('Không thể tải lịch sử chat');
         }
     }, [userId, loadConversations, isMobile]);
@@ -154,17 +134,8 @@ const ParentChat = () => {
                 selectedConversation.NurseId ||
                 selectedConversation.UserId;
 
-            console.log('📜 [PARENT] Loading more messages...', {
-                nurseId,
-                currentSkip: skip,
-                nextSkip: skip,
-                take: 50
-            });
-
             // Load older messages (skip current amount, take 50 more)
             const olderMessages = await simpleChatAPI.getChatHistory(userId, nurseId, skip, 50);
-
-            console.log('📜 [PARENT] Loaded older messages:', olderMessages.length);
 
             if (olderMessages.length > 0) {
                 // Prepend older messages to the beginning (reverse them first since API returns newest first)
@@ -174,19 +145,12 @@ const ParentChat = () => {
                 setSkip(prevSkip => prevSkip + olderMessages.length);
                 setHasMoreMessages(olderMessages.length === 50); // If we got 50, there might be more
 
-                console.log('📜 [PARENT] Updated pagination state:', {
-                    newSkip: skip + olderMessages.length,
-                    hasMoreMessages: olderMessages.length === 50,
-                    totalLoaded: messages.length + olderMessages.length
-                });
             } else {
                 // No more messages
                 setHasMoreMessages(false);
-                console.log('📜 [PARENT] No more older messages to load');
             }
 
         } catch (error) {
-            console.error('❌ Error loading more messages:', error);
             setError('Không thể tải thêm tin nhắn');
         } finally {
             setLoadingMore(false);
@@ -198,8 +162,6 @@ const ParentChat = () => {
         if (!userId) return;
 
         const init = async () => {
-            console.log('🚀 [PARENT] Initializing chat...');
-
             // Clear unread messages since user is now on chat page
             clearUnreadMessages();
 
@@ -223,8 +185,6 @@ const ParentChat = () => {
     // ===== AUTO-START CHAT WITH SPECIFIC NURSE (from navigation state) =====
     useEffect(() => {
         if (!userId || loading || !location.state?.autoStartChat || !location.state?.nurseName) return;
-
-        console.log('🚀 [PARENT] Auto-starting chat with nurse:', location.state.nurseName, 'nurseId:', location.state.nurseId);
 
         // Wait for conversations to load, then try to find the nurse
         const timer = setTimeout(async () => {
@@ -253,16 +213,8 @@ const ParentChat = () => {
             });
 
             if (nurseConversation) {
-                console.log('🚀 [PARENT] Found existing conversation with nurse:', {
-                    nurseId: getNurseIdFromConversation(nurseConversation),
-                    nurseName: getNurseNameFromConversation(nurseConversation)
-                });
                 await loadChatHistory(nurseConversation);
             } else {
-                console.log('🚀 [PARENT] Starting new chat with nurse:', {
-                    nurseId: location.state.nurseId,
-                    nurseName: location.state.nurseName
-                });
                 startNewChat(location.state.nurseName, location.state.nurseId);
             }
         }, 500);
@@ -276,8 +228,6 @@ const ParentChat = () => {
 
         // Handler for new messages received via SignalR
         const handleMessageReceived = async (messageData) => {
-            console.log('📨 [PARENT] SignalR message received:', JSON.stringify(messageData, null, 2));
-
             const { fromUserId, toUserId } = messageData;
             const currentUserId = parseInt(userId);
 
@@ -289,22 +239,12 @@ const ParentChat = () => {
                     selectedConversation.userId || selectedConversation.NurseId ||
                     selectedConversation.UserId;
 
-                console.log('🔍 [PARENT] Checking if message belongs to current conversation:', {
-                    messageFromUserId: fromUserId,
-                    messageToUserId: toUserId,
-                    currentUserId,
-                    conversationPartnerId: partnerId
-                });
-
                 // Check if message is part of current conversation
                 const isCurrentConversation =
                     (fromUserId === partnerId && toUserId === currentUserId) ||  // Partner → Me
                     (fromUserId === currentUserId && toUserId === partnerId);     // Me → Partner
 
                 if (isCurrentConversation) {
-                    console.log('🔄 [PARENT] Message belongs to current conversation - refreshing chat history');
-
-                    // Refresh chat history for current conversation (reload latest messages)
                     setTimeout(async () => {
                         await loadChatHistory(selectedConversation);
                     }, 500);
@@ -312,7 +252,6 @@ const ParentChat = () => {
             }
 
             // Always refresh conversation list to update last message
-            console.log('🔄 [PARENT] Refreshing conversation list');
             setTimeout(async () => {
                 await loadConversations();
             }, 1000);
@@ -344,7 +283,6 @@ const ParentChat = () => {
 
             // Nếu là chat mới và chưa có nurseId, gửi với toUserId: null
             if ((isNewChatMode || selectedConversation?.isNewChat) && !selectedConversation?.nurseId) {
-                console.log('📤 [PARENT] Sending new chat message to system (toUserId: null)');
                 await simpleChatAPI.sendMessage(userId, null, newMessage);
                 setNewMessage('');
                 setIsNewChatMode(false);
@@ -357,7 +295,6 @@ const ParentChat = () => {
 
             // Nếu là chat mới với nurse cụ thể
             if ((isNewChatMode || selectedConversation?.isNewChat) && selectedConversation?.nurseId) {
-                console.log('📤 [PARENT] Sending new chat message to nurseId:', selectedConversation.nurseId);
                 await simpleChatAPI.sendMessage(userId, selectedConversation.nurseId, newMessage);
                 setNewMessage('');
                 setIsNewChatMode(false);
@@ -367,7 +304,6 @@ const ParentChat = () => {
             }
 
             // Existing conversation - send to specific nurse
-            console.log('📤 [PARENT] Selected conversation for sending:', selectedConversation);
             const nurseId = selectedConversation?.user ||
                 selectedConversation?.User ||
                 selectedConversation?.nurseId ||
@@ -376,15 +312,12 @@ const ParentChat = () => {
                 selectedConversation?.NurseId ||
                 selectedConversation?.UserId;
             if (!nurseId) {
-                console.error('❌ No valid nurseId found in selectedConversation:', Object.keys(selectedConversation || {}));
                 throw new Error('Không xác định được y tá. Cấu trúc dữ liệu không đúng.');
             }
-            console.log('📤 [PARENT] Sending message to nurseId:', nurseId);
             await simpleChatAPI.sendMessage(userId, nurseId, newMessage);
             setNewMessage('');
             await loadChatHistory(selectedConversation);
         } catch (error) {
-            console.error('❌ Error sending message:', error);
             setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
         } finally {
             setSending(false);

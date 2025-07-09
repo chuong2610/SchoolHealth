@@ -85,10 +85,8 @@ const AdminDashboard = () => {
         },
       });
       setDashboardData(response.data.data);
-      console.log("Dashboard data loaded:", response.data.data); // Debug log
     } catch (err) {
       setError("Failed to load dashboard data");
-      console.error("Dashboard API error:", err); // Debug log
     } finally {
       setLoading(false);
     }

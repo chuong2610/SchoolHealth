@@ -40,7 +40,6 @@ const BlogPostList = () => {
       setError("");
     } catch (error) {
       setError("Không thể tải danh sách blog posts. Vui lòng thử lại.");
-      console.error("Error fetching blog posts:", error);
     } finally {
       setLoading(false);
     }
@@ -89,7 +88,6 @@ const BlogPostList = () => {
       await fetchBlogPost();
       setIsDeleting(false);
     } catch (error) {
-      console.error("Xóa thất bại:", error);
       if (error.response?.status === 404) {
         // Đã xóa rồi nhưng phản hồi 404
         if (currentPage > 1) setCurrentPage((prev) => prev - 1);
@@ -280,9 +278,8 @@ const BlogPostList = () => {
                   {getPageNumbers().map((page) => (
                     <li
                       key={page}
-                      className={`admin-blog-list-pagination-item ${
-                        page === currentPage ? "active" : ""
-                      }`}
+                      className={`admin-blog-list-pagination-item ${page === currentPage ? "active" : ""
+                        }`}
                     >
                       <button
                         className="admin-blog-list-pagination-link"

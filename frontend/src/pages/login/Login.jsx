@@ -160,7 +160,7 @@ const Login = () => {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Mã OTP không chính xác! Vui lòng thử lại."
+        "Mã OTP không chính xác! Vui lòng thử lại."
       );
     } finally {
       setLoading(false);
@@ -211,13 +211,10 @@ const Login = () => {
     setError("");
     setSuccessMsg("");
     try {
-      console.log("🔐 Attempting login for:", phoneNumber);
       const response = await axiosInstance.post("/auth/login", {
         phoneNumber,
         password,
       });
-
-      console.log("📨 Login response:", response.data);
 
       // Improved response validation
       const responseData = response.data;
@@ -239,7 +236,6 @@ const Login = () => {
         // Direct structure: { token, userId, roleName }
         authData = responseData;
       } else {
-        console.error("❌ Invalid response structure:", responseData);
         setError("Đăng nhập thất bại! Dữ liệu phản hồi không hợp lệ.");
         return;
       }
@@ -247,16 +243,9 @@ const Login = () => {
       const { token, userId, roleName } = authData;
 
       if (!token || !userId || !roleName) {
-        console.error("❌ Missing auth data:", {
-          token: !!token,
-          userId: !!userId,
-          roleName: !!roleName,
-        });
         setError("Đăng nhập thất bại! Thiếu thông tin xác thực.");
         return;
       }
-
-      console.log("✅ Auth data validated:", { userId, roleName });
 
       await login(token, roleName, Number(userId), "");
       setSuccessMsg("Đăng nhập thành công! Đang chuyển hướng...");
@@ -266,7 +255,6 @@ const Login = () => {
         navigate(`/${roleName.toLowerCase()}`, { replace: true });
       }, 1000);
     } catch (err) {
-      console.error("❌ Login error:", err);
       const errorMessage =
         err.response?.data?.message ||
         err.response?.data?.error ||

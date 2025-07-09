@@ -99,11 +99,9 @@ export const getNotificationsStatistics = async (parentId) => {
     if (res.data.success === true) {
       return res.data.data;
     } else {
-      console.error("Error in getNotificationsStatistics:", res.data.message);
       return {};
     }
   } catch (error) {
-    console.error("Error fetching notifications statistics:", error);
     throw error;
   }
 };

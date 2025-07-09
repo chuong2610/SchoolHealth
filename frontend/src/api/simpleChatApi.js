@@ -12,11 +12,9 @@ class SimpleChatAPI {
      */
     async checkUnreadMessages(userId) {
         try {
-            console.log('🔔 Checking unread messages for:', userId);
             const response = await axiosInstance.get(`/Node/has-unread-message/${userId}`);
             return response.data?.hasUnreadMessage || false;
         } catch (error) {
-            console.error('❌ Error checking unread messages:', error);
             return false;
         }
     }
@@ -27,11 +25,9 @@ class SimpleChatAPI {
      */
     async getConversations(userId) {
         try {
-            console.log('📋 Loading conversations for:', userId);
             const response = await axiosInstance.get(`/Chat/conversations?userId=${userId}`);
             return response.data || [];
         } catch (error) {
-            console.error('❌ Error loading conversations:', error);
             return [];
         }
     }
@@ -42,11 +38,9 @@ class SimpleChatAPI {
      */
     async getUnassignedMessages() {
         try {
-            console.log('📥 Loading unassigned messages...');
             const response = await axiosInstance.get('/Chat/unassigned');
             return response.data || [];
         } catch (error) {
-            console.error('❌ Error loading unassigned messages:', error);
             return [];
         }
     }
@@ -57,14 +51,12 @@ class SimpleChatAPI {
      */
     async assignMessage(parentId, nurseId) {
         try {
-            console.log('👩‍⚕️ Assigning message:', JSON.stringify({ parentId, nurseId }, null, 2));
             const response = await axiosInstance.post('/Chat/assign', {
                 ParentId: parentId,
                 NurseId: nurseId
             });
             return response.data;
         } catch (error) {
-            console.error('❌ Error assigning message:', error);
             throw error;
         }
     }
@@ -76,18 +68,16 @@ class SimpleChatAPI {
      */
     async getChatHistory(userId, nurseId, skip = 0, take = 50) {
         try {
-            console.log('📜 Loading chat history:', JSON.stringify({ userId, nurseId, skip, take }, null, 2));
             const response = await axiosInstance.get('/Chat/history', {
                 params: {
-                    userA: userId,      // Current user ID
-                    userB: nurseId,     // Nurse ID
+                    userA: userId,
+                    userB: nurseId,
                     skip,
                     take
                 }
             });
             return response.data || [];
         } catch (error) {
-            console.error('❌ Error loading chat history:', error);
             return [];
         }
     }
@@ -100,27 +90,16 @@ class SimpleChatAPI {
     async sendMessage(fromUserId, toUserId, message) {
         try {
             const isNewChat = toUserId === null || toUserId === undefined;
-            console.log('📤 Sending message:', JSON.stringify({
-                fromUserId,
-                toUserId,
-                isNewChat,
-                message: message
-            }, null, 2));
-
             const payload = {
                 FromUserId: fromUserId,
                 Message: message
             };
-
-            // Only add ToUserId if it's not null (for existing conversations)
             if (!isNewChat) {
                 payload.ToUserId = toUserId;
             }
-
             const response = await axiosInstance.post('/Chat/send', payload);
             return response.data;
         } catch (error) {
-            console.error('❌ Error sending message:', error);
             throw error;
         }
     }

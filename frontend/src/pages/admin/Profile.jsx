@@ -105,6 +105,7 @@ const Profile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [uploadImageFlag, setUploadImageFlag] = useState(false);
 
   useEffect(() => {
     if (showEditModal && userInfo) {
@@ -138,9 +139,18 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       // console.log("dsad", selectedImage);
-      handleSaveProfile(file);
+      // handleSaveProfile(file);
+      setSelectedImage(file);
+      setUploadImageFlag(true);
     }
   };
+
+  useEffect(() => {
+    if (uploadImageFlag) {
+      handleSaveProfile();
+      setUploadImageFlag(false);
+    }
+  }, [uploadImageFlag]);
 
   // const handleSaveProfile = async (file) => {
   //   try {
@@ -189,7 +199,7 @@ const Profile = () => {
         formData.append("file", selectedImage);
 
         const uploadRes = await axios.post(
-          "http://localhost:5182/api/Upload/image",
+          `${import.meta.env.VITE_API_BASE_URL}/Upload/image`,
           formData,
           {
             headers: {
@@ -206,7 +216,7 @@ const Profile = () => {
       }
 
       // Gửi PATCH cập nhật thông tin
-      await axios.patch(`http://localhost:5182/api/User/profile/${userId}`, {
+      await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/User/profile/${userId}`, {
         ...formData, // dữ liệu người dùng: tên, email, v.v.
         imageUrl: finalImageUrl, // ảnh mới hoặc cũ
       });
@@ -215,12 +225,11 @@ const Profile = () => {
       setShowEditModal(false);
 
       // Cập nhật lại UI
-      const res = await axios.get(`http://localhost:5182/api/User/${userId}`);
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/User/${userId}`);
       setUserInfo(res.data);
       updateAvatarVersion();
     } catch (err) {
       alert("Lỗi khi lưu hồ sơ.");
-      console.error(err);
     }
   };
 
@@ -265,7 +274,7 @@ const Profile = () => {
     } catch (error) {
       alert(
         "Đổi mật khẩu thất bại: " +
-          (error.response?.data?.message || error.message)
+        (error.response?.data?.message || error.message)
       );
     }
   };
@@ -283,9 +292,7 @@ const Profile = () => {
       try {
         const response = await axiosInstance.get(`/User/${userId}`);
         setUserInfo(response.data);
-        console.log(response.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
       }
     };
     fetchUserData();

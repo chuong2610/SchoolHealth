@@ -19,8 +19,6 @@ const StudentHealthCheck = () => {
     // State lưu thông báo lỗi khi fetch dữ liệu
     const [error, setError] = useState("");
 
-    // Lấy thông tin học sinh (giả lập hoặc lấy từ user context)
-    const student = user?.children?.[0] || { name: "Emma Smith", class: "10A1", code: "HS001" };
     const parentId = user?.id; // Đảm bảo user context có id
 
     // useEffect: Tự động fetch dữ liệu khi parentId thay đổi

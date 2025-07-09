@@ -4,76 +4,6 @@ import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, R
 import { FaChartLine, FaFileAlt, FaDownload, FaFilter, FaPlus, FaEye, FaEdit, FaTrash, FaFilePdf, FaFileCsv, FaFileExcel, FaPrint, FaCalendarAlt, FaUser, FaChartBar, FaChartPie, FaArrowUp, FaArrowDown } from "react-icons/fa";
 import "../../styles/admin/reports.css";
 
-// Mock data for charts
-const monthlyHealthData = [
-  { month: 'T1', students: 1200, checkups: 850, vaccinations: 950 },
-  { month: 'T2', students: 1250, checkups: 920, vaccinations: 980 },
-  { month: 'T3', students: 1300, checkups: 1100, vaccinations: 1050 },
-  { month: 'T4', students: 1280, checkups: 1050, vaccinations: 1020 },
-  { month: 'T5', students: 1350, checkups: 1150, vaccinations: 1080 },
-  { month: 'T6', students: 1400, checkups: 1200, vaccinations: 1150 }
-];
-
-const medicineUsageData = [
-  { name: 'Paracetamol', used: 400, stock: 600, category: 'Giảm đau' },
-  { name: 'Vitamin C', used: 300, stock: 800, category: 'Vitamin' },
-  { name: 'Bandages', used: 250, stock: 350, category: 'Vật tư' },
-  { name: 'Antiseptic', used: 180, stock: 420, category: 'Khử trùng' },
-  { name: 'Cough Syrup', used: 120, stock: 280, category: 'Ho' }
-];
-
-const healthStatusData = [
-  { name: 'Tốt', value: 65, color: '#28a745' },
-  { name: 'Khá', value: 25, color: '#ffc107' },
-  { name: 'Cần theo dõi', value: 8, color: '#fd7e14' },
-  { name: 'Yếu', value: 2, color: '#dc3545' }
-];
-
-const reports = [
-  {
-    id: 1,
-    name: "Báo cáo sức khỏe học sinh tháng 6/2024",
-    type: "Sức khỏe",
-    date: "2024-06-01",
-    creator: "Nguyễn Văn Admin",
-    note: "Tổng hợp sức khỏe học sinh tháng 6",
-    status: "Hoàn thành",
-    size: "2.5 MB",
-    downloads: 45
-  },
-  {
-    id: 2,
-    name: "Thống kê thuốc & vật tư Q2/2024",
-    type: "Thuốc & vật tư",
-    date: "2024-06-30",
-    creator: "Trần Thị Nurse",
-    note: "Thống kê sử dụng thuốc và vật tư quý 2",
-    status: "Đang xử lý",
-    size: "1.8 MB",
-    downloads: 32
-  },
-  {
-    id: 3,
-    name: "Báo cáo tiêm chủng 6 tháng đầu năm",
-    type: "Tiêm chủng",
-    date: "2024-06-15",
-    creator: "Lê Văn Doc",
-    note: "Tổng hợp tiêm chủng từ T1-T6/2024",
-    status: "Hoàn thành",
-    size: "3.2 MB",
-    downloads: 78
-  }
-];
-
-const reportTypes = ["Tất cả", "Sức khỏe", "Thuốc & vật tư", "Tiêm chủng", "Sự kiện y tế", "Khác"];
-
-const quickStats = [
-  { title: "Tổng báo cáo", value: "156", change: "+12%", trend: "up", color: "primary", icon: FaFileAlt },
-  { title: "Báo cáo tháng này", value: "23", change: "+8%", trend: "up", color: "success", icon: FaChartLine },
-  { title: "Lượt tải xuống", value: "2,341", change: "+25%", trend: "up", color: "info", icon: FaDownload },
-  { title: "Đang xử lý", value: "5", change: "-2%", trend: "down", color: "warning", icon: FaChartBar }
-];
-
 const Reports = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -86,7 +16,7 @@ const Reports = () => {
 
   const [form, setForm] = useState({
     name: "",
-    type: reportTypes[1],
+    type: "Sức khỏe",
     date: "",
     creator: "",
     note: "",
@@ -105,7 +35,7 @@ const Reports = () => {
     setEditMode("add");
     setForm({
       name: "",
-      type: reportTypes[1],
+      type: "Sức khỏe",
       date: new Date().toISOString().split('T')[0],
       creator: "Nguyễn Văn Admin",
       note: "",

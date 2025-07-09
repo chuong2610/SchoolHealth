@@ -39,31 +39,10 @@ const NurseChat = () => {
     // Load conversation list
     const loadConversations = useCallback(async () => {
         try {
-            console.log('📋 [NURSE] Loading conversations for userId:', userId);
             const data = await simpleChatAPI.getConversations(userId);
-
-            if (data && data.length > 0) {
-                console.log('📋 [NURSE] All conversations:', data);
-                console.log('📋 [NURSE] First conversation sample:', {
-                    keys: Object.keys(data[0]),
-                    values: data[0]
-                });
-
-                // Test partner ID detection for each conversation
-                data.forEach((conv, index) => {
-                    const partnerId = conv.user || conv.User || conv.parentId || conv.otherUserId ||
-                        conv.userId || conv.ParentId || conv.UserId;
-                    console.log(`📋 [NURSE] Conversation ${index} partnerId detection:`, {
-                        conversationObject: conv,
-                        detectedPartnerId: partnerId,
-                        availableFields: Object.keys(conv)
-                    });
-                });
-            }
 
             setConversations(data);
         } catch (error) {
-            console.error('❌ Error loading conversations:', error);
             if (activeTab === 'conversations') {
                 setError('Không thể tải danh sách cuộc trò chuyện');
             }
@@ -80,22 +59,10 @@ const NurseChat = () => {
         // Debounce the actual API call
         loadUnassignedTimeoutRef.current = setTimeout(async () => {
             try {
-                console.log('📥 [NURSE] Loading unassigned messages...');
                 const data = await simpleChatAPI.getUnassignedMessages();
-
-                if (data && data.length > 0) {
-                    console.log('📥 [NURSE] Unassigned messages data:', data);
-                    console.log('📥 [NURSE] First unassigned message sample:', {
-                        keys: Object.keys(data[0]),
-                        values: data[0]
-                    });
-                } else {
-                    console.log('📥 [NURSE] No unassigned messages found');
-                }
 
                 setUnassignedMessages(data);
             } catch (error) {
-                console.error('❌ Error loading unassigned messages:', error);
                 if (activeTab === 'unassigned') {
                     setError('Không thể tải tin nhắn chưa được xử lý');
                 }
@@ -106,8 +73,6 @@ const NurseChat = () => {
     // Load chat history when clicking a conversation
     const loadChatHistory = useCallback(async (conversation) => {
         try {
-            console.log('📜 [NURSE] Selected conversation object:', JSON.stringify(conversation, null, 2));
-
             // Try multiple possible field names for partner ID (same as parent chat)
             // API returns 'user' field as the partner ID (lowercase)
             const partnerId = conversation.user ||      // ← PRIMARY FIELD FROM API (lowercase)
@@ -118,19 +83,13 @@ const NurseChat = () => {
                 conversation.ParentId ||
                 conversation.UserId;
 
-            console.log('📜 [NURSE] Loading chat history with partnerId:', partnerId);
-
             if (!partnerId) {
-                console.error('❌ No valid partnerId found in conversation:', Object.keys(conversation));
                 setError('Không thể xác định người nhận. Vui lòng thử lại.');
                 return;
             }
 
             // Reset pagination and load latest messages (skip: 0, take: 50)
-            console.log('📜 [NURSE] Loading latest 50 messages...');
             const history = await simpleChatAPI.getChatHistory(userId, partnerId, 0, 50);
-
-            console.log('📜 [NURSE] Loaded messages:', history.length);
 
             // Set messages (API returns newest first, so reverse to show oldest at top)
             setMessages(history.reverse());
@@ -139,12 +98,6 @@ const NurseChat = () => {
             // Reset pagination states
             setSkip(history.length);
             setHasMoreMessages(history.length === 50); // If we got 50 messages, there might be more
-
-            console.log('📜 [NURSE] Pagination state:', {
-                skip: history.length,
-                hasMoreMessages: history.length === 50,
-                totalLoaded: history.length
-            });
 
             if (isMobile) {
                 setShowMobileChat(true);
@@ -159,7 +112,6 @@ const NurseChat = () => {
             }, 500);
 
         } catch (error) {
-            console.error('❌ Error loading chat history:', error);
             setError('Không thể tải lịch sử chat');
         }
     }, [userId, loadConversations]);
@@ -180,17 +132,8 @@ const NurseChat = () => {
                 selectedConversation.ParentId ||
                 selectedConversation.UserId;
 
-            console.log('📜 [NURSE] Loading more messages...', {
-                partnerId,
-                currentSkip: skip,
-                nextSkip: skip,
-                take: 50
-            });
-
             // Load older messages (skip current amount, take 50 more)
             const olderMessages = await simpleChatAPI.getChatHistory(userId, partnerId, skip, 50);
-
-            console.log('📜 [NURSE] Loaded older messages:', olderMessages.length);
 
             if (olderMessages.length > 0) {
                 // Prepend older messages to the beginning (reverse them first since API returns newest first)
@@ -200,19 +143,12 @@ const NurseChat = () => {
                 setSkip(prevSkip => prevSkip + olderMessages.length);
                 setHasMoreMessages(olderMessages.length === 50); // If we got 50, there might be more
 
-                console.log('📜 [NURSE] Updated pagination state:', {
-                    newSkip: skip + olderMessages.length,
-                    hasMoreMessages: olderMessages.length === 50,
-                    totalLoaded: messages.length + olderMessages.length
-                });
             } else {
                 // No more messages
                 setHasMoreMessages(false);
-                console.log('📜 [NURSE] No more older messages to load');
             }
 
         } catch (error) {
-            console.error('❌ Error loading more messages:', error);
             setError('Không thể tải thêm tin nhắn');
         } finally {
             setLoadingMore(false);
@@ -224,8 +160,6 @@ const NurseChat = () => {
         if (!userId) return;
 
         const init = async () => {
-            console.log('🚀 [NURSE] Initializing chat...');
-
             // Clear unread messages since user is now on chat page
             clearUnreadMessages();
 
@@ -258,8 +192,6 @@ const NurseChat = () => {
 
         // Handler for new messages received via SignalR
         const handleMessageReceived = async (messageData) => {
-            console.log('📨 [NURSE] SignalR message received:', JSON.stringify(messageData, null, 2));
-
             const { fromUserId, toUserId } = messageData;
             const currentUserId = parseInt(userId);
 
@@ -271,21 +203,12 @@ const NurseChat = () => {
                     selectedConversation.userId || selectedConversation.ParentId ||
                     selectedConversation.UserId;
 
-                console.log('🔍 [NURSE] Checking if message belongs to current conversation:', {
-                    messageFromUserId: fromUserId,
-                    messageToUserId: toUserId,
-                    currentUserId,
-                    conversationPartnerId: partnerId
-                });
-
                 // Check if message is part of current conversation
                 const isCurrentConversation =
                     (fromUserId === partnerId && toUserId === currentUserId) ||  // Partner → Me
                     (fromUserId === currentUserId && toUserId === partnerId);     // Me → Partner
 
                 if (isCurrentConversation) {
-                    console.log('🔄 [NURSE] Message belongs to current conversation - refreshing chat history');
-
                     // Refresh chat history for current conversation (reload latest messages)
                     setTimeout(async () => {
                         await loadChatHistory(selectedConversation);
@@ -294,7 +217,6 @@ const NurseChat = () => {
             }
 
             // Always refresh data to update lists
-            console.log('🔄 [NURSE] Refreshing conversation and unassigned lists');
             setTimeout(async () => {
                 await Promise.all([loadConversations(), loadUnassignedMessages()]);
             }, 1000);
@@ -302,8 +224,6 @@ const NurseChat = () => {
 
         // Handler for new unassigned messages
         const handleNewUnassignedMessage = async (messageData) => {
-            console.log('📥 [NURSE] New unassigned message received:', JSON.stringify(messageData, null, 2));
-
             // Refresh unassigned messages list
             setTimeout(async () => {
                 await loadUnassignedMessages();
@@ -335,18 +255,12 @@ const NurseChat = () => {
     // Assign unassigned message to current nurse
     const assignMessage = async (parentId) => {
         try {
-            console.log('👩‍⚕️ [NURSE] Starting assign process...');
-            console.log('👩‍⚕️ [NURSE] ParentId:', parentId, 'Type:', typeof parentId);
-            console.log('👩‍⚕️ [NURSE] NurseId:', userId, 'Type:', typeof userId);
-
             if (!parentId) {
-                console.error('❌ [NURSE] ParentId is required but missing!');
                 setError('Không thể xác định ID phụ huynh');
                 return;
             }
 
             if (!userId) {
-                console.error('❌ [NURSE] UserId is required but missing!');
                 setError('Không thể xác định ID y tá');
                 return;
             }
@@ -354,19 +268,11 @@ const NurseChat = () => {
             setAssigning(true);
             setError(''); // Clear any existing errors
 
-            console.log('👩‍⚕️ [NURSE] Calling API assignMessage...');
             await simpleChatAPI.assignMessage(parentId, userId);
-
-            console.log('✅ [NURSE] Successfully assigned message!');
 
             // Switch to conversations tab and load the new conversation
             setActiveTab('conversations');
 
-            console.log('🔄 [NURSE] Refreshing conversations and unassigned messages...');
-            await Promise.all([loadConversations(), loadUnassignedMessages()]);
-
-            // Find and open the newly assigned conversation
-            console.log('🔍 [NURSE] Looking for newly assigned conversation...');
             setTimeout(async () => {
                 try {
                     await loadConversations();
@@ -376,20 +282,13 @@ const NurseChat = () => {
                     });
 
                     if (assignedConversation) {
-                        console.log('✅ [NURSE] Found assigned conversation, loading chat history...');
                         await loadChatHistory(assignedConversation);
-                    } else {
-                        console.log('ℹ️ [NURSE] Assigned conversation not found in list yet');
                     }
                 } catch (error) {
-                    console.error('❌ [NURSE] Error in post-assign operations:', error);
                 }
             }, 1000);
 
         } catch (error) {
-            console.error('❌ [NURSE] Error in assignMessage:', error);
-            console.error('❌ [NURSE] Error details:', error.response?.data || error.message);
-
             if (error.response?.status === 404) {
                 setError('Không tìm thấy tin nhắn này');
             } else if (error.response?.status === 400) {
@@ -400,7 +299,6 @@ const NurseChat = () => {
                 setError('Không thể tiếp nhận tin nhắn. Vui lòng thử lại');
             }
         } finally {
-            console.log('🏁 [NURSE] Assign process completed, setting assigning to false');
             setAssigning(false);
         }
     };
@@ -414,9 +312,6 @@ const NurseChat = () => {
             setSending(true);
             setError('');
 
-            console.log('📤 [NURSE] Selected conversation for sending:', JSON.stringify(selectedConversation, null, 2));
-            console.log('📤 [NURSE] Available fields:', Object.keys(selectedConversation));
-
             // Try multiple possible field names for partner ID
             // API returns 'userId' field as the partner ID
             const partnerId = selectedConversation.userId ||    // ← PRIMARY FIELD FROM API 
@@ -428,11 +323,8 @@ const NurseChat = () => {
                 selectedConversation.ParentId;
 
             if (!partnerId) {
-                console.error('❌ No valid partnerId found in selectedConversation:', Object.keys(selectedConversation || {}));
                 throw new Error('Không xác định được người nhận. Cấu trúc dữ liệu không đúng.');
             }
-
-            console.log('📤 [NURSE] Sending message to partnerId:', partnerId);
 
             // Send via REST API
             await simpleChatAPI.sendMessage(userId, partnerId, newMessage);
@@ -444,7 +336,6 @@ const NurseChat = () => {
             await loadChatHistory(selectedConversation);
 
         } catch (error) {
-            console.error('❌ Error sending message:', error);
             setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
         } finally {
             setSending(false);
@@ -491,7 +382,6 @@ const NurseChat = () => {
     useEffect(() => {
         if (activeTab === 'unassigned') {
             const interval = setInterval(() => {
-                console.log('🔄 [NURSE] Auto-refreshing unassigned messages...');
                 loadUnassignedMessages();
             }, 30000); // 30 seconds
 
@@ -554,18 +444,11 @@ const NurseChat = () => {
 
     // Render unassigned message item
     const renderUnassignedItem = (unassigned, index) => {
-        console.log('📋 [NURSE] Unassigned message object:', JSON.stringify(unassigned, null, 2));
-
         // API returns: {userId: parentId, lastMessage: message, timestamp: time, hasUnread: false}
         // Try different field names for parentId
         const parentId = unassigned.userId || unassigned.UserId || unassigned.user || unassigned.User || unassigned.parentId || unassigned.ParentId || unassigned.fromUserId || unassigned.FromUserId;
         const messageText = unassigned.lastMessage || unassigned.LastMessage || unassigned.message || unassigned.Message;
         const timestamp = unassigned.timestamp || unassigned.Timestamp;
-
-        // Debug logging
-        console.log('📋 [NURSE] Debug parentId:', parentId, typeof parentId);
-        console.log('📋 [NURSE] Debug assigning state:', assigning);
-        console.log('📋 [NURSE] Button disabled?', assigning || !parentId);
 
         return (
             <div key={index} className="nurse-unassigned-item">
@@ -587,16 +470,13 @@ const NurseChat = () => {
                         className="nurse-assign-btn"
                         size="sm"
                         onClick={() => {
-                            console.log('🔥 [NURSE] Assign button clicked! ParentId:', parentId);
                             if (!parentId) {
-                                console.error('❌ [NURSE] ParentId is null/undefined!');
                                 setError('Không thể xác định ID phụ huynh');
                                 return;
                             }
 
                             // Safety timeout to prevent stuck state
                             const timeoutId = setTimeout(() => {
-                                console.warn('⚠️ [NURSE] Assign operation timed out, resetting state');
                                 setAssigning(false);
                             }, 30000); // 30 seconds timeout
 

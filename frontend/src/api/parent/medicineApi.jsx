@@ -5,7 +5,6 @@ export const sendMedicineApi = async (data) => {
     const res = await axiosInstance.post("/Medication", data);
     return res.data;
   } catch (error) {
-
     throw error;
   }
 };

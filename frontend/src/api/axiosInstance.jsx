@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Tạo axios instance với base configuration
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5182/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: import.meta.env.VITE_API_TIMEOUT || 10000,
   headers: {
     "Content-Type": "application/json",
@@ -19,7 +19,6 @@ const decodeJWT = (token) => {
     }).join(''));
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error('❌ Token decode error:', error);
     return null;
   }
 };
@@ -36,7 +35,6 @@ export const hasValidToken = () => {
     // Check if token is expired (exp is in seconds, Date.now() is in milliseconds)
     const currentTime = Date.now() / 1000;
     if (decoded.exp && decoded.exp < currentTime) {
-      console.warn('🕐 Token has expired');
       // Auto cleanup expired token
       clearAuthToken();
       return false;
@@ -44,7 +42,6 @@ export const hasValidToken = () => {
 
     return true;
   } catch (error) {
-    console.error('❌ Token validation error:', error);
     return false;
   }
 };
@@ -59,14 +56,12 @@ axiosInstance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     } else if (token) {
       // Token exists but invalid - clear it
-      console.warn('🔒 Invalid token detected - clearing auth data');
       clearAuthToken();
     }
 
     return config;
   },
   (error) => {
-    console.error('❌ Request Error:', error);
     return Promise.reject(error);
   }
 );
@@ -79,19 +74,11 @@ axiosInstance.interceptors.response.use(
   (error) => {
     const { response } = error;
 
-    // Log error for debugging
-    console.error('❌ API Error:', {
-      url: error.config?.url,
-      status: response?.status,
-      message: response?.data?.message || error.message
-    });
-
     // Handle different error scenarios
     if (response) {
       switch (response.status) {
         case 401:
           // Token expired hoặc invalid - Auto logout
-          console.warn('🔒 Unauthorized - Clearing auth data');
           clearAuthToken();
 
           // Redirect to login if not already there
@@ -102,17 +89,10 @@ axiosInstance.interceptors.response.use(
 
         case 403:
           // Forbidden - User không có quyền
-          console.warn('🚫 Forbidden - Access denied');
           break;
 
         case 404:
           // Not found
-          console.warn('🔍 Not Found - Resource does not exist');
-          break;
-
-        case 500:
-          // Server error
-          console.error('🔥 Server Error - Internal server error');
           break;
 
         default:
@@ -120,10 +100,6 @@ axiosInstance.interceptors.response.use(
       }
     } else if (error.request) {
       // Network error - không nhận được response
-      console.error('🌐 Network Error - No response received');
-    } else {
-      // Lỗi khác
-      console.error('⚠️ Request Setup Error:', error.message);
     }
 
     return Promise.reject(error);

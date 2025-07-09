@@ -167,7 +167,6 @@ const NotificationsNurseManagement = () => {
           notificationsSentToday: res.notificationsSentToday,
         });
       } else {
-        console.log("failed to fetch stats");
         setStats({
           totalNotifications: 0,
           vaccinationNotifications: 0,
@@ -176,7 +175,6 @@ const NotificationsNurseManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
       setStats({
         totalNotifications: 0,
         vaccinationNotifications: 0,
@@ -394,7 +392,6 @@ const NotificationsNurseManagement = () => {
     }
 
     try {
-      console.log("notificationData", notificationData);
       const res = await postNotification(notificationData);
       toast.success("Tạo và gửi thông báo thành công");
       setReload(!reload);
@@ -463,12 +460,14 @@ const NotificationsNurseManagement = () => {
         // setDetailTotalPages(res.pagedResults.totalPages || 1);
       }
     } catch (error) {
-      console.error(error);
+      
     }
   };
 
   useEffect(() => {
-    fetchNotificationDetail(modalDetail?.notificationDetail?.id || "");
+    if(modalDetail?.notificationDetail?.id){
+      fetchNotificationDetail(modalDetail?.notificationDetail?.id);
+    }
   }, [currentDetailPage]);
 
   const fetchHealthCheckResultDetail = async (healthCheckId) => {
@@ -484,7 +483,7 @@ const NotificationsNurseManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+     
     }
   };
   useEffect(() => {}, [modalResultDetail]);
@@ -502,7 +501,7 @@ const NotificationsNurseManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+     
     }
   };
   useEffect(() => {}, [modalResultDetail]);
@@ -520,7 +519,7 @@ const NotificationsNurseManagement = () => {
         });
       }
     } catch (error) {
-      console.error(error);
+      
     }
   };
   useEffect(() => {}, [modalResultDetail]);
@@ -1508,26 +1507,6 @@ const NotificationsNurseManagement = () => {
                 <i className="fas fa-paper-plane"></i>
                 Tạo và gửi thông báo
               </button>
-
-              {/* Debug Info - Development only */}
-              {/* {process.env.NODE_ENV === 'development' && (
-                <details style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#6b7280' }}>
-                  <summary style={{ cursor: 'pointer', fontWeight: '600' }}>
-                    🐛 Debug: Current Form Data
-                  </summary>
-                  <pre style={{
-                    background: '#f3f4f6',
-                    padding: '0.5rem',
-                    borderRadius: '0.5rem',
-                    marginTop: '0.5rem',
-                    fontSize: '0.75rem',
-                    overflow: 'auto',
-                    maxHeight: '200px'
-                  }}>
-                    {JSON.stringify(modalAdd.notification, null, 2)}
-                  </pre>
-                </details>
-              )} */}
             </div>
           </Form>
         </Modal.Body>

@@ -98,7 +98,6 @@ const HealthDeclaration = () => {
         );
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching students and history:", err);
         setError(
           err.response?.data?.message ||
           err.response?.statusText ||
@@ -114,7 +113,6 @@ const HealthDeclaration = () => {
   // Xử lý khi chọn học sinh từ dropdown
   const handleStudentChange = (e) => {
     const studentId = e.target.value;
-    console.log("Selected student ID:", studentId);
     const student = students.find((s) => s.id === parseInt(studentId));
     setSelectedStudent(student);
     if (student) {
@@ -136,6 +134,9 @@ const HealthDeclaration = () => {
 
   // Hàm fetch lịch sử khai báo y tế
   const fetchDeclarationHistory = async (studentId) => {
+    if(!studentId){
+      return;
+    }
     try {
       // TODO: Backend endpoint not implemented yet
       const res = await StudentProfileDeclarationHistory(studentId);
@@ -148,13 +149,14 @@ const HealthDeclaration = () => {
 
       // Declaration history feature is temporarily disabled - backend endpoint not implemented
     } catch (err) {
-      console.error("Error fetching declaration history:", err);
       setDeclarationHistory({});
     }
   };
 
   useEffect(() => {
-    fetchDeclarationHistory(selectedStudent?.id);
+    if(selectedStudent?.id){
+      fetchDeclarationHistory(selectedStudent?.id);
+    }
   }, [currentPage]);
 
   // Xử lý thay đổi các trường input
@@ -233,7 +235,6 @@ const HealthDeclaration = () => {
         toast.error(response.data.message || "Không thể gửi khai báo.");
       }
     } catch (err) {
-      console.error("Error submitting health declaration:", err);
       toast.error(
         err.response?.data?.message ||
         err.response?.statusText ||

@@ -8,10 +8,8 @@ export const getParentInfo = async (parentId) => {
     if (res) {
       return res.data;
     } else {
-      console.log("error load parent info", res);
     }
   } catch (error) {
-    console.log(error);
   }
 };
 
@@ -21,10 +19,8 @@ export const getChildrenInfo = async (parentId) => {
     if (res.data.success) {
       return res.data.data;
     } else {
-      console.log("error load children info", res.data.message);
     }
   } catch (error) {
-    console.log(error);
   }
 };
 
@@ -34,16 +30,14 @@ export const updateProfile = async (parentId, data) => {
     if (res.data.success) {
       return res.data;
     } else {
-      console.log("error update profile", res.data.message);
     }
   } catch (error) {
-    console.log(error);
   }
 };
 
 export const uploadAvatar = async (file) => {
 
-  if(!file) return null;
+  if (!file) return null;
   const formData = new FormData();
   formData.append("file", file);
 
@@ -59,16 +53,13 @@ export const uploadAvatar = async (file) => {
 };
 
 export const updatePassword = async (parentId, data) => {
-  console.log(data);
   try {
     const res = await axiosInstance.patch(`/User/change-password/${parentId}`, data);
     if (res.data.success) {
       return res.data;
-    } else if(res.data.success === false){
-      console.log("error load children info", res.data.message);
+    } else if (res.data.success === false) {
       return res.data;
     }
   } catch (error) {
-    console.log(error.message);
   }
 };
