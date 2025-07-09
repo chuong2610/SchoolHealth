@@ -54,3 +54,14 @@ export const postConsultation = async (data) => {
     throw error;
   }
 };
+
+export const getConsultationById = async (id) => {
+  try {
+    const res = await axiosInstance.get(`/ConsultationAppointment/${id}`);
+    if (res.data.success === true) {
+      return res.data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};

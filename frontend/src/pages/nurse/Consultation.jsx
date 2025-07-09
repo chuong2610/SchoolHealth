@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button, Table } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Table,
+  Modal,
+} from "react-bootstrap";
 import { getClassList } from "../../api/admin/notification";
 import {
+  getConsultationById,
   getConsultations,
   getStudentsByClassId,
   postConsultation,
@@ -31,6 +40,8 @@ export default function Consultation() {
   const pageSize = 10;
   const [search, setSearch] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const [appointment, setAppointment] = useState({});
+  const [modal, setModal] = useState(false);
 
   const fetchClassList = async () => {
     try {
@@ -63,20 +74,19 @@ export default function Consultation() {
   };
 
   useEffect(() => {
-    if(selectedClass){
+    if (selectedClass) {
       fetchStudentList();
     }
   }, [selectedClass]);
 
   const fetchConsultations = async () => {
-
     try {
       // const searchDate = filterDate ? `${filterDate}T00:00:00` : null;
       const res = await getConsultations(
         nurseId,
         pageSize,
         currentPage,
-        search,
+        search
         // searchDate
       );
       if (res) {
@@ -93,6 +103,19 @@ export default function Consultation() {
   useEffect(() => {
     fetchConsultations();
   }, [nurseId, currentPage, search, filterDate]);
+
+  const fetchConsultationDetail = async (consultationAppointmentId) => {
+    try {
+      const res = await getConsultationById(consultationAppointmentId);
+      if (res) {
+        setAppointment(res);
+      } else {
+        setAppointment({});
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -121,7 +144,14 @@ export default function Consultation() {
       throw error;
     }
 
-    setForm({ nurseId: nurseId, studentNumber: "", date: "", location: "", description: "", title: "" });
+    setForm({
+      nurseId: nurseId,
+      studentNumber: "",
+      date: "",
+      location: "",
+      description: "",
+      title: "",
+    });
     // setSelectedClass(null);
     setValidated(false); // reset form validation
   };
@@ -295,7 +325,7 @@ export default function Consultation() {
           />
         </Col> */}
       </Row>
-
+      {console.log("app", appointment)}
       <Table striped bordered hover responsive className="nurse-table">
         <thead>
           <tr>
@@ -305,6 +335,7 @@ export default function Consultation() {
             <th>Thời gian</th>
             <th>Địa điểm</th>
             <th>Trạng thái</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -326,10 +357,25 @@ export default function Consultation() {
                   {a.status === "Pending"
                     ? "Chờ xác nhận"
                     : a.status === "Confirmed"
-                      ? "Đã xác nhận"
-                      : a.status === "Rejected"
-                        ? "Đã từ chối"
-                        : a.status}
+                    ? "Đã xác nhận"
+                    : a.status === "Rejected"
+                    ? "Đã từ chối"
+                    : a.status}
+                </td>
+                <td className="nnm-action-cell">
+                  <div className="nnm-action-btn-group">
+                    <button
+                      className="admin-action-btn view"
+                      onClick={() => {
+                        if (a.consultationAppointmentId) {
+                          fetchConsultationDetail(a.consultationAppointmentId);
+                          setModal(true);
+                        }
+                      }}
+                    >
+                      <i className="fas fa-eye"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))
@@ -348,6 +394,56 @@ export default function Consultation() {
           />
         </div>
       )}
+
+      {/* Modal Detail */}
+      <Modal size="lg" show={modal} onHide={() => setModal(false)}>
+        <Modal.Header closeButton>
+          <h4>Chi tiết đặt lịch</h4>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="mb-3">
+            <Col>
+              <strong>Tên học sinh:</strong> {appointment?.studentName}
+            </Col>
+            <Col>
+              <strong>Tên y tá:</strong> {appointment?.nurseName}
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <strong>Tiêu đề:</strong> {appointment?.title}
+            </Col>
+            <Col>
+              <strong>Nội dung:</strong> {appointment?.description}
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <strong>Thời gian:</strong> {formatDateTime(appointment?.date)}
+            </Col>
+            <Col>
+              <strong>Địa điểm:</strong> {appointment?.location}
+            </Col>
+          </Row>
+          <Row className="mb-3">
+            <Col>
+              <strong>Trạng thái:</strong>{" "}
+              {appointment?.status === "Confirmed"
+                ? "Đã xác nhận"
+                : appointment?.status === "Rejected"
+                ? "Đã từ chối"
+                : "Chờ xác nhận"}
+            </Col>
+            <Col>
+              {appointment?.status === "Rejected" && (
+                <>
+                  <strong>Lí do:</strong> {appointment?.reason}
+                </>
+              )}
+            </Col>
+          </Row>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }
