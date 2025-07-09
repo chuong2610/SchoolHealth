@@ -162,6 +162,7 @@ public class ConsultationAppointmentService : IConsultationAppointmentService
         return new ConsultationAppointmentDetailDTO
         {
             ConsultationAppointmentId = appointment.Id,
+            Title = appointment.Title,
             StudentName = appointment.Student.Name,
             NurseName = appointment.Nurse.Name,
             Date = appointment.Date,
