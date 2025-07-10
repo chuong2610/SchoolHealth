@@ -104,200 +104,201 @@ const AdminDashboard = () => {
   // Enhanced stats data with real data from API - Support both icons and images
   const statsData = dashboardData
     ? [
-      {
-        id: 1,
-        title: "Tổng số học sinh",
-        value: dashboardData.numberOfStudents?.toLocaleString() || "0",
-        isPositive: true,
-        icon: FaUserGraduate, // React icon fallback
-        imageSrc: MaleStudentIcon, // Demo: Using the imported SVG as example
-        imageAlt: "Students",
-        color: "primary",
-      },
-      {
-        id: 2,
-        title: "Tổng số phụ huynh",
-        value: dashboardData.numberOfParents?.toLocaleString() || "0",
-        isPositive: true,
-        icon: FaUsers, // React icon fallback
-        imageSrc: parent, // Add image source here when needed
-        imageAlt: "Parents",
-        color: "success",
-      },
-      {
-        id: 3,
-        title: "Tổng số y tá",
-        value: dashboardData.numberOfNurses?.toLocaleString() || "0",
-        isPositive: true,
-        icon: FaUserMd, // React icon fallback
-        imageSrc: nurse, // Add image source here when needed
-        imageAlt: "Nurses",
-        color: "info",
-      },
-      {
-        id: 4,
-        title: "Đơn thuốc chờ xử lý",
-        value:
-          dashboardData.pendingMedicationsNumber?.toLocaleString() || "0",
-        isPositive: false,
-        icon: FaPills, // React icon fallback
-        imageSrc: medicine, // Add image source here when needed
-        imageAlt: "Medicines",
-        color: "warning",
-      },
-    ]
+        {
+          id: 1,
+          title: "Tổng số học sinh",
+          value: dashboardData.numberOfStudents?.toLocaleString() || "0",
+          isPositive: true,
+          icon: FaUserGraduate, // React icon fallback
+          imageSrc: MaleStudentIcon, // Demo: Using the imported SVG as example
+          imageAlt: "Students",
+          color: "primary",
+        },
+        {
+          id: 2,
+          title: "Tổng số phụ huynh",
+          value: dashboardData.numberOfParents?.toLocaleString() || "0",
+          isPositive: true,
+          icon: FaUsers, // React icon fallback
+          imageSrc: parent, // Add image source here when needed
+          imageAlt: "Parents",
+          color: "success",
+        },
+        {
+          id: 3,
+          title: "Tổng số y tá",
+          value: dashboardData.numberOfNurses?.toLocaleString() || "0",
+          isPositive: true,
+          icon: FaUserMd, // React icon fallback
+          imageSrc: nurse, // Add image source here when needed
+          imageAlt: "Nurses",
+          color: "info",
+        },
+        {
+          id: 4,
+          title: "Đơn thuốc chờ xử lý",
+          value:
+            dashboardData.pendingMedicationsNumber?.toLocaleString() || "0",
+          isPositive: false,
+          icon: FaPills, // React icon fallback
+          imageSrc: medicine, // Add image source here when needed
+          imageAlt: "Medicines",
+          color: "warning",
+        },
+      ]
     : [];
 
   // Convert weekly medical event counts to chart data
   const chartData = dashboardData?.weeklyMedicalEventCounts
     ? Object.entries(dashboardData.weeklyMedicalEventCounts).map(
-      ([day, count]) => ({
-        day,
-        medical_events: count,
-        medicines: dashboardData.activeMedicationsNumber || 0,
-        health_checks: Math.floor(count * 1.5), // Estimated based on medical events
-      })
-    )
+        ([day, count]) => ({
+          day,
+          medical_events: count,
+          medicines: dashboardData.activeMedicationsNumber || 0,
+          health_checks: Math.floor(count * 1.5), // Estimated based on medical events
+        })
+      )
     : [
-      { day: "Monday", medical_events: 45, medicines: 12, health_checks: 67 },
-      {
-        day: "Tuesday",
-        medical_events: 52,
-        medicines: 18,
-        health_checks: 78,
-      },
-      {
-        day: "Wednesday",
-        medical_events: 38,
-        medicines: 15,
-        health_checks: 57,
-      },
-      {
-        day: "Thursday",
-        medical_events: 61,
-        medicines: 22,
-        health_checks: 91,
-      },
-      { day: "Friday", medical_events: 49, medicines: 16, health_checks: 73 },
-      {
-        day: "Saturday",
-        medical_events: 23,
-        medicines: 8,
-        health_checks: 34,
-      },
-      { day: "Sunday", medical_events: 18, medicines: 5, health_checks: 27 },
-    ];
+        { day: "Monday", medical_events: 45, medicines: 12, health_checks: 67 },
+        {
+          day: "Tuesday",
+          medical_events: 52,
+          medicines: 18,
+          health_checks: 78,
+        },
+        {
+          day: "Wednesday",
+          medical_events: 38,
+          medicines: 15,
+          health_checks: 57,
+        },
+        {
+          day: "Thursday",
+          medical_events: 61,
+          medicines: 22,
+          health_checks: 91,
+        },
+        { day: "Friday", medical_events: 49, medicines: 16, health_checks: 73 },
+        {
+          day: "Saturday",
+          medical_events: 23,
+          medicines: 8,
+          health_checks: 34,
+        },
+        { day: "Sunday", medical_events: 18, medicines: 5, health_checks: 27 },
+      ];
 
   // Calculate medication status data from real API data
   const medicationStatusData = dashboardData
     ? [
-      {
-        name: "Chờ xử lý",
-        value: dashboardData.pendingMedicationsNumber || 0,
-        color: "#f59e0b",
-        percentage: dashboardData.pendingMedicationsNumber
-          ? (
-            (dashboardData.pendingMedicationsNumber /
-              (dashboardData.pendingMedicationsNumber +
-                dashboardData.activeMedicationsNumber +
-                dashboardData.completedMedicationsNumber)) *
-            100
-          ).toFixed(1)
-          : 0,
-      },
-      {
-        name: "Đang xử lý",
-        value: dashboardData.activeMedicationsNumber || 0,
-        color: "#10b981",
-        percentage: dashboardData.activeMedicationsNumber
-          ? (
-            (dashboardData.activeMedicationsNumber /
-              (dashboardData.pendingMedicationsNumber +
-                dashboardData.activeMedicationsNumber +
-                dashboardData.completedMedicationsNumber)) *
-            100
-          ).toFixed(1)
-          : 0,
-      },
-      {
-        name: "Hoàn thành",
-        value: dashboardData.completedMedicationsNumber || 0,
-        color: "#059669",
-        percentage: dashboardData.completedMedicationsNumber
-          ? (
-            (dashboardData.completedMedicationsNumber /
-              (dashboardData.pendingMedicationsNumber +
-                dashboardData.activeMedicationsNumber +
-                dashboardData.completedMedicationsNumber)) *
-            100
-          ).toFixed(1)
-          : 0,
-      },
-    ]
+        {
+          name: "Chờ xử lý",
+          value: dashboardData.pendingMedicationsNumber || 0,
+          color: "#f59e0b",
+          percentage: dashboardData.pendingMedicationsNumber
+            ? (
+                (dashboardData.pendingMedicationsNumber /
+                  (dashboardData.pendingMedicationsNumber +
+                    dashboardData.activeMedicationsNumber +
+                    dashboardData.completedMedicationsNumber)) *
+                100
+              ).toFixed(1)
+            : 0,
+        },
+        {
+          name: "Đang xử lý",
+          value: dashboardData.activeMedicationsNumber || 0,
+          color: "#10b981",
+          percentage: dashboardData.activeMedicationsNumber
+            ? (
+                (dashboardData.activeMedicationsNumber /
+                  (dashboardData.pendingMedicationsNumber +
+                    dashboardData.activeMedicationsNumber +
+                    dashboardData.completedMedicationsNumber)) *
+                100
+              ).toFixed(1)
+            : 0,
+        },
+        {
+          name: "Hoàn thành",
+          value: dashboardData.completedMedicationsNumber || 0,
+          color: "#059669",
+          percentage: dashboardData.completedMedicationsNumber
+            ? (
+                (dashboardData.completedMedicationsNumber /
+                  (dashboardData.pendingMedicationsNumber +
+                    dashboardData.activeMedicationsNumber +
+                    dashboardData.completedMedicationsNumber)) *
+                100
+              ).toFixed(1)
+            : 0,
+        },
+      ]
     : [
-      { name: "Chờ xử lý", value: 0, color: "#f59e0b", percentage: 0 },
-      { name: "Đang xử lý", value: 0, color: "#10b981", percentage: 0 },
-      { name: "Hoàn thành", value: 0, color: "#059669", percentage: 0 },
-    ];
+        { name: "Chờ xử lý", value: 0, color: "#f59e0b", percentage: 0 },
+        { name: "Đang xử lý", value: 0, color: "#10b981", percentage: 0 },
+        { name: "Hoàn thành", value: 0, color: "#059669", percentage: 0 },
+      ];
 
   // Generate pending medications data - students waiting to take medicine
   const pendingMedications = dashboardData
     ? dashboardData.medications
-      ?.filter(
-        (medication) =>
-          medication.status === "Active" || medication.status === "active"
-      )
-      .map((medication, index) => ({
-        id: medication.id || index + 1,
-        studentName: medication.studentName || "Không xác định",
-        studentClass:
-          medication.studentClass ||
-          medication.studentClassName ||
-          "Không xác định",
-        medications: medication.medications || "Không xác định",
-        // dosage: medication.dosage || 'Không xác định',
-        // note: medication.note || 'Không có ghi chú',
-        createdDate: medication.createdDate
-          ? new Date(medication.createdDate).toLocaleDateString("vi-VN")
-          : "Không xác định",
-        nurseName: medication.nurseName || "Chưa phân công",
-        parentName: medication.parentName || "Không xác định",
-      })) || []
+        ?.filter(
+          (medication) =>
+            medication.status === "Active" || medication.status === "active"
+        )
+        .map((medication, index) => ({
+          id: medication.id || index + 1,
+          studentName: medication.studentName || "Không xác định",
+          studentClass:
+            medication.studentClass ||
+            medication.studentClassName ||
+            "Không xác định",
+          medications: medication.medications || "Không xác định",
+          // dosage: medication.dosage || 'Không xác định',
+          // note: medication.note || 'Không có ghi chú',
+          createdDate: medication.createdDate
+            ? new Date(medication.createdDate).toLocaleDateString("vi-VN")
+            : "Không xác định",
+          nurseName: medication.nurseName || "Chưa phân công",
+          parentName: medication.parentName || "Không xác định",
+        })) || []
     : [];
 
   // Generate recent activities from real data
   const recentActivities = dashboardData
     ? [
-      ...(dashboardData.medicalEvents?.slice(0, 3).map((event, index) => ({
-        id: index + 1,
-        title: "Sự kiện y tế mới",
-        description:
-          event.description ||
-          `Sự kiện y tế cho ${event.studentName || "học sinh"}`,
-        time: new Date(event.eventDate).toLocaleDateString("vi-VN"),
-        icon: FaHeartbeat,
-        type: "success",
-      })) || []),
-      ...(dashboardData.medications?.slice(0, 2).map((medication, index) => ({
-        id: index + 4,
-        title: "Đơn thuốc mới",
-        description: `${medication.medicationName || "Thuốc"} - ${medication.status || "Chờ xử lý"
+        ...(dashboardData.medicalEvents?.slice(0, 3).map((event, index) => ({
+          id: index + 1,
+          title: "Sự kiện y tế mới",
+          description:
+            event.description ||
+            `Sự kiện y tế cho ${event.studentName || "học sinh"}`,
+          time: new Date(event.eventDate).toLocaleDateString("vi-VN"),
+          icon: FaHeartbeat,
+          type: "success",
+        })) || []),
+        ...(dashboardData.medications?.slice(0, 2).map((medication, index) => ({
+          id: index + 4,
+          title: "Đơn thuốc mới",
+          description: `${medication.medicationName || "Thuốc"} - ${
+            medication.status || "Chờ xử lý"
           }`,
-        time: new Date(medication.createdDate).toLocaleDateString("vi-VN"),
-        icon: FaPills,
-        type: "info",
-      })) || []),
-    ].slice(0, 5)
+          time: new Date(medication.createdDate).toLocaleDateString("vi-VN"),
+          icon: FaPills,
+          type: "info",
+        })) || []),
+      ].slice(0, 5)
     : [
-      {
-        id: 1,
-        title: "Đang tải dữ liệu...",
-        description: "Vui lòng chờ trong giây lát",
-        time: "Just now",
-        icon: FaSpinner,
-        type: "info",
-      },
-    ];
+        {
+          id: 1,
+          title: "Đang tải dữ liệu...",
+          description: "Vui lòng chờ trong giây lát",
+          time: "Just now",
+          icon: FaSpinner,
+          type: "info",
+        },
+      ];
 
   const getColorClasses = (color) => {
     const colors = {
@@ -628,42 +629,42 @@ const AdminDashboard = () => {
               {/* Show message if no data */}
               {(!dashboardData?.medicalSupplies ||
                 dashboardData.medicalSupplies.length === 0) && (
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: "1rem",
+                    padding: "0.5rem",
+                    backgroundColor: "rgba(251, 191, 36, 0.1)",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(251, 191, 36, 0.3)",
+                  }}
+                >
                   <div
                     style={{
-                      textAlign: "center",
-                      marginTop: "1rem",
-                      padding: "0.5rem",
-                      backgroundColor: "rgba(251, 191, 36, 0.1)",
-                      borderRadius: "8px",
-                      border: "1px solid rgba(251, 191, 36, 0.3)",
+                      fontSize: "0.9rem",
+                      color: "#92400e",
+                      fontWeight: "500",
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: "0.9rem",
-                        color: "#92400e",
-                        fontWeight: "500",
-                      }}
-                    >
-                      ⚠️ Chưa có dữ liệu thuốc trong kho
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "#a16207",
-                        marginTop: "0.25rem",
-                      }}
-                    >
-                      Hãy thêm thuốc vào kho tại trang{" "}
-                      <a
-                        href="/admin/medicine-inventory"
-                        style={{ color: "#059669", textDecoration: "underline" }}
-                      >
-                        Quản lý kho thuốc
-                      </a>
-                    </div>
+                    ⚠️ Chưa có dữ liệu thuốc trong kho
                   </div>
-                )}
+                  <div
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#a16207",
+                      marginTop: "0.25rem",
+                    }}
+                  >
+                    Hãy thêm thuốc vào kho tại trang{" "}
+                    <a
+                      href="/admin/medicine-inventory"
+                      style={{ color: "#059669", textDecoration: "underline" }}
+                    >
+                      Quản lý kho thuốc
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -790,46 +791,52 @@ const AdminDashboard = () => {
                   <th>Y tá</th>
                 </tr>
               </thead>
-              <tbody>
-                {pendingMedications.slice(0, 8).map((medication, index) => (
-                  <tr key={medication.id}>
-                    <td>
-                      <div className="admin-dashboard-medication-stt">
-                        {index + 1}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="admin-dashboard-medication-student">
-                        <div className="admin-dashboard-medication-student-name">
-                          {medication.studentName}
+            </table>
+            <div
+              // className="admin-table-container"
+              style={{ maxHeight: "400px", overflowY: "auto" }}
+            >
+              <table className="admin-dashboard-medications-table">
+                <tbody>
+                  {pendingMedications.map((medication, index) => (
+                    <tr key={medication.id}>
+                      <td>
+                        <div className="admin-dashboard-medication-stt">
+                          {index + 1}
                         </div>
-                        <div className="admin-dashboard-medication-parent">
-                          PH: {medication.parentName}
+                      </td>
+                      <td>
+                        <div className="admin-dashboard-medication-student">
+                          <div className="admin-dashboard-medication-student-name">
+                            {medication.studentName}
+                          </div>
+                          <div className="admin-dashboard-medication-parent">
+                            PH: {medication.parentName}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="admin-dashboard-medication-class">
-                        {medication.studentClass}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="admin-dashboard-medication-name">
-                        {/* {medication.medicationName} */}
-                        {medication.medications
-                          .map((m, index) => m.medicationName)
-                          .join(", ")}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="admin-dashboard-medication-dosage">
-                        {/* {medication.dosage} */}
-                        {medication.medications
-                          .map((m, index) => m.dosage)
-                          .join(", ")}
-                      </div>
-                    </td>
-                    {/* <td>
+                      </td>
+                      <td>
+                        <div className="admin-dashboard-medication-class">
+                          {medication.studentClass}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="admin-dashboard-medication-name">
+                          {/* {medication.medicationName} */}
+                          {medication.medications
+                            .map((m, index) => m.medicationName)
+                            .join(", ")}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="admin-dashboard-medication-dosage">
+                          {/* {medication.dosage} */}
+                          {medication.medications
+                            .map((m, index) => m.dosage)
+                            .join(", ")}
+                        </div>
+                      </td>
+                      {/* <td>
                       <div
                         className="admin-dashboard-medication-note"
                         title={medication?.note}
@@ -839,35 +846,21 @@ const AdminDashboard = () => {
                           : medication.note}
                       </div>
                     </td> */}
-                    <td>
-                      <div className="admin-dashboard-medication-date">
-                        {medication.createdDate}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="admin-dashboard-medication-nurse">
-                        {medication.nurseName}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {pendingMedications.length > 8 && (
-              <div className="admin-dashboard-medications-table-footer">
-                <div className="admin-dashboard-medications-more">
-                  Và {pendingMedications.length - 8} đơn thuốc khác...
-                </div>
-                <a
-                  href="/admin/medicines/requests"
-                  className="admin-dashboard-btn-secondary"
-                >
-                  <FaEye className="me-2" />
-                  Xem tất cả
-                </a>
-              </div>
-            )}
+                      <td>
+                        <div className="admin-dashboard-medication-date">
+                          {medication.createdDate}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="admin-dashboard-medication-nurse">
+                          {medication.nurseName}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

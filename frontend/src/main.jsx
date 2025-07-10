@@ -45,8 +45,8 @@ import './fontawesome.js';
 import './utils/animationUtils.js';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <App />
-  </StrictMode>
+  // </StrictMode>
 );
 
