@@ -1,0 +1,278 @@
+.appHeader {
+    background: #fff;
+    border-bottom: 1.5px solid #e3e8f0;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.04);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 64px;
+}
+
+.appHeaderLeft {
+    display: flex;
+    align-items: center;
+}
+
+.appHeaderLogo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.headerLogoIcon {
+    font-size: 1.5rem;
+    color: #2563eb;
+}
+
+.headerLogoText {
+    color: #1746a2;
+}
+
+.appHeaderCenter {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.parentMenu {
+    display: flex;
+    align-items: center;
+}
+
+.parentMenuDesktop {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.parentMenuLink {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background 0.18s, color 0.18s;
+    white-space: nowrap;
+}
+
+.parentMenuLink:hover {
+    background: #eaf2ff;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.parentMenuLink.active {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.10);
+}
+
+.parentMenuIcon {
+    font-size: 1rem;
+    min-width: 16px;
+}
+
+.parentMenuMobile {
+    position: relative;
+}
+
+.hamburgerBtn {
+    background: #eaf2ff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #2563eb;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.hamburgerBtn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.mobileDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.10);
+    min-width: 220px;
+    z-index: 1001;
+    margin-top: 8px;
+}
+
+.mobileDropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.18s, color 0.18s;
+}
+
+.mobileDropdownItem:hover {
+    background: #eaf2ff;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.mobileDropdownItem.active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.mobileMenuIcon {
+    font-size: 1rem;
+    min-width: 16px;
+}
+
+.appHeaderRight {
+    display: flex;
+    align-items: center;
+}
+
+.appHeaderAccount {
+    position: relative;
+}
+
+.accountTrigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.accountTrigger:hover {
+    background: #eaf2ff;
+}
+
+.accountAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e3e8f0;
+    transition: border-color 0.18s;
+}
+
+.accountTrigger:hover .accountAvatar {
+    border-color: #2563eb;
+}
+
+.accountArrow {
+    font-size: 0.8rem;
+    color: #64748b;
+    transition: transform 0.18s, color 0.18s;
+}
+
+.accountArrow.rotated {
+    transform: rotate(180deg);
+    color: #2563eb;
+}
+
+.accountDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.10);
+    min-width: 180px;
+    z-index: 1001;
+    margin-top: 8px;
+}
+
+.accountDropdownItem {
+    padding: 12px 16px;
+    color: #64748b;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.accountDropdownItem:hover {
+    background: #eaf2ff;
+    color: #2563eb;
+}
+
+.dropdownDivider {
+    margin: 4px 0;
+    border: none;
+    border-top: 1px solid #e3e8f0;
+}
+
+.chatIconContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .appHeader {
+        padding: 10px 16px;
+    }
+
+    .parentMenuDesktop {
+        gap: 4px;
+    }
+
+    .parentMenuLink {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .appHeader {
+        padding: 8px 12px;
+    }
+
+    .appHeaderLogo {
+        font-size: 1.1rem;
+    }
+
+    .headerLogoIcon {
+        font-size: 1.3rem;
+    }
+
+    .parentMenuDesktop {
+        display: none;
+    }
+
+    .parentMenuMobile {
+        display: block;
+    }
+
+    .mobileDropdown {
+        min-width: 200px;
+    }
+}
+
+@media (min-width: 769px) {
+    .parentMenuMobile {
+        display: none;
+    }
+}

@@ -1,0 +1,783 @@
+/* HealthEvents.module.css - bắt đầu bằng bản sao từ ReceiveMedicine.module.css để đồng bộ giao diện */
+
+.receiveMedicineRoot {
+    padding: 24px 18px 32px 18px;
+    background: #f6f8fc;
+    min-height: 100vh;
+}
+
+.header {
+    background: linear-gradient(90deg, #ff6b8d 0%, #f06292 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 24px rgba(255, 105, 135, 0.08);
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.headerIcon {
+    font-size: 2.2rem;
+    background: #fff3;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.headerTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+}
+
+.statsRow {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.statCard {
+    flex: 1 1 200px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 24px;
+    min-width: 220px;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.statCardPink {
+    background: linear-gradient(90deg, #ffb6c1 0%, #ff6b8d 100%);
+    color: #fff;
+}
+
+.statCardYellow {
+    background: linear-gradient(90deg, #fff7d6 0%, #ffe082 100%);
+    color: #b28704;
+}
+
+.statCardBlue {
+    background: linear-gradient(90deg, #e3f0ff 0%, #90caf9 100%);
+    color: #2563eb;
+}
+
+.statCardOrange {
+    background: linear-gradient(90deg, #ffe0b2 0%, #ffb74d 100%);
+    color: #e65100;
+}
+
+
+
+.statIcon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 10px;
+    font-size: 2.2rem;
+}
+
+.statValue {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.statLabel {
+    font-size: 1.05rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.tabs {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(255, 107, 141, 0.08);
+    padding: 0;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.tabNav {
+    display: flex;
+    border-bottom: 1.5px solid #f1f5f9;
+    background: #fff0f6;
+}
+
+.tabNavItem {
+    flex: 1 1 0;
+    text-align: center;
+    padding: 16px 0 12px 0;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #888;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    outline: none;
+    border-bottom: 3px solid transparent;
+}
+
+.tabNavItemActive {
+    color: #ff6b8d;
+    background: #fff;
+    border-bottom: 3px solid #ff6b8d;
+    z-index: 2;
+}
+
+.tabContent {
+    padding: 24px 12px 12px 12px;
+    background: #fff;
+    border-radius: 0 0 14px 14px;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(255, 107, 141, 0.06);
+    background: #fff;
+}
+
+.table {
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
+    font-size: 1rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background: #fff0f6;
+    font-weight: 700;
+    color: #ff6b8d;
+    border-bottom: 2px solid #ffe4ec;
+    padding: 15px 10px;
+    text-align: left;
+}
+
+.table td {
+    padding: 14px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fff;
+    transition: background 0.18s;
+    font-size: 1rem;
+}
+
+.tableRow:hover td {
+    background: #fff7fa;
+}
+
+.noDataRow {
+    text-align: center;
+    background: #fff0f6;
+}
+
+.noDataContent {
+    padding: 32px 0 24px 0;
+    color: #ff6b8d;
+}
+
+.showMoreContainer {
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* Modal detail */
+/* Modal width */
+:global(.modal-dialog) {
+    max-width: 720px;
+    width: 95vw;
+}
+
+/* Modal detail for HealthEvents */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30, 30, 50, 0.25);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding-bottom: 32px;
+}
+
+.customModal {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px 0 rgba(37, 99, 235, 0.18), 0 1.5px 8px 0 rgba(255, 107, 141, 0.10);
+    max-width: 650px;
+    width: 98vw;
+    position: relative;
+    animation: modalPopIn 0.18s cubic-bezier(.4, 2, .6, 1) 1;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+@keyframes modalPopIn {
+    0% {
+        transform: scale(0.95) translateY(40px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 24px 32px 16px 32px;
+    border-bottom: 2px solid #f1f5f9;
+    position: relative;
+}
+
+.modalHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.modalHeaderIcon {
+    background: #fff0f6;
+    color: #ff6b8d;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.08);
+}
+
+.modalHeaderTitle {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #ff6b8d;
+    margin: 0;
+}
+
+.modalHeaderStatus {
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: #ff6b8d;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modalContent {
+    padding: 24px 32px 18px 32px;
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+    max-height: calc(90vh - 120px);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modalContent::-webkit-scrollbar {
+    display: none;
+}
+
+.modalSection {
+    background: #fff0f6;
+    border-radius: 12px;
+    padding: 18px 20px 14px 20px;
+    margin-bottom: 0;
+    box-shadow: 0 1px 4px rgba(255, 107, 141, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modalSectionTitle {
+    font-weight: 700;
+    color: #ff6b8d;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.modalSectionRow {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 1rem;
+}
+
+.modalSectionLabel {
+    color: #888;
+    font-weight: 500;
+    min-width: 90px;
+}
+
+.modalSectionValue {
+    color: #222;
+    font-weight: 600;
+}
+
+.medicationList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.medicationItem {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.04);
+    font-size: 1rem;
+}
+
+.detailCard:last-child {
+    margin-bottom: 0;
+}
+
+.statusIndicator {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin-top: 6px;
+    color: #ff6b8d;
+}
+
+.loadingIndicator {
+    color: #ff6b8d;
+    text-align: center;
+    padding: 18px 0;
+}
+
+.noDataIndicator {
+    color: #ff6b8d;
+    text-align: center;
+    padding: 18px 0;
+}
+
+.modalFooter {
+    padding: 18px 32px;
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    display: flex;
+    gap: 14px;
+    justify-content: flex-end;
+    border-top: 2px solid #f1f5f9;
+}
+
+.modalFooter button {
+    border-radius: 8px !important;
+    font-weight: 600;
+    min-width: 120px;
+    padding: 8px 0;
+    font-size: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+    transition: background 0.18s, color 0.18s;
+}
+
+.modalFooter button:not(:last-child) {
+    margin-right: 10px;
+}
+
+.modalFooter :global(.btn-secondary) {
+    background: #fff0f6;
+    color: #ff6b8d;
+    border: 1.5px solid #ffe4ec;
+}
+
+.modalFooter :global(.btn-secondary):hover,
+.modalFooter :global(.btn-secondary):focus {
+    background: #ffe4ec;
+    color: #2563eb;
+}
+
+.modalFooter :global(.btn-danger) {
+    background: #fffde7;
+    color: #ffb300;
+    border: 1.5px solid #ffe082;
+}
+
+.modalFooter :global(.btn-danger):hover,
+.modalFooter :global(.btn-danger):focus {
+    background: #ffb300;
+    color: #fff;
+}
+
+.modalFooter :global(.btn-success) {
+    background: #e8f5e9;
+    color: #43a047;
+    border: 1.5px solid #a5d6a7;
+}
+
+.modalFooter :global(.btn-success):hover,
+.modalFooter :global(.btn-success):focus {
+    background: #43a047;
+    color: #fff;
+}
+
+.modalFooter :global(.btn-primary) {
+    background: #f4f8ff;
+    color: #2563eb;
+    border: 1.5px solid #90caf9;
+}
+
+.modalFooter :global(.btn-primary):hover,
+.modalFooter :global(.btn-primary):focus {
+    background: #2563eb;
+    color: #fff;
+}
+
+/* Action buttons (view, close, etc) */
+.actionBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1.5px solid #ffffff;
+    background: #ffffff;
+    color: #ff6b8d;
+    font-size: 1.25rem;
+    margin: 0 3px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 1px 4px #f7faff;
+    font-weight: 600;
+    gap: 6px;
+}
+
+
+
+/* Event creation form */
+.eventFormSection {
+    background: #fff0f6;
+    border-radius: 12px;
+    padding: 18px 20px 14px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(255, 107, 141, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.eventFormTitle {
+    font-weight: 700;
+    color: #ff6b8d;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 8px;
+}
+
+.eventFormInput,
+.eventFormSelect,
+.eventFormTextarea {
+    border-radius: 8px;
+    border: 1.5px solid #e3eefd;
+    padding: 8px 12px;
+    font-size: 1rem;
+    margin-top: 4px;
+    background: #f7faff;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.eventFormTextarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.eventFormError {
+    color: #ff6b8d;
+    font-size: 0.98rem;
+    margin-top: 2px;
+    margin-bottom: 4px;
+}
+
+.eventFormBtnRow {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.eventFormBtn {
+    border-radius: 8px;
+    font-weight: 600;
+
+    justify-content: center;
+    min-width: 120px;
+    padding: 8px 0;
+    font-size: 1rem;
+    border: none;
+    background: #ff6b8d;
+    color: #fff;
+    transition: background 0.18s, color 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px #ffb6c133;
+}
+
+.eventFormBtn:hover,
+.eventFormBtn:focus {
+    background: #ff6b8d;
+    color: #fff;
+}
+
+.searchInput {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.searchInput input {
+    border: 1.7px solid #fecddcc1;
+    border-radius: 8px 0 0 8px;
+    padding: 8px 14px;
+    font-size: 1rem;
+    outline: none;
+    height: 40px;
+    width: 100%;
+    background: #fff;
+    transition: border 0.18s;
+}
+
+.searchInput input:focus {
+    border-color: #ff6b8d;
+}
+
+.searchBtn {
+    background: #fff0f6;
+    border: 1.7px solid #fecddcc1;
+
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    padding: 0 0px;
+    height: 40px;
+    width: 10%;
+    color: #ff6b8d;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(255, 107, 141, 0.08);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+.searchBtn:hover,
+.searchBtn:focus {
+    background: #ffe4ec;
+    color: #eb25cd;
+    box-shadow: 0 2px 8px rgba(255, 107, 141, 0.13);
+}
+
+
+.statusPending {
+    color: #ffb300;
+    font-weight: 600;
+    background: #fff8e1;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.statusCompleted {
+    color: #43a047;
+    font-weight: 600;
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1.5px solid #e3eefd;
+    padding: 8px 12px;
+    font-size: 1rem;
+    margin-top: 4px;
+    background: #f7faff;
+    resize: vertical;
+}
+
+@media (max-width: 900px) {
+    .header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 18px 10px 18px 10px;
+        min-height: unset;
+    }
+
+    .headerIcon {
+        font-size: 2.1rem;
+        padding: 10px;
+    }
+
+    .headerTitle {
+        font-size: 1.3rem;
+    }
+
+    .statsRow {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .statCard {
+        padding: 16px 10px 12px 10px;
+        min-width: unset;
+    }
+
+    .statIcon {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+        padding: 5px;
+    }
+
+    .statLabel {
+        font-size: 1rem;
+    }
+
+    .statValue {
+        font-size: 1.2rem;
+    }
+
+    .tabContent {
+        padding: 14px 2px 8px 2px;
+    }
+
+    .modalContent {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px 6px 10px 6px;
+        align-items: stretch;
+        min-height: unset;
+    }
+
+    .modalCol {
+        gap: 10px;
+    }
+
+    .modalHeader {
+        padding: 16px 8px 10px 8px;
+        font-size: 1.1rem;
+        gap: 10px;
+    }
+
+    .modalContent {
+        padding: 14px 4px 8px 4px;
+    }
+
+    .detailCard {
+        padding: 10px 6px 8px 6px;
+        font-size: 0.98rem;
+    }
+
+    .medicationList {
+        max-height: 180px;
+    }
+
+    .customModal {
+        max-width: 99vw;
+        border-radius: 12px;
+    }
+
+    .closeBtn {
+        top: 8px;
+        right: 10px;
+        font-size: 1.5rem;
+        width: 32px;
+        height: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    .searchInput input {
+        min-width: 120px;
+        font-size: 0.95rem;
+        padding: 7px 8px;
+    }
+
+    .searchBtn {
+        padding: 0 10px;
+        font-size: 0.95rem;
+        height: 36px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .modalHeader,
+    .modalFooter {
+        padding: 10px 6px;
+        font-size: 1.05rem;
+    }
+
+    .modalContent {
+        padding: 10px 6px 8px 6px;
+        gap: 10px;
+    }
+
+    .modalSection,
+    .eventFormSection {
+        padding: 8px 4px 6px 4px;
+        font-size: 0.98rem;
+    }
+
+    .eventFormBtnRow {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

@@ -1,0 +1,697 @@
+body {
+    background: linear-gradient(135deg, #f7faff 0%, #eaf2ff 100%);
+}
+
+/* Main Container */
+.healthDeclarationContainer {
+    min-height: 100vh;
+    /* background: linear-gradient(135deg, #f7faff 0%, #eaf2ff 100%); */
+    padding: 20px 0;
+    /* --- Dòng mới thêm ở đây để căn giữa toàn bộ trang --- */
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Compact Header */
+.healthCompactHeader {
+    background: #fff;
+    border-bottom: 1.5px solid #e3e8f0;
+    box-shadow: 0 2px 12px rgba(37, 99, 235, 0.04);
+    padding: 16px 0;
+    margin-bottom: 24px;
+}
+
+.healthHeaderContent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.healthHeaderTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1746a2;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.healthHeaderIcon {
+    color: #2563eb;
+    font-size: 1.3rem;
+}
+
+.healthHeaderSubtitle {
+    color: #64748b;
+    margin: 4px 0 0 0;
+    font-size: 0.95rem;
+}
+
+.healthHeaderActions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Quick Stats */
+.quickStatsSection {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+/* Main Content */
+.mainContentContainer {
+    background: transparent;
+    /* --- Dòng mới thêm ở đây để căn giữa nội dung chính --- */
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.mainCard {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #e3e8f0;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+    overflow: hidden;
+    
+   
+}
+
+.cardHeader {
+    background: linear-gradient(135deg, #2563eb 0%, #1746a2 100%);
+    color: #fff;
+    padding: 16px 24px;
+    border-bottom: none;
+}
+
+.tabNavigation {
+    display: flex;
+    gap: 12px;
+    margin: 0;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.tabButton {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tabButton:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.tabButton.active {
+    background: #fff;
+    color: #2563eb;
+    border-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cardBody {
+    padding: 24px;
+}
+
+/* Student Selection */
+.studentSelectionCard {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.studentSelectionHeader {
+    background: #fff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 12px 16px;
+    border-radius: 12px 12px 0 0;
+}
+
+.studentSelectionHeader h5 {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.studentSelectionBody {
+    padding: 16px;
+}
+
+.studentPreview {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.studentAvatar {
+    width: 40px;
+    height: 40px;
+    background: #2563eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.studentInfo h6 {
+    margin: 0 0 4px 0;
+    color: #1746a2;
+    font-weight: 600;
+}
+
+/* Medical Information Card */
+.medicalInfoCard {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.medicalInfoHeader {
+    background: #fff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 12px 16px;
+    border-radius: 12px 12px 0 0;
+}
+
+.medicalInfoHeader h5 {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.medicalInfoBody {
+    padding: 16px;
+}
+
+.formGroup {
+    margin-bottom: 16px;
+}
+
+.formLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.submitButtonContainer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e3e8f0;
+}
+
+.submitButton {
+    background: linear-gradient(135deg, #2563eb 0%, #1746a2 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    padding: 12px 32px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Guidelines Card */
+.guidelinesCard {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    height: fit-content;
+}
+
+.guidelinesHeader {
+    background: #fff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 12px 16px;
+    border-radius: 12px 12px 0 0;
+}
+
+.guidelinesHeader h6 {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guidelinesBody {
+    padding: 16px;
+}
+
+.guidelineItem {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e3e8f0;
+}
+
+.guidelineItem:last-child {
+    margin-bottom: 0;
+}
+
+.guidelineItem svg {
+    color: #2563eb;
+    margin-top: 2px;
+    min-width: 16px;
+}
+
+.guidelineItem strong {
+    color: #1746a2;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.guidelineItem p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* History Section */
+.historySection {
+    margin-top: 20px;
+}
+
+.historyStudentSelection {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.historyStudentHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.historyStudentIcon {
+    width: 40px;
+    height: 40px;
+    background: #2563eb;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.historyStudentTitle {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 700;
+}
+
+.historyStudentForm {
+    margin-bottom: 16px;
+}
+
+.historyStudentFormLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.historyStudentSelect {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.historyStudentPreview {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.historyStudentInfo {
+    display: flex;
+    gap: 16px;
+}
+
+.historyStudentInfoItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Empty State */
+.emptyState {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #e3e8f0;
+}
+
+.emptyStateIcon {
+    color: #94a3b8;
+    margin-bottom: 16px;
+}
+
+.emptyStateTitle {
+    color: #64748b;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.emptyStateDescription {
+    color: #94a3b8;
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Medical Information Display */
+.medicalInfoSection {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.medicalInfoSectionHeader {
+    background: #f8faff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.medicalInfoSectionTitle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.medicalInfoSectionIcon {
+    width: 36px;
+    height: 36px;
+    background: #2563eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.medicalInfoSectionTitleText {
+    color: #1746a2;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.medicalInfoSectionSubtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.medicalInfoSectionBody {
+    padding: 20px;
+}
+
+.medicalInfoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.medicalInfoField {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.medicalInfoFieldLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.medicalInfoFieldTextarea {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e3e8f0;
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: #64748b;
+    font-size: 0.9rem;
+    resize: none;
+}
+
+.medicalInfoFieldTextarea:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loadingContent {
+    text-align: center;
+    color: #64748b;
+}
+
+.loadingContent h5 {
+    margin-top: 16px;
+    color: #374151;
+}
+
+/* Modal Styles */
+.modalHeader {
+    background: #f8faff;
+    border-bottom: 1.5px solid #e3e8f0;
+}
+
+.modalTitle {
+    color: #1746a2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.modalBody {
+    padding: 20px;
+}
+
+.modalInfoCard {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.modalInfoHeader {
+    background: #fff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 10px 12px;
+    border-radius: 10px 10px 0 0;
+}
+
+.modalInfoHeader h6 {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+}
+
+.modalInfoBody {
+    padding: 12px;
+}
+
+.modalInfoItem {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.modalInfoItem:last-child {
+    margin-bottom: 0;
+}
+
+.modalInfoItem strong {
+    color: #374151;
+}
+
+.modalMedicalItem {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #e3e8f0;
+}
+
+.modalMedicalItem:last-child {
+    margin-bottom: 0;
+}
+
+.modalMedicalItem svg {
+    color: #2563eb;
+    margin-top: 2px;
+    min-width: 14px;
+}
+
+.modalMedicalItem strong {
+    color: #1746a2;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.85rem;
+}
+
+.modalMedicalItem p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .healthDeclarationContainer {
+        padding: 16px 0;
+    }
+
+    .cardBody {
+        padding: 20px;
+    }
+
+    .medicalInfoGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .healthDeclarationContainer {
+        padding: 12px 0;
+    }
+
+    .healthCompactHeader {
+        padding: 12px 0;
+    }
+
+    .healthHeaderTitle {
+        font-size: 1.3rem;
+    }
+
+    .cardBody {
+        padding: 16px;
+    }
+
+    .submitButtonContainer {
+        margin-top: 20px;
+        padding-top: 16px;
+    }
+
+    .submitButton {
+        padding: 10px 24px;
+        font-size: 0.95rem;
+    }
+
+    .tabNavigation {
+        flex-direction: row;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tabButton {
+        justify-content: center;
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .historyStudentInfo {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

@@ -1,0 +1,112 @@
+.paginationBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.paginationWrapper {
+  display: flex;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  gap: 6px;
+}
+
+.paginationBtn {
+  background: #fff;
+  color: #2563eb;
+  border: 1.2px solid #e5e9f2;
+  border-radius: 50%;
+  padding: 0;
+  font-weight: 500;
+  font-size: 1.18rem;
+  margin: 0;
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border 0.16s, color 0.16s, background 0.16s;
+  box-shadow: none;
+}
+
+.paginationBtn:hover,
+.paginationBtn:focus {
+  border: 1.2px solid #2563eb;
+  color: #2563eb;
+  background: #f4f8ff;
+  outline: none;
+}
+
+.paginationBtn.active,
+.paginationBtn[aria-current="page"] {
+  background: #3498db;
+  color: #fff;
+  border-radius: 50%;
+  border: 1.2px solid #3498db;
+  box-shadow: none;
+  z-index: 2;
+}
+
+:global(.page-item) {
+  margin: 0 3px;
+}
+:global(.page-link) {
+  background: #fff !important;
+  color: #2563eb !important;
+  border: 1.2px solid #e5e9f2 !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  font-weight: 500 !important;
+  font-size: 1.18rem !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+  transition: border 0.16s, color 0.16s, background 0.16s;
+}
+:global(.page-link:hover),
+:global(.page-link:focus) {
+  border: 1.2px solid #2563eb !important;
+  color: #2563eb !important;
+  background: #f4f8ff !important;
+  outline: none !important;
+}
+:global(.active) > :global(.page-link),
+:global(.page-item.active) > :global(.page-link) {
+  background: #3498db !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  border: 1.2px solid #3498db !important;
+  box-shadow: none !important;
+  z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .paginationWrapper {
+    gap: 3px;
+  }
+
+  .paginationBtn {
+    font-size: 1.05rem;
+    min-width: 34px;
+    min-height: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+}

@@ -1,0 +1,785 @@
+/* Common styles - sidebar.css */
+/* Add your sidebar styles here */
+
+/* ====================================================================
+   NURSE SIDEBAR - CORAL/PINK MEDICAL THEME
+   ==================================================================== */
+
+/* Sidebar Container */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 60px;
+    background: linear-gradient(180deg, #FF6B8D 0%, #FF4757 100%);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    box-shadow: 2px 0 12px rgba(255, 107, 141, 0.2);
+}
+
+.sidebar.expand {
+    width: 250px;
+}
+
+.sidebar.nurse {
+    background: linear-gradient(180deg, #FF6B8D 0%, #FF4757 100%);
+}
+
+/* Sidebar Header */
+.app-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 80px;
+    position: relative;
+}
+
+.app-sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    flex: 1;
+}
+
+.sidebar-logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.expand .sidebar-logo-text {
+    opacity: 1;
+}
+
+.sidebar.expand .app-sidebar-toggle-btn {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.app-sidebar-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+}
+
+.app-sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+.hamburger-icon {
+    width: 18px;
+    height: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    opacity: 0.9;
+}
+
+.hamburger-icon span {
+    width: 100%;
+    height: 2px;
+    background: white;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.app-sidebar-toggle-btn:hover .hamburger-icon {
+    opacity: 1;
+}
+
+/* Navigation */
+.app-sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.app-sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-sidebar-nav li {
+    margin-bottom: 8px;
+}
+
+/* Menu Links */
+.app-sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 0;
+    position: relative;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.app-sidebar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.app-sidebar-link.active {
+    background: white;
+    color: #333;
+    font-weight: 600;
+}
+
+.app-sidebar-link.active:hover {
+    background: white;
+    color: #333;
+}
+
+/* Icons */
+.sidebar-link-icon {
+    font-size: 1.2rem;
+    min-width: 24px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar-link-icon svg,
+.sidebar-link-icon i,
+.sidebar-link-icon * {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar-link-text {
+    margin-left: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.expand .sidebar-link-text {
+    opacity: 1;
+}
+
+/* Chat Icon Special Styling */
+.chat-icon-container {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    position: relative;
+}
+
+.chat-icon-container svg {
+    width: 1.2rem;
+    height: 1.2rem;
+    display: block;
+}
+
+.sidebar-link-icon .chat-icon-container {
+    margin: 0;
+    padding: 0;
+}
+
+.chat-icon-container .chat-notification-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 5;
+}
+
+/* Ensure chat icon inherits colors properly */
+.app-sidebar-link .chat-icon-container svg {
+    color: inherit;
+}
+
+.app-sidebar-link:hover .chat-icon-container svg {
+    color: inherit;
+}
+
+.app-sidebar-link.active .chat-icon-container svg {
+    color: inherit;
+}
+
+/* Footer/Logout */
+.app-sidebar-footer {
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    color: white;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.logout-btn.active {
+    background: white;
+    color: #333;
+}
+
+/* Collapsed State */
+.sidebar:not(.expand) .app-sidebar-header {
+    justify-content: center;
+    padding: 20px 10px;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar:not(.expand) .app-sidebar-logo svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-toggle-btn {
+    display: flex !important;
+    padding: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar:not(.expand) .hamburger-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .hamburger-icon span {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-link {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .chat-icon-container {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar:not(.expand) .chat-icon-container svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+}
+
+.sidebar:not(.expand) .logout-btn {
+    justify-content: center;
+    padding: 15px 10px;
+}
+
+.sidebar:not(.expand) .logout-btn svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force all icons to show in collapsed state with highest priority */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon svg,
+html body .sidebar:not(.expand) .sidebar-link-icon i,
+html body .sidebar:not(.expand) .sidebar-link-icon *,
+html body .sidebar:not(.expand) .app-sidebar-link .sidebar-link-icon,
+html body .sidebar:not(.expand) .app-sidebar-link .sidebar-link-icon svg,
+html body .sidebar:not(.expand) nav .sidebar-link-icon,
+html body .sidebar:not(.expand) nav .sidebar-link-icon svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit !important;
+}
+
+/* Additional specificity for React icons */
+html body .sidebar:not(.expand) .sidebar-link-icon [role="img"],
+html body .sidebar:not(.expand) .sidebar-link-icon svg[role="img"] {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force sidebar in collapsed state to show all content */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon svg,
+html body .sidebar:not(.expand) .app-sidebar-logo svg {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+/* Special handling for main navigation icons */
+html body .sidebar:not(.expand) .app-sidebar-nav li {
+    display: flex !important;
+}
+
+html body .sidebar:not(.expand) .app-sidebar-nav a {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Ensure no transform or scale issues */
+html body .sidebar:not(.expand) .sidebar-link-icon,
+html body .sidebar:not(.expand) .sidebar-link-icon * {
+    transform: none !important;
+    scale: 1 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Force visibility for collapsed sidebar icons */
+html body .sidebar:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Super high specificity force display */
+html body div.sidebar:not(.expand) nav.app-sidebar-nav ul li a.app-sidebar-link i.sidebar-link-icon,
+html body div.sidebar:not(.expand) nav.app-sidebar-nav ul li a.app-sidebar-link i.sidebar-link-icon svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: white !important;
+}
+
+/* Maximum specificity override using ID */
+#sidebar:not(.expand) .sidebar-link-icon,
+#sidebar:not(.expand) .sidebar-link-icon svg,
+#sidebar:not(.expand) .sidebar-link-icon *,
+#sidebar:not(.expand) .app-sidebar-logo svg {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: inherit !important;
+}
+
+/* For nurse role specifically */
+#sidebar.nurse:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#sidebar.nurse:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.sidebar:not(.expand) .app-sidebar-link {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tooltip for collapsed state */
+.sidebar:not(.expand) .app-sidebar-link::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    z-index: 1001;
+}
+
+.sidebar:not(.expand) .app-sidebar-link:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Tooltip arrow */
+.sidebar:not(.expand) .app-sidebar-link::before {
+    content: '';
+    position: absolute;
+    left: calc(100% + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid #333;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.sidebar:not(.expand) .app-sidebar-link:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.expand {
+        transform: translateX(0);
+        width: 280px;
+    }
+
+    .app-sidebar-toggle-btn {
+        display: flex !important;
+        padding: 6px;
+    }
+
+    .sidebar:not(.expand) .app-sidebar-header {
+        justify-content: space-between;
+        flex-direction: row;
+        padding: 20px 15px;
+        gap: 0;
+    }
+
+    .sidebar:not(.expand) .app-sidebar-toggle-btn {
+        display: flex !important;
+        padding: 6px;
+    }
+
+    .sidebar-mobile-overlay {
+        display: block;
+    }
+}
+
+/* ADMIN SIDEBAR GREEN THEME */
+.sidebar.admin {
+    background: linear-gradient(180deg, #34c77b 0%, #22c55e 100%) !important;
+    box-shadow: 2px 0 12px rgba(52, 199, 123, 0.15);
+}
+
+/* Active link for admin sidebar */
+.sidebar.admin .app-sidebar-link.active {
+    background: white;
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.sidebar.admin .app-sidebar-link.active:hover {
+    background: white;
+    color: #22c55e;
+}
+
+/* Icon color in admin sidebar */
+.sidebar.admin .sidebar-link-icon,
+.sidebar.admin .sidebar-link-icon svg,
+.sidebar.admin .sidebar-link-icon i {
+    color: white !important;
+}
+
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon,
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon svg,
+.sidebar.admin .app-sidebar-link.active .sidebar-link-icon i {
+    color: #22c55e !important;
+}
+
+/* Responsive: icon always centered and visible when collapsed */
+.sidebar.admin:not(.expand) .sidebar-link-icon {
+    margin: 0 auto;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-width: 40px;
+    font-size: 1.4rem;
+}
+
+.sidebar.admin:not(.expand) .sidebar-link-text {
+    display: none !important;
+}
+
+/* Logout button always visible and at the bottom */
+.sidebar.admin .app-sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 18px 0 18px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.sidebar.admin .logout-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.sidebar.admin .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #22c55e;
+}
+
+.sidebar.admin:not(.expand) .logout-btn {
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1.3rem;
+}
+
+.sidebar.admin:not(.expand) .logout-btn span {
+    display: none !important;
+}
+
+.sidebar.admin:not(.expand) .logout-btn svg,
+.sidebar.admin:not(.expand) .logout-btn i {
+    display: block !important;
+    margin: 0 auto;
+    color: white !important;
+    font-size: 1.5rem;
+}
+
+/* Smooth animations */
+.sidebar,
+.sidebar * {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus states for accessibility */
+.app-sidebar-link:focus,
+.app-sidebar-toggle-btn:focus,
+.logout-btn:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Layout adjustments for main content */
+.wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    margin-left: 250px;
+    /* Default expanded sidebar width */
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+/* When sidebar is collapsed */
+.wrapper.sidebar-collapsed .main {
+    margin-left: 60px;
+}
+
+.main-content {
+    padding: 0;
+    min-height: calc(100vh - 60px);
+    /* Subtract header height */
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 767px) {
+    .main {
+        margin-left: 0;
+    }
+
+    .wrapper.sidebar-collapsed .main,
+    .wrapper.sidebar-expanded .main {
+        margin-left: 0;
+    }
+}
+
+/* ULTIMATE OVERRIDE - Load last with maximum specificity */
+html body div#sidebar:not(.expand) .sidebar-link-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html body div#sidebar:not(.expand) .sidebar-link-icon svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html body div#sidebar:not(.expand) .app-sidebar-logo svg {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html body div#sidebar:not(.expand) .hamburger-icon {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+html body div#sidebar:not(.expand) .hamburger-icon span {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force all children to be visible */
+html body div#sidebar:not(.expand) .sidebar-link-icon * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inherit !important;
+}
+
+/* ==== ICON CENTERING & LOGOUT FIX FOR NURSE SIDEBAR ==== */
+/* Icon always centered and larger when collapsed (all roles) */
+.sidebar:not(.expand) .sidebar-link-icon {
+    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: 40px !important;
+    font-size: 1.5rem !important;
+    height: 48px !important;
+}
+
+.sidebar:not(.expand) .sidebar-link-icon svg,
+.sidebar:not(.expand) .sidebar-link-icon i {
+    font-size: 1.5rem !important;
+    width: 1.5em !important;
+    height: 1.5em !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+.sidebar:not(.expand) .sidebar-link-text {
+    display: none !important;
+}
+
+/* Nurse logout button always visible and at the bottom, icon only when collapsed */
+.sidebar.nurse .app-sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 18px 0 18px 0;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.sidebar.nurse .logout-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.sidebar.nurse .logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #FF4757;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn {
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+    font-size: 1.5rem;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn span {
+    display: none !important;
+}
+
+.sidebar.nurse:not(.expand) .logout-btn svg,
+.sidebar.nurse:not(.expand) .logout-btn i {
+    display: block !important;
+    margin: 0 auto;
+    color: white !important;
+    font-size: 1.7rem !important;
+}

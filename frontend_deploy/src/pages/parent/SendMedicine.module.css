@@ -1,0 +1,531 @@
+/* Main Container */
+.sendMedicineContainer {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f7faff 0%, #eaf2ff 100%);
+    padding: 20px 0;
+}
+
+/* Page Header */
+.pageHeader {
+    background: #fff;
+    border-radius: 16px;
+    
+    border: 1.5px solid #e3e8f0;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.headerIcon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #2563eb 0%, #1746a2 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.headerText h2 {
+    margin: 0 0 8px 0;
+    color: #1746a2;
+    font-weight: 700;
+    font-size: 1.6rem;
+}
+
+.headerText p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* Form Container */
+.formContainer {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid #e3e8f0;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06);
+    overflow: hidden;
+}
+
+/* Student Selection Section */
+.studentSection {
+    background: #f8faff;
+    border-bottom: 1.5px solid #e3e8f0;
+    padding: 24px;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.sectionIcon {
+    width: 40px;
+    height: 40px;
+    background: #2563eb;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.sectionTitle {
+    margin: 0;
+    color: #1746a2;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.studentForm {
+    margin-bottom: 16px;
+}
+
+.formLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.studentSelect {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #374151;
+    font-size: 0.95rem;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.studentSelect:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.studentPreview {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.studentInfo {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.studentInfoItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.studentInfoItem svg {
+    color: #2563eb;
+}
+
+/* Medicine Section */
+.medicineSection {
+    padding: 24px;
+}
+
+.medicineCard {
+    background: #f8faff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.18s;
+}
+
+.medicineCard:hover {
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+}
+
+.medicineCardHeader {
+    background: #fff;
+    border-bottom: 1px solid #e3e8f0;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.medicineNumber {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #1746a2;
+}
+
+.medicineNumberBadge {
+    width: 24px;
+    height: 24px;
+    background: #2563eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.removeMedicineBtn {
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.removeMedicineBtn:hover {
+    background: #fecaca;
+    border-color: #f87171;
+}
+
+.medicineCardBody {
+    padding: 16px;
+}
+
+.formGroup {
+    margin-bottom: 16px;
+}
+
+.formControl {
+    background: #fff;
+    border: 1.5px solid #e3e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #374151;
+    font-size: 0.95rem;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.formControl:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+.formControl.textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.addMedicineBtn {
+    background: #ecfdf5;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 10px;
+    color: #059669;
+    padding: 12px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.addMedicineBtn:hover {
+    background: #dcfce7;
+    border-color: #86efac;
+    transform: translateY(-1px);
+}
+
+/* Submit Section */
+.submitSection {
+    background: #fff;
+    border-top: 1.5px solid #e3e8f0;
+    padding: 24px;
+    text-align: center;
+}
+
+.submitBtn {
+    background: linear-gradient(135deg, #2563eb 0%, #1746a2 100%);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    padding: 14px 32px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    min-width: 160px;
+    justify-content: center;
+}
+
+.submitBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Modal Styles */
+.modalContainer {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.modalHeader {
+    background: #f8faff;
+    border-bottom: 1.5px solid #e3e8f0;
+    padding: 16px 20px;
+    
+}
+
+.modalTitle {
+    color: #1746a2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.modalBody {
+    padding: 20px;
+}
+
+.modalAlert {
+    background: #dbeafe;
+    border: 1px solid #93c5fd;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1e40af;
+}
+
+.modalInfoItem {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.modalInfoItem strong {
+    color: #374151;
+}
+
+.modalFooter {
+    background: #f8faff;
+    border-top: 1.5px solid #e3e8f0;
+    padding: 16px 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.modalBtn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.modalBtnCancel {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.modalBtnCancel:hover {
+    background: #e5e7eb;
+}
+
+.modalBtnConfirm {
+    background: linear-gradient(135deg, #2563eb 0%, #1746a2 100%);
+    color: #fff;
+}
+
+.modalBtnConfirm:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.modalBtnConfirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loadingContent {
+    text-align: center;
+    color: #64748b;
+}
+
+.loadingContent h5 {
+    margin-top: 16px;
+    color: #374151;
+}
+
+/* Form Validation */
+.formControl.isInvalid {
+    border-color: #dc2626;
+}
+
+.formControl.isValid {
+    border-color: #059669;
+}
+
+.invalidFeedback {
+    color: #dc2626;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sendMedicineContainer {
+        padding: 16px 0;
+    }
+
+    .pageHeader {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .studentSection,
+    .medicineSection,
+    .submitSection {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sendMedicineContainer {
+        padding: 12px 0;
+    }
+
+    .pageHeader {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .headerContent {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .headerIcon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .headerText h2 {
+        font-size: 1.4rem;
+    }
+
+    .studentSection,
+    .medicineSection,
+    .submitSection {
+        padding: 16px;
+    }
+
+    .sectionHeader {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .sectionIcon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .sectionTitle {
+        font-size: 1.1rem;
+    }
+
+    .studentInfo {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .medicineCardHeader {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .modalFooter {
+        flex-direction: column-reverse;
+    }
+
+    .modalBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .submitBtn {
+        width: 100%;
+    }
+
+    .addMedicineBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
