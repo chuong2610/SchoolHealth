@@ -6,6 +6,16 @@ Một hệ thống quản lý y tế học đường hiện đại, hỗ trợ n
 
 ---
 
+## 🚀 Truy cập hệ thống
+
+🔗 **Website chính thức**: [https://schoolhealth.vercel.app](https://schoolhealth.vercel.app)
+
+### 👤 Tài khoản dùng thử
+
+| Role     | Số điện thoại  | Mật khẩu     |
+|----------|----------------|--------------|
+| Phụ huynh| 0333333333     | parent123    |
+
 ## 🧩 Tính năng chính
 
 ### 👑 Admin
