@@ -2,7 +2,7 @@
 
 Một hệ thống quản lý y tế học đường hiện đại, hỗ trợ nhà trường, y tá và phụ huynh theo dõi, trao đổi và cập nhật tình trạng sức khỏe học sinh một cách hiệu quả và trực quan.
 
-> 🎥 Video hướng dẫn sử dụng: [YouTube](https://studio.youtube.com/video/8_oJIh_t-mY/edit)
+> 🎥 Video hướng dẫn sử dụng: [YouTube](https://www.youtube.com/watch?v=8_oJIh_t-mY)
 
 ---
 
